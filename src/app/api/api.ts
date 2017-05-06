@@ -1,3 +1,3 @@
-class api {
+export default class api {
     
 }
