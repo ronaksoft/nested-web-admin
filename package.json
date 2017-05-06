@@ -70,6 +70,8 @@
       "antd": "npm:antd@^2.9.3",
       "babel-plugin-import": "npm:babel-plugin-import@^1.1.1",
       "babel-runtime": "npm:babel-runtime@^6.23.0",
+      "cookies": "npm:cookies@^0.7.0",
+      "cookies-js": "npm:cookies-js@^1.2.3",
       "less": "npm:systemjs-less-plugin@^2.0.0",
       "react-router": "npm:react-router@^3.0.2",
       "classnames": "npm:classnames@^2.2.5",
@@ -128,6 +130,11 @@
       },
       "npm:jquery@3.2.1": {
         "format": "amd"
+      },
+      "npm:keygrip@1.0.1": {
+        "map": {
+          "keygrip": "@empty"
+        }
       },
       "npm:lodash@4.17.4": {
         "map": {

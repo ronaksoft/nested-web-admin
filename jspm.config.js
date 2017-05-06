@@ -100,6 +100,14 @@ SystemJS.config({
   },
   paths: {
     'app/': 'src/'
+  },
+  meta: {
+    '*.less': {
+      'loader': 'less'
+    },
+    '*.css': {
+      'loader': 'css'
+    }
   }
 });
 
@@ -120,6 +128,8 @@ SystemJS.config({
     'child_process': 'github:jspm/nodelibs-child_process@0.2.0-alpha',
     'classnames': 'npm:classnames@2.2.5',
     'constants': 'github:jspm/nodelibs-constants@0.2.0-alpha',
+    'cookies': 'npm:cookies@0.7.0',
+    'cookies-js': 'npm:cookies-js@1.2.3',
     'crypto': 'github:jspm/nodelibs-crypto@0.2.0-alpha',
     'css': 'github:systemjs/plugin-css@0.1.33',
     'domain': 'github:jspm/nodelibs-domain@0.2.0-alpha',
@@ -966,10 +976,12 @@ SystemJS.config({
       'map': {
         'css': 'github:systemjs/plugin-css@0.1.33'
       }
+    },
+    'npm:cookies@0.7.0': {
+      'map': {
+        'depd': 'npm:depd@1.1.0',
+        'keygrip': 'npm:keygrip@1.0.1'
+      }
     }
-  },
-  meta :{
-     '*.less': { loader: 'less' },
-     '*.css': { loader: 'css' }
   }
 });
