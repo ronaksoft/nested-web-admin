@@ -73,6 +73,7 @@
       "cookies": "npm:cookies@^0.7.0",
       "cookies-js": "npm:cookies-js@^1.2.3",
       "less": "npm:systemjs-less-plugin@^2.0.0",
+      "loglevel": "npm:loglevel@^1.4.1",
       "react-router": "npm:react-router@^3.0.2",
       "classnames": "npm:classnames@^2.2.5",
       "react-redux": "npm:react-redux@^5.0.2",

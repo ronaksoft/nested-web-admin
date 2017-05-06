@@ -8,7 +8,7 @@ import {browserHistory} from 'react-router';
 import HeaderComponent from '../components/Header/index';
 import SidebarComponent from '../components/Sidebar/index';
 
-import AAA from './../services/classes/aaa';
+import AAA from '../services/classes/aaa/aaa';
 
 import {Layout} from 'antd';
 const {Header, Footer, Sider, Content} = Layout;
