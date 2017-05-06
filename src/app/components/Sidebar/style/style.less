@@ -1,0 +1,22 @@
+.main-menu {
+    .logo {
+        height: 72px;
+        background-image: url('./images/nested-logo-256.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+}
+
+// FIXME:: fix selector
+.ant-menu-item {
+    &:before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border-left: 30px solid ;
+        transform: scaleY(.0001);
+        transition: all .2s;
+    }
+}
