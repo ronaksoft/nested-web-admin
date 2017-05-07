@@ -26,16 +26,15 @@ class App extends React.Component<IAppProps, IAppState> {
         super(props);
     }
 
-    componentDidMount() {
-        let aaa = new AAA();
-        console.log(aaa.hasUser());
-        if (!aaa.hasUser()) {
-            browserHistory.push('/403');
-        }
-    }
+    // componentDidMount() {
+    //     let aaa = new AAA();
+    //     if (!aaa.hasUser()) {
+    //         browserHistory.push('/403');
+    //     }
+    // }
 
     render() {
-
+      const children = this.props.children;
 
         return (
             <Layout>
@@ -46,7 +45,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     <Header>
                         <HeaderComponent/>
                     </Header>
-                    <Content>Content</Content>
+                    <Content>{children}</Content>
                     <Footer>Footer</Footer>
                 </Layout>
             </Layout>

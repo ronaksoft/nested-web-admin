@@ -12,6 +12,7 @@ import StaticPages from './app/scenes/StaicPages/index';
 import NotFoundPage from './app/scenes/StaicPages/scense/404/index';
 import ForbiddenPage from './app/scenes/StaicPages/scense/403/index';
 import Dashboard from './app/scenes/Dashboard/index';
+import Accounts from './app/scenes/Accounts/index';
 
 
 const store: IStore<any> = configureStore({});
@@ -21,7 +22,7 @@ ReactDOM.render(
         <Router history={browserHistory}>
             <Route path='/' component={App}>
                 <Route path='/dashboard' component={Dashboard}/>
-                <Route path='/accounts' component={Dashboard}/>
+                <Route path='/accounts' component={Accounts}/>
                 <Route path='/places' component={Dashboard}/>
             </Route>
             <Route component={StaticPages}>
