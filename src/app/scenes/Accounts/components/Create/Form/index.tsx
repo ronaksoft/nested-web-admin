@@ -1,6 +1,8 @@
 import * as React from 'react';
-import {Modal, Button, Row, Col} from 'antd';
+import {Modal, Button, Row, Col, Card, Icon} from 'antd';
 import InputRow from './components/InputRow/index';
+import _ from 'lodash';
+
 interface IAccount {
   key: Number;
   _id: String;
@@ -22,7 +24,7 @@ class Form extends React.Component<IFormProps, IFormState> {
     this.state = {
       accounts: [
         {
-          key: 1,
+          key: _.uniqueId(),
           _id: 'sorousht',
           fname: 'Soroush',
           lname: 'Torkzadeh',
@@ -30,14 +32,42 @@ class Form extends React.Component<IFormProps, IFormState> {
         }
       ]
     };
+
+    this.handleRemove = this.handleRemove.bind(this);
+    this.add = this.add.bind(this);
   }
 
   handleChange(account: IAccount) {
     console.log(account);
   }
 
+  handleRemove(account: IAccount) {
+    this.setState({
+      accounts: _(this.state.accounts).reject(account)
+    });
+  }
+
+  add() {
+    let account: IAccount = {
+      key: _.uniqueId(),
+      _id: '',
+      fname: '',
+      lname: '',
+      phone: ''
+    };
+
+
+    this.setState({
+      accounts: [...this.state.accounts, account],
+    });
+  }
+
+  import() {
+    console.log('Importing...');
+  }
+
   render() {
-    var rows = this.state.accounts.map((account) => <InputRow key={account.key} account={account} onChange={this.handleChange} />);
+    var rows = this.state.accounts.map((account) => <InputRow key={account.key} account={account} onChange={this.handleChange} onRemove={this.handleRemove} />);
     return (
       <div>
         <Row>
@@ -47,11 +77,19 @@ class Form extends React.Component<IFormProps, IFormState> {
           <Col span={6}><b>Last Name</b></Col>
         </Row>
         {rows}
-        <Row>
-          <Col span={24}>
-            <Button type='primary' size='large' onClick={this.props.handleClose}>Close me</Button>
-          </Col>
-        </Row>
+
+        <Card>
+          <Row>
+            <Col span={12}>
+              <a onClick={this.add}>
+                <Icon type='plus' /> Add another
+              </a>
+            </Col>
+            <Col span={12}>
+              <span>You can also</span>&nbsp;<a onClick={this.import}>Import from a file</a>
+            </Col>
+          </Row>
+        </Card>
       </div>
     );
   }
