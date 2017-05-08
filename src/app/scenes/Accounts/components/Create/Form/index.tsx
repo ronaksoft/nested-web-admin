@@ -42,8 +42,9 @@ class Form extends React.Component<IFormProps, IFormState> {
   }
 
   handleRemove(account: IAccount) {
+
     this.setState({
-      accounts: _(this.state.accounts).reject(account)
+      accounts: _(this.state.accounts).reject({ key : account.key })
     });
   }
 
