@@ -4,11 +4,11 @@ import InputRow from './components/InputRow/index';
 import _ from 'lodash';
 
 interface IAccount {
-  key: Number;
-  _id: String;
-  fname: String;
-  lname: String;
-  phone: String;
+  key: number;
+  _id: string;
+  fname: string;
+  lname: string;
+  phone: string;
 }
 
 interface IFormProps {
@@ -34,17 +34,23 @@ class Form extends React.Component<IFormProps, IFormState> {
     };
 
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.add = this.add.bind(this);
   }
 
   handleChange(account: IAccount) {
-    console.log(account);
+    const index = _.findIndex(this.state.accounts, { key: account.key });
+    if (index >= 0) {
+      this.state.accounts.splice(index, 1, account);
+      this.setState({
+        accounts: this.state.accounts
+      });
+    }
   }
 
   handleRemove(account: IAccount) {
-
     this.setState({
-      accounts: _(this.state.accounts).reject({ key : account.key })
+      accounts: _.reject(this.state.accounts, { key : account.key })
     });
   }
 
@@ -61,6 +67,7 @@ class Form extends React.Component<IFormProps, IFormState> {
     this.setState({
       accounts: [...this.state.accounts, account],
     });
+    console.log(this.state.accounts);
   }
 
   import() {
@@ -72,13 +79,16 @@ class Form extends React.Component<IFormProps, IFormState> {
     return (
       <div>
         <Row>
-          <Col span={6}><b>Phone Number</b><span>(with country code)</span></Col>
-          <Col span={6}><b>Username</b></Col>
-          <Col span={6}><b>First Name</b></Col>
-          <Col span={6}><b>Last Name</b></Col>
+          <Col span={22}>
+            <Row>
+              <Col span={6}><b>Phone Number</b><span>(with country code)</span></Col>
+              <Col span={6}><b>Username</b></Col>
+              <Col span={6}><b>First Name</b></Col>
+              <Col span={6}><b>Last Name</b></Col>
+            </Row>
+          </Col>
         </Row>
         {rows}
-
         <Card>
           <Row>
             <Col span={12}>
