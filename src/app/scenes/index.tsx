@@ -8,7 +8,7 @@ import {browserHistory} from 'react-router';
 import HeaderComponent from '../components/Header/index';
 import SidebarComponent from '../components/Sidebar/index';
 
-import AAA from './../services/classes/aaa';
+import AAA from '../services/classes/aaa/index';
 
 import {Layout} from 'antd';
 const {Header, Footer, Sider, Content} = Layout;
@@ -26,12 +26,17 @@ class App extends React.Component<IAppProps, IAppState> {
         super(props);
     }
 
-    // componentDidMount() {
-    //     let aaa = new AAA();
-    //     if (!aaa.hasUser()) {
-    //         browserHistory.push('/403');
-    //     }
-    // }
+    componentDidMount() {
+        let aaa = new AAA();
+
+        aaa.getUser().then((has: boolean) => {
+            console.log(has);
+            if (!has) {
+                // browserHistory.push('/403');
+            }
+        });
+
+    }
 
     render() {
       const children = this.props.children;
