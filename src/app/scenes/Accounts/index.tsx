@@ -1,7 +1,6 @@
 import {IDispatch} from '~react-redux~redux';
 import * as React from 'react';
 import {connect} from 'react-redux';
-<<<<<<< Updated upstream
 import Filter from './components/Filter/index';
 import Options from './components/Options/index';
 import {Row, Col} from 'antd';
@@ -46,17 +45,6 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
       </div>
     );
   }
-=======
-import {Filter} from './components/Filter/index';
-
-function Accounts(count: any) {
-  return (
-    <div>
-      <h1>YES</h1>
-      <Filter />
-    </div>
-  );
->>>>>>> Stashed changes
 }
 
 function mapStateToProps(state: any) {
