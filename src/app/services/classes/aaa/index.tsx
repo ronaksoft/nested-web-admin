@@ -5,6 +5,7 @@ export default class AAA {
     private hasUserCookie: boolean;
     private nss: string;
     private nsk: string;
+    private account: any;
 
     constructor() {
         this.hasUserCookie = this.checkUserCookie();
@@ -22,9 +23,9 @@ export default class AAA {
                 _dt: 's',
                 _do: 's'
             }).then((resp) => {
-                res();
+                this.account = resp.account;
+                res(resp);
             });
-            return false;
         });
     }
 

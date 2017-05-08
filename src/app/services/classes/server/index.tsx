@@ -66,7 +66,7 @@ export default class Server {
         this.ss = ss;
     }
 
-    setSessionSecre(sk: string) {
+    setSessionSecret(sk: string) {
         this.sk = sk;
     }
 
@@ -76,14 +76,34 @@ export default class Server {
             server: 'ws://cyrus.ronaksoftware.com:81/',
             pingPongTime: 1000,
             onReady : this.startQueue.bind(this),
-            onMessage: this.response,
+            onMessage: this.response.bind(this),
         });
         this.queue = [];
         this.socket.connect();
     }
 
     private response(res: string): void {
-        console.log(res);
+        let response = JSON.parse(res);
+
+        // try to find queued request
+        let queueItem = this.queue.findIndex((q) => {
+          return q.reqId === response._reqid;
+        });
+
+        // check for has request in queue
+        // return if has any request with this
+        if (queueItem === -1) {
+            return;
+        }
+
+
+        // resole request
+        this.queue[queueItem].resolve(response.data);
+
+        // remove request from queue
+        this.queue.splice(queueItem, 1);
+
+
     }
 
     private startQueue() {

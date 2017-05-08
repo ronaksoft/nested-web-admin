@@ -14,7 +14,7 @@ interface IUser {
     gender: IGender;
     phone: string;
     registered: string;
-    isAdmin : boolean;
+    admin : boolean;
     counters : IAccountCounters;
 };
 
