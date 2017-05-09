@@ -151,6 +151,8 @@ SystemJS.config({
     'react-dom': 'npm:react-dom@15.5.4',
     'react-redux': 'npm:react-redux@5.0.4',
     'react-router': 'npm:react-router@3.0.5',
+    'react-transition-group': 'npm:react-transition-group@1.1.3',
+    'recharts': 'npm:recharts@0.22.4',
     'redux': 'npm:redux@3.6.0',
     'stream': 'github:jspm/nodelibs-stream@0.2.0-alpha',
     'string_decoder': 'github:jspm/nodelibs-string_decoder@0.2.0-alpha',
@@ -984,6 +986,84 @@ SystemJS.config({
       'map': {
         'depd': 'npm:depd@1.1.0',
         'keygrip': 'npm:keygrip@1.0.1'
+      }
+    },
+    'npm:recharts@0.22.4': {
+      'map': {
+        'react-resize-detector': 'npm:react-resize-detector@0.4.1',
+        'react-smooth': 'npm:react-smooth@0.3.0',
+        'd3-shape': 'npm:d3-shape@1.0.4',
+        'reduce-css-calc': 'npm:reduce-css-calc@1.3.0',
+        'd3-scale': 'npm:d3-scale@1.0.4',
+        'recharts-scale': 'npm:recharts-scale@0.3.0',
+        'core-js': 'npm:core-js@2.4.1',
+        'classnames': 'npm:classnames@2.2.5',
+        'lodash': 'npm:lodash@4.17.4',
+        'prop-types': 'npm:prop-types@15.5.8'
+      }
+    },
+    'npm:react-smooth@0.3.0': {
+      'map': {
+        'react-transition-group': 'npm:react-transition-group@1.1.3',
+        'raf': 'npm:raf@3.3.2',
+        'lodash': 'npm:lodash@4.17.4',
+        'prop-types': 'npm:prop-types@15.5.8'
+      }
+    },
+    'npm:reduce-css-calc@1.3.0': {
+      'map': {
+        'reduce-function-call': 'npm:reduce-function-call@1.0.2',
+        'balanced-match': 'npm:balanced-match@0.4.2',
+        'math-expression-evaluator': 'npm:math-expression-evaluator@1.2.17'
+      }
+    },
+    'npm:d3-shape@1.0.4': {
+      'map': {
+        'd3-path': 'npm:d3-path@1.0.5'
+      }
+    },
+    'npm:d3-scale@1.0.4': {
+      'map': {
+        'd3-collection': 'npm:d3-collection@1.0.3',
+        'd3-color': 'npm:d3-color@1.0.3',
+        'd3-array': 'npm:d3-array@1.2.0',
+        'd3-format': 'npm:d3-format@1.2.0',
+        'd3-interpolate': 'npm:d3-interpolate@1.1.4',
+        'd3-time-format': 'npm:d3-time-format@2.0.5',
+        'd3-time': 'npm:d3-time@1.0.6'
+      }
+    },
+    'npm:reduce-function-call@1.0.2': {
+      'map': {
+        'balanced-match': 'npm:balanced-match@0.4.2'
+      }
+    },
+    'npm:react-transition-group@1.1.3': {
+      'map': {
+        'warning': 'npm:warning@3.0.0',
+        'prop-types': 'npm:prop-types@15.5.8',
+        'chain-function': 'npm:chain-function@1.0.0',
+        'dom-helpers': 'npm:dom-helpers@3.2.1'
+      }
+    },
+    'npm:react-resize-detector@0.4.1': {
+      'map': {
+        'prop-types': 'npm:prop-types@15.5.8'
+      }
+    },
+    'npm:d3-interpolate@1.1.4': {
+      'map': {
+        'd3-color': 'npm:d3-color@1.0.3'
+      }
+    },
+    'npm:raf@3.3.2': {
+      'map': {
+        'performance-now': 'npm:performance-now@2.1.0'
+      }
+    },
+    'npm:d3-time-format@2.0.5': {
+      'map': {
+        'd3-time': 'npm:d3-time@1.0.6'
       }
     }
   }
