@@ -13,7 +13,6 @@ import NotFoundPage from './app/scenes/StaicPages/scense/404/index';
 import ForbiddenPage from './app/scenes/StaicPages/scense/403/index';
 import Dashboard from './app/scenes/Dashboard/index';
 import Accounts from './app/scenes/Accounts/index';
-import Create from './app/scenes/Accounts/components/Create/Form/index';
 
 
 const store: IStore<any> = configureStore({});
@@ -24,7 +23,6 @@ ReactDOM.render(
             <Route path='/' component={App}>
                 <Route path='/dashboard' component={Dashboard}/>
                 <Route path='/accounts' component={Accounts}/>
-                <Route path='/create' component={Create}/>
                 <Route path='/places' component={Dashboard}/>
             </Route>
             <Route component={StaticPages}>
