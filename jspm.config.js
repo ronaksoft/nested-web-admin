@@ -139,6 +139,7 @@ SystemJS.config({
     'http': 'github:jspm/nodelibs-http@0.2.0-alpha',
     'https': 'github:jspm/nodelibs-https@0.2.0-alpha',
     'immutable': 'npm:immutable@3.8.1',
+    'jquery': 'npm:jquery@3.2.1',
     'less': 'npm:systemjs-less-plugin@2.0.0',
     'lodash': 'npm:lodash@4.17.4',
     'loglevel': 'npm:loglevel@1.4.1',

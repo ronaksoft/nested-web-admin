@@ -1,15 +1,11 @@
 import * as React from 'react';
 import {Modal, Button, Row, Col, Card, Icon} from 'antd';
+import {Account} from '/src/app/common/account/Account';
+import {IAccount} from '/src/app/common/account/IAccount';
 import InputRow from './components/InputRow/index';
+import CSV from '/src/app/common/CSV';
 import _ from 'lodash';
-
-interface IAccount {
-  key: number;
-  _id: string;
-  fname: string;
-  lname: string;
-  phone: string;
-}
+import $ from 'jquery';
 
 interface ICreateProps {
   visible: Boolean;
@@ -23,12 +19,15 @@ interface ICreateState {
 class Create extends React.Component<ICreateProps, ICreateState> {
   constructor(props: ICreateProps) {
     this.state = {
-      accounts: []
+      accounts: [new Account()]
     };
     this.handleRemove = this.handleRemove.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.add = this.add.bind(this);
     this.create = this.create.bind(this);
+    this.import = this.import.bind(this);
+    this.readFile = this.readFile.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   handleChange(account: IAccount) {
@@ -48,22 +47,20 @@ class Create extends React.Component<ICreateProps, ICreateState> {
   }
 
   add() {
-    let account: IAccount = {
-      key: _.uniqueId(),
-      _id: '',
-      fname: '',
-      lname: '',
-      phone: ''
-    };
-
-
     this.setState({
-      accounts: [...this.state.accounts, account],
+      accounts: [...this.state.accounts, new Account()],
     });
   }
 
-  import() {
-    console.log('Importing...');
+  handleUpload(e: Event) {
+    e.preventDefault();
+    $('#upload').trigger('click');
+  }
+
+  readFile(e: Event) {
+    const reader = new FileReader();
+    reader.onload = (readEvent) => this.import(readEvent.target.result);
+    reader.readAsText(e.target.files[0]);
   }
 
   create () {
@@ -81,7 +78,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
           footer={[
             <Button type='primary' size='large' onClick={this.create}>Create Accounts ({this.state.accounts.length})</Button>
           ]}
-          onCancel={this.props.handleClose}
+          onCancel={this.handleClose}
         >
           <div>
             <Row>
@@ -103,13 +100,33 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                   </a>
                 </Col>
                 <Col span={12}>
-                  <span>You can also</span>&nbsp;<a onClick={this.import}>Import from a file</a>
+                  <input id='upload' type='file' accept='*' onChange={this.readFile} onClick={(event) => { event.target.value = null; }} className='hidden'/>
+                  <span>You can also</span>&nbsp;<a onClick={this.handleUpload}>Import from a file</a>
                 </Col>
               </Row>
             </Card>
           </div>
         </Modal>
     );
+  }
+
+  handleClose() {
+    this.setState({
+      accounts: [new Account()]
+    });
+    this.props.handleClose();
+  }
+
+  private import(text: string) {
+    const CSV_ROW_ITEMS_COUNT = 4;
+    const data = CSV.parse(text);
+    const importedAccounts = _(data).filter((row) => row.length === CSV_ROW_ITEMS_COUNT).map((row) => {
+      return new Account(row[0], row[1], row[2], row[3]);
+    }).value();
+
+    this.setState({
+      accounts: _.concat(this.state.accounts, importedAccounts)
+    });
   }
 }
 

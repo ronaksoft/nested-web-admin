@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Row, Col, Input, Icon, Button} from 'antd';
+import IAccount from '/src/app/common/index';
 
 interface IInputRowProps {
   account: IAccount;
