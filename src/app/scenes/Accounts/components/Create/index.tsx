@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Modal, Button, Row, Col, Card, Icon} from 'antd';
-import {Account} from '/src/app/common/account/Account';
+import Account from '/src/app/common/account/Account';
 import {IAccount} from '/src/app/common/account/IAccount';
 import IUnique from '/src/app/common/IUnique';
 import InputRow from './components/InputRow/index';
@@ -35,13 +35,10 @@ class Create extends React.Component<ICreateProps, ICreateState> {
   }
 
   handleChange(account: IUnique) {
-    const index = _.findIndex(this.state.accounts, { key: account.key });
-    if (index >= 0) {
-      this.state.accounts.splice(index, 1, account);
-      this.setState({
-        accounts: this.state.accounts
-      });
-    }
+    this.replaceByKey(this.state.accounts, account);
+    this.setState({
+      accounts: this.state.accounts
+    });
   }
 
   handleRemove(account: IUnique) {

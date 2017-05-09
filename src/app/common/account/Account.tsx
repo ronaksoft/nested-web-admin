@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export class Account implements IAccount {
+export default class Account implements IAccount {
   _id: string;
   fname: string;
   lname: string;

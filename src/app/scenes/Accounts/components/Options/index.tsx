@@ -15,7 +15,7 @@ export default class Options extends React.Component<IOptionsProps, IOptionsStat
     super(props);
 
     this.state = {
-      showCreate: true
+      showCreate: false
     };
 
     this.openCreate = this.openCreate.bind(this);

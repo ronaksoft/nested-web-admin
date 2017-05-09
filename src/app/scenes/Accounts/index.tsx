@@ -3,6 +3,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import Filter from './components/Filter/index';
 import Options from './components/Options/index';
+import List from './components/List/index';
 import {Row, Col} from 'antd';
 
 export interface IAccountsProps {}
@@ -39,7 +40,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         </Row>
         <Row>
           <Col span={24}>
-            Table
+            <List />
           </Col>
         </Row>
       </div>
