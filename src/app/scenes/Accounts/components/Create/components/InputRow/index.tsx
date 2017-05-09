@@ -1,21 +1,22 @@
 import * as React from 'react';
 import {Row, Col, Input, Icon, Button} from 'antd';
 import IAccount from '/src/app/common/index';
+import PacketState from '/src/app/common/packet/PacketState';
 
 interface IInputRowProps {
-  account: IAccount;
+  account: Packet<IAccount>;
   onRemove: Handler;
   onChange: Handler;
 }
 
 interface IInputRowState {
-  model: IAccount;
+  packet: Packet<IAccount>;
 }
 
 class InputRow extends React.Component<IInputRowProps, IInputRowState> {
   constructor(props: IInputRowProps) {
     this.state = {
-      model: props.account
+      packet: props.account
     };
 
     this.handlePhoneChange = this.handlePhoneChange.bind(this);
@@ -25,39 +26,39 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
   }
 
   handlePhoneChange (event: event) {
-    this.state.model.phone = event.target.value;
+    this.state.packet.model.phone = event.target.value;
     this.setState({
-      model: this.state.model
+      model: this.state.packet.model
     });
 
-    this.props.onChange(this.state.model);
+    this.props.onChange(this.state.packet.model);
   }
 
   handleFnameChange (event: event) {
-    this.state.model.fname = event.target.value;
+    this.state.packet.model.fname = event.target.value;
     this.setState({
-      model: this.state.model
+      model: this.state.packet.model
     });
 
-    this.props.onChange(this.state.model);
+    this.props.onChange(this.state.packet.model);
   }
 
   handleLnameChange (event: event) {
-    this.state.model.lname = event.target.value;
+    this.state.packet.model.lname = event.target.value;
     this.setState({
-      model: this.state.model
+      model: this.state.packet.model
     });
 
-    this.props.onChange(this.state.model);
+    this.props.onChange(this.state.packet.model);
   }
 
   handleUsernameChange (event: event) {
-    this.state.model._id = event.target.value;
+    this.state.packet.model._id = event.target.value;
     this.setState({
-      model: this.state.model
+      model: this.state.packet.model
     });
 
-    this.props.onChange(this.state.model);
+    this.props.onChange(this.state.packet.model);
   }
 
   render() {
@@ -67,28 +68,28 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
             <Row>
               <Col span={6}>
                 <Input
-                      value={this.state.model.phone}
+                      value={this.state.packet.model.phone}
                       placeholder='+98 987 6543210'
                       onChange={this.handlePhoneChange}
                 />
               </Col>
               <Col span={6}>
                 <Input
-                      value={this.state.model._id}
+                      value={this.state.packet.model._id}
                       placeholder='john-doe'
                       onChange={this.handleUsernameChange}
                 />
               </Col>
               <Col span={6}>
                 <Input
-                      value={this.state.model.fname}
+                      value={this.state.packet.model.fname}
                       placeholder='John'
                       onChange={this.handleFnameChange}
                 />
               </Col>
               <Col span={6}>
                 <Input
-                      value={this.state.model.lname}
+                      value={this.state.packet.model.lname}
                       placeholder='Doe'
                       onChange={this.handleLnameChange}
                 />
@@ -98,7 +99,23 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
           <Col span={2}>
             <Row>
               <Col span={24}>
-                <Button shape='circle' icon='delete' size='large' onClick={() => this.props.onRemove(this.state.model)}/>
+                {
+                  this.state.packet.state === PacketState.New &&
+                  <Button shape='circle' icon='delete' size='large' onClick={() => this.props.onRemove(this.state.packet)}/>
+                }
+                {
+                  this.state.packet.state === PacketState.Pending &&
+                  <Button shape='circle' size='large' loading/>
+                }
+                {
+                  this.state.packet.state === PacketState.Success &&
+                  <Icon type='check-circle-o' className='account-success-icon'/>
+                }
+                {
+                  this.state.packet.state === PacketState.Failure &&
+                  <Icon type='close-circle-o' className='account-failure-icon' />
+                }
+
               </Col>
             </Row>
           </Col>

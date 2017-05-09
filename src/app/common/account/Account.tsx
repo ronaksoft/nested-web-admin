@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 export class Account implements IAccount {
-  key: string;
   _id: string;
   fname: string;
   lname: string;
@@ -13,8 +12,6 @@ export class Account implements IAccount {
     this.fname = fname;
     this.lname = lname;
     this.phone = phone;
-
-    this.key = _.uniqueId();
   }
 
   set fname(value: string): void {

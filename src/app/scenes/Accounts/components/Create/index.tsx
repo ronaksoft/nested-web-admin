@@ -2,8 +2,11 @@ import * as React from 'react';
 import {Modal, Button, Row, Col, Card, Icon} from 'antd';
 import {Account} from '/src/app/common/account/Account';
 import {IAccount} from '/src/app/common/account/IAccount';
+import IUnique from '/src/app/common/IUnique';
 import InputRow from './components/InputRow/index';
 import CSV from '/src/app/common/CSV';
+import AccountApi from '/src/app/api/account/account';
+import Packet from '/src/app/common/packet/Packet';
 import _ from 'lodash';
 import $ from 'jquery';
 
@@ -13,13 +16,13 @@ interface ICreateProps {
 }
 
 interface ICreateState {
-  accounts: IAccount[];
+  accounts: Packet<IAccount>[];
 }
 
 class Create extends React.Component<ICreateProps, ICreateState> {
   constructor(props: ICreateProps) {
     this.state = {
-      accounts: [new Account()]
+      accounts: [new Packet(new Account())]
     };
     this.handleRemove = this.handleRemove.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -30,7 +33,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  handleChange(account: IAccount) {
+  handleChange(account: IUnique) {
     const index = _.findIndex(this.state.accounts, { key: account.key });
     if (index >= 0) {
       this.state.accounts.splice(index, 1, account);
@@ -40,7 +43,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     }
   }
 
-  handleRemove(account: IAccount) {
+  handleRemove(account: IUnique) {
     this.setState({
       accounts: _.reject(this.state.accounts, { key : account.key })
     });
@@ -48,7 +51,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
   add() {
     this.setState({
-      accounts: [...this.state.accounts, new Account()],
+      accounts: [...this.state.accounts, new Packet(new Account())],
     });
   }
 
@@ -65,6 +68,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
   create () {
     console.log('creating', this.state.accounts);
+    new AccountApi().register(this.state.accounts).then((result) => console.log(result)).catch((error) => console.log(error));
   }
 
   render() {
@@ -112,7 +116,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
   handleClose() {
     this.setState({
-      accounts: [new Account()]
+      accounts: [new Packet(new Account())]
     });
     this.props.handleClose();
   }
@@ -121,7 +125,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     const CSV_ROW_ITEMS_COUNT = 4;
     const data = CSV.parse(text);
     const importedAccounts = _(data).filter((row) => row.length === CSV_ROW_ITEMS_COUNT).map((row) => {
-      return new Account(row[0], row[1], row[2], row[3]);
+      return new Packet(new Account(row[0], row[1], row[2], row[3]));
     }).value();
 
     this.setState({
