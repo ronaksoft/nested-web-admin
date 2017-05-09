@@ -7,6 +7,7 @@ import InputRow from './components/InputRow/index';
 import CSV from '/src/app/common/CSV';
 import AccountApi from '/src/app/api/account/account';
 import Packet from '/src/app/common/packet/Packet';
+import PacketState from '/src/app/common/packet/PacketState';
 import _ from 'lodash';
 import $ from 'jquery';
 
@@ -68,7 +69,15 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
   create () {
     console.log('creating', this.state.accounts);
-    new AccountApi().register(this.state.accounts).then((result) => console.log(result)).catch((error) => console.log(error));
+    _.forEach(this.state.accounts, (packet, index) => {
+      setTimeout(() => {
+        packet.state = PacketState.Success;
+        var accounts = this.replaceByKey(this.state.accounts, packet);
+        this.setState({
+          accounts: accounts
+        });
+      }, 500 * (index + 1));
+    });
   }
 
   render() {
@@ -131,6 +140,16 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     this.setState({
       accounts: _.concat(this.state.accounts, importedAccounts)
     });
+  }
+
+  private replaceByKey(items: IUnique, item: IUnique) {
+    const index = _.findIndex(items, { 'key' : item.key });
+
+    if (index > -1) {
+      items.splice(index, 1, item);
+    }
+
+    return items;
   }
 }
 
