@@ -107,7 +107,7 @@
       "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
       "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
       "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
-      "react": "npm:react@^15.0.0",
+      "react": "npm:react@^15.5.4",
       "react-dom": "npm:react-dom@^15.0.0",
       "react-transition-group": "npm:react-transition-group@^1.1.2",
       "redux": "npm:redux@^3.6.0",

@@ -43,15 +43,15 @@ class App extends React.Component<IAppProps, IAppState> {
 
         return (
             <Layout>
-                <Sider>
+                <Sider width='226'>
                     <SidebarComponent/>
                 </Sider>
-                <Layout>
+                <Layout className='container'>
                     <Header>
                         <HeaderComponent/>
                     </Header>
                     <Content>{children}</Content>
-                    <Footer>Footer</Footer>
+                    {/*<Footer>Footer</Footer>*/}
                 </Layout>
             </Layout>
         );
