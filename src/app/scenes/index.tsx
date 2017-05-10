@@ -50,6 +50,7 @@ class App extends React.Component<IAppProps, IAppState> {
             aaa.setIsUnAthenticated();
             browserHistory.push('/403');
         });
+
     }
 
     render() {
@@ -59,7 +60,7 @@ class App extends React.Component<IAppProps, IAppState> {
           <div>
             {this.state.isReady &&
                 <Layout>
-                  <Sider>
+                  <Sider width='226'>
                     <SidebarComponent/>
                   </Sider>
                   <Layout>
@@ -67,7 +68,7 @@ class App extends React.Component<IAppProps, IAppState> {
                       <HeaderComponent/>
                     </Header>
                     <Content>{children}</Content>
-                    <Footer>Footer</Footer>
+                    {/*<Footer>Footer</Footer>*/}
                   </Layout>
                 </Layout>
               }
