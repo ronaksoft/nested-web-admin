@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Menu, Icon } from 'antd';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
+import {browserHistory, Link} from 'react-router';
 
 import './style/style.less';
 
@@ -15,9 +16,6 @@ export default class Sidebar extends React.Component<IHeaderProps, IHeaderState>
     super(props);
   }
 
-  handleClick = (e) => {
-    console.log('click ', e);
-  }
 
   render() {
     return (
@@ -25,19 +23,19 @@ export default class Sidebar extends React.Component<IHeaderProps, IHeaderState>
         className='main-menu'>
         <div className='logo'></div>
         <Menu
-          onClick={this.handleClick}
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode='inline'
           >
           <Menu.Item key='dashboard'>
-            <a href='./dashboard'><Icon type='mail' /><span>Dashboard</span></a>
+            <Link to='/dashboard' activeClassName='active'><Icon type='Compass' /><span>Dashboard</span></Link>
           </Menu.Item>
           <Menu.Item key='places'>
-            <a href='./places'><Icon type='mail' /><span>Places</span></a>
+            <Link to='/places' activeClassName='active'><Icon type='Database' /><span>Places</span></Link>
           </Menu.Item>
           <Menu.Item key='accounts'>
-            <a href='./accounts'><Icon type='mail' /><span>Accounts</span></a>
+            <Link to='/accounts' activeClassName='active'><Icon type='Team' /><span>Accounts</span></Link>
+            
           </Menu.Item>
           
         </Menu>
