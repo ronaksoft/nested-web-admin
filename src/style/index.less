@@ -1,5 +1,8 @@
 @import "./variables.less";
 
+a {
+  color: #00B45A;
+}
 
 .main-panel{
     display: table;
@@ -34,4 +37,39 @@ h1 {
 .account-failure-icon {
   color: #e74c3c;
   font-size: @font-size-lg + 8;
+}
+.ant-card-body {
+  padding: 0;
+  height: 48px;
+}
+
+.create-accounts {
+  .account-row {
+    margin-bottom: 16px;
+    .ant-input {
+      height: 36px;
+    }
+    .acc-btn {
+      display: flex;
+      justify-content: center;  
+    }
+  }
+  .ant-modal-body {
+    background-color: rgba(50,61,71,.04)
+  }
+  .ant-card {
+    height: 48px;
+    background-color: rgba(0,180,90,.08);
+    border: 1px solid rgba(0,180,90,.16);
+    .ant-row-flex-middle {
+      height: 100%;
+      padding: 0 16px
+    }
+  }
+  .ant-btn-primary {
+    height: 40px
+  }
+}
+.ant-modal-title {
+  line-height: 37px;
 }

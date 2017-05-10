@@ -63,9 +63,9 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
 
   render() {
     return (
-        <Row>
+        <Row className='account-row'>
           <Col span={22}>
-            <Row>
+            <Row gutter={8}>
               <Col span={6}>
                 <Input
                       value={this.state.packet.model.phone}
@@ -98,7 +98,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
           </Col>
           <Col span={2}>
             <Row>
-              <Col span={24}>
+              <Col span={24} className='acc-btn'>
                 {
                   this.state.packet.state === PacketState.New &&
                   <Button shape='circle' icon='delete' size='large' onClick={() => this.props.onRemove(this.state.packet)}/>

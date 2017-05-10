@@ -9,7 +9,6 @@ export interface IDashboardProps {}
 export interface IDashboardState {}
 
 
-const headline = <h1>Title</h1>;
 const card1Title = <h5>Last 7 Days Activity</h5>;
 const card1Extra = <div>extra</div>;
 const card2Title = <h5>Company Chart</h5>;
@@ -20,6 +19,8 @@ const card4Title = <h5>Accounts</h5>;
 const card4Extra = <div>extra</div>;
 const card5Title = <h5>Storage & Plan</h5>;
 const card5Extra = <div>extra</div>;
+
+const headline = <h1>Title</h1>;
 const content = (
   <div>
     <p>Content</p>
