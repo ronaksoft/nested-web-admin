@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {Icon, Table, Dropdown} from 'antd';
+import {Icon, Table, Dropdown, Card} from 'antd';
 import Account from '/src/app/common/account/Account';
 import {IAccount} from '/src/app/common/account/IAccount';
 import IUnique from '/src/app/common/IUnique';
 import Person from '/src/app/common/user/Person';
+import allColumns from './TableColumnsConfig';
 import _ from 'lodash';
 
 interface IListProps { }
@@ -13,72 +14,61 @@ interface IListState {
 }
 
 export default class List extends React.Component<IListProps, IListState> {
-  const optionsMenu = (
-    <span>Items</span>
-  );
 
-  const allColumns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      width: 128,
-      fixed: 'left'
-    },
-    {
-      title: 'User ID',
-      dataIndex: 'id',
-      key: '_id',
-      width: 72,
-      fixed: 'left'
-    },
-    {
-      title: 'Member in Place',
-      dataIndex: 'places',
-      key: 'places'
-    },
-    {
-      title: 'Joined Date',
-      dataIndex: 'joined',
-      key: 'joined'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status'
-    },
-    {
-      title: 'Options',
-      dataIndex: 'options',
-      key: 'options',
-      fixed: 'right',
-      width: 64,
-      render: () => (
-        <Dropdown overlay={this.optionsMenu}>
-          <a className='ant-dropdown-link' href='#'>
-            <Icon type='setting' />
-          </a>
-        </Dropdown>
-      )
-    }
-  ];
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
+  }
 
   constructor(props: IListProps) {
+
+    const person1 = new Person();
+    const person2 = new Person();
+    const person3 = new Person();
+
+    person1._id = '1';
+    person1.fname = 'Soroush';
+    person1.lname = 'Torkzadeh';
+    person1.gender = 'Male';
+    person1.searchable = true;
+
+    person2._id = '2';
+    person2.fname = 'Ali';
+    person2.lname = 'Mahmoudi';
+    person2.gender = 'Male';
+    person2.searchable = false;
+
+    person3._id = '3';
+    person3.fname = 'Sina';
+    person3.lname = 'Hoseini';
+    person3.gender = 'Male';
+    person3.searchable = false;
+
     this.state = {
-      users: [
-        new Person(),
-        new Person(),
-        new Person()
-      ]
+      users: [ person1, person2, person3 ],
+      selectedRowKeys: []
     };
 
     console.log(this.state.users);
   }
 
-
   render() {
+
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: this.onSelectChange
+    };
+
     return (
-      <Table rowKey={row => row._id} columns={this.allColumns} dataSource={this.state.users} />
+      <Card style={{ width: 960}}>
+        <Table
+              rowKey='_id'
+              rowSelection={rowSelection}
+              columns={allColumns}
+              dataSource={this.state.users}
+              size='middle'
+              scroll={{x: 960}}
+        />
+      </Card>
     );
   }
 
