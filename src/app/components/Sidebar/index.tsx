@@ -28,13 +28,13 @@ export default class Sidebar extends React.Component<IHeaderProps, IHeaderState>
           mode='inline'
           >
           <Menu.Item key='dashboard'>
-            <Link to='/dashboard' activeClassName='active'><Icon type='Compass' /><span>Dashboard</span></Link>
+            <Link to='/dashboard' activeClassName='active'><Icon type='compass' /><span>Dashboard</span></Link>
           </Menu.Item>
           <Menu.Item key='places'>
-            <Link to='/places' activeClassName='active'><Icon type='Database' /><span>Places</span></Link>
+            <Link to='/places' activeClassName='active'><Icon type='database' /><span>Places</span></Link>
           </Menu.Item>
           <Menu.Item key='accounts'>
-            <Link to='/accounts' activeClassName='active'><Icon type='Team' /><span>Accounts</span></Link>
+            <Link to='/accounts' activeClassName='active'><Icon type='team' /><span>Accounts</span></Link>
             
           </Menu.Item>
           
