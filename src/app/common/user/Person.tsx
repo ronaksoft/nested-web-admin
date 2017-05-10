@@ -1,8 +1,7 @@
-import {IAccount} from '/src/app/common/account/IAccount';
+import IPerson from './IPerson';
 import Account from '/src/app/common/account/Account';
-console.log(IAccount);
-console.log(Account);
-export default class Person extends Account implements IAccount {
+
+export default class Person extends Account implements IPerson {
   place_count: number;
   join_date: number;
   last_activity: number;
@@ -13,5 +12,13 @@ export default class Person extends Account implements IAccount {
 
   constructor() {
     super();
+
+    this.place_count = undefined;
+    this.join_date = undefined;
+    this.last_activity = undefined;
+    this.gender = undefined;
+    this.dob = undefined;
+    this.searchable = undefined;
+    this.status = undefined;
   }
 }
