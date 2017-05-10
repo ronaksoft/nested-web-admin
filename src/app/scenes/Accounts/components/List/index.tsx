@@ -4,7 +4,7 @@ import Account from '/src/app/common/account/Account';
 import {IAccount} from '/src/app/common/account/IAccount';
 import IUnique from '/src/app/common/IUnique';
 import Person from '/src/app/common/user/Person';
-import allColumns from './TableColumnsConfig';
+import TableColumns from './TableColumns';
 import _ from 'lodash';
 
 interface IListProps { }
@@ -63,7 +63,7 @@ export default class List extends React.Component<IListProps, IListState> {
         <Table
               rowKey='_id'
               rowSelection={rowSelection}
-              columns={allColumns}
+              columns={TableColumns.selectedColumns}
               dataSource={this.state.users}
               size='middle'
               scroll={{x: 960}}
