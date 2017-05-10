@@ -144,6 +144,7 @@ SystemJS.config({
     'lodash': 'npm:lodash@4.17.4',
     'loglevel': 'npm:loglevel@1.4.1',
     'module': 'github:jspm/nodelibs-module@0.2.0-alpha',
+    'moment': 'npm:moment@2.18.1',
     'net': 'github:jspm/nodelibs-net@0.2.0-alpha',
     'os': 'github:jspm/nodelibs-os@0.2.0-alpha',
     'path': 'github:jspm/nodelibs-path@0.2.3',
