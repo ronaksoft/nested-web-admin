@@ -63,7 +63,7 @@ class App extends React.Component<IAppProps, IAppState> {
                   <Sider width='226'>
                     <SidebarComponent/>
                   </Sider>
-                  <Layout>
+                  <Layout className='container'>
                     <Header>
                       <HeaderComponent/>
                     </Header>
