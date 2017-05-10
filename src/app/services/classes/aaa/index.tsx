@@ -2,31 +2,36 @@ import Cookies from 'cookies-js';
 import AccountApi from './../../../api/account/account';
 
 export default class AAA {
+    private static instance : AAA;
     private hasUserCookie: boolean;
     private nss: string;
     private nsk: string;
     private account: any;
+    private isAthenticated : boolean = false;
 
-    constructor() {
-        this.hasUserCookie = this.checkUserCookie();
-        this.nss = Cookies.get('nss');
-        this.nsk = Cookies.get('nsk');
+
+    static getInstance() {
+        if (!this.instance) {
+            this.instance = new AAA();
+        }
+
+        return this.instance;
     }
 
-    getUser(): Promise<any> {
-        return new Promise((res, rej) => {
-            let accountApi = new AccountApi();
-            accountApi.sessionRecall({
-                _ss: this.nss,
-                _sk: this.nsk,
-                _did: 's',
-                _dt: 's',
-                _do: 's'
-            }).then((resp) => {
-                this.account = resp.account;
-                res(resp);
-            });
-        });
+    getCredentials() {
+      return {
+        ss : this.nss,
+        sk : this.nsk
+      };
+    }
+
+    setUser(account: any ): void {
+        this.account = account;
+        this.isAthenticated = true;
+    }
+
+    setIsUnAthenticated() : void {
+      this.isAthenticated = false;
     }
 
     hasUser(): Promise<boolean> {
@@ -37,6 +42,13 @@ export default class AAA {
                 res(false);
             }
         });
+    }
+
+
+    private constructor() {
+        this.hasUserCookie = this.checkUserCookie();
+        this.nss = Cookies.get('nss');
+        this.nsk = Cookies.get('nsk');
     }
 
     private checkUserCookie(): boolean {

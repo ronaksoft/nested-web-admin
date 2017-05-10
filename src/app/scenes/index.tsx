@@ -11,6 +11,9 @@ import SidebarComponent from '../components/Sidebar/index';
 import AAA from '../services/classes/aaa/index';
 
 import {Layout} from 'antd';
+import AccountApi from '../api/account/account';
+import IUser from '../api/account/interfaces/IUser';
+
 const {Header, Footer, Sider, Content} = Layout;
 
 interface IAppProps {
@@ -20,40 +23,55 @@ interface IAppState {
 }
 
 class App extends React.Component<IAppProps, IAppState> {
-    static propTypes = {};
+    state = {
+        isReady : false,
+    };
 
     constructor(props: any) {
         super(props);
     }
 
     componentDidMount() {
-        let aaa = new AAA();
+        let accountApi = new AccountApi();
+        let aaa = AAA.getInstance();
+        const credential = aaa.getCredentials();
 
-        aaa.getUser().then((has: boolean) => {
-            console.log(has);
-            if (!has) {
-                // browserHistory.push('/403');
-            }
+        accountApi.sessionRecall({
+            _ss : credential.ss,
+            _sk : credential.sk,
+        }).then((user: IUser) => {
+            console.log(user);
+            aaa.setUser(user);
+            this.setState({
+              isReady : true,
+            });
+        }).catch((err) => {
+            console.log(err);
+            aaa.setIsUnAthenticated();
+            browserHistory.push('/403');
         });
-
     }
 
     render() {
       const children = this.props.children;
 
         return (
-            <Layout>
-                <Sider>
-                    <SidebarComponent/>
-                </Sider>
+          <div>
+            {this.state.isReady &&
                 <Layout>
+                  <Sider>
+                    <SidebarComponent/>
+                  </Sider>
+                  <Layout>
                     <Header>
-                        <HeaderComponent/>
+                      <HeaderComponent/>
                     </Header>
                     <Content>{children}</Content>
                     <Footer>Footer</Footer>
+                  </Layout>
                 </Layout>
-            </Layout>
+              }
+          </div>
         );
     }
 }

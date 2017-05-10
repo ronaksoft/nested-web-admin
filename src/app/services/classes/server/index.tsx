@@ -4,6 +4,7 @@ import CErrors from './consts/CErrors';
 import IRequest from './interfaces/IRequest';
 import IResponse from './interfaces/IResponse';
 import ISocketRequest from './interfaces/ISocketRequest';
+import AAA from './../aaa/index';
 
 
 export default class Server {
@@ -13,7 +14,6 @@ export default class Server {
     private reqId: number = Date.now();
     private sk: string;
     private ss: string;
-
 
     static getInstance() {
         if (!Server.instance) {
@@ -26,6 +26,8 @@ export default class Server {
 
     request(req: IRequest): Promise<{}> {
 
+        let aaa = AAA.getInstance();
+        const credential = aaa.getCredentials();
         if (!req._reqid) {
             req._reqid =  this.getRequestId();
         }
@@ -33,6 +35,17 @@ export default class Server {
         let socketRequest: ISocketRequest = {
             ...req
         };
+
+
+        if (credential.sk) {
+          socketRequest._sk = credential.sk;
+        }
+
+        if (credential.ss) {
+          socketRequest._ss = credential.ss;
+        }
+
+
 
         let internalResolve,
             internalReject;
@@ -62,19 +75,11 @@ export default class Server {
         return 'REQ' + this.reqId;
     }
 
-    setSessionKey(ss: string) {
-        this.ss = ss;
-    }
-
-    setSessionSecret(sk: string) {
-        this.sk = sk;
-    }
-
     private constructor() {
         console.log('Start Server instance');
         this.socket = new socket({
             server: 'ws://cyrus.ronaksoftware.com:81/',
-            pingPongTime: 1000,
+            pingPongTime: 50000,
             onReady : this.startQueue.bind(this),
             onMessage: this.response.bind(this),
         });
@@ -106,10 +111,14 @@ export default class Server {
 
     }
 
+    private sendRequest(request: any) {
+      this.socket.send(JSON.stringify(request.request));
+    }
+
     private startQueue() {
         this.queue.map((request) => {
             if (request.state === 0) {
-                this.socket.send(JSON.stringify(request.request));
+                this.sendRequest(request);
             }
         });
     }

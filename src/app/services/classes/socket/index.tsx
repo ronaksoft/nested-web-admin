@@ -4,15 +4,15 @@ import {ISocketConfig} from './interfaces';
 
 const defaultConfig: ISocketConfig = {
   server: '',
-  pingPongTime: 10000,
+  pingPongTime: 50000,
 };
 
 export default class Socket {
 
   private config: ISocketConfig;
   private socket: any | null;
-  private pingPong: any;
-  private pingPongCounter: number;
+  private pingPong: any = null;
+  private pingPongCounter: number = 0;
   private reconnectIntervalCanceler;
 
   constructor(config: ISocketConfig = defaultConfig) {
@@ -57,7 +57,7 @@ export default class Socket {
     this.startPingPong();
     setTimeout(() => {
       this.config.onReady();
-    }, 1000);
+    }, 100);
   }
 
   private onClose() {
@@ -83,6 +83,7 @@ export default class Socket {
   }
 
   private startPingPong() {
+    console.log(this.pingPong, this.pingPongCounter);
     if (!this.pingPong && this.pingPongCounter <= 3) {
       this.pingPong = setInterval(() => {
         this.send('PING!');

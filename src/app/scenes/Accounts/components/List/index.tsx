@@ -6,6 +6,7 @@ import IUnique from '/src/app/common/IUnique';
 import Person from '/src/app/common/user/Person';
 import allColumns from './TableColumnsConfig';
 import _ from 'lodash';
+import AccountApi from '../../../../api/account/account';
 
 interface IListProps { }
 
@@ -50,6 +51,18 @@ export default class List extends React.Component<IListProps, IListState> {
 
     console.log(this.state.users);
   }
+
+  componentDidMount() {
+    setTimeout(() => {
+      let accountApi = new AccountApi();
+      accountApi.accountList()
+        .then((res) => {
+          console.log(res);
+        });
+    }, 3000);
+
+  }
+
 
   render() {
 

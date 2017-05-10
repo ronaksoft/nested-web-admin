@@ -16,9 +16,8 @@ export default class AccountApi {
         return this.api.server.request({
             cmd: 'session/recall',
             data: sessionRecallParams,
+            withoutQueue : true,
         }).then((res: ISessionRecallResponse) => {
-            this.api.server.setSessionKey(res._sk);
-            this.api.server.setSessionSecret(res._ss);
             return res;
         });
     }
@@ -30,7 +29,21 @@ export default class AccountApi {
           data: accountGetRequest,
         }).then((res: IUser) => {
           return res;
+        }).catch((err) => {
+          console.log(err);
         });
+    }
+
+
+    accountList() : Promise<any> {
+      return this.api.server.request({
+        cmd: 'admin/account_list',
+        data: {},
+      }).then((res: any) => {
+        return res;
+      }).catch((err) => {
+        console.log(err);
+      });
     }
 
     register(req: IRegisterRequest) : Promise<any> {
