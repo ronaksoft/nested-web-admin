@@ -25,8 +25,11 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                     </Col>
                     <Col span={14}>
                         <Row type='flex' justify='end'>
-                            <Col span={4}>
-                                <Button type='primary' shape='circle'  icon='search'></Button>
+                            <Col>
+                                <Button type='toolkit' shape='circle'  icon='notification'></Button>
+                                <Button type='toolkit' shape='circle'  icon='setting'></Button>
+                                <Button type='toolkit' shape='circle'  icon='lock'></Button>
+                                <Button type='toolkit' shape='circle'  icon='logout'></Button>
                             </Col>
                         </Row>
                     </Col>

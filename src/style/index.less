@@ -79,10 +79,10 @@ h1 {
   height: 40px;
 }
 .toolbar {
-  display: flex;
   white-space: nowrap;
   height: 80px;
-  width: 100%;
+  color: black;
+  font-weight: 300;
     .ant-col-6 {
         display: flex;
         flex: 1;
@@ -91,7 +91,8 @@ h1 {
         .ant-row {
           width: 100%;
         }
-        h2 {
+        h1,h2 {
+          font-weight: 300;
           font-size: 2em;
         }
         .ant-col-12 {
@@ -107,4 +108,24 @@ h1 {
         width: auto;
         align-items: center;
     }
+    .ant-dropdown-trigger .anticon-down,
+    .ant-dropdown-link .anticon-down {
+      font-size: 24px;
+      color: black
+    }
+}
+.ant-btn-toolkit {
+  color:rgba(0,0,0,.32);
+  border-color: transparent;
+  background-color: transparent;
+  margin: 0 8px;
+}
+
+.ant-dropdown-menu-item {
+  i {
+    margin-right: 8px;
+  }
+  a {
+    display: inline-block
+  }
 }
