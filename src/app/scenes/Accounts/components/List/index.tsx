@@ -7,6 +7,7 @@ import Person from '/src/app/common/user/Person';
 import _ from 'lodash';
 import AccountApi from '../../../../api/account/account';
 import moment from 'moment';
+import UserAvatar from '/src/app/components/avatar/index';
 
 
 interface IListProps { }
@@ -37,7 +38,7 @@ class List extends React.Component<IListProps, IListState> {
 
  // columns Render Handlers
 
-  nameRender = (text, user, index) => `${user.fname} ${user.lname}`;
+  nameRender = (text, user, index) => <UserAvatar avatar={true} name={true} size='24' user={user} />;
   idRender = (text, user, index) => text;
   placesRender = (text, user, index) => user.access_places ? user.access_places.length : '-';
   joinedRender = (text, user, index) => {
@@ -266,6 +267,7 @@ class List extends React.Component<IListProps, IListState> {
               columns={columns}
               dataSource={this.state.users}
               size='middle'
+              className='nst-table'
               scroll={{x: 960}}
         />
       </Card>

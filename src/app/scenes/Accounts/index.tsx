@@ -30,7 +30,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     return (
 
       <div>
-        <Row className='toolbar'>
+        <Row className='toolbar' type='flex' align='center'>
           <Col span={6}>
             <Filter count={10} group={this.state.filterGroup} setGroup={this.setGroup}/>
           </Col>
