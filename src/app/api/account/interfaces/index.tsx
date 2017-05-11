@@ -1,2 +1,2 @@
 export * from './IUser';
-export * from './IPicture';
+export * from '../../interfaces/IPicture';

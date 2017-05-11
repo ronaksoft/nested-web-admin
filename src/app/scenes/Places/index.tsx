@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 
 import Filter from './../../components/Filter/index';
 import {Row, Col} from 'antd';
+import PlaceList from './List/index';
 
 export interface IAccountsProps {}
 
@@ -65,7 +66,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
               </Row>
               <Row>
                     <Col span={24}>
-                      Table
+                      <PlaceList/>
                     </Col>
               </Row>
           </div>

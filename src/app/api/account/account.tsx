@@ -35,14 +35,14 @@ export default class AccountApi {
     }
 
 
-    accountList() : Promise {
-      return new Promise((resolve: Handler, reject: Handler) => {
-        this.api.server.request({
-          cmd: 'admin/account_list',
-          data: {},
-        })
-        .then((response: any) => resolve(response.accounts))
-        .catch((error: any) => reject(error));
+    accountList() : Promise<any> {
+      return this.api.server.request({
+        cmd: 'admin/account_list',
+        data: {},
+      }).then((res: any) => {
+        return res;
+      }).catch((err) => {
+        console.log(err);
       });
     }
 
