@@ -57,6 +57,7 @@ export default class List extends React.Component<IListProps, IListState> {
               columns={this.tableColumns.selectedColumns}
               dataSource={this.state.users}
               size='middle'
+              className='nst-table'
               scroll={{x: 960}}
         />
       </Card>
