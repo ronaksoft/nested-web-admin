@@ -25,8 +25,8 @@ class List extends React.Component<IListProps, IListState> {
     'phone': 'Phone',
     'gender': 'Gender',
     'dob': 'Date of Birth',
-    'privacy.searchable': 'Searchable',
-    'registered': 'Status'
+    'searchable': 'Searchable',
+    'disabled': 'Status'
   };
 
   const genders = {
@@ -51,6 +51,22 @@ class List extends React.Component<IListProps, IListState> {
   phoneRender = (text, user, index) => text;
   genderRender = (text, user, index) => {
     return this.genders[user.gender] || '-';
+  }
+  disabledRender = (text, user, index) => user.disabled ? 'Disabled' : 'Enabled';
+  dobRender = (text, user, index) => {
+    const value = moment(user.joined_on, 'YYYY-MM-DD');
+    if (value.isValid()) {
+      return value.format('YYYY[/]MM[/]DD');
+    } else {
+      return '-';
+    }
+  }
+  searchableRender = (text, user, index) => {
+    if (user.privacy && _.has(user.privacy, 'searchable')) {
+      return user.privacy.searchable ? 'Yes' : 'No';
+    }
+
+    return '-';
   }
   optionsRender = () => {
     const optionsMenu = (
@@ -84,10 +100,15 @@ class List extends React.Component<IListProps, IListState> {
     );
   }
 
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
+  }
+
  onColumnCheckChange = (item) => {
    item.checked = !item.checked;
+   const dataColumns = _.clone(this.state.dataColumns);
    this.setState({
-     dataColumns: this.replaceByKey(this.state.dataColumns, item)
+     dataColumns
    });
    if (item.checked) {
      this.insertColumn(item.key);
@@ -97,23 +118,16 @@ class List extends React.Component<IListProps, IListState> {
  }
 
  insertColumn = (key) => {
-   var column = _.find(this.allColumns, { key: key });
-   if (!column) {
-     return;
+   if (_.some(this.allColumns, { key: key })) {
+     this.setState({
+       columns: [...this.state.columns, key]
+     });
    }
-   console.log(`${this.state.columns.length - 2} > ${column.index}`);
-   var index = (_.lastIndexOf(this.state.columns) - 1) > column.index
-     ? column.index
-     : _.lastIndexOf(this.state.columns);
-   this.state.columns.splice(index, 0, column);
-   this.setState({
-     columns: this.state.columns
-   });
  }
 
  removeColumn = (key) => {
    this.setState({
-     columns: _.reject(this.state.columns, { key: key })
+     columns: _.without(this.state.columns, key)
    });
  }
 
@@ -124,8 +138,6 @@ class List extends React.Component<IListProps, IListState> {
         title: this.dataColumns.name,
         dataIndex: 'name',
         key: 'name',
-        width: 192,
-        fixed: 'left',
         render: this.nameRender,
         index: 0,
       },
@@ -133,8 +145,6 @@ class List extends React.Component<IListProps, IListState> {
         title: this.dataColumns._id,
         dataIndex: '_id',
         key: '_id',
-        width: 128,
-        fixed: 'left',
         render: this.idRender,
         index: 1,
       },
@@ -142,15 +152,13 @@ class List extends React.Component<IListProps, IListState> {
         title: this.dataColumns.access_places,
         dataIndex: 'access_places',
         key: 'access_places',
-        width: 192,
-        render: this.placesRenderHandler,
+        render: this.placesRender,
         index: 2,
       },
       {
         title: this.dataColumns.joined_on,
         dataIndex: 'joined_on',
         key: 'joined_on',
-        width: 128,
         render: this.joinedRender,
         index: 3,
       },
@@ -158,7 +166,6 @@ class List extends React.Component<IListProps, IListState> {
         title: this.dataColumns.phone,
         dataIndex: 'phone',
         key: 'phone',
-        width: 128,
         render: this.phoneRender,
         index: 4,
       },
@@ -166,66 +173,85 @@ class List extends React.Component<IListProps, IListState> {
         title: this.dataColumns.gender,
         dataIndex: 'gender',
         key: 'gender',
-        width: 72,
         render: this.genderRender,
         index: 5,
-      }
+      },
+      {
+        title: this.dataColumns.dob,
+        dataIndex: 'dob',
+        key: 'dob',
+        render: this.dobRender,
+        index: 6,
+      },
+      {
+        title: this.dataColumns.disabled,
+        dataIndex: 'disabled',
+        key: 'disabled',
+        render: this.disabledRender,
+        index: 7,
+      },
+      {
+        title: this.dataColumns.searchable,
+        dataIndex: 'searchable',
+        key: 'searchable',
+        render: this.searchableRender,
+        index: 7,
+      },
     ];
 
     this.state = {
       users: [],
-      columns: _.take(this.allColumns, 5),
-      dataColumns: []
+      columns: _(this.allColumns).take(5).map('key').value(),
+      dataColumns: [],
+      selectedRowKeys: []
     };
 
     this.state.dataColumns = _.map(this.dataColumns, (value, key) => {
       return {
         key: key,
         title: value,
-        checked: _.some(this.state.columns, { key : key })
+        checked: _.includes(this.state.columns, key)
       };
     });
-
-    this.optionsPopover = (
-      <ul>
-       {
-         _.map(this.state.dataColumns, (item) =>
-           <li key={item.key}>
-             <Checkbox onChange={() => this.onColumnCheckChange(item)} checked={item.checked}>{item.title}</Checkbox>
-           </li>
-        )
-       }
-      </ul>
-    );
-
-    this.optionsTitle = (
-      <Popover content={this.optionsPopover} placement='bottom'>
-        <Icon type='setting' />
-      </Popover>
-   );
-
-   this.state.columns.push({
-     title: this.optionsTitle,
-     dataIndex: 'options',
-     key: 'options',
-     fixed: 'right',
-     width: 64,
-     render: this.optionsRender
-   });
 
   }
 
   componentDidMount() {
     let accountApi = new AccountApi();
     accountApi.accountList().then((accounts: IUser[]) => {
+      console.log(accounts);
       this.setState({
         users: accounts
       });
     });
   }
 
-
   render() {
+
+    const optionsPopover = (
+      <ul>
+       {
+         _(this.state.dataColumns).orderBy(['index']).map((item) =>
+           <li key={item.key}>
+             <Checkbox onChange={() => this.onColumnCheckChange(item)} checked={item.checked}>{item.title}</Checkbox>
+           </li>
+        ).value()
+       }
+      </ul>
+    );
+
+    const optionsTitle = (
+      <Popover content={optionsPopover} placement='bottom'>
+        <Icon type='setting' />
+      </Popover>
+   );
+
+   const columns = _(this.allColumns).filter((column) => _.includes(this.state.columns, column.key)).orderBy(['index']).concat([{
+     title: optionsTitle,
+     dataIndex: 'options',
+     key: 'options',
+     render: this.optionsRender
+   }]).value();
 
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -237,7 +263,7 @@ class List extends React.Component<IListProps, IListState> {
         <Table
               rowKey='_id'
               rowSelection={rowSelection}
-              columns={this.state.columns}
+              columns={columns}
               dataSource={this.state.users}
               size='middle'
               scroll={{x: 960}}
