@@ -1,5 +1,8 @@
 import * as React from 'react';
 import IUser from './../../api/account/interfaces/IUser';
+import CONFIG from '/src/app.config';
+import AAA from '/src/app/services/classes/aaa/index';
+
 
 export interface IAvatarProps {
     borderRadius : string;
@@ -45,11 +48,11 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
       imageStyle.height = size;
     }
 
-    let inner, imgDOM, nameDOM, idDOM, classes = [className, 'UserAvatar'];
+    let imgDOM, nameDOM, idDOM, classes = [className, 'UserAvatar'];
 
     if (avatar) {
       if (user.picture) {
-        imgDOM = <img className='UserAvatar--img' style={imageStyle} src={user.picture}  alt={user.name} />;
+        imgDOM = <img className='UserAvatar--img' style={imageStyle} src={`${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${user.picture.x32}`}  alt={user.name} />;
       } else {
         // iTODO Initails
       }
@@ -63,7 +66,6 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
       idDOM = <span>{user._id}</span>;
     }
 
-    inner = imgDOM + nameDOM + idDOM;
 
 
 
@@ -71,7 +73,9 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     return (
       <div aria-label={name} className={classes.join(' ')} style={style}>
         <div className='UserAvatar--inner' style={innerStyle}>
-          {inner}
+          {avatar && imgDOM}
+          {name && nameDOM}
+          {id && idDOM}
         </div>
       </div>
     );
