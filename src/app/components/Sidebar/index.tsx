@@ -21,7 +21,7 @@ export default class Sidebar extends React.Component<IHeaderProps, IHeaderState>
     return (
       <div
         className='main-menu'>
-        <div className='logo'></div>
+        <Link to='/dashboard' activeClassName='active'><div className='logo'></div></Link>
         <Menu
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}

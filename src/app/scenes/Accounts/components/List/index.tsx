@@ -1,12 +1,14 @@
 import * as React from 'react';
-import {Icon, Table, Dropdown, Card} from 'antd';
+import {Icon, Table, Dropdown, Card, Menu, Checkbox, Popover, Button} from 'antd';
 import Account from '/src/app/common/account/Account';
 import {IAccount} from '/src/app/common/account/IAccount';
 import IUnique from '/src/app/common/IUnique';
 import Person from '/src/app/common/user/Person';
-import TableColumns from './components/Columns/index';
 import _ from 'lodash';
 import AccountApi from '../../../../api/account/account';
+import moment from 'moment';
+import UserAvatar from '/src/app/components/avatar/index';
+
 
 interface IListProps { }
 
@@ -14,35 +16,243 @@ interface IListState {
   users: Person[];
 }
 
-export default class List extends React.Component<IListProps, IListState> {
+class List extends React.Component<IListProps, IListState> {
+
+  const dataColumns = {
+    'name': 'Name',
+    '_id': 'User ID',
+    'access_places': 'Member in Place',
+    'joined_on': 'Joined Date',
+    'phone': 'Phone',
+    'gender': 'Gender',
+    'dob': 'Date of Birth',
+    'searchable': 'Searchable',
+    'disabled': 'Status'
+  };
+
+  const genders = {
+    'o': 'Other',
+    'f': 'Female',
+    'm': 'Male'
+  };
+
+ // columns Render Handlers
+
+  nameRender = (text, user, index) => <UserAvatar avatar={true} name={true} size='24' user={user} />;
+  idRender = (text, user, index) => text;
+  placesRender = (text, user, index) => user.access_places ? user.access_places.length : '-';
+  joinedRender = (text, user, index) => {
+    const value = moment(user.joined_on, 'YYYY-MM-DD');
+    if (value.isValid()) {
+      return value.format('YYYY[/]MM[/]DD HH:mm A');
+    } else {
+      return '-';
+    }
+  }
+  phoneRender = (text, user, index) => text;
+  genderRender = (text, user, index) => {
+    return this.genders[user.gender] || '-';
+  }
+  disabledRender = (text, user, index) => user.disabled ? 'Disabled' : 'Enabled';
+  dobRender = (text, user, index) => {
+    const value = moment(user.joined_on, 'YYYY-MM-DD');
+    if (value.isValid()) {
+      return value.format('YYYY[/]MM[/]DD');
+    } else {
+      return '-';
+    }
+  }
+  searchableRender = (text, user, index) => {
+    if (user.privacy && _.has(user.privacy, 'searchable')) {
+      return user.privacy.searchable ? 'Yes' : 'No';
+    }
+
+    return '-';
+  }
+  optionsRender = () => {
+    const optionsMenu = (
+      <Menu>
+        <Menu.Item key='0'>
+          <Icon type='check' /> Enable
+        </Menu.Item>
+        <Menu.Item key='1'>
+          <Icon type='close' /> Disable
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key='2'>
+          <Icon type='arrow-up' /> Promote
+        </Menu.Item>
+        <Menu.Item key='3'>
+          <Icon type='arrow-down' /> Demote
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key='4'>
+          <Icon type='lock' />Set Password
+        </Menu.Item>
+      </Menu>
+    );
+
+    return (
+      <Dropdown overlay={optionsMenu} trigger={['click']}>
+        <a className='ant-dropdown-link' href='#'>
+          <Icon type='ellipsis' />
+        </a>
+      </Dropdown>
+    );
+  }
 
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   }
 
+ onColumnCheckChange = (item) => {
+   item.checked = !item.checked;
+   const dataColumns = _.clone(this.state.dataColumns);
+   this.setState({
+     dataColumns
+   });
+   if (item.checked) {
+     this.insertColumn(item.key);
+   } else {
+     this.removeColumn(item.key);
+   }
+ }
+
+ insertColumn = (key) => {
+   if (_.some(this.allColumns, { key: key })) {
+     this.setState({
+       columns: [...this.state.columns, key]
+     });
+   }
+ }
+
+ removeColumn = (key) => {
+   this.setState({
+     columns: _.without(this.state.columns, key)
+   });
+ }
+
   constructor(props: IListProps) {
+
+    this.allColumns = [
+      {
+        title: this.dataColumns.name,
+        dataIndex: 'name',
+        key: 'name',
+        render: this.nameRender,
+        index: 0,
+      },
+      {
+        title: this.dataColumns._id,
+        dataIndex: '_id',
+        key: '_id',
+        render: this.idRender,
+        index: 1,
+      },
+      {
+        title: this.dataColumns.access_places,
+        dataIndex: 'access_places',
+        key: 'access_places',
+        render: this.placesRender,
+        index: 2,
+      },
+      {
+        title: this.dataColumns.joined_on,
+        dataIndex: 'joined_on',
+        key: 'joined_on',
+        render: this.joinedRender,
+        index: 3,
+      },
+      {
+        title: this.dataColumns.phone,
+        dataIndex: 'phone',
+        key: 'phone',
+        render: this.phoneRender,
+        index: 4,
+      },
+      {
+        title: this.dataColumns.gender,
+        dataIndex: 'gender',
+        key: 'gender',
+        render: this.genderRender,
+        index: 5,
+      },
+      {
+        title: this.dataColumns.dob,
+        dataIndex: 'dob',
+        key: 'dob',
+        render: this.dobRender,
+        index: 6,
+      },
+      {
+        title: this.dataColumns.disabled,
+        dataIndex: 'disabled',
+        key: 'disabled',
+        render: this.disabledRender,
+        index: 7,
+      },
+      {
+        title: this.dataColumns.searchable,
+        dataIndex: 'searchable',
+        key: 'searchable',
+        render: this.searchableRender,
+        index: 7,
+      },
+    ];
 
     this.state = {
       users: [],
+      columns: _(this.allColumns).take(5).map('key').value(),
+      dataColumns: [],
       selectedRowKeys: []
     };
 
-    this.tableColumns = new TableColumns();
+    this.state.dataColumns = _.map(this.dataColumns, (value, key) => {
+      return {
+        key: key,
+        title: value,
+        checked: _.includes(this.state.columns, key)
+      };
+    });
+
   }
 
   componentDidMount() {
     let accountApi = new AccountApi();
-    accountApi.accountList()
-      .then((accounts: IUser[]) => {
-        console.log(accounts);
-        this.setState({
-          users: accounts
-        });
+    accountApi.accountList().then((accounts: IUser[]) => {
+      console.log(accounts);
+      this.setState({
+        users: accounts
       });
+    });
   }
 
-
   render() {
+
+    const optionsPopover = (
+      <ul>
+       {
+         _(this.state.dataColumns).orderBy(['index']).map((item) =>
+           <li key={item.key}>
+             <Checkbox onChange={() => this.onColumnCheckChange(item)} checked={item.checked}>{item.title}</Checkbox>
+           </li>
+        ).value()
+       }
+      </ul>
+    );
+
+    const optionsTitle = (
+      <Popover content={optionsPopover} placement='bottom'>
+        <Icon type='setting' />
+      </Popover>
+   );
+
+   const columns = _(this.allColumns).filter((column) => _.includes(this.state.columns, column.key)).orderBy(['index']).concat([{
+     title: optionsTitle,
+     dataIndex: 'options',
+     key: 'options',
+     render: this.optionsRender
+   }]).value();
 
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -54,15 +264,25 @@ export default class List extends React.Component<IListProps, IListState> {
         <Table
               rowKey='_id'
               rowSelection={rowSelection}
-              columns={this.tableColumns.selectedColumns}
+              columns={columns}
               dataSource={this.state.users}
               size='middle'
+              className='nst-table'
               scroll={{x: 960}}
         />
       </Card>
     );
   }
 
+  private replaceByKey(items: any, item: any) {
+    const index = _.findIndex(items, { 'key' : item.key });
+
+    if (index > -1) {
+      items.splice(index, 1, item);
+    }
+
+    return items;
+  }
 }
 
 export default List;

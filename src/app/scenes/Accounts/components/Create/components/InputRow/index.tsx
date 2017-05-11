@@ -101,7 +101,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
               <Col span={24} className='acc-btn'>
                 {
                   this.state.packet.state === PacketState.New &&
-                  <Button shape='circle' icon='delete' size='large' onClick={() => this.props.onRemove(this.state.packet)}/>
+                  <Button shape='circle' type='delete-row' icon='delete' size='large' onClick={() => this.props.onRemove(this.state.packet)}/>
                 }
                 {
                   this.state.packet.state === PacketState.Pending &&
