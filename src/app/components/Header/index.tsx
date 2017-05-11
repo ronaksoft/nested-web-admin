@@ -31,7 +31,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                                 <Button type='toolkit' shape='circle' icon='notification'></Button>
                                 <Button type='toolkit' shape='circle' icon='setting'></Button>
                                 <Button type='toolkit' shape='circle' icon='lock'></Button>
-                                <Button type='toolkit' shape='circle' icon='logout'></Button>
+                                <Button type='toolkit' shape='circle' icon='member'></Button>
                                 <UserAvatar size='24' user='' />
                             </Col>
                         </Row>

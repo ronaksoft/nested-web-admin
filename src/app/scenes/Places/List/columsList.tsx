@@ -20,17 +20,17 @@ export const columnsList: Array<IPlaceListColumn> = [
         renderer: 'users',
     },
     {
-        key: 'members',
+        key: 'counters.counters',
         index: 3,
         title: 'Members',
-        renderer: 'counter',
+        renderer: 'memberCounter',
         icon: 'member'
     },
     {
         key: 'sub-places',
         index: 4,
         title: 'Sub-places',
-        renderer: 'counter',
+        renderer: 'subPlaceCounter',
     },
     {
         key: 'type',

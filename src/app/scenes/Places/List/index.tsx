@@ -33,18 +33,22 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     renderPlaceCell(text: string, record: IPlace, index: any) {
-        console.log(text, record, index);
         return text;
     }
 
     renderUsersCell(text: string, record: IPlace, index: any) {
-        console.log(text, record, index);
         return text;
     }
 
-    renderCounterCell(text: string, record: IPlace, index: any) {
+    renderMemberCounterCell(text: string, record: IPlace, index: any) {
         console.log(text, record, index);
-        return text;
+        const count = record.counters.creators + record.counters.key_holders;
+        return (<div><Icon type='user' title={'Members'}/>{count}</div>);
+    }
+
+    renderSubPlaceCounterCell(text: string, record: IPlace, index: any) {
+        const count = record.counters.childs;
+        return (<div>{count}</div>);
     }
 
     renderPlaceTypeCell(text: string, record: IPlace, index: any) {
@@ -65,8 +69,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 case 'users' :
                     renderer = this.renderUsersCell;
                     break;
-                case 'counter' :
-                    renderer = this.renderCounterCell;
+                case 'memberCounter' :
+                    renderer = this.renderMemberCounterCell;
+                    break;
+                case 'subPlaceCounter' :
+                    renderer = this.renderSubPlaceCounterCell;
                     break;
                 case 'placeType' :
                     renderer = this.renderPlaceTypeCell;
