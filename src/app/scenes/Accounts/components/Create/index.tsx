@@ -88,6 +88,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
           footer={[
             <Button type='primary' size='large' onClick={this.create}>Create Accounts ({this.state.accounts.length})</Button>
           ]}
+          className='create-accounts'
           onCancel={this.handleClose}
         >
           <div>
@@ -103,7 +104,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             </Row>
             {rows}
             <Card>
-              <Row>
+              <Row type='flex' align='middle'>
                 <Col span={12}>
                   <a onClick={this.add}>
                     <Icon type='plus' /> Add another

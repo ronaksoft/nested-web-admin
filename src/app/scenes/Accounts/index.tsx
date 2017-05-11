@@ -30,11 +30,11 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     return (
 
       <div>
-        <Row>
-          <Col span={12}>
+        <Row className='toolbar'>
+          <Col span={6}>
             <Filter count={10} group={this.state.filterGroup} setGroup={this.setGroup}/>
           </Col>
-          <Col span={12}>
+          <Col span={18}>
             <Options />
           </Col>
         </Row>
