@@ -1,7 +1,7 @@
 @import "./variables.less";
 
 a {
-  color: #00B45A;
+  color: @primary-color-rev;
 }
 
 .main-panel{
@@ -77,4 +77,34 @@ h1 {
 
 .header input {
   height: 40px;
+}
+.toolbar {
+  display: flex;
+  white-space: nowrap;
+  height: 80px;
+  width: 100%;
+    .ant-col-6 {
+        display: flex;
+        flex: 1;
+        width: auto;
+        align-items: center;
+        .ant-row {
+          width: 100%;
+        }
+        h2 {
+          font-size: 2em;
+        }
+        .ant-col-12 {
+          display: flex;
+          width: auto;
+          flex: none;
+          margin: 0 8px;
+        }
+    }
+    .ant-col-18 {
+        display: flex;
+        flex: none;
+        width: auto;
+        align-items: center;
+    }
 }
