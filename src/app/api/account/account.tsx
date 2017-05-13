@@ -3,6 +3,10 @@ import ISessionRecallRequest from './interfaces/ISessionRecallRequest';
 import ISessionRecallResponse from './interfaces/ISessionRecallResponse';
 import IAccountGetRequest from './interfaces/IAccountGetRequest';
 import IRegisterRequest from './interfaces/IRegisterRequest';
+import IPromoteRequest from './interfaces/IPromoteRequest';
+import IDemoteRequest from './interfaces/IDemoteRequest';
+import IEnableRequest from './interfaces/IEnableRequest';
+import IDisableRequest from './interfaces/IDisableRequest';
 import IUser from './interfaces/IUser';
 
 export default class AccountApi {
@@ -49,6 +53,42 @@ export default class AccountApi {
     register(req: IRegisterRequest) : Promise<any> {
         return this.api.server.request({
           cmd: 'admin/account_register',
+          data: req,
+        }).then((res: IUser) => {
+          return res;
+        });
+    }
+
+    promote(req: IPromoteRequest) : Promise<any> {
+        return this.api.server.request({
+          cmd: 'admin/promote',
+          data: req,
+        }).then((res: IUser) => {
+          return res;
+        });
+    }
+
+    demote(req: IDemoteRequest) : Promise<any> {
+        return this.api.server.request({
+          cmd: 'admin/demote',
+          data: req,
+        }).then((res: IUser) => {
+          return res;
+        });
+    }
+
+    disable(req: IDisableRequest) : Promise<any> {
+        return this.api.server.request({
+          cmd: 'admin/account_disable',
+          data: req,
+        }).then((res: IUser) => {
+          return res;
+        });
+    }
+
+    enable(req: IEnableRequest) : Promise<any> {
+        return this.api.server.request({
+          cmd: 'admin/account_enable',
           data: req,
         }).then((res: IUser) => {
           return res;
