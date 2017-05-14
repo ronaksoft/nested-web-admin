@@ -39,7 +39,7 @@ export default class AccountApi {
     }
 
 
-    get(params: IGetListRequest) : Promise<any> {
+    getAll(params: IGetListRequest) : Promise<any> {
       return this.api.server.request({
         cmd: 'admin/account_list',
         data: params,

@@ -273,7 +273,11 @@ class List extends React.Component<IListProps, IListState> {
       dataColumns: [],
       selectedRowKeys: [],
       currentPage: 1,
-      loading: false
+      loading: false,
+      counters: {
+        enabled_accounts: 0,
+        disabled_accounts: 0
+      }
     };
 
     this.state.dataColumns = _.map(this.dataColumns, (value, key) => {
@@ -333,7 +337,11 @@ class List extends React.Component<IListProps, IListState> {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange
     };
-    const total = this.state.counters.accounts_enabled + this.state.counters.accounts_disabled;
+
+    let total = 0;
+    if (this.state.counters) {
+      total = this.state.counters.enabled_accounts + this.state.counters.disabled_accounts;
+    }
     return (
       <Card>
         <Table
@@ -354,7 +362,7 @@ class List extends React.Component<IListProps, IListState> {
   private load(page: Number, size: Number = 10) {
     const skip = (page - 1) * size;
     return Promise.all([
-      this.accountApi.get({
+      this.accountApi.getAll({
         skip: skip,
         limit: size
       }),
@@ -362,7 +370,7 @@ class List extends React.Component<IListProps, IListState> {
     ).then((resultSet) => {
       this.setState({
         accounts: resultSet[0].accounts,
-        counters: resultSet[1].counters,
+        counters: resultSet[1],
         loading: false
       });
     }).catch((error) => {
