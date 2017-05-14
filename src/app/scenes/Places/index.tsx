@@ -5,72 +5,100 @@ import {connect} from 'react-redux';
 import Filter from './../../components/Filter/index';
 import {Row, Col} from 'antd';
 import PlaceList from './List/index';
+import SystemApi from '../../api/system/index';
+import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
+import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 
-export interface IAccountsProps {}
+
+export interface IAccountsProps {
+}
 
 export interface IAccountsState {
-  count: Number;
+  counters: IGetSystemCountersResponse;
+  loadCounters: boolean;
+  selectedFilter: string;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
   constructor(props: IAccountsProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectedFilter: CPlaceFilterTypes.GRAND_PLACES,
+      counters: {},
+      loadCounters: false,
+    };
   }
 
-  changeFilter (key: string) {
-    alert(key);
+  componentDidMount() {
+    let systemApi = new SystemApi();
+    systemApi.getSystemCounters()
+      .then((data: IGetSystemCountersResponse) => {
+        this.setState({
+          counters: data,
+          loadCounters: true
+        });
+      });
+  }
+
+  changeFilter(key: string) {
+    this.setState({
+      selectedFilter: key,
+    });
   }
 
   render() {
 
-      const filterItems = [
-          {
-              key : 'total',
-              name : 'Total',
-              count : 9765,
-              disableChart : true,
-          },
-          {
-              key : 'grand_places',
-              name : 'Grand Places (with personal)',
-              count : 24,
-              chartColor: '#00B45A',
-              bgChartColor : '#CBEFDD',
-          },
-          {
-              key : 'grand_places_only',
-              name : 'Grand Places Only',
-              count : 68,
-              chartColor: '#3296FF',
-              bgChartColor : '#D9EBFF',
-          },
-          {
-              key : 'personal_places',
-              name : 'Personal Places (with Sub-places)',
-              count : 85,
-              chartColor: '#FF6464',
-              bgChartColor : '#FFDFDF',
-          }
-      ];
+    const filterItems = [
+      {
+        key: CPlaceFilterTypes.ALL,
+        name: 'Total',
+        count: this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places,
+        disableChart: true,
+      },
+      {
+        key: CPlaceFilterTypes.GRAND_PLACES,
+        name: 'Grand Places',
+        count: this.state.counters.grand_places,
+        chartColor: '#00B45A',
+        bgChartColor: '#CBEFDD',
+      },
+      {
+        key: CPlaceFilterTypes.UNLOCKED_PLACES,
+        name: 'Unlocked Places',
+        count: this.state.counters.unlocked_places,
+        chartColor: '#3296FF',
+        bgChartColor: '#D9EBFF',
+      },
+      {
+        key: CPlaceFilterTypes.LOCKED_PLACES,
+        name: 'Locked Places',
+        count: this.state.counters.locked_places,
+        chartColor: '#FF6464',
+        bgChartColor: '#FFDFDF',
+      }
+    ];
 
-      return (
-          <div>
-              <Row>
-                  <Col span={12}>
-                      <Filter totalCount={100} menus={filterItems} onChange={this.changeFilter.bind(this)}/>
-                  </Col>
-                  <Col span={12}>
+    return (
+      <div>
+        <Row>
+          <Col span={12}>
+            {this.state.loadCounters &&
+            <Filter totalCount={filterItems[0].count} menus={filterItems} onChange={this.changeFilter.bind(this)}/>
+            }
+          </Col>
+          <Col span={12}>
 
-                  </Col>
-              </Row>
-              <Row>
-                    <Col span={24}>
-                      <PlaceList/>
-                    </Col>
-              </Row>
-          </div>
-      );
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            {this.state.loadCounters &&
+            <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter}/>
+            }
+          </Col>
+        </Row>
+      </div>
+    );
   }
 }
 
@@ -83,6 +111,6 @@ function mapDispatchToProps(dispatch: IDispatch) {
 }
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Accounts);
