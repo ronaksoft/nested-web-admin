@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Icon, Table, Dropdown, Card, Menu, Checkbox, Popover, Button} from 'antd';
+import {Icon, Table, Dropdown, Card, Menu, Checkbox, Popover, Button, notification} from 'antd';
 import Account from '/src/app/common/account/Account';
 import {IAccount} from '/src/app/common/account/IAccount';
 import IUnique from '/src/app/common/IUnique';
@@ -8,6 +8,10 @@ import _ from 'lodash';
 import AccountApi from '../../../../api/account/account';
 import moment from 'moment';
 import UserAvatar from '/src/app/components/avatar/index';
+import IEnableRequest from '/src/app/api/account/interfaces/IEnableRequest';
+import IDisableRequest from '/src/app/api/account/interfaces/IDisableRequest';
+import IPromoteRequest from '/src/app/api/account/interfaces/IPromoteRequest';
+import IDemoteRequest from '/src/app/api/account/interfaces/IDemoteRequest';
 
 
 interface IListProps { }
@@ -69,23 +73,86 @@ class List extends React.Component<IListProps, IListState> {
 
     return '-';
   }
-  optionsRender = () => {
+  enable = (user) => {
+    this.accountApi.enable({ account_id: user._id }).then((result) => {
+      user.disabled = false;
+      notification.success({
+        message: 'Enabled',
+        description: `"${user._id}" is enabled now.`,
+      });
+      this.setState({
+        users: _.clone(this.state.users)
+      });
+    });
+  }
+  disable = (user) => {
+    this.accountApi.disable({ account_id: user._id }).then((result) => {
+      user.disabled = true;
+      notification.warning({
+        message: 'Disabled',
+        description: `"${user._id}" is disabled now.`,
+      });
+      this.setState({
+        users: _.clone(this.state.users)
+      });
+    });
+  }
+  promote = (user) => {
+    this.accountApi.promote({ account_id: user._id }).then((result) => {
+      user.admin = true;
+      notification.success({
+        message: 'Promoted',
+        description: `"${user._id}" can access Nested Administrator.`,
+      });
+      this.setState({
+        users: _.clone(this.state.users)
+      });
+    });
+  }
+  demote = (user) => {
+    this.accountApi.demote({ account_id: user._id }).then((result) => {
+      user.admin = false;
+      notification.warning({
+        message: 'Demoted',
+        description: `"${user._id}" is no longer able to access Nested Administrator.`,
+      });
+      this.setState({
+        users: _.clone(this.state.users)
+      });
+    });
+  }
+  optionsRender = (text, user, index) => {
     const optionsMenu = (
       <Menu>
-        <Menu.Item key='0'>
-          <Icon type='check' /> Enable
-        </Menu.Item>
-        <Menu.Item key='1'>
-          <Icon type='close' /> Disable
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key='2'>
-          <Icon type='arrow-up' /> Promote
-        </Menu.Item>
-        <Menu.Item key='3'>
-          <Icon type='arrow-down' /> Demote
-        </Menu.Item>
-        <Menu.Divider />
+        {
+          user.disabled &&
+          <Menu.Item key='0'>
+            <Icon type='check' />
+            <a href='#' onClick={() => this.enable(user)}>Enable</a>
+          </Menu.Item>
+        }
+        {
+          !user.disabled &&
+          <Menu.Item key='1'>
+            <Icon type='close' />
+            <a href='#' onClick={() => this.disable(user)}>Disable</a>
+          </Menu.Item>
+        }
+        {
+          !user.admin &&
+          <Menu.Item key='2'>
+            <Icon type='arrow-up' />
+            <a href='#' onClick={() => this.promote(user)}>Promote</a>
+          </Menu.Item>
+
+        }
+        {
+          user.admin &&
+          <Menu.Item key='3'>
+            <Icon type='arrow-down' />
+            <a href='#' onClick={() => this.demote(user)}>Demote</a>
+          </Menu.Item>
+        }
         <Menu.Item key='4'>
           <Icon type='lock' />Set Password
         </Menu.Item>
@@ -218,11 +285,11 @@ class List extends React.Component<IListProps, IListState> {
   }
 
   componentDidMount() {
-    let accountApi = new AccountApi();
-    accountApi.accountList().then((accounts: IUser[]) => {
-      console.log(accounts);
+    this.accountApi = new AccountApi();
+    this.accountApi.accountList().then((result: IUser[]) => {
+      console.log(result);
       this.setState({
-        users: accounts
+        users: result.accounts
       });
     });
   }
