@@ -39,8 +39,16 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
 
     const innerStyle = {
       lineHeight: size,
+      display: 'flex',
       textAlign: 'center',
       borderRadius
+    };
+    const textStyle = {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      maxWidth: '135px',
+      paddingLeft: '8px'
     };
 
     if (size) {
@@ -57,13 +65,14 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
         // iTODO Initails
       }
     }
+    console.log(user);
 
     if ( name ) {
-      nameDOM = <span>{user.name}</span>;
+      nameDOM = <span style={textStyle}>{`${user.fname}${user.lname}`}</span>;
     }
 
     if ( id ) {
-      idDOM = <span>{user._id}</span>;
+      idDOM = <span>{`${user._id}`}</span>;
     }
 
 
