@@ -39,11 +39,12 @@ export default class AccountApi {
     }
 
 
-    accountList() : Promise<any> {
+    get(params: IGetListRequest) : Promise<any> {
       return this.api.server.request({
         cmd: 'admin/account_list',
-        data: {},
+        data: params,
       }).then((res: any) => {
+          console.log('result of list', res);
         return res;
       }).catch((err) => {
         console.log(err);
@@ -90,6 +91,18 @@ export default class AccountApi {
           data: req,
         }).then((res: IUser) => {
           return res;
+        });
+    }
+
+    getCounters(): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/get_system_counters',
+            data: {}
+        }).then((response) => {
+            console.log('result of counters:', response);
+            return response;
+        }).catch((error) => {
+            return error;
         });
     }
 }

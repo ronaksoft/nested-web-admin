@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Icon, Table, Dropdown, Card, Menu, Checkbox, Popover, Button, notification} from 'antd';
+import {Icon, Table, Dropdown, Card, Menu, Checkbox, Popover, Button, notification, Pagination} from 'antd';
 import Account from '/src/app/common/account/Account';
 import {IAccount} from '/src/app/common/account/IAccount';
 import IUnique from '/src/app/common/IUnique';
@@ -81,7 +81,7 @@ class List extends React.Component<IListProps, IListState> {
         description: `"${user._id}" is enabled now.`,
       });
       this.setState({
-        users: _.clone(this.state.users)
+        users: _.clone(this.state.accounts)
       });
     });
   }
@@ -93,7 +93,7 @@ class List extends React.Component<IListProps, IListState> {
         description: `"${user._id}" is disabled now.`,
       });
       this.setState({
-        users: _.clone(this.state.users)
+        users: _.clone(this.state.accounts)
       });
     });
   }
@@ -105,7 +105,7 @@ class List extends React.Component<IListProps, IListState> {
         description: `"${user._id}" can access Nested Administrator.`,
       });
       this.setState({
-        users: _.clone(this.state.users)
+        users: _.clone(this.state.accounts)
       });
     });
   }
@@ -117,7 +117,7 @@ class List extends React.Component<IListProps, IListState> {
         description: `"${user._id}" is no longer able to access Nested Administrator.`,
       });
       this.setState({
-        users: _.clone(this.state.users)
+        users: _.clone(this.state.accounts)
       });
     });
   }
@@ -271,7 +271,9 @@ class List extends React.Component<IListProps, IListState> {
       users: [],
       columns: _(this.allColumns).take(5).map('key').value(),
       dataColumns: [],
-      selectedRowKeys: []
+      selectedRowKeys: [],
+      currentPage: 1,
+      loading: false
     };
 
     this.state.dataColumns = _.map(this.dataColumns, (value, key) => {
@@ -281,16 +283,22 @@ class List extends React.Component<IListProps, IListState> {
         checked: _.includes(this.state.columns, key)
       };
     });
-
+    this.onPageChange = this.onPageChange.bind(this);
   }
 
   componentDidMount() {
     this.accountApi = new AccountApi();
-    this.accountApi.accountList().then((result: IUser[]) => {
-      console.log(result);
-      this.setState({
-        users: result.accounts
-      });
+    this.load(1);
+  }
+
+  onPageChange(value: Number) {
+    this.setState({
+      loading: true
+    });
+
+    this.load(value);
+    this.setState({
+      currentPage: value
     });
   }
 
@@ -325,31 +333,46 @@ class List extends React.Component<IListProps, IListState> {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange
     };
-
+    const total = this.state.counters.accounts_enabled + this.state.counters.accounts_disabled;
     return (
       <Card>
         <Table
+              pagination={{ total: total, current: this.state.currentPage, onChange: this.onPageChange }}
               rowKey='_id'
               rowSelection={rowSelection}
               columns={columns}
-              dataSource={this.state.users}
+              dataSource={this.state.accounts}
               size='middle'
               className='nst-table'
               scroll={{x: 960}}
+              loading={this.state.loading}
         />
       </Card>
     );
   }
 
-  private replaceByKey(items: any, item: any) {
-    const index = _.findIndex(items, { 'key' : item.key });
-
-    if (index > -1) {
-      items.splice(index, 1, item);
-    }
-
-    return items;
+  private load(page: Number, size: Number = 10) {
+    const skip = (page - 1) * size;
+    return Promise.all([
+      this.accountApi.get({
+        skip: skip,
+        limit: size
+      }),
+      this.accountApi.getCounters()]
+    ).then((resultSet) => {
+      this.setState({
+        accounts: resultSet[0].accounts,
+        counters: resultSet[1].counters,
+        loading: false
+      });
+    }).catch((error) => {
+      this.setState({
+        loading: false
+      });
+      notification.error('Accounts', 'An error has occured while trying to get ');
+    });
   }
 }
+
 
 export default List;
