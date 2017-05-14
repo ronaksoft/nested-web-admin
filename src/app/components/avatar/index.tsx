@@ -107,7 +107,7 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
         // iTODO Initails
         var abbr, finalColor;
         if ( nameOfUser ) {
-          abbr = nameOfUser.split(' ').map(function(item : any){return item[0]; }).join('');
+          abbr = nameOfUser.split(' ').slice(0, 2).map(function(item : any){return item[0]; }).join('');
         } else {
           abbr = 'U';
         }
@@ -118,7 +118,7 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
           textColor: '#ffffff',
           height: size,
           width: size,
-          fontSize: 13,
+          fontSize: 11,
           fontWeight: 400,
           fontFamily: 'HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica, Arial,Lucida Grande, sans-serif',
           radius: 0
