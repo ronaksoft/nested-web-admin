@@ -52,10 +52,8 @@ export default class AccountApi {
 
     register(req: IRegisterRequest) : Promise<any> {
         return this.api.server.request({
-          cmd: 'admin/account_register',
-          data: req,
-        }).then((res: IUser) => {
-          return res;
+            cmd: 'admin/account_register',
+            data: req,
         });
     }
 

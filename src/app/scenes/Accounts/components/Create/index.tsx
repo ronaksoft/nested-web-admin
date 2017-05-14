@@ -25,8 +25,8 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     this.state = {
       accounts: [new Packet(new Account())]
     };
+    this.accountApi = new AccountApi();
     this.handleRemove = this.handleRemove.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.add = this.add.bind(this);
     this.create = this.create.bind(this);
     this.import = this.import.bind(this);
@@ -34,17 +34,24 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  handleChange(account: IUnique) {
-    this.replaceByKey(this.state.accounts, account);
-    this.setState({
-      accounts: this.state.accounts
-    });
-  }
-
   handleRemove(account: IUnique) {
     this.setState({
       accounts: _.reject(this.state.accounts, { key : account.key })
     });
+  }
+
+  handleChange = (key, model, errors) => {
+    console.log('ahhh', key, model, errors);
+    var index = _.findIndex(this.state.accounts, { key: key });
+    if (index > -1) {
+      _.assign(this.state.accounts[index].model, model);
+    }
+
+    const hasError = _.some(errors, (error) => {
+      return _.isArray(error) && _.size(error) > 0;
+    });
+
+    this.state.accounts[index].state = hasError ? PacketState.Invalid : PacketState.Valid;
   }
 
   add() {
@@ -65,20 +72,36 @@ class Create extends React.Component<ICreateProps, ICreateState> {
   }
 
   create () {
-    console.log('creating', this.state.accounts);
-    _.forEach(this.state.accounts, (packet, index) => {
-      setTimeout(() => {
+    const promises = _(this.state.accounts).filter((packet) => packet.state === PacketState.Valid).map((packet, index) => {
+      packet.state = PacketState.Pending;
+      return this.accountApi.register({
+        uid: packet.model._id,
+        fname: packet.model.fname,
+        lname: packet.model.lname,
+        phone: packet.model.phone
+      }).then((result) => {
         packet.state = PacketState.Success;
-        var accounts = this.replaceByKey(this.state.accounts, packet);
         this.setState({
-          accounts: accounts
+          accounts: _.clone(this.state.accounts)
         });
-      }, 500 * (index + 1));
-    });
+      }).catch((error) => {
+        if (error.err_code === 3) {
+          packet.state = PacketState.Invalid;
+        }
+        packet.state = PacketState.Failure;
+        this.setState({
+          accounts: _.clone(this.state.accounts)
+        });
+      });
+    }).value();
+  }
+
+  saveRow = (row) => {
+    this.row = row;
   }
 
   render() {
-    var rows = this.state.accounts.map((account) => <InputRow key={account.key} account={account} onChange={this.handleChange} onRemove={this.handleRemove} />);
+    var rows = this.state.accounts.map((account) => <InputRow ref={this.saveRow} key={account.key} account={account} onChange={this.handleChange} onRemove={this.handleRemove} />);
 
     return (
       <Modal
