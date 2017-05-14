@@ -1,8 +1,26 @@
 import * as React from 'react';
 import IUser from './../../api/account/interfaces/IUser';
-import CONFIG from '/src/app.config';
-import AAA from '/src/app/services/classes/aaa/index';
+import CONFIG from '../../../app.config';
+import AAA from './../../services/classes/aaa/index';
 
+const defaultColors = [
+  '#F44336',
+  '#E91E63',
+  '#9C27B0',
+  '#673AB7',
+  '#3F51B5',
+  '#2196F3',
+  '#03A9F4',
+  '#00BCD4',
+  '#009688',
+  '#4CAF50',
+  '#8BC34A',
+  '#CDDC39',
+  '#FFEB3B',
+  '#FF9800',
+  '#FF5722',
+  '#607D8B'
+];
 
 export interface IAvatarProps {
     borderRadius : string;
@@ -18,6 +36,29 @@ export interface IAvatarProps {
 export interface IAvatarStates {}
 
 class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
+  getIndexStr(username : string) {
+    var value = 0;
+
+    for (var i = 0; i < username.length; i++) {
+      value += username.charCodeAt(i);
+    }
+    return this.getInitialValue(value);
+
+  }
+  getInitialValue(value : number) {
+    var sum = 0;
+
+    while (value > 0) {
+        sum = sum + value % 10;
+        value = value / 10;
+    }
+
+    if (sum < 16) {
+        return Math.floor(sum);
+    } else {
+        return this.getInitialValue(sum);
+    }
+  }
   render() {
     let {
       borderRadius= '100%',
@@ -57,22 +98,97 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     }
 
     let imgDOM, nameDOM, idDOM, classes = [className, 'UserAvatar'];
+    var nameOfUser = `${user.fname} ${user.lname}`;
 
     if (avatar) {
-      if (user.picture) {
+      if (user.picture.x32) {
         imgDOM = <img className='UserAvatar--img' style={imageStyle} src={`${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${user.picture.x32}`}  alt={user.name} />;
       } else {
         // iTODO Initails
+        var abbr, finalColor;
+        if ( nameOfUser ) {
+          abbr = nameOfUser.split(' ').map(function(item : any){return item[0]; }).join('');
+        } else {
+          abbr = 'U';
+        }
+
+        var c = abbr.toUpperCase();
+        var settings = {
+          name: user.name,
+          textColor: '#ffffff',
+          height: size,
+          width: size,
+          fontSize: 13,
+          fontWeight: 400,
+          fontFamily: 'HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica, Arial,Lucida Grande, sans-serif',
+          radius: 0
+        };
+
+        var colorIndex = this.getIndexStr(user._id);
+        finalColor = defaultColors[colorIndex];
+
+
+        var textAtts = {
+            'y': '50%',
+            'x': '50%',
+            'dy': '0.35em',
+            'pointer-events': 'auto',
+            'fill': settings.textColor,
+            'font-family': settings.fontFamily,
+            'text-anchor': 'middle',
+        };
+        var svgAtts = {
+            'xmlns': 'http://www.w3.org/2000/svg',
+            'pointer-events': 'none',
+            'width': settings.width,
+            'height': settings.height
+        };
+
+        var cobj = document.createElement('text');
+        for ( var k in textAtts) {
+          if (k) {
+            cobj.setAttribute(k, textAtts[k]);
+          }
+        }
+        cobj.style.fontWeight = 400;
+        cobj.style.fontSize = settings.fontSize + 'px';
+
+        cobj.innerHTML = c;
+
+        var svg = document.createElement('svg');
+        for (var key in svgAtts) {
+          if (key) {
+            svg.setAttribute(key, svgAtts[key]);
+          }
+
+        }
+
+        svg.style.backgroundColor = finalColor;
+        svg.style.width = settings.width + 'px';
+        svg.style.height = settings.height + 'px';
+        svg.style.borderRadius = settings.radius + 'px';
+
+        svg.appendChild(cobj);
+
+        var div = document.createElement('div');
+        div.appendChild(svg);
+
+        var svgHtml = window.btoa(unescape(encodeURIComponent(div.innerHTML)));
+
+        var src = 'data:image/svg+xml;base64,' + svgHtml;
+
+
+        imgDOM = <img className='UserAvatar--img' style={imageStyle} src={src}  alt={nameOfUser} />;
+
       }
     }
-    console.log(user);
 
     if ( name ) {
-      nameDOM = <span style={textStyle}>{`${user.fname}${user.lname}`}</span>;
+      nameDOM = <span style={textStyle}>{nameOfUser}</span>;
     }
 
     if ( id ) {
-      idDOM = <span>{`${user._id}`}</span>;
+      idDOM = <span style={textStyle}>{`${user._id}`}</span>;
     }
 
 
