@@ -2,7 +2,15 @@ import * as React from 'react';
 import IUser from './../../api/account/interfaces/IUser';
 import CONFIG from '../../../app.config';
 import AAA from './../../services/classes/aaa/index';
-
+const settings = {
+  textColor: '#ffffff',
+  height: 24,
+  width: 24,
+  fontSize: 11,
+  fontWeight: 400,
+  fontFamily: 'HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica, Arial,Lucida Grande, sans-serif',
+  radius: 0
+};
 const defaultColors = [
   '#F44336',
   '#E91E63',
@@ -21,6 +29,21 @@ const defaultColors = [
   '#FF5722',
   '#607D8B'
 ];
+const textAtts = {
+  'y': '50%',
+  'x': '50%',
+  'dy': '0.35em',
+  'pointer-events': 'auto',
+  'fill': settings.textColor,
+  'font-family': settings.fontFamily,
+  'text-anchor': 'middle',
+};
+const svgAtts = {
+  'xmlns': 'http://www.w3.org/2000/svg',
+  'pointer-events': 'none',
+  'width': settings.width,
+  'height': settings.height
+};
 
 export interface IAvatarProps {
     borderRadius : string;
@@ -93,8 +116,8 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     };
 
     if (size) {
-      imageStyle.width = size;
-      imageStyle.height = size;
+      imageStyle.width = settings.width = size;
+      imageStyle.height = settings.height = size;
     }
 
     let imgDOM, nameDOM, idDOM, classes = [className, 'UserAvatar'];
@@ -113,36 +136,10 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
         }
 
         var c = abbr.toUpperCase();
-        var settings = {
-          name: user.name,
-          textColor: '#ffffff',
-          height: size,
-          width: size,
-          fontSize: 11,
-          fontWeight: 400,
-          fontFamily: 'HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica, Arial,Lucida Grande, sans-serif',
-          radius: 0
-        };
 
         var colorIndex = this.getIndexStr(user._id);
         finalColor = defaultColors[colorIndex];
 
-
-        var textAtts = {
-            'y': '50%',
-            'x': '50%',
-            'dy': '0.35em',
-            'pointer-events': 'auto',
-            'fill': settings.textColor,
-            'font-family': settings.fontFamily,
-            'text-anchor': 'middle',
-        };
-        var svgAtts = {
-            'xmlns': 'http://www.w3.org/2000/svg',
-            'pointer-events': 'none',
-            'width': settings.width,
-            'height': settings.height
-        };
 
         var cobj = document.createElement('text');
         for ( var k in textAtts) {
