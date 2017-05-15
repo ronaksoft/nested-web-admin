@@ -10,8 +10,7 @@ interface IHeaderProps { };
 interface IHeaderState { };
 
 class Header extends React.Component<IHeaderProps, IHeaderState> {
-    static propTypes = {
-    };
+
     constructor(props: any) {
         super(props);
     }

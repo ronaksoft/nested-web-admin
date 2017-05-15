@@ -149,8 +149,10 @@ SystemJS.config({
     'os': 'github:jspm/nodelibs-os@0.2.0-alpha',
     'path': 'github:jspm/nodelibs-path@0.2.3',
     'process': 'github:jspm/nodelibs-process@0.2.0-alpha',
+    'prop-types': 'npm:prop-types@15.5.10',
     'react': 'npm:react@15.5.4',
     'react-dom': 'npm:react-dom@15.5.4',
+    'react-inlinesvg': 'npm:react-inlinesvg@0.6.0',
     'react-redux': 'npm:react-redux@5.0.4',
     'react-router': 'npm:react-router@3.0.5',
     'react-transition-group': 'npm:react-transition-group@1.1.3',
@@ -164,12 +166,13 @@ SystemJS.config({
     'url': 'github:jspm/nodelibs-url@0.2.0-alpha',
     'util': 'github:jspm/nodelibs-util@0.2.0-alpha',
     'vm': 'github:jspm/nodelibs-vm@0.2.0-alpha',
+    'vuzonp/systemjs-plugin-svg': 'github:vuzonp/systemjs-plugin-svg@0.1.1',
     'zlib': 'github:jspm/nodelibs-zlib@0.2.0-alpha'
   },
   packages: {
     'npm:react@15.5.4': {
       'map': {
-        'prop-types': 'npm:prop-types@15.5.8',
+        'prop-types': 'npm:prop-types@15.5.10',
         'loose-envify': 'npm:loose-envify@1.3.1',
         'object-assign': 'npm:object-assign@4.1.1',
         'fbjs': 'npm:fbjs@0.8.12'
@@ -323,7 +326,7 @@ SystemJS.config({
     },
     'github:jspm/nodelibs-http@0.2.0-alpha': {
       'map': {
-        'http-browserify': 'npm:stream-http@2.7.0'
+        'http-browserify': 'npm:stream-http@2.7.1'
       }
     },
     'github:jspm/nodelibs-domain@0.2.0-alpha': {
@@ -349,15 +352,6 @@ SystemJS.config({
     'npm:string_decoder@1.0.0': {
       'map': {
         'buffer-shims': 'npm:buffer-shims@1.0.0'
-      }
-    },
-    'npm:stream-http@2.7.0': {
-      'map': {
-        'inherits': 'npm:inherits@2.0.3',
-        'readable-stream': 'npm:readable-stream@2.2.9',
-        'to-arraybuffer': 'npm:to-arraybuffer@1.0.1',
-        'builtin-status-codes': 'npm:builtin-status-codes@3.0.0',
-        'xtend': 'npm:xtend@4.0.1'
       }
     },
     'npm:buffer@4.9.1': {
@@ -407,34 +401,15 @@ SystemJS.config({
     'npm:crypto-browserify@3.11.0': {
       'map': {
         'inherits': 'npm:inherits@2.0.3',
-        'create-hash': 'npm:create-hash@1.1.2',
+        'create-hash': 'npm:create-hash@1.1.3',
         'create-ecdh': 'npm:create-ecdh@4.0.0',
         'browserify-cipher': 'npm:browserify-cipher@1.0.0',
-        'create-hmac': 'npm:create-hmac@1.1.4',
-        'pbkdf2': 'npm:pbkdf2@3.0.9',
+        'create-hmac': 'npm:create-hmac@1.1.6',
+        'pbkdf2': 'npm:pbkdf2@3.0.12',
         'diffie-hellman': 'npm:diffie-hellman@5.0.2',
         'public-encrypt': 'npm:public-encrypt@4.0.0',
         'randombytes': 'npm:randombytes@2.0.3',
         'browserify-sign': 'npm:browserify-sign@4.0.4'
-      }
-    },
-    'npm:create-hmac@1.1.4': {
-      'map': {
-        'create-hash': 'npm:create-hash@1.1.2',
-        'inherits': 'npm:inherits@2.0.3'
-      }
-    },
-    'npm:create-hash@1.1.2': {
-      'map': {
-        'inherits': 'npm:inherits@2.0.3',
-        'ripemd160': 'npm:ripemd160@1.0.1',
-        'sha.js': 'npm:sha.js@2.4.8',
-        'cipher-base': 'npm:cipher-base@1.0.3'
-      }
-    },
-    'npm:pbkdf2@3.0.9': {
-      'map': {
-        'create-hmac': 'npm:create-hmac@1.1.4'
       }
     },
     'npm:diffie-hellman@5.0.2': {
@@ -446,7 +421,7 @@ SystemJS.config({
     },
     'npm:public-encrypt@4.0.0': {
       'map': {
-        'create-hash': 'npm:create-hash@1.1.2',
+        'create-hash': 'npm:create-hash@1.1.3',
         'randombytes': 'npm:randombytes@2.0.3',
         'bn.js': 'npm:bn.js@4.11.6',
         'browserify-rsa': 'npm:browserify-rsa@4.0.1',
@@ -455,8 +430,8 @@ SystemJS.config({
     },
     'npm:browserify-sign@4.0.4': {
       'map': {
-        'create-hash': 'npm:create-hash@1.1.2',
-        'create-hmac': 'npm:create-hmac@1.1.4',
+        'create-hash': 'npm:create-hash@1.1.3',
+        'create-hmac': 'npm:create-hmac@1.1.6',
         'inherits': 'npm:inherits@2.0.3',
         'bn.js': 'npm:bn.js@4.11.6',
         'elliptic': 'npm:elliptic@6.4.0',
@@ -491,7 +466,7 @@ SystemJS.config({
     'npm:browserify-aes@1.0.6': {
       'map': {
         'cipher-base': 'npm:cipher-base@1.0.3',
-        'create-hash': 'npm:create-hash@1.1.2',
+        'create-hash': 'npm:create-hash@1.1.3',
         'evp_bytestokey': 'npm:evp_bytestokey@1.0.0',
         'inherits': 'npm:inherits@2.0.3',
         'buffer-xor': 'npm:buffer-xor@1.0.3'
@@ -506,7 +481,7 @@ SystemJS.config({
     },
     'npm:evp_bytestokey@1.0.0': {
       'map': {
-        'create-hash': 'npm:create-hash@1.1.2'
+        'create-hash': 'npm:create-hash@1.1.3'
       }
     },
     'npm:sha.js@2.4.8': {
@@ -534,9 +509,9 @@ SystemJS.config({
     'npm:parse-asn1@5.1.0': {
       'map': {
         'browserify-aes': 'npm:browserify-aes@1.0.6',
-        'create-hash': 'npm:create-hash@1.1.2',
+        'create-hash': 'npm:create-hash@1.1.3',
         'evp_bytestokey': 'npm:evp_bytestokey@1.0.0',
-        'pbkdf2': 'npm:pbkdf2@3.0.9',
+        'pbkdf2': 'npm:pbkdf2@3.0.12',
         'asn1.js': 'npm:asn1.js@4.9.1'
       }
     },
@@ -1066,6 +1041,83 @@ SystemJS.config({
     'npm:d3-time-format@2.0.5': {
       'map': {
         'd3-time': 'npm:d3-time@1.0.6'
+      }
+    },
+    'npm:react-inlinesvg@0.6.0': {
+      'map': {
+        'fbjs': 'npm:fbjs@0.8.12',
+        'once': 'npm:once@1.4.0',
+        'httpplease': 'npm:httpplease@0.16.4'
+      }
+    },
+    'npm:httpplease@0.16.4': {
+      'map': {
+        'xtend': 'npm:xtend@3.0.0',
+        'urllite': 'npm:urllite@0.5.0',
+        'xmlhttprequest': 'npm:xmlhttprequest@1.8.0'
+      }
+    },
+    'npm:once@1.4.0': {
+      'map': {
+        'wrappy': 'npm:wrappy@1.0.2'
+      }
+    },
+    'npm:urllite@0.5.0': {
+      'map': {
+        'xtend': 'npm:xtend@4.0.1'
+      }
+    },
+    'npm:prop-types@15.5.10': {
+      'map': {
+        'fbjs': 'npm:fbjs@0.8.12',
+        'loose-envify': 'npm:loose-envify@1.3.1'
+      }
+    },
+    'npm:stream-http@2.7.1': {
+      'map': {
+        'inherits': 'npm:inherits@2.0.3',
+        'readable-stream': 'npm:readable-stream@2.2.9',
+        'xtend': 'npm:xtend@4.0.1',
+        'builtin-status-codes': 'npm:builtin-status-codes@3.0.0',
+        'to-arraybuffer': 'npm:to-arraybuffer@1.0.1'
+      }
+    },
+    'npm:create-hash@1.1.3': {
+      'map': {
+        'inherits': 'npm:inherits@2.0.3',
+        'sha.js': 'npm:sha.js@2.4.8',
+        'cipher-base': 'npm:cipher-base@1.0.3',
+        'ripemd160': 'npm:ripemd160@2.0.1'
+      }
+    },
+    'npm:pbkdf2@3.0.12': {
+      'map': {
+        'create-hash': 'npm:create-hash@1.1.3',
+        'sha.js': 'npm:sha.js@2.4.8',
+        'safe-buffer': 'npm:safe-buffer@5.0.1',
+        'ripemd160': 'npm:ripemd160@2.0.1',
+        'create-hmac': 'npm:create-hmac@1.1.6'
+      }
+    },
+    'npm:ripemd160@2.0.1': {
+      'map': {
+        'inherits': 'npm:inherits@2.0.3',
+        'hash-base': 'npm:hash-base@2.0.2'
+      }
+    },
+    'npm:hash-base@2.0.2': {
+      'map': {
+        'inherits': 'npm:inherits@2.0.3'
+      }
+    },
+    'npm:create-hmac@1.1.6': {
+      'map': {
+        'cipher-base': 'npm:cipher-base@1.0.3',
+        'create-hash': 'npm:create-hash@1.1.3',
+        'inherits': 'npm:inherits@2.0.3',
+        'ripemd160': 'npm:ripemd160@2.0.1',
+        'safe-buffer': 'npm:safe-buffer@5.0.1',
+        'sha.js': 'npm:sha.js@2.4.8'
       }
     }
   }
