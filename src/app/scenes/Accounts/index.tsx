@@ -22,7 +22,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     super(props);
 
     this.state = {
-      filterGroup: 'users',
+      filterGroup: FilterGroup.Total,
       counters: {}
     };
   }
@@ -52,20 +52,20 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     const total = this.state.counters.enabled_accounts + this.state.counters.disabled_accounts;
     const filterItems = [
         {
-            key : 'users',
+            key : FilterGroup.Total,
             name : 'Total',
             count : total,
             disableChart : true,
         },
         {
-            key : 'users_enabled',
+            key : FilterGroup.Active,
             name : 'Active Accounts',
             count : this.state.counters.enabled_accounts,
             chartColor: '#00B45A',
             bgChartColor : '#CBEFDD',
         },
         {
-            key : 'users_disabled',
+            key : FilterGroup.Deactive,
             name : 'Deactive Accounts',
             count : this.state.counters.disabled_accounts,
             chartColor: '#3296FF',
@@ -91,7 +91,6 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
       </div>
     );
   }
-
 }
 
 function mapStateToProps(state: any) {

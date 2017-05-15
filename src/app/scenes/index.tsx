@@ -35,19 +35,15 @@ class App extends React.Component<IAppProps, IAppState> {
         let accountApi = new AccountApi();
         let aaa = AAA.getInstance();
         const credential = aaa.getCredentials();
-        console.log('start');
         accountApi.sessionRecall({
             _ss : credential.ss,
             _sk : credential.sk,
         }).then((user: IUser) => {
-          console.log('then');
-            console.log(user);
             aaa.setUser(user);
             this.setState({
               isReady : true,
             });
         }).catch((err) => {
-          console.log('catch');
             console.log(err);
             aaa.setIsUnAthenticated();
             // browserHistory.push('/403');

@@ -22,6 +22,7 @@ interface IListProps {
 
 interface IListState {
   users: IPerson[];
+  filter: FilterGroup;
 }
 
 class List extends React.Component<IListProps, IListState> {
@@ -43,6 +44,8 @@ class List extends React.Component<IListProps, IListState> {
     'f': 'Female',
     'm': 'Male'
   };
+
+  COLUMNS_STORAGE_KEY = 'ronak.nested.admin.accounts.columns';
 
  // columns Render Handlers
 
@@ -271,13 +274,22 @@ class List extends React.Component<IListProps, IListState> {
       },
     ];
 
+    const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
+    const storedColumnsList = _.size(storedColumns) > 0
+      ? _.split(storedColumns, ',')
+      : [];
+    const tableColumns = _.size(storedColumns) > 0
+      ? storedColumns
+      : _(this.allColumns).take(5).map('key').value();
+
     this.state = {
       users: [],
-      columns: _(this.allColumns).take(5).map('key').value(),
+      columns: tableColumns,
       dataColumns: [],
       selectedRowKeys: [],
       currentPage: 1,
       loading: false,
+      filter: props.filter,
       counters: {
         enabled_accounts: 0,
         disabled_accounts: 0
@@ -299,6 +311,15 @@ class List extends React.Component<IListProps, IListState> {
     this.load(1);
   }
 
+  componentWillReceiveProps(nextProps: IListProps) {
+    if (this.props.filter !== nextProps.filter) {
+      this.setState({
+        filter: nextProps.filter
+      });
+      this.load();
+    }
+  }
+
   onPageChange(value: Number) {
     this.setState({
       loading: true
@@ -311,7 +332,7 @@ class List extends React.Component<IListProps, IListState> {
   }
 
   render() {
-
+    window.localStorage.setItem(this.COLUMNS_STORAGE_KEY, _.join(this.state.columns, ','));
     const optionsPopover = (
       <ul>
        {
@@ -364,11 +385,26 @@ class List extends React.Component<IListProps, IListState> {
   }
 
   private load(page: Number, size: Number = 10) {
+    page = page || this.state.currentPage;
     const skip = (page - 1) * size;
+    let filter = 'users';
+    switch (this.state.filter) {
+      case FilterGroup.Active:
+        filter = 'users_enabled';
+        break;
+      case FilterGroup.Disabled:
+        filter = 'users_disabled';
+        break;
+      default:
+        filter = 'users';
+        break;
+
+    }
+
     return this.accountApi.getAll({
         skip: skip,
         limit: size,
-        filter: this.props.filter
+        filter: filter
     }).then((result) => {
       this.setState({
         accounts: result.accounts,
