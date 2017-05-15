@@ -93,10 +93,10 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
     }
 
     let imgDOM, nameDOM, idDOM, classes = [className, 'PlaveView'];
-    var placeName = `${place.name}`;
+    let placeName = `${place.name}`;
 
     if (avatar) {
-      var src = place.picture.x32 ? `${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x32}` : './../../../style/images/absents_place.svg';
+      let src = place.picture.x32 ? `${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x32}` : './../../../style/images/absents_place.svg';
 
       imgDOM = <img className='PlaceView--img' style={imageStyle} src={src}  alt={place.name} />;
     }
