@@ -14,7 +14,9 @@ import IPromoteRequest from '/src/app/api/account/interfaces/IPromoteRequest';
 import IDemoteRequest from '/src/app/api/account/interfaces/IDemoteRequest';
 
 
-interface IListProps { }
+interface IListProps {
+  counters: any;
+}
 
 interface IListState {
   users: Person[];
@@ -339,8 +341,8 @@ class List extends React.Component<IListProps, IListState> {
     };
 
     let total = 0;
-    if (this.state.counters) {
-      total = this.state.counters.enabled_accounts + this.state.counters.disabled_accounts;
+    if (this.props.counters) {
+      total = this.props.counters.enabled_accounts + this.props.counters.disabled_accounts;
     }
     return (
       <Card>
@@ -361,16 +363,12 @@ class List extends React.Component<IListProps, IListState> {
 
   private load(page: Number, size: Number = 10) {
     const skip = (page - 1) * size;
-    return Promise.all([
-      this.accountApi.getAll({
+    return this.accountApi.getAll({
         skip: skip,
         limit: size
-      }),
-      this.accountApi.getCounters()]
-    ).then((resultSet) => {
+    }).then((result) => {
       this.setState({
-        accounts: resultSet[0].accounts,
-        counters: resultSet[1],
+        accounts: result.accounts,
         loading: false
       });
     }).catch((error) => {
