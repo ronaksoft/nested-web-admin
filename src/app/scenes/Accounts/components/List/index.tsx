@@ -45,6 +45,8 @@ class List extends React.Component<IListProps, IListState> {
     'm': 'Male'
   };
 
+  COLUMNS_STORAGE_KEY = 'ronak.nested.admin.accounts.columns';
+
  // columns Render Handlers
 
   nameRender = (text, user, index) => <UserAvatar avatar={true} name={true} size='24' user={user} />;
@@ -272,9 +274,17 @@ class List extends React.Component<IListProps, IListState> {
       },
     ];
 
+    const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
+    const storedColumnsList = _.size(storedColumns) > 0
+      ? _.split(storedColumns, ',')
+      : [];
+    const tableColumns = _.size(storedColumns) > 0
+      ? storedColumns
+      : _(this.allColumns).take(5).map('key').value();
+
     this.state = {
       users: [],
-      columns: _(this.allColumns).take(5).map('key').value(),
+      columns: tableColumns,
       dataColumns: [],
       selectedRowKeys: [],
       currentPage: 1,
@@ -322,7 +332,7 @@ class List extends React.Component<IListProps, IListState> {
   }
 
   render() {
-
+    window.localStorage.setItem(this.COLUMNS_STORAGE_KEY, _.join(this.state.columns, ','));
     const optionsPopover = (
       <ul>
        {

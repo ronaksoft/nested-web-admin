@@ -41,7 +41,6 @@ class Create extends React.Component<ICreateProps, ICreateState> {
   }
 
   handleChange = (key, model, errors) => {
-    console.log('ahhh', key, model, errors);
     var index = _.findIndex(this.state.accounts, { key: key });
     if (index > -1) {
       _.assign(this.state.accounts[index].model, model);
