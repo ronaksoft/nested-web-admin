@@ -10,7 +10,6 @@ import UserAvatar from '../../../components/avatar/index';
 import IGetSystemCountersResponse from '../../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
 
-
 interface IListProps {
   counters: IGetSystemCountersResponse;
   selectedFilter: CPlaceFilterTypes;

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {Row, Col, Input, Icon, Button, Form} from 'antd';
-import IAccount from '/src/app/common/index';
-import PacketState from '/src/app/common/packet/PacketState';
 import _ from 'lodash';
+import IAccount from '../../../../IAccount';
+import PacketState from '../../../../PacketState';
 
 interface IInputRowProps {
   account: Packet<IAccount>;

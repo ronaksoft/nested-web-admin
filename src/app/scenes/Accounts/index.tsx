@@ -85,7 +85,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         </Row>
         <Row>
           <Col span={24}>
-            <List counters={this.state.counters} />
+            <List counters={this.state.counters} filter={this.state.filterGroup}/>
           </Col>
         </Row>
       </div>
