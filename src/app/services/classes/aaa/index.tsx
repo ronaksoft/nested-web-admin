@@ -30,6 +30,10 @@ export default class AAA {
         this.isAthenticated = true;
     }
 
+    getUser(): any {
+        return this.account;
+    }
+
     setIsUnAthenticated() : void {
       this.isAthenticated = false;
     }

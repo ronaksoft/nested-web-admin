@@ -7,6 +7,7 @@ import {columnsList, IPlaceListColumn} from './columsList';
 import IUser from '../../../api/account/interfaces/IUser';
 import AccountApi from '../../../api/account/account';
 import UserAvatar from '../../../components/avatar/index';
+import PlaceView from '../../../components/placeview/index';
 import IGetSystemCountersResponse from '../../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
 
@@ -127,7 +128,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
   }
 
   renderPlaceCell(text: string, record: IPlace, index: any) {
-    return text;
+    return <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>;
   }
 
   renderUsersCell(text: string, record: IPlace, index: any) {
@@ -143,7 +144,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         }
         if (this.getUser(userId)) {
           const user = this.getUser(userId);
-          users.push(<UserAvatar avatar key={userId} user={user} size={24}/>);
+          users.push(<UserAvatar avatar key={userId} user={user} size={20}/>);
         }
       });
     }
