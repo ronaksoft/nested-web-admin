@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Modal, Button, Row, Col, Card, Icon} from 'antd';
+import {Modal, Button, Row, Col, Card, Icon, notification} from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
 import Account from '../../Account';
@@ -152,7 +152,16 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
   private import(text: string) {
     const CSV_ROW_ITEMS_COUNT = 4;
+    const MAX_ITEMS_IN_FILE = 100;
     const data = CSV.parse(text);
+    if (_.size(data) > MAX_ITEMS_IN_FILE) {
+      notification.warning({
+        message: 'Attention',
+        description: 'There are more than 100 items in the file. Please sparate the items into smaller files.',
+        duration: 8
+      });
+      return;
+    }
     const importedAccounts = _(data).filter((row) => row.length === CSV_ROW_ITEMS_COUNT).map((row) => {
       return new Packet(new Account(row[0], row[1], row[2], row[3]));
     }).value();
