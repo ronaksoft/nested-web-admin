@@ -147,10 +147,75 @@ h1 {
 }
 
 PlaveView {
-  
+
 }
 .PlaveView-detail {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.ImageHolder-place:after {
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+  pointer-events: none;
+  content: "";
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ImageHolder-avatar:after {
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+  pointer-events: none;
+  content: "";
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ImageHolder-avatar-64:after {
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 100%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+  pointer-events: none;
+  content: "";
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ImageHolder-avatar-24:after {
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+  pointer-events: none;
+  content: "";
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ImageHolder-avatar-20:after {
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+  pointer-events: none;
+  content: "";
+  top: 50%;
+  transform: translateY(-50%);
 }

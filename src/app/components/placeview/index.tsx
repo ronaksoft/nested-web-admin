@@ -29,7 +29,7 @@ export interface IPlaceViewStates {}
 class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
   render() {
     let {
-      borderRadius= '100%',
+      borderRadius,
       place,
       size,
       style,
@@ -48,19 +48,18 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
       justifyContent: 'center',
       position: 'relative',
       flex: 'none',
-      borderRadius
+      borderRadius : borderRadius
     };
 
     const innerStyle = {
       lineHeight: size,
       display: 'flex',
-      textAlign: 'center',
-      borderRadius
+      borderRadius : borderRadius
     };
 
     const imageStyle = {
       display: 'flex',
-      borderRadius,
+      borderRadius : borderRadius,
       margin: '0!important',
       width: size,
       height: size
@@ -116,21 +115,8 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
 
     return (
       <div aria-label={placeName} className={classes.join(' ')} style={style}>
-        <style>{`.ImageHolder:after {
-          left: 0;
-          position: absolute;
-          top: 0;
-          width: ${size};
-          height: ${size};
-          border-radius: ${borderRadius};
-          box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
-          pointer-events: none;
-          content: "";
-          top: 50%;
-          transform: translateY(-50%);
-        }`}</style>
         <div className='PlaceView--inner' style={innerStyle}>
-          <div className='ImageHolder' style={ImageHolder}>
+          <div className='ImageHolder-place' style={ImageHolder}>
             {avatar && imgDOM}
           </div>
           <div className='PlaveView-detail'>
