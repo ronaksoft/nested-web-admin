@@ -275,11 +275,9 @@ class List extends React.Component<IListProps, IListState> {
     ];
 
     const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
-    const storedColumnsList = _.size(storedColumns) > 0
-      ? _.split(storedColumns, ',')
-      : [];
-    const tableColumns = _.size(storedColumns) > 0
-      ? storedColumns
+    const storedColumnsList = storedColumns ? _.split(storedColumns, ',') : [];
+    const tableColumns = storedColumnsList.length > 0
+      ? storedColumnsList
       : _(this.allColumns).take(5).map('key').value();
 
     this.state = {
@@ -332,6 +330,8 @@ class List extends React.Component<IListProps, IListState> {
   }
 
   render() {
+    console.log(`_.join(this.state.columns, ',')`, _.join(this.state.columns, ','));
+    console.log('this.state.columns', this.state.columns);
     window.localStorage.setItem(this.COLUMNS_STORAGE_KEY, _.join(this.state.columns, ','));
     const optionsPopover = (
       <ul>
