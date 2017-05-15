@@ -206,24 +206,23 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     }
 
 
-
-
-
     return (
-      <Style>{`.ImageHolder:after {
-          left: 0;
-          position: absolute;
-          top: 0;
-          width: ${size};
-          height: ${size};
-          ${borderRadius};
-          box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
-          pointer-events: none;
-          content: "";
-          top: 50%;
-          transform: translateY(-50%);
-        }`}</Style>
       <div aria-label={name} className={classes.join(' ')} style={style}>
+        <style>
+          {`.ImageHolder:after {
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: ${size};
+            height: ${size};
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+            pointer-events: none;
+            content: "";
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: ${borderRadius};
+          }`}
+        </style>
         <div className='UserAvatar--inner' style={innerStyle}>
           <div className='ImageHolder' style={ImageHolder}>
             {avatar && imgDOM}

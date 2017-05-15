@@ -115,20 +115,20 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
 
 
     return (
-      <Style>{`.ImageHolder:after {
+      <div aria-label={placeName} className={classes.join(' ')} style={style}>
+        <style>{`.ImageHolder:after {
           left: 0;
           position: absolute;
           top: 0;
           width: ${size};
           height: ${size};
-          ${borderRadius};
+          border-radius: ${borderRadius};
           box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
           pointer-events: none;
           content: "";
           top: 50%;
           transform: translateY(-50%);
-        }`}</Style>
-      <div aria-label={placeName} className={classes.join(' ')} style={style}>
+        }`}</style>
         <div className='PlaceView--inner' style={innerStyle}>
           <div className='ImageHolder' style={ImageHolder}>
             {avatar && imgDOM}
