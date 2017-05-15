@@ -22,6 +22,7 @@ interface IListProps {
 
 interface IListState {
   users: IPerson[];
+  filter: FilterGroup;
 }
 
 class List extends React.Component<IListProps, IListState> {
@@ -278,6 +279,7 @@ class List extends React.Component<IListProps, IListState> {
       selectedRowKeys: [],
       currentPage: 1,
       loading: false,
+      filter: props.filter,
       counters: {
         enabled_accounts: 0,
         disabled_accounts: 0
@@ -297,6 +299,15 @@ class List extends React.Component<IListProps, IListState> {
   componentDidMount() {
     this.accountApi = new AccountApi();
     this.load(1);
+  }
+
+  componentWillReceiveProps(nextProps: IListProps) {
+    if (this.props.filter !== nextProps.filter) {
+      this.setState({
+        filter: nextProps.filter
+      });
+      this.load();
+    }
   }
 
   onPageChange(value: Number) {
@@ -364,11 +375,26 @@ class List extends React.Component<IListProps, IListState> {
   }
 
   private load(page: Number, size: Number = 10) {
+    page = page || this.state.currentPage;
     const skip = (page - 1) * size;
+    let filter = 'users';
+    switch (this.state.filter) {
+      case FilterGroup.Active:
+        filter = 'users_enabled';
+        break;
+      case FilterGroup.Disabled:
+        filter = 'users_disabled';
+        break;
+      default:
+        filter = 'users';
+        break;
+
+    }
+
     return this.accountApi.getAll({
         skip: skip,
         limit: size,
-        filter: this.props.filter
+        filter: filter
     }).then((result) => {
       this.setState({
         accounts: result.accounts,
