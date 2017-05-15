@@ -1,4 +1,4 @@
-import IAccount from '../account/IAccount';
+import IAccount from './IAccount';
 
 interface IPerson extends IAccount {
   place_count: number;

@@ -1,25 +1,27 @@
 import * as React from 'react';
 import {Icon, Table, Dropdown, Card, Menu, Checkbox, Popover, Button, notification, Pagination} from 'antd';
-import Account from '/src/app/common/account/Account';
-import {IAccount} from '/src/app/common/account/IAccount';
-import IUnique from '/src/app/common/IUnique';
-import Person from '/src/app/common/user/Person';
 import _ from 'lodash';
-import AccountApi from '../../../../api/account/account';
 import moment from 'moment';
-import UserAvatar from '/src/app/components/avatar/index';
-import IEnableRequest from '/src/app/api/account/interfaces/IEnableRequest';
-import IDisableRequest from '/src/app/api/account/interfaces/IDisableRequest';
-import IPromoteRequest from '/src/app/api/account/interfaces/IPromoteRequest';
-import IDemoteRequest from '/src/app/api/account/interfaces/IDemoteRequest';
+import Account from '../../Account';
+import {IAccount} from '../../IAccount';
+import IUnique from '../../IUnique';
+import IPerson from '../../IPerson';
+import AccountApi from '../../../../api/account/account';
+import UserAvatar from '../../../../components/avatar/index';
+import IEnableRequest from '../../../../api/account/interfaces/IEnableRequest';
+import IDisableRequest from '../../../../api/account/interfaces/IDisableRequest';
+import IPromoteRequest from '../../../../api/account/interfaces/IPromoteRequest';
+import IDemoteRequest from '../../../../api/account/interfaces/IDemoteRequest';
+import FilterGroup from '../../FilterGroup';
 
 
 interface IListProps {
   counters: any;
+  filter: FilterGroup;
 }
 
 interface IListState {
-  users: Person[];
+  users: IPerson[];
 }
 
 class List extends React.Component<IListProps, IListState> {
@@ -365,7 +367,8 @@ class List extends React.Component<IListProps, IListState> {
     const skip = (page - 1) * size;
     return this.accountApi.getAll({
         skip: skip,
-        limit: size
+        limit: size,
+        filter: this.props.filter
     }).then((result) => {
       this.setState({
         accounts: result.accounts,

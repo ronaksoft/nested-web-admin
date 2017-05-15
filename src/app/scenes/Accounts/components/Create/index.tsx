@@ -1,15 +1,15 @@
 import * as React from 'react';
 import {Modal, Button, Row, Col, Card, Icon} from 'antd';
-import Account from '/src/app/common/account/Account';
-import {IAccount} from '/src/app/common/account/IAccount';
-import IUnique from '/src/app/common/IUnique';
-import InputRow from './components/InputRow/index';
-import CSV from '/src/app/common/CSV';
-import AccountApi from '/src/app/api/account/account';
-import Packet from '/src/app/common/packet/Packet';
-import PacketState from '/src/app/common/packet/PacketState';
 import _ from 'lodash';
 import $ from 'jquery';
+import Account from '../../Account';
+import {IAccount} from '../../IAccount';
+import IUnique from '../../IUnique';
+import InputRow from './components/InputRow/index';
+import CSV from '../../CSV';
+import AccountApi from '../../../../api/account/account';
+import Packet from '../../Packet';
+import PacketState from '../../PacketState';
 
 interface ICreateProps {
   visible: Boolean;
