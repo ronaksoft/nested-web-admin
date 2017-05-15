@@ -97,8 +97,11 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     size = size.toString(10) + 'px';
 
     const imageStyle = {
-      display: 'block',
-      borderRadius
+      display: 'flex',
+      borderRadius,
+      margin: '0!important',
+      width: size,
+      height: size
     };
 
     const innerStyle = {
@@ -107,11 +110,25 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
       textAlign: 'center',
       borderRadius
     };
+
+    const ImageHolder = {
+      width: size,
+      height: size,
+      display: 'flex',
+      justifyContent: 'center',
+      position: 'relative',
+      flex: 'none',
+      borderRadius
+    };
+
     const textStyle = {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       maxWidth: '135px',
+      fontSize: '14px',
+      lineHeight: '19px',
+      color: 'black',
       paddingLeft: '8px'
     };
 
@@ -193,9 +210,24 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
 
 
     return (
+      <Style>{`.ImageHolder:after {
+          left: 0;
+          position: absolute;
+          top: 0;
+          width: ${size};
+          height: ${size};
+          ${borderRadius};
+          box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+          pointer-events: none;
+          content: "";
+          top: 50%;
+          transform: translateY(-50%);
+        }`}</Style>
       <div aria-label={name} className={classes.join(' ')} style={style}>
         <div className='UserAvatar--inner' style={innerStyle}>
-          {avatar && imgDOM}
+          <div className='ImageHolder' style={ImageHolder}>
+            {avatar && imgDOM}
+          </div>
           {name && nameDOM}
           {id && idDOM}
         </div>
