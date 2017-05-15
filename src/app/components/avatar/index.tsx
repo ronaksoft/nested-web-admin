@@ -60,16 +60,16 @@ export interface IAvatarStates {}
 
 class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
   getIndexStr(username : string) {
-    var value = 0;
+    let value = 0;
 
-    for (var i = 0; i < username.length; i++) {
+    for (let i = 0; i < username.length; i++) {
       value += username.charCodeAt(i);
     }
     return this.getInitialValue(value);
 
   }
   getInitialValue(value : number) {
-    var sum = 0;
+    let sum = 0;
 
     while (value > 0) {
         sum = sum + value % 10;
@@ -94,11 +94,30 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
       id
     } = this.props;
 
+    let imageClass;
+    switch (size) {
+    case 20:
+        imageClass = 'ImageHolder-avatar-20';
+        break;
+    case 24:
+        imageClass = 'ImageHolder-avatar-24';
+        break;
+    case 64:
+        imageClass = 'ImageHolder-avatar-64';
+        break;
+    default:
+        imageClass = 'ImageHolder-avatar';
+}
+
     size = size.toString(10) + 'px';
 
+
     const imageStyle = {
-      display: 'block',
-      borderRadius
+      display: 'flex',
+      borderRadius,
+      margin: '0!important',
+      width: size,
+      height: size
     };
 
     const innerStyle = {
@@ -107,11 +126,25 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
       textAlign: 'center',
       borderRadius
     };
+
+    const ImageHolder = {
+      width: size,
+      height: size,
+      display: 'flex',
+      justifyContent: 'center',
+      position: 'relative',
+      flex: 'none',
+      borderRadius
+    };
+
     const textStyle = {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       maxWidth: '135px',
+      fontSize: '14px',
+      lineHeight: '19px',
+      color: 'black',
       paddingLeft: '8px'
     };
 
@@ -121,28 +154,28 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     }
 
     let imgDOM, nameDOM, idDOM, classes = [className, 'UserAvatar'];
-    var nameOfUser = `${user.fname} ${user.lname}`;
+    let nameOfUser = `${user.fname} ${user.lname}`;
 
     if (avatar) {
       if (user.picture.x32) {
         imgDOM = <img className='UserAvatar--img' style={imageStyle} src={`${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${user.picture.x32}`}  alt={user.name} />;
       } else {
         // iTODO Initails
-        var abbr, finalColor;
+        let abbr, finalColor;
         if ( nameOfUser ) {
           abbr = nameOfUser.split(' ').slice(0, 2).map(function(item : any){return item[0]; }).join('');
         } else {
           abbr = 'U';
         }
 
-        var c = abbr.toUpperCase();
+        let c = abbr.toUpperCase();
 
-        var colorIndex = this.getIndexStr(user._id);
+        let colorIndex = this.getIndexStr(user._id);
         finalColor = defaultColors[colorIndex];
 
 
-        var cobj = document.createElement('text');
-        for ( var k in textAtts) {
+        let cobj = document.createElement('text');
+        for ( let k in textAtts) {
           if (k) {
             cobj.setAttribute(k, textAtts[k]);
           }
@@ -152,8 +185,8 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
 
         cobj.innerHTML = c;
 
-        var svg = document.createElement('svg');
-        for (var key in svgAtts) {
+        let svg = document.createElement('svg');
+        for (let key in svgAtts) {
           if (key) {
             svg.setAttribute(key, svgAtts[key]);
           }
@@ -167,12 +200,12 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
 
         svg.appendChild(cobj);
 
-        var div = document.createElement('div');
+        let div = document.createElement('div');
         div.appendChild(svg);
 
-        var svgHtml = window.btoa(unescape(encodeURIComponent(div.innerHTML)));
+        let svgHtml = window.btoa(unescape(encodeURIComponent(div.innerHTML)));
 
-        var src = 'data:image/svg+xml;base64,' + svgHtml;
+        let src = 'data:image/svg+xml;base64,' + svgHtml;
 
 
         imgDOM = <img className='UserAvatar--img' style={imageStyle} src={src}  alt={nameOfUser} />;
@@ -189,13 +222,12 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     }
 
 
-
-
-
     return (
       <div aria-label={name} className={classes.join(' ')} style={style}>
         <div className='UserAvatar--inner' style={innerStyle}>
-          {avatar && imgDOM}
+          <div className={imageClass} style={ImageHolder}>
+            {avatar && imgDOM}
+          </div>
           {name && nameDOM}
           {id && idDOM}
         </div>
