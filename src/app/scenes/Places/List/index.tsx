@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import {Table, Row, Col, Card, TableColumnConfig} from 'antd';
+import {Table, Row, Col, Card, Icon, TableColumnConfig} from 'antd';
 import PlaceApi from '../../../api/place/index';
 import IPlace from '../../../api/place/interfaces/IPlace';
 import {columnsList, IPlaceListColumn} from './columsList';
@@ -9,6 +9,7 @@ import AccountApi from '../../../api/account/account';
 import UserAvatar from '../../../components/avatar/index';
 import IGetSystemCountersResponse from '../../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
+
 
 interface IListProps {
   counters: IGetSystemCountersResponse;
@@ -23,7 +24,7 @@ interface IListState {
 
 export default class PlaceList extends React.Component<IListProps, IListState> {
   users = {};
-  pageLimit: number = 10;
+  pageLimit: number = 20;
 
   constructor(props: any) {
     super(props);
@@ -34,10 +35,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
       loading: false,
       selectedFilter: props.selectedFilter,
       counters: props.counters,
-      pagination: {
-        current: 1,
-        total: (counter.grand_places + counter.locked_places + counter.unlocked_places % this.pageLimit) + 1
-      }
+      pagination: {}
     };
   }
 
@@ -51,10 +49,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
       let totalCounter: number = 0;
       if (props.selectedFilter === CPlaceFilterTypes.ALL) {
-        totalCounter = (counter.grand_places + counter.locked_places + counter.unlocked_places) / this.pageLimit;
-        console.log(totalCounter, counter.grand_places, counter.locked_places, counter.unlocked_places, this.pageLimit);
+        totalCounter = counter.grand_places + counter.locked_places + counter.unlocked_places;
+
       } else {
-        totalCounter = (counter[props.selectedFilter] / this.pageLimit);
+        totalCounter = counter[props.selectedFilter];
       }
 
 
@@ -62,8 +60,9 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         selectedFilter: props.selectedFilter,
         counters: props.counters,
         pagination: {
+          pageSize: this.pageLimit,
           current: 1,
-          total: Math.floor(totalCounter) + 1,
+          total: totalCounter,
         }
       };
       setTimeout(() => {
@@ -212,11 +211,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     let column = this.getColumns();
     return (
       <Card>
-        <Icon/>
         <Table
           pagination={this.state.pagination}
           onChange={this.handleTableChange.bind(this)}
-          key='_id'
+          rowKey='_id'
           columns={column}
           loading={this.state.loading}
           dataSource={this.state.places}
