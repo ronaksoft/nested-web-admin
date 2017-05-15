@@ -49,7 +49,7 @@ class List extends React.Component<IListProps, IListState> {
 
  // columns Render Handlers
 
-  nameRender = (text, user, index) => <UserAvatar avatar={true} name={true} size='24' user={user} />;
+  nameRender = (text, user, index) => <UserAvatar avatar name size='32' user={user} />;
   idRender = (text, user, index) => text;
   placesRender = (text, user, index) => user.access_places ? user.access_places.length : '-';
   joinedRender = (text, user, index) => {

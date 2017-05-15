@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Input, Row, Col, Button } from 'antd';
 import UserAvatar from './../avatar/index';
+import AAA from './../../services/classes/aaa/index';
 
 const Search = Input.Search;
 
@@ -16,6 +17,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
     }
 
     render() {
+        let loggedUser = AAA.getInstance().getUser();
         return (
             <header className='header'>
                 <Row>
@@ -31,7 +33,10 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                                 <Button type='toolkit' shape='circle' icon='setting'></Button>
                                 <Button type='toolkit' shape='circle' icon='lock'></Button>
                                 <Button type='toolkit' shape='circle' icon='member'></Button>
-                                <UserAvatar size='24' user='' />
+                                <Button type='toolkit' shape='circle'>
+                                    <UserAvatar size={24} user={loggedUser} avatar/>
+                                </Button>
+                                <Button type='toolkit' shape='circle'></Button>
                             </Col>
                         </Row>
                     </Col>
