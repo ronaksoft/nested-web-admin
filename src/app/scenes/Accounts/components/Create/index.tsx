@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Modal, Button, Row, Col, Card, Icon, notification} from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
+import update from 'immutability-helper';
 import Account from '../../Account';
 import {IAccount} from '../../IAccount';
 import IUnique from '../../IUnique';
@@ -32,6 +33,8 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     this.import = this.import.bind(this);
     this.readFile = this.readFile.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.createAccount = this.createAccount.bind(this);
+    this.cleanup = this.cleanup.bind(this);
   }
 
   handleRemove(account: IUnique) {
@@ -70,29 +73,74 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     reader.readAsText(e.target.files[0]);
   }
 
-  create () {
-    const promises = _(this.state.accounts).filter((packet) => packet.state === PacketState.Valid).map((packet, index) => {
-      packet.state = PacketState.Pending;
-      return this.accountApi.register({
-        uid: packet.model._id,
-        fname: packet.model.fname,
-        lname: packet.model.lname,
-        phone: packet.model.phone
-      }).then((result) => {
-        packet.state = PacketState.Success;
-        this.setState({
-          accounts: _.clone(this.state.accounts)
-        });
-      }).catch((error) => {
-        if (error.err_code === 3) {
-          packet.state = PacketState.Invalid;
-        }
-        packet.state = PacketState.Failure;
-        this.setState({
-          accounts: _.clone(this.state.accounts)
-        });
+  createAccount(index: number) {
+    index = index || 0;
+    const packet = this.state.accounts[index];
+    if (!packet) {
+      return;
+    }
+
+    const next = index + 1;
+    if (packet.state !== PacketState.Valid) {
+      return this.createAccount(next);
+    }
+
+    return this.accountApi.register({
+      uid: packet.model._id,
+      fname: packet.model.fname,
+      lname: packet.model.lname,
+      phone: packet.model.phone
+    }).then((result) => {
+      // apply changes
+      packet.state = PacketState.Success;
+      this.setState({
+        accounts: _.clone(this.state.accounts)
       });
-    }).value();
+
+      // continue for the next
+      return this.createAccount(next);
+    }).catch((error) => {
+      // apply changes
+      if (error.err_code === 3) {
+        packet.state = PacketState.Invalid;
+      }
+      packet.state = PacketState.Failure;
+      this.setState({
+        accounts: _.clone(this.state.accounts)
+      });
+
+      // continue for the next
+      return this.createAccount(next);
+    });
+  }
+
+  create () {
+    const allAreInvalid = _.every(this.state.accounts, { state: PacketState.Invalid });
+    if (allAreInvalid) {
+      notification.error({
+        message: 'Error',
+        description: 'Please check the validation errors first!',
+        duration: 8
+      });
+
+      return;
+    }
+
+    const someHasError = _.some(this.state.accounts, { state: PacketState.Invalid });
+    if (someHasError) {
+      notification.warning({
+        message: 'Warning',
+        description: 'Some records are not valid! Please fix the problems and submit again.',
+        duration: 8
+      });
+    }
+    this.createAccount().then((result) => {
+      notification.info({
+        message: 'Job done!',
+        description: 'Make sure all accounts have been created whithout any problem.',
+        duration: 8
+      });
+    });
   }
 
   saveRow = (row) => {
@@ -112,6 +160,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
           ]}
           className='create-accounts'
           onCancel={this.handleClose}
+          afterClose={this.cleanup}
         >
           <div>
             <Row>
@@ -143,11 +192,12 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     );
   }
 
-  handleClose() {
-    this.setState({
-      accounts: [new Packet(new Account())]
-    });
+  private handleClose() {
     this.props.handleClose();
+  }
+
+  private cleanup() {
+    this.state.accounts = [new Packet(new Account())];
   }
 
   private import(text: string) {
@@ -169,16 +219,6 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     this.setState({
       accounts: _.concat(this.state.accounts, importedAccounts)
     });
-  }
-
-  private replaceByKey(items: IUnique, item: IUnique) {
-    const index = _.findIndex(items, { 'key' : item.key });
-
-    if (index > -1) {
-      items.splice(index, 1, item);
-    }
-
-    return items;
   }
 }
 
