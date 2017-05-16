@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Modal, Button, Row, Col, Card, Icon, notification} from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
-import update from 'immutability-helper';
 import Account from '../../Account';
 import {IAccount} from '../../IAccount';
 import IUnique from '../../IUnique';
@@ -28,6 +27,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     };
     this.accountApi = new AccountApi();
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleChange = _.debounce(this.handleChange.bind(this), 256);
     this.add = this.add.bind(this);
     this.create = this.create.bind(this);
     this.import = this.import.bind(this);
@@ -35,6 +35,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     this.handleClose = this.handleClose.bind(this);
     this.createAccount = this.createAccount.bind(this);
     this.cleanup = this.cleanup.bind(this);
+    this.addItemWithDelay = this.addItemWithDelay.bind(this);
   }
 
   handleRemove(account: IUnique) {
@@ -43,17 +44,17 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     });
   }
 
-  handleChange = (key, model, errors) => {
-    var index = _.findIndex(this.state.accounts, { key: key });
-    if (index > -1) {
-      _.assign(this.state.accounts[index].model, model);
+  handleChange(key: string, model: any, errors: Array) {
+    const packet = _.find(this.state.accounts, { key: key });
+    if (!packet) {
+      return;
     }
 
-    const hasError = _.some(errors, (error) => {
-      return _.isArray(error) && _.size(error) > 0;
-    });
-
-    this.state.accounts[index].state = hasError ? PacketState.Invalid : PacketState.Valid;
+    const account = new Account(model._id, model.fname, model.lname, model.phone);
+    packet.model = account;
+    const hasError = _.some(errors, (error) => _.isArray(error) && _.size(error) > 0);
+    packet.state = hasError ? PacketState.Invalid : PacketState.Valid;
+    console.log('changed');
   }
 
   add() {
@@ -92,9 +93,11 @@ class Create extends React.Component<ICreateProps, ICreateState> {
       phone: packet.model.phone
     }).then((result) => {
       // apply changes
+
       packet.state = PacketState.Success;
+      this.state.accounts[index] = packet;
       this.setState({
-        accounts: _.clone(this.state.accounts)
+        accounts: this.state.accounts
       });
 
       // continue for the next
@@ -105,8 +108,9 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         packet.state = PacketState.Invalid;
       }
       packet.state = PacketState.Failure;
+      this.state.accounts[index] = packet;
       this.setState({
-        accounts: _.clone(this.state.accounts)
+        accounts: this.state.accounts
       });
 
       // continue for the next
@@ -115,25 +119,19 @@ class Create extends React.Component<ICreateProps, ICreateState> {
   }
 
   create () {
-    const allAreInvalid = _.every(this.state.accounts, { state: PacketState.Invalid });
-    if (allAreInvalid) {
-      notification.error({
-        message: 'Error',
-        description: 'Please check the validation errors first!',
+    console.log(this.state.accounts);
+
+    const hasError = _.some(this.state.accounts, { state: PacketState.Invalid });
+    if (hasError) {
+      notification.warning({
+        message: 'Warning',
+        description: 'Some records are not valid! Please fix the problems and try again.',
         duration: 8
       });
 
       return;
     }
 
-    const someHasError = _.some(this.state.accounts, { state: PacketState.Invalid });
-    if (someHasError) {
-      notification.warning({
-        message: 'Warning',
-        description: 'Some records are not valid! Please fix the problems and submit again.',
-        duration: 8
-      });
-    }
     this.createAccount().then((result) => {
       notification.info({
         message: 'Job done!',
@@ -200,9 +198,18 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     this.state.accounts = [new Packet(new Account())];
   }
 
+  private addItemWithDelay(item: Packet, delay: number) {
+    return new Promise(resolve => setTimeout(resolve, delay)).then(() => {
+      this.setState({
+        accounts: [...this.state.accounts, item]
+      });
+    });
+  }
+
   private import(text: string) {
     const CSV_ROW_ITEMS_COUNT = 4;
     const MAX_ITEMS_IN_FILE = 100;
+    const DELAY_BETWEEN_IMPORT_ITEM = 128;
     const data = CSV.parse(text);
     if (_.size(data) > MAX_ITEMS_IN_FILE) {
       notification.warning({
@@ -212,12 +219,25 @@ class Create extends React.Component<ICreateProps, ICreateState> {
       });
       return;
     }
-    const importedAccounts = _(data).filter((row) => row.length === CSV_ROW_ITEMS_COUNT).map((row) => {
+    const packets = _(data).filter((row) => row.length === CSV_ROW_ITEMS_COUNT).map((row) => {
       return new Packet(new Account(row[0], row[1], row[2], row[3]));
     }).value();
 
-    this.setState({
-      accounts: _.concat(this.state.accounts, importedAccounts)
+    let setNext = (index: number) => {
+      index = index || 0;
+      const item = packets[index];
+      if (!item) {
+        return Promise.resolve(index);
+      }
+
+      return this.addItemWithDelay(item, DELAY_BETWEEN_IMPORT_ITEM).then(() => setNext(index + 1));
+    };
+
+    return setNext(0).then(() => {
+      notification.success({
+        message: 'Import',
+        description: `All ${packets.length} account(s) have been imported successfully.`
+      });
     });
   }
 }
