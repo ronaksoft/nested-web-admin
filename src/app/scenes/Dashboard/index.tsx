@@ -40,8 +40,8 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
     render() {
         return (
           <div>
-              <Row>
-                  <Col span={24}>
+              <Row className='toolbar' type='flex' align='center'>
+                  <Col span={6}>
                     <Popover placement='rightTop' title={headline} content={content} arrowPointAtCenter>
                         <h1>Company Name Dashboard</h1>
                     </Popover>
