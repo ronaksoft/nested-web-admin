@@ -54,6 +54,9 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
       }
     })((props: any) => {
       const { getFieldDecorator } = props.form;
+      const disabled = this.state.packet.state === PacketState.Success || this.state.packet.state === PacketState.Pending;
+      const pending = this.state.packet.state === PacketState.Pending;
+      const success = this.state.packet.state === PacketState.Success;
       return (
         <Form layout='inline' className='account-row'>
             <Form.Item>
@@ -67,6 +70,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
               })(
                 <Input
                       placeholder='+98 987 6543210'
+                      disabled={disabled}
                 />
               )}
             </Form.Item>
@@ -85,6 +89,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
               })(
                 <Input
                       placeholder='john-doe'
+                      disabled={disabled}
                 />
               )}
 
@@ -100,6 +105,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
               })(
                 <Input
                       placeholder='John'
+                      disabled={disabled}
                 />
               )}
 
@@ -115,30 +121,23 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
               })(
                 <Input
                       placeholder='Doe'
+                      disabled={disabled}
                 />
               )}
 
             </Form.Item>
             <Form.Item>
               {
-                this.state.packet.state === PacketState.New &&
+                !(pending || success) &&
                 <Button shape='circle' type='delete-row' icon='delete' size='large' onClick={() => this.props.onRemove(this.state.packet)}/>
               }
               {
-                this.state.packet.state === PacketState.Pending &&
+                pending &&
                 <Icon type='loading'/>
               }
               {
-                this.state.packet.state === PacketState.Success &&
+                success &&
                 <Icon type='check-circle-o' className='account-success-icon'/>
-              }
-              {
-                this.state.packet.state === PacketState.Failure &&
-                <Icon type='close-circle-o' className='account-failure-icon' />
-              }
-              {
-                this.state.packet.state === PacketState.Invalid &&
-                <Icon type='exclamation-circle-o' className='account-failure-icon' />
               }
             </Form.Item>
         </Form>
@@ -152,6 +151,17 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
           </Col>
         </Row>
     );
+  }
+
+  componentDidMount() {
+    if (this.state.packet.state !== PacketState.New) {
+      this.form.validateFields((errors, values) => {
+        const errors = _(errors).map((value, key) => value.errors).flatten().value();
+        if (_.size(errors) > 0) {
+          this.state.packet.state = PacketState.Invalid;
+        }
+      });
+    }
   }
 }
 

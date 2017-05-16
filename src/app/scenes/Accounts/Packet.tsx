@@ -14,10 +14,8 @@ export default class Packet<T> implements IUnique {
     this.state = PacketState.New;
     this.messages = [];
 
-    this.isSuccessfull = this.isSuccessfull.bind(this);
-  }
-
-  isSuccessfull() {
-    return this.state === PacketState.Success;
+    if (this.model && this.model._id) {
+      this.state = PacketState.Filled;
+    }
   }
 }
