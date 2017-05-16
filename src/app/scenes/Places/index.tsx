@@ -86,9 +86,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             <Filter totalCount={filterItems[0].count} menus={filterItems} onChange={this.changeFilter.bind(this)}/>
             }
           </Col>
-          <Col span={18}>
-
-          </Col>
+          <Col span={18}></Col>
         </Row>
         <Row>
           <Col span={24}>
