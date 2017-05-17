@@ -198,52 +198,46 @@ class View extends React.Component<IViewProps, IViewState> {
             </Col>
             <Col span={2}></Col>
           </Row>
-          <Row>
-            <Col span={24}>
-
-              {
-                managerInPlaces.length > 0 &&
-                <Row className='devide-row'>
-                  <Col span={18}>
-                    Manager of
-                  </Col>
-                  <Col style={{textAlign : 'right'}} span={6}>
-                    {managerInPlaces.length} place
-                  </Col>
-                </Row>
-                }
-              {
-                managerInPlaces.length > 0 &&
-                <Row className='remove-margin'>
-                  <Col span={24}>
-                    {managerInPlaces.map((place) => <PlaceItem place={place} />)}
-                  </Col>
-                </Row>
-              }
-              {
-                memberInPlaces.length > 0 &&
-                <Row className='devide-row'>
-                  <Col span={18}>
-                    Member of
-                  </Col>
-                  <Col style={{textAlign : 'right'}} span={6}>
-                    {memberInPlaces.length} place
-                  </Col>
-                </Row>
-              }
-              {
-                memberInPlaces.length > 0 &&
-                <Row>
-                  <Col span={24}>
-                    {memberInPlaces.map((place) => <PlaceItem place={place} key={place._id} />)}
-                  </Col>
-                </Row>
-              }
-
-            </Col>
-          </Row>
+          {
+            managerInPlaces.length > 0 &&
+            <Row className='devide-row'>
+              <Col span={18}>
+                Manager of
+              </Col>
+              <Col style={{textAlign : 'right'}} span={6}>
+                {managerInPlaces.length} place
+              </Col>
+            </Row>
+          }
+          {
+            managerInPlaces.length > 0 &&
+            <Row className='remove-margin'>
+              <Col span={24}>
+                {managerInPlaces.map((place) => <PlaceItem place={place} />)}
+              </Col>
+            </Row>
+          }
+          {
+            memberInPlaces.length > 0 &&
+            <Row className='devide-row'>
+              <Col span={18}>
+                Member of
+              </Col>
+              <Col style={{textAlign : 'right'}} span={6}>
+                {memberInPlaces.length} place
+              </Col>
+            </Row>
+          }
+          {
+            memberInPlaces.length > 0 &&
+            <Row className='remove-margin'>
+              <Col span={24}>
+                {memberInPlaces.map((place) => <PlaceItem place={place} key={place._id} />)}
+              </Col>
+            </Row>
+          }
         </Modal>
-        </Row>
+      </Row>
     );
   }
 }
