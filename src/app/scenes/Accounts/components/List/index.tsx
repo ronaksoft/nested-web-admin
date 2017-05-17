@@ -13,6 +13,7 @@ import IDisableRequest from '../../../../api/account/interfaces/IDisableRequest'
 import IPromoteRequest from '../../../../api/account/interfaces/IPromoteRequest';
 import IDemoteRequest from '../../../../api/account/interfaces/IDemoteRequest';
 import FilterGroup from '../../FilterGroup';
+import View from '../View/index';
 
 
 interface IListProps {
@@ -23,6 +24,8 @@ interface IListProps {
 interface IListState {
   users: IPerson[];
   filter: FilterGroup;
+  viewAccount: boolean;
+  chosen: IAccount;
 }
 
 class List extends React.Component<IListProps, IListState> {
@@ -49,8 +52,10 @@ class List extends React.Component<IListProps, IListState> {
 
  // columns Render Handlers
 
+
   nameRender = (text, user, index) => <UserAvatar avatar name size='32' user={user} />;
-  idRender = (text, user, index) => text;
+  idRender = (text, user, index) => <a onClick={() => this.onItemClick(user)}>{text}</a>;
+
   placesRender = (text, user, index) => user.access_places ? user.access_places.length : '-';
   joinedRender = (text, user, index) => {
     const value = moment(user.joined_on, 'YYYY-MM-DD');
@@ -179,6 +184,19 @@ class List extends React.Component<IListProps, IListState> {
     this.setState({ selectedRowKeys });
   }
 
+  onItemClick = (account) => {
+    this.setState({
+      chosen: account,
+      viewAccount: true
+    });
+  }
+
+  onCloseView = () => {
+    this.setState({
+      viewAccount: false
+    });
+  }
+
  onColumnCheckChange = (item) => {
    item.checked = !item.checked;
    const dataColumns = _.clone(this.state.dataColumns);
@@ -291,7 +309,9 @@ class List extends React.Component<IListProps, IListState> {
       counters: {
         enabled_accounts: 0,
         disabled_accounts: 0
-      }
+      },
+      viewAccount: false,
+      chosen: {}
     };
 
     this.state.dataColumns = _.map(this.dataColumns, (value, key) => {
@@ -329,9 +349,11 @@ class List extends React.Component<IListProps, IListState> {
     });
   }
 
+  handleChange(account: IPerson) {
+    console.log(account);
+  }
+
   render() {
-    console.log(`_.join(this.state.columns, ',')`, _.join(this.state.columns, ','));
-    console.log('this.state.columns', this.state.columns);
     window.localStorage.setItem(this.COLUMNS_STORAGE_KEY, _.join(this.state.columns, ','));
     const optionsPopover = (
       <ul>
@@ -377,9 +399,10 @@ class List extends React.Component<IListProps, IListState> {
               dataSource={this.state.accounts}
               size='middle'
               className='nst-table'
-              scroll={{x: 960}}
+              scroll={{ x: 960 }}
               loading={this.state.loading}
         />
+        <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange} onClose={this.onCloseView} />
       </Card>
     );
   }
@@ -410,6 +433,7 @@ class List extends React.Component<IListProps, IListState> {
         accounts: result.accounts,
         loading: false
       });
+      console.log(result.accounts);
     }).catch((error) => {
       this.setState({
         loading: false
