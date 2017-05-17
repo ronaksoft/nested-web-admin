@@ -143,7 +143,7 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
       textOverflow: 'ellipsis',
       maxWidth: '135px',
       fontSize: '14px',
-      lineHeight: '19px',
+      lineHeight: size,
       color: 'black',
       paddingLeft: '8px'
     };

@@ -31,7 +31,7 @@ export default class AAA {
     }
 
     getUser(): any {
-        return this.account;
+        return this.account.account;
     }
 
     setIsUnAthenticated() : void {
