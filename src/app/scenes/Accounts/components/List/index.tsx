@@ -339,10 +339,6 @@ class List extends React.Component<IListProps, IListState> {
   }
 
   onPageChange(value: Number) {
-    this.setState({
-      loading: true
-    });
-
     this.load(value);
     this.setState({
       currentPage: value
@@ -408,6 +404,9 @@ class List extends React.Component<IListProps, IListState> {
   }
 
   private load(page: Number, size: Number = 10) {
+    this.setState({
+      loading: true
+    });
     page = page || this.state.currentPage;
     const skip = (page - 1) * size;
     let filter = 'users';
