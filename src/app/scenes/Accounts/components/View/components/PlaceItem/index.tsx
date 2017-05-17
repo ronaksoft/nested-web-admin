@@ -7,7 +7,7 @@ function PlaceItem(props: any) {
   return (
     <Row className='place-row' type='flex' align='middle'>
       <Col span={24}>
-        {/*<PlaceView borderRadius={4} place={props.place} size={32} avatar name id></PlaceView>*/}
+        {props.place.name}
       </Col>
     </Row>
   );

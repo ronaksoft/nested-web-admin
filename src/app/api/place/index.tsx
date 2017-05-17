@@ -2,7 +2,7 @@ import Api from './../index';
 import IPlaceListResponse from './interfaces/IPlaceListResponse';
 import IPlaceListRequest from './interfaces/IPlaceListRequest';
 
-export default class AccountApi {
+export default class PlaceApi {
   private api;
 
   constructor() {
@@ -18,6 +18,13 @@ export default class AccountApi {
       return res.places;
     }).catch((err) => {
       console.log(err);
+    });
+  }
+
+  getAccountPlaces(params: IAccountPlacesRequest): Promise<any> {
+    return this.api.server.request({
+      cmd: 'admin/account_list_places',
+      data: params,
     });
   }
 
