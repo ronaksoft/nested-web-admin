@@ -374,7 +374,10 @@ IListState > {
                 }} rowKey='_id' rowSelection={rowSelection} columns={columns} dataSource={this.state.accounts} size='middle' className='nst-table' scroll={{
                     x: 960
                 }} loading={this.state.loading}/>
-                <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange} onClose={this.onCloseView}/>
+                {
+                  this.state.chosen && this.state.chosen._id &&
+                  <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange} onClose={this.onCloseView}/>
+                }
             </Card>
         );
     }

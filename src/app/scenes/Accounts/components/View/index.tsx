@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {Modal, Row, Col} from 'antd';
+import {Modal, Row, Col, Spin} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import PlaceItem from './components/PlaceItem/index';
 import IPerson from '../../IPerson';
+import PlaceApi from '../../../../api/place/index';
 
 interface IViewProps {
   visible: boolean;
@@ -25,22 +26,49 @@ class View extends React.Component<IViewProps, IViewState> {
       setDateOfBirth: false
     };
 
-    this.cleanup = this.cleanup.bind(this);
+    this.loadPlaces = this.loadPlaces.bind(this);
   }
 
-  cleanup() {
+  componentDidMount() {
+    this.placeApi = new PlaceApi();
+    if (this.props.account && this.props.account._id) {
+      this.loadPlaces(this.props.account._id);
+    }
+  }
+
+  componentWillReceiveProps(nextProps: IViewProps) {
+    if (nextProps.account && nextProps.account._id) {
+      this.loadPlaces(nextProps.account._id);
+    }
+  }
+
+  loadPlaces(accountId: string) {
     this.setState({
-      setEmail: false
+      loading: true
+    });
+
+    this.placeApi.getAccountPlaces({
+      account_id: accountId
+    }).then((result) => {
+      this.setState({
+        places: result.places,
+        loading: false
+      });
+    }).catch((error) => {
+      console.log('error', error);
+      this.setState({
+        places: [],
+        loading: false
+      });
     });
   }
 
   render() {
-    // todo: ask server to get place objects
-    const memberInPlaces = this.props.account.access_places || [];
-    const managerInPlaces = this.props.account.access_places || [];
+    const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.accesses, 'C'));
+    const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
 
     return (
-      <Modal key={_.uniqueId()} visible={this.props.visible} onCancel={this.props.onClose} footer={null} afterClose={this.cleanup}>
+      <Modal key={this.props.account._id} visible={this.props.visible} onCancel={this.props.onClose} footer={null}>
         <Row>
           <Col span={8}>
             Photo
@@ -175,44 +203,50 @@ class View extends React.Component<IViewProps, IViewState> {
 
           </Col>
         </Row>
-        {
-          managerInPlaces.length > 0 &&
-          <Row>
-            <Col span={20}>
-              Manager of
-            </Col>
-            <Col span={4}>
-              {managerInPlaces.length}
-            </Col>
-          </Row>
-        }
-        {
-          managerInPlaces.length > 0 &&
-          <Row>
-            <Col span={24}>
-              {managerInPlaces.map((place) => <PlaceItem place={place} />)}
-            </Col>
-          </Row>
-        }
-        {
-          memberInPlaces.length > 0 &&
-          <Row>
-            <Col span={20}>
-              Member of
-            </Col>
-            <Col span={4}>
-              {memberInPlaces.length}
-            </Col>
-          </Row>
-        }
-        {
-          memberInPlaces.length > 0 &&
-          <Row>
-            <Col span={24}>
-              {memberInPlaces.map((place) => <PlaceItem place={place} />)}
-            </Col>
-          </Row>
-        }
+        <Row>
+          <Col span={24}>
+
+            {
+              managerInPlaces.length > 0 &&
+              <Row>
+                <Col span={20}>
+                  Manager of
+                </Col>
+                <Col span={4}>
+                  {managerInPlaces.length}
+                </Col>
+              </Row>
+            }
+            {
+              managerInPlaces.length > 0 &&
+              <Row>
+                <Col span={24}>
+                  {managerInPlaces.map((place) => <PlaceItem place={place} key={place._id} />)}
+                </Col>
+              </Row>
+            }
+            {
+              memberInPlaces.length > 0 &&
+              <Row>
+                <Col span={20}>
+                  Member of
+                </Col>
+                <Col span={4}>
+                  {memberInPlaces.length}
+                </Col>
+              </Row>
+            }
+            {
+              memberInPlaces.length > 0 &&
+              <Row>
+                <Col span={24}>
+                  {memberInPlaces.map((place) => <PlaceItem place={place} key={place._id} />)}
+                </Col>
+              </Row>
+            }
+
+          </Col>
+        </Row>
       </Modal>
     );
   }

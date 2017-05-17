@@ -6,7 +6,7 @@ function PlaceItem(props: any) {
   return (
     <Row>
       <Col span={24}>
-        {props.place}
+        {props.place.name}
       </Col>
     </Row>
   );
