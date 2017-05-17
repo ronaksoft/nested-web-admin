@@ -8,6 +8,7 @@ import IUser from '../../../api/account/interfaces/IUser';
 import AccountApi from '../../../api/account/account';
 import UserAvatar from '../../../components/avatar/index';
 import PlaceView from '../../../components/placeview/index';
+import PlaceModal from '../../../components/PlaceModal/index';
 import IGetSystemCountersResponse from '../../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
 
@@ -21,6 +22,8 @@ interface IListState {
   loading: boolean;
   pagination: {};
   selectedFilter: CPlaceFilterTypes;
+  visibelPlaceModal?: boolean;
+  selectedPlace?: IPlace;
 }
 
 export default class PlaceList extends React.Component<IListProps, IListState> {
@@ -73,7 +76,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
   }
 
   handleTableChange(pagination: any) {
-    const pager = {...this.state.pagination};
+    const pager = {...this.state.pagination };
     pager.current = pagination.current;
     this.setState({
       pagination: pager,
@@ -81,6 +84,21 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     setTimeout(() => {
       this.fetchPlaces();
     }, 100);
+  }
+
+  showPlaceModal(record: IPlace, index: number) {
+    if (record) {
+      this.setState({
+        selectedPlace: record,
+        visibelPlaceModal: true,
+      });
+    }
+  }
+
+  closePlaceModal() {
+    this.setState({
+      visibelPlaceModal: false,
+    });
   }
 
   fetchPlaces() {
@@ -91,7 +109,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
     let placeApi = new PlaceApi();
     placeApi.placeList({
-      filter : this.state.selectedFilter === CPlaceFilterTypes.ALL ? null : this.state.selectedFilter,
+      filter: this.state.selectedFilter === CPlaceFilterTypes.ALL ? null : this.state.selectedFilter,
       limit: this.pageLimit,
       skip: (this.state.pagination.current - 1) * this.pageLimit,
     }).then(this.setPlaces.bind(this));
@@ -120,110 +138,113 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
   }
 
   getUser(userId: string): IUser | null {
-    if (this.users[userId]) {
-      return this.users[userId];
-    } else {
-      return null;
-    }
+  if (this.users[userId]) {
+    return this.users[userId];
+  } else {
+    return null;
   }
+}
 
-  renderPlaceCell(text: string, record: IPlace, index: any) {
-    return <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>;
-  }
+renderPlaceCell(text: string, record: IPlace, index: any) {
+  return <a onClick={() => { this.showPlaceModal(record, 1); } }><PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView></a>;
+}
 
-  renderUsersCell(text: string, record: IPlace, index: any) {
-    let users = [];
-    let moreUserCounter = 0;
-    const limit = 3;
+renderUsersCell(text: string, record: IPlace, index: any) {
+  let users = [];
+  let moreUserCounter = 0;
+  const limit = 3;
 
-    if (record.creators && record.creators.length > 0) {
-      record.creators.forEach((userId: string) => {
-        if (users.length >= limit) {
-          moreUserCounter++;
-          return;
-        }
-        if (this.getUser(userId)) {
-          const user = this.getUser(userId);
-          users.push(<UserAvatar avatar key={userId} user={user} size={20}/>);
-        }
-      });
-    }
-    return (
-      <Row type='flex' gutter={4} justify='start'>
-        {users}
-        {moreUserCounter > 0 &&
-        <span>+{moreUserCounter}</span>
-        }
-      </Row>
-    );
-  }
-
-  renderMemberCounterCell(text: string, record: IPlace, index: any) {
-    const count = record.counters.creators + record.counters.key_holders;
-    return (<div><Icon type='user' title={'Members'}/>{count}</div>);
-  }
-
-  renderSubPlaceCounterCell(text: string, record: IPlace, index: any) {
-    const count = record.counters.childs;
-    return (<div>{count}</div>);
-  }
-
-  renderPlaceTypeCell(text: string, record: IPlace, index: any) {
-    return text;
-  }
-
-  getColumns() {
-    let columns: Array <TableColumnConfig> = [];
-    columnsList.forEach((column: IPlaceListColumn) => {
-
-      let renderer: (text: string, record: IPlace, index: any) => {};
-
-      switch (column.renderer) {
-        case 'place' :
-          renderer = this.renderPlaceCell;
-          break;
-        case 'users' :
-          renderer = this.renderUsersCell.bind(this);
-          break;
-        case 'memberCounter' :
-          renderer = this.renderMemberCounterCell;
-          break;
-        case 'subPlaceCounter' :
-          renderer = this.renderSubPlaceCounterCell;
-          break;
-        case 'placeType' :
-          renderer = this.renderPlaceTypeCell;
-          break;
+  if (record.creators && record.creators.length > 0) {
+    record.creators.forEach((userId: string) => {
+      if (users.length >= limit) {
+        moreUserCounter++;
+        return;
       }
-
-      columns.push(
-        {
-          title: column.title,
-          dataIndex: column.key,
-          key: column.key,
-          render: renderer
-        }
-      );
+      if (this.getUser(userId)) {
+        const user = this.getUser(userId);
+        users.push(<UserAvatar avatar key={userId} user={user} size={20}/>);
+      }
     });
-    return columns;
   }
+  return (
+    <Row type='flex' gutter={4} justify='start'>
+      {users}
+      {moreUserCounter > 0 &&
+        <span>+{moreUserCounter}</span>
+      }
+    </Row>
+  );
+}
 
-  render() {
-    let column = this.getColumns();
-    return (
-      <Card>
-        <Table
-          pagination={this.state.pagination}
-          onChange={this.handleTableChange.bind(this)}
-          rowKey='_id'
-          columns={column}
-          loading={this.state.loading}
-          dataSource={this.state.places}
-          size='middle'
-          scroll={{x: 960}}
-        />
-      </Card>
+renderMemberCounterCell(text: string, record: IPlace, index: any) {
+  const count = record.counters.creators + record.counters.key_holders;
+  return (<div><Icon type='user' title={'Members'}/>{count}</div>);
+}
+
+renderSubPlaceCounterCell(text: string, record: IPlace, index: any) {
+  const count = record.counters.childs;
+  return (<div>{count}</div>);
+}
+
+renderPlaceTypeCell(text: string, record: IPlace, index: any) {
+  return text;
+}
+
+getColumns() {
+  let columns: Array<TableColumnConfig> = [];
+  columnsList.forEach((column: IPlaceListColumn) => {
+
+    let renderer: (text: string, record: IPlace, index: any) => {};
+
+    switch (column.renderer) {
+      case 'place':
+        renderer = this.renderPlaceCell.bind(this);
+        break;
+      case 'users':
+        renderer = this.renderUsersCell.bind(this);
+        break;
+      case 'memberCounter':
+        renderer = this.renderMemberCounterCell;
+        break;
+      case 'subPlaceCounter':
+        renderer = this.renderSubPlaceCounterCell;
+        break;
+      case 'placeType':
+        renderer = this.renderPlaceTypeCell;
+        break;
+    }
+
+    columns.push(
+      {
+        title: column.title,
+        dataIndex: column.key,
+        key: column.key,
+        render: renderer
+      }
     );
-  }
+  });
+  return columns;
+}
+
+render() {
+  let column = this.getColumns();
+  return (
+    <Card>
+      {this.state.selectedPlace &&
+        <PlaceModal visible={this.state.visibelPlaceModal} place={this.state.selectedPlace} onClose={this.closePlaceModal.bind(this) } />
+      }
+      <Table
+        pagination={this.state.pagination}
+        onChange={this.handleTableChange.bind(this) }
+        rowKey='_id'
+        columns={column}
+        loading={this.state.loading}
+        dataSource={this.state.places}
+        size='middle'
+        scroll={{ x: 960 }}
+        />
+    </Card>
+  );
+}
 
 }
