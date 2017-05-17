@@ -210,13 +210,24 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     const CSV_ROW_ITEMS_COUNT = 4;
     const MAX_ITEMS_IN_FILE = 100;
     const DELAY_BETWEEN_IMPORT_ITEM = 128;
+    if (!(_.isString(text) && text.length > 0)) {
+        notification.warning({
+            message: 'Attention',
+            description: 'The file is empty!'
+        });
+
+        return;
+    }
+
     const data = CSV.parse(text);
+
     if (_.size(data) > MAX_ITEMS_IN_FILE) {
       notification.warning({
         message: 'Attention',
         description: 'There are more than 100 items in the file. Please sparate the items into smaller files.',
         duration: 8
       });
+
       return;
     }
     const packets = _(data).filter((row) => row.length === CSV_ROW_ITEMS_COUNT).map((row) => {
