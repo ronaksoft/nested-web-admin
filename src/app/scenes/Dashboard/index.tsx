@@ -40,8 +40,8 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
     render() {
         return (
           <div>
-              <Row>
-                  <Col span={24}>
+              <Row className='toolbar' type='flex' align='center'>
+                  <Col span={6}>
                     <Popover placement='rightTop' title={headline} content={content} arrowPointAtCenter>
                         <h1>Company Name Dashboard</h1>
                     </Popover>
@@ -60,21 +60,21 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                     </Col>
               </Row>
               <Row gutter={24} className='dashboardRow'>
-                    <Col span={8}>
-                      <Card loading title={card3Title} extra={card3Extra}>
-                            Whatever content
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                      <Card loading title={card4Title} extra={card4Extra}>
-                            Whatever content
-                        </Card>
-                    </Col>
-                    <Col span={8}>
-                      <Card loading title={card5Title} extra={card5Extra}>
-                            Whatever content
-                        </Card>
-                    </Col>
+                <Col span={8}>
+                    <Card loading title={card3Title} extra={card3Extra}>
+                        Whatever content
+                    </Card>
+                </Col>
+                <Col span={8}>
+                    <Card loading title={card4Title} extra={card4Extra}>
+                        Whatever content
+                    </Card>
+                </Col>
+                <Col span={8}>
+                    <Card loading title={card5Title} extra={card5Extra}>
+                        Whatever content
+                    </Card>
+                </Col>
               </Row>
           </div>
       );

@@ -80,15 +80,13 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     return (
       <div>
-        <Row>
-          <Col span={12}>
+        <Row className='toolbar' type='flex' align='center'>
+          <Col span={6}>
             {this.state.loadCounters &&
             <Filter totalCount={filterItems[0].count} menus={filterItems} onChange={this.changeFilter.bind(this)}/>
             }
           </Col>
-          <Col span={12}>
-
-          </Col>
+          <Col span={18}></Col>
         </Row>
         <Row>
           <Col span={24}>

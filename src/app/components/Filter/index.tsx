@@ -48,6 +48,12 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
 
   render() {
 
+    const iconStyle = {
+      width: '24px',
+      height: '24px',
+      verticalAlign: 'middle'
+    };
+
     const menus = [];
     this.props.menus.forEach((menu: IMenuItem, index: number) => {
       const data = [
@@ -95,21 +101,15 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
     return (
       <Row>
         <Col>
-          <h3>
-            <Row>
-              <Col span={2}>
-                <b>{this.state.selectedItem.count} </b>
-              </Col>
-              <Col>
-                { this.state.selectedItem.name }
-                <Dropdown overlay={<Menu>{ menus }</Menu>} trigger={['click']}>
-                  <a className='ant-dropdown-link' href='#'>
-                    <Icon type='down'/>
-                  </a>
-                </Dropdown>
-              </Col>
-            </Row>
-          </h3>
+          <h2>
+            <b>{this.state.selectedItem.count} </b>
+            { this.state.selectedItem.name }
+            <Dropdown overlay={<Menu>{ menus }</Menu>} trigger={['click']}>
+              <a className='ant-dropdown-link' href='#'>
+                <Icon type=' nst-ico ic_heavy_arrow_down_solid_24' style={iconStyle}/>
+              </a>
+            </Dropdown>
+          </h2>
         </Col>
       </Row>
     );
