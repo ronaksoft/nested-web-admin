@@ -3,7 +3,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 
 import Filter from './../../components/Filter/index';
-import {Row, Col} from 'antd';
+import {Row, Col, Icon} from 'antd';
 import PlaceList from './List/index';
 import SystemApi from '../../api/system/index';
 import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
