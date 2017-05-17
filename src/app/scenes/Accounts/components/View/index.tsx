@@ -1,10 +1,12 @@
 import * as React from 'react';
-import {Modal, Row, Col, Spin} from 'antd';
+import {Modal, Row, Col, Spin, Button} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import PlaceItem from './components/PlaceItem/index';
 import IPerson from '../../IPerson';
 import PlaceApi from '../../../../api/place/index';
+import UserAvatar from '../../../../components/avatar/index';
+
 
 interface IViewProps {
   visible: boolean;
@@ -66,72 +68,72 @@ class View extends React.Component<IViewProps, IViewState> {
   render() {
     const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.accesses, 'C'));
     const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
-
+    var user = this.props.account;
     return (
-      <Modal key={this.props.account._id} visible={this.props.visible} onCancel={this.props.onClose} footer={null}>
-        <Row>
+      <Modal key={this.props.account._id} visible={this.props.visible} onCancel={this.props.onClose} footer={null}
+             afterClose={this.cleanup} className='account-modal nst-modal' width={480} title='Account Info'>
+
+      <Row>
+      <Modal key={_.uniqueId()} visible={this.props.visible} onCancel={this.props.onClose} footer={null}
+      afterClose={this.cleanup} className='account-modal nst-modal' width={480} title='Account Info'>
+        <Row type='flex' align='middle'>
           <Col span={8}>
-            Photo
+          <UserAvatar avatar size={64} user={user} />
           </Col>
-          <Col span={8}>
-            <a onClick={this.changePhoto}>Change Photo</a>
-          </Col>
-          <Col span={8}>
-            <a onClick={this.removePhoto}>Remove Photo</a>
+          <Col span={16}>
+            <a className='change-photo' onClick={this.changePhoto}>Change Photo</a>
+            <a className='remove-photo' onClick={this.removePhoto}>Remove Photo</a>
           </Col>
         </Row>
         <Row>
           <Col span={8}>
-            First Name
+            <label>First Name</label>
           </Col>
           <Col span={14}>
             <b>{this.props.account.fname}</b>
           </Col>
           <Col span={2}>
-            edit
+            <Button type='toolkit nst-ico ic_pencil_solid_16'></Button>
           </Col>
         </Row>
         <Row>
           <Col span={8}>
-            Last Name
+            <label>Last Name</label>
           </Col>
           <Col span={14}>
             <b>{this.props.account.lname}</b>
           </Col>
           <Col span={2}>
-            edit
+            <Button type='toolkit nst-ico ic_pencil_solid_16'></Button>
           </Col>
         </Row>
         <Row>
           <Col span={8}>
-            User ID
+            <label>User ID</label>
           </Col>
           <Col span={14}>
-            @{this.props.account._id}
+            <b>@{this.props.account._id}</b>
           </Col>
-          <Col span={2}>
-          </Col>
+          <Col span={2}></Col>
         </Row>
         <Row>
           <Col span={8}>
-            Status
+            <label>Status</label>
           </Col>
           <Col span={14}>
-            {this.props.account.disabled ? 'Not Active' : 'Active'}
+            <b>{this.props.account.disabled ? 'Not Active' : 'Active'}</b>
           </Col>
-          <Col span={2}>
-            options
-          </Col>
+          <Col span={2}></Col>
         </Row>
         <Row>
           <Col span={8}>
-            Password
+            <label>Birthday</label>
           </Col>
           <Col span={14}>
             Where can I find it?
           </Col>
           <Col span={2}>
-            options
+            <Button type='toolkit nst-ico ic_more_solid_16'></Button>
           </Col>
         </Row>
         <Row>
@@ -139,15 +141,15 @@ class View extends React.Component<IViewProps, IViewState> {
             Phone Number
           </Col>
           <Col span={14}>
-            {this.props.account.phone}
+            <b>{this.props.account.phone}</b>
           </Col>
           <Col span={2}>
-            edit
+            <Button type='toolkit nst-ico ic_pencil_solid_16'></Button>
           </Col>
         </Row>
         <Row>
           <Col span={8}>
-            Birthday
+            <label>Birthday</label>
           </Col>
           <Col span={14}>
           {
@@ -170,13 +172,11 @@ class View extends React.Component<IViewProps, IViewState> {
           </p>
           </Modal>
           </Col>
-          <Col span={2}>
-            edit
-          </Col>
+          <Col span={2}></Col>
         </Row>
         <Row>
           <Col span={8}>
-            Email
+            <label>Email</label>
           </Col>
           <Col span={14}>
             {
@@ -199,40 +199,38 @@ class View extends React.Component<IViewProps, IViewState> {
             </p>
             </Modal>
           </Col>
-          <Col span={2}>
-
-          </Col>
+          <Col span={2}></Col>
         </Row>
         <Row>
           <Col span={24}>
 
             {
               managerInPlaces.length > 0 &&
-              <Row>
-                <Col span={20}>
+              <Row className='devide-row'>
+                <Col span={18}>
                   Manager of
                 </Col>
-                <Col span={4}>
-                  {managerInPlaces.length}
+                <Col style={{textAlign : 'right'}} span={6}>
+                  {managerInPlaces.length} place
                 </Col>
               </Row>
-            }
+              }
             {
               managerInPlaces.length > 0 &&
-              <Row>
+              <Row className='remove-margin'>
                 <Col span={24}>
-                  {managerInPlaces.map((place) => <PlaceItem place={place} key={place._id} />)}
+                  {managerInPlaces.map((place) => <PlaceItem place={place} />)}
                 </Col>
               </Row>
             }
             {
               memberInPlaces.length > 0 &&
-              <Row>
-                <Col span={20}>
+              <Row className='devide-row'>
+                <Col span={18}>
                   Member of
                 </Col>
-                <Col span={4}>
-                  {memberInPlaces.length}
+                <Col style={{textAlign : 'right'}} span={6}>
+                  {memberInPlaces.length} place
                 </Col>
               </Row>
             }

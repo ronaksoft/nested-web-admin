@@ -238,6 +238,80 @@ PlaveView {
   transform: translateY(-50%);
 }
 
+.nst-modal {
+  padding: 0;
+  top: 0;
+  border-radius: 0;
+  color: black;
+  .ant-modal-content {
+    border-radius: 0;
+  }
+  .ant-modal-header {
+    padding: 16px;
+    .ant-modal-title {
+      font-size: 18px;
+    }
+  }
+  .ant-modal-body {
+    padding: 32px 0;
+  }
+  .ant-row ,
+  .ant-row-flex {
+    padding: 0 32px;
+    margin-bottom: 24px;
+    min-height: 21px;
+  }
+  label {
+    color: rgba(0,0,0,.64);
+  }
+  .nst-ico {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+  }
+  .devide-row {
+    background-color: #F7FAF8;
+    height: 32px;
+    padding: 8px 32px;
+    margin-bottom: 0
+  }
+  .remove-margin {
+    margin: 0;
+    padding: 0;
+  }
+  .place-row {
+    height: 64px;
+    margin: 0;
+  }
+}
+
+
+// contact
+.account-modal {
+
+}
+
+.change-photo {
+  color: @primary-color;
+  vertical-align: middle;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.remove-photo {
+  color: @force-color;
+  vertical-align: middle;
+  margin-left: 32px;
+  &:hover {
+    text-decoration: underline;
+    color: @force-wire-color;
+  }
+}
+
+
+// Icons
+
 .nst-ico {
   color: transparent;
   background-position: center center;
@@ -245,6 +319,7 @@ PlaveView {
   transform-origin: center;
   transition: none;
   box-sizing: border-box;
+  background-repeat: no-repeat;
   &:hover ,
   &:focus {
     color: transparent;
