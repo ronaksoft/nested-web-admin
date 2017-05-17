@@ -14,6 +14,8 @@ export interface IAccountsState {
   count: Number;
   filterGroup: FilterGroup;
   Items: IUser[];
+  counters: object;
+  countersLoaded: boolean;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
@@ -23,7 +25,8 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     this.state = {
       filterGroup: FilterGroup.Total,
-      counters: {}
+      counters: {},
+      countersLoaded: false
     };
   }
 
@@ -31,11 +34,13 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     this.accountApi.getCounters().then((counters) => {
       this.setState({
         counters: counters,
-        loading: false
+        loading: false,
+        countersLoaded: true
       });
     }).catch((error) => {
       this.setState({
-        loading: false
+        loading: false,
+        countersLoaded: true
       });
       notification.error('Error', 'An error has occured while trying to get data!');
     });
@@ -49,7 +54,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
   setGroup = (group: FilterGroup) => this.setState({ filterGroup: group });
 
   render() {
-    const total = this.state.counters.enabled_accounts + this.state.counters.disabled_accounts;
+    const total = (this.state.counters.enabled_accounts || 0) + (this.state.counters.disabled_accounts || 0);
     const filterItems = [
         {
             key : FilterGroup.Total,
@@ -77,7 +82,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
       <div>
         <Row className='toolbar' type='flex' align='center'>
           <Col span={6}>
-            <Filter totalCount={total} menus={filterItems} onChange={this.setGroup} counters={this.state.counters} />
+            {
+                this.state.countersLoaded &&
+                <Filter totalCount={total} menus={filterItems} onChange={this.setGroup} counters={this.state.counters} />
+            }
           </Col>
           <Col span={18}>
             <Options />
@@ -85,7 +93,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         </Row>
         <Row>
           <Col span={24}>
+          {
+            this.state.countersLoaded &&
             <List counters={this.state.counters} filter={this.state.filterGroup}/>
+          }
           </Col>
         </Row>
       </div>
