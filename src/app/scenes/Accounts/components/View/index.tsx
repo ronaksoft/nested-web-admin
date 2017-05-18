@@ -38,13 +38,19 @@ class View extends React.Component<IViewProps, IViewState> {
     this.applyChanges = this.applyChanges.bind(this);
   }
 
-
   componentDidMount() {
     this.placeApi = new PlaceApi();
     this.accountApi = new AccountApi();
 
     if (this.state.account && this.state.account._id) {
       this.loadPlaces(this.state.account._id);
+    }
+  }
+
+  componentWillReceiveProps(nextProps : IViewProps) {
+    if (nextProps.account && nextProps.account._id) {
+      this.setState({ account: nextProps.account });
+      this.loadPlaces(nextProps.account._id);
     }
   }
 
@@ -293,7 +299,7 @@ class View extends React.Component<IViewProps, IViewState> {
             }
             {
               !this.state.account.dob &&
-              <a onClick={() => this.setState({ setDateOfBirth: true })}><i>-click to assign-</i></a>
+              <a onClick={() => this.editField(EditableFields.dob)}><i>-click to assign-</i></a>
             }
             </Col>
             <Col span={2}>
@@ -314,7 +320,7 @@ class View extends React.Component<IViewProps, IViewState> {
               }
               {
                 !this.state.account.email &&
-                <a onClick={() => this.setState({ setEmail: true })}><i>-click to assign-</i></a>
+                <a onClick={() => this.editField(EditableFields.email)}><i>-click to assign-</i></a>
               }
             </Col>
             <Col span={2}>
@@ -369,7 +375,7 @@ class View extends React.Component<IViewProps, IViewState> {
             </Col>
           </Row>
           <Modal
-                key={this.state.uniqueKey}
+                key={this.props.account._id}
                 title='Edit'
                 width={360}
                 visible={this.state.showEdit}
