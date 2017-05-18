@@ -20,27 +20,39 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     constructor(props: any) {
         super(props);
         this.state = {
-            visible: false
+            visible: false,
+            place : null
         };
     }
 
-    componentWillReceiveProps(props: IProps) {
-        if (props.place) {
+    componentWillReceiveProps(props: any) {
+        this.setState({
+            place: props.place,
+            visible: props.visible,
+        });
+    }
+
+    componentDidMount() {
+        if (this.props.place) {
             this.setState({
-                place: props.place,
-                visible: props.visible,
+                place: this.props.place,
+                visible: this.props.visible,
             });
         }
     }
 
     handleCancel() {
+        this.setState({
+            visible: false,
+        });
         if (this.props.onClose && typeof this.props.onClose === 'function') {
             this.props.onClose();
         }
     }
 
     render() {
-        const {place} = this.state;
+        console.log(this);
+        const {place} = this.props;
         const iconStyle = {
             width: '16px',
             height: '16px',
@@ -48,7 +60,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         };
         let lockedIcon, lockedTxt, reciveIcon, reciveTxt, searchableIcon, seachabeTxt;
 
-        if (this.state.place.privacy.locked === true) {
+        if (place.privacy.locked === true) {
             lockedIcon = <Icon type=' nst-ico ic_brick_wall_solid_16' style={iconStyle}/>;
             lockedTxt = 'Private Place';
         } else {
@@ -56,7 +68,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             lockedTxt = 'Common Place';
         }
 
-        if (this.state.place.privacy.search === true) {
+        if (place.privacy.search === true) {
             searchableIcon = <Icon type=' nst-ico ic_search_24' style={iconStyle}/>;
             seachabeTxt = 'This place shows in search results.';
         } else {
@@ -65,7 +77,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         }
         return (
             <div>
-                {this.state.place &&
+                {place &&
                     <Modal className='place-modal nst-modal'
                         closable={true}
                         onCancel={this.handleCancel.bind(this) }
@@ -73,19 +85,20 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         footer={null}
                         title = 'Place Info'>
                         <Row type='flex' align='middle'>
-                            <Col span={6}>
-                                <PlaceView avatar size={64} place={this.state.place} />
+                            <Col span={6}> 
+                                { lockedIcon }
+                                <PlaceView avatar size={64} place={place} />
                             </Col>
                             <Col span={18}>
-                                <PlaceView id name size={64} place={this.state.place} />
+                                <PlaceView id name size={64} place={place} />
                             </Col>
                         </Row>
                         <Row type='flex' align='middle'>
                             <Col span={6}>
-                                {{lockedIcon}}
+                                { lockedIcon }
                             </Col>
                             <Col span={18}>
-                                {{lockedTxt}}
+                                { lockedTxt }
                             </Col>
                         </Row>
                         <Row className='devide-row'>
@@ -94,7 +107,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             </Col>
                         </Row>
                         <Row>
-                            {/*<PlaceItem place={this.state.place} key={this.state.place._id} />*/}
+                            {/*<PlaceItem place={place} key={place._id} />*/}
                         </Row>
                         <Row className='devide-row'>
                             <Col span={24}>
@@ -102,7 +115,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             </Col>
                         </Row>
                         <Row>
-                            {/*<UserItem place={this.state.place} key={this.state.place._id} />*/}
+                            {/*<UserItem place={place} key={place._id} />*/}
                         </Row>
                     </Modal>
                 }
