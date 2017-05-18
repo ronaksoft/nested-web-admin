@@ -103,4 +103,21 @@ export default class AccountApi {
             return error;
         });
     }
+
+    edit(params: IEditAccountRequest): Promise<any> {
+      return new Promise((resolve, reject) => {
+        this.api.server.request({
+            cmd: 'admin/account_update',
+            data: {}
+        }).then((result) => {
+          if (result && result.err_code) {
+            reject(result);
+          } else {
+            resolve(result);
+          }
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
 }
