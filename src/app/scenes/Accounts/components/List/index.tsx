@@ -307,6 +307,7 @@ IListState > {
             };
         });
         this.onPageChange = this.onPageChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
@@ -315,10 +316,8 @@ IListState > {
     }
 
     componentWillReceiveProps(nextProps : IListProps) {
-        if (this.props.filter !== nextProps.filter) {
-            this.setState({filter: nextProps.filter});
-            this.load();
-        }
+        this.setState({filter: nextProps.filter});
+        this.load();
     }
 
     onPageChange(value : Number) {
@@ -327,7 +326,16 @@ IListState > {
     }
 
     handleChange(account : IPerson) {
-        console.log(account);
+      const accounts = _.clone(this.state.accounts);
+      const index = _.findIndex(accounts, { _id: account._id });
+      if (index === -1) {
+          return;
+      }
+
+      accounts.splice(index, 1, account);
+      this.setState({
+          accounts: accounts
+      });
     }
 
     render() {
@@ -383,15 +391,16 @@ IListState > {
     }
 
     private load(page : Number, size : Number = 10) {
+      console.log('filter', this.state.filter);
         this.setState({loading: true});
         page = page || this.state.currentPage;
         const skip = (page - 1) * size;
-        let filter = 'users';
+        let filter = null;
         switch (this.state.filter) {
             case FilterGroup.Active:
                 filter = 'users_enabled';
                 break;
-            case FilterGroup.Disabled:
+            case FilterGroup.Deactive:
                 filter = 'users_disabled';
                 break;
             default:
@@ -402,7 +411,7 @@ IListState > {
 
         return this.accountApi.getAll({skip: skip, limit: size, filter: filter}).then((result) => {
             this.setState({accounts: result.accounts, loading: false});
-            console.log(result.accounts);
+            // console.log(result.accounts);
         }).catch((error) => {
             this.setState({loading: false});
             notification.error('Accounts', 'An error has occured while trying to get ');

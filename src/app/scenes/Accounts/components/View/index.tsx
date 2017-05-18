@@ -20,6 +20,7 @@ interface IViewProps {
 interface IViewState {
   setEmail: boolean;
   setDateOfBirth: boolean;
+  account: IPerson;
 }
 
 class View extends React.Component<IViewProps, IViewState> {
@@ -28,7 +29,8 @@ class View extends React.Component<IViewProps, IViewState> {
     super(props);
     this.state = {
       setEmail: false,
-      setDateOfBirth: false
+      setDateOfBirth: false,
+      account: props.account
     };
 
     this.loadPlaces = this.loadPlaces.bind(this);
@@ -41,18 +43,13 @@ class View extends React.Component<IViewProps, IViewState> {
     this.placeApi = new PlaceApi();
     this.accountApi = new AccountApi();
 
-    if (this.props.account && this.props.account._id) {
-      this.loadPlaces(this.props.account._id);
-    }
-  }
-
-  componentWillReceiveProps(nextProps: IViewProps) {
-    if (nextProps.account && nextProps.account._id) {
-      this.loadPlaces(nextProps.account._id);
+    if (this.state.account && this.state.account._id) {
+      this.loadPlaces(this.state.account._id);
     }
   }
 
   loadPlaces(accountId: string) {
+    console.log('loading places');
     this.setState({
       loading: true
     });
@@ -83,18 +80,31 @@ class View extends React.Component<IViewProps, IViewState> {
   }
 
   applyChanges(form: any) {
-    this.setState({
-      updateProgress: true
+    const changedProps = _.mapValues(form.getFieldsValue(), (value, key) => {
+      if (key === 'dob') {
+        return value.format(this.DATE_FORMAT);
+      }
+
+      return value;
     });
 
-    const edited = form.getFieldsValue();
 
-    this.accountApi.edit(_.merge(edited, { account_id: this.props.account._id })).then((result) => {
+    let editedAccount = _.clone(this.state.account);
+    _.merge(editedAccount, changedProps);
+
+    this.setState({
+      updateProgress: true,
+      account: editedAccount
+    });
+
+
+    this.accountApi.edit(_.merge(changedProps, { account_id: this.state.account._id })).then((result) => {
       this.setState({
         updateProgress: false,
-        showEdit: false
+        showEdit: false,
       });
-    }).catch((error) => {
+      this.props.onChange(editedAccount);
+    }, (error) => {
       this.setState({
         updateProgress: false
       });
@@ -112,11 +122,6 @@ class View extends React.Component<IViewProps, IViewState> {
     const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
 
     const EditForm = Form.create({
-      onFieldsChange: () => {
-        // const model = this.form.getFieldsValue();
-        // const errors = this.form.getFieldsError();
-        // this.props.onChange(this.state.packet.key, model, errors);
-      },
       mapPropsToFields: (props: any) => {
         return {
           fname: {
@@ -143,21 +148,21 @@ class View extends React.Component<IViewProps, IViewState> {
           {
             this.state.editTarget === EditableFields.fname &&
             <Form.Item label='First Name'>
-            {getFieldDecorator('fname', {
-              rules: [{ required: true, message: 'First name is required!' }],
-            })(
-              <Input placeholder='John' />
-            )}
+              {getFieldDecorator('fname', {
+                rules: [{ required: true, message: 'First name is required!' }],
+              })(
+                <Input placeholder='John' />
+              )}
             </Form.Item>
           }
           {
             this.state.editTarget === EditableFields.lname &&
             <Form.Item label='Last Name'>
-            {getFieldDecorator('lname', {
-              rules: [{ required: true, message: 'Last name is required!' }],
-            })(
-              <Input placeholder='Doe' />
-            )}
+              {getFieldDecorator('lname', {
+                rules: [{ required: true, message: 'Last name is required!' }],
+              })(
+                <Input placeholder='Doe' />
+              )}
             </Form.Item>
           }
           {
@@ -172,7 +177,7 @@ class View extends React.Component<IViewProps, IViewState> {
           }
           {
             this.state.editTarget === EditableFields.dob &&
-            <Form.Item label='Phone'>
+            <Form.Item label='Birthdate'>
               {getFieldDecorator('dob', {
                 rules: [],
               })(
@@ -183,25 +188,25 @@ class View extends React.Component<IViewProps, IViewState> {
           {
             this.state.editTarget === EditableFields.email &&
             <Form.Item label='Email'>
-            {getFieldDecorator('email', {
-              rules: [],
-            })(
-              <Input placeholder='example@company.com' />
-            )}
+              {getFieldDecorator('email', {
+                rules: [],
+              })(
+                <Input placeholder='example@company.com' />
+              )}
             </Form.Item>
           }
 
         </Form>
       );
     });
-
+    const accountClone = _.clone(this.state.account);
     return (
       <Row>
-        <Modal key={this.props.account._id} visible={this.props.visible} onCancel={this.props.onClose} footer={null}
+        <Modal key={this.state.account._id} visible={this.props.visible} onCancel={this.props.onClose} footer={null}
         afterClose={this.cleanup} className='account-modal nst-modal' width={480} title='Account Info'>
           <Row type='flex' align='middle'>
             <Col span={8}>
-            <UserAvatar avatar size={64} user={this.props.account} />
+            <UserAvatar avatar size={64} user={this.state.account} />
             </Col>
             <Col span={16}>
               <a className='change-photo' onClick={this.changePhoto}>Change Photo</a>
@@ -213,7 +218,7 @@ class View extends React.Component<IViewProps, IViewState> {
               <label>First Name</label>
             </Col>
             <Col span={14}>
-              <b>{this.props.account.fname}</b>
+              <b>{this.state.account.fname}</b>
             </Col>
             <Col span={2}>
               <Button type='toolkit nst-ico ic_pencil_solid_16' onClick={() => this.editField(EditableFields.fname)}></Button>
@@ -224,7 +229,7 @@ class View extends React.Component<IViewProps, IViewState> {
               <label>Last Name</label>
             </Col>
             <Col span={14}>
-              <b>{this.props.account.lname}</b>
+              <b>{this.state.account.lname}</b>
             </Col>
             <Col span={2}>
               <Button type='toolkit nst-ico ic_pencil_solid_16' onClick={() => this.editField(EditableFields.lname)}></Button>
@@ -235,7 +240,7 @@ class View extends React.Component<IViewProps, IViewState> {
               <label>User ID</label>
             </Col>
             <Col span={14}>
-              @{this.props.account._id}
+              @{this.state.account._id}
             </Col>
             <Col span={2}></Col>
           </Row>
@@ -244,7 +249,7 @@ class View extends React.Component<IViewProps, IViewState> {
               <label>Status</label>
             </Col>
             <Col span={14}>
-              {this.props.account.disabled ? 'Not Active' : 'Active'}
+              {this.state.account.disabled ? 'Not Active' : 'Active'}
             </Col>
             <Col span={2}></Col>
           </Row>
@@ -253,7 +258,7 @@ class View extends React.Component<IViewProps, IViewState> {
               <label>Password</label>
             </Col>
             <Col span={14}>
-              <i>Last changed: {this.props.account.last_pass_change}</i>
+              <i>Last changed: {this.state.account.last_pass_change}</i>
             </Col>
             <Col span={2}>
               <Button type='toolkit nst-ico ic_more_solid_16' onClick={() => this.editField(EditableFields.dob)}></Button>
@@ -264,7 +269,7 @@ class View extends React.Component<IViewProps, IViewState> {
               <label>Phone Number</label>
             </Col>
             <Col span={14}>
-              {this.props.account.phone}
+              {this.state.account.phone}
             </Col>
             <Col span={2}>
               <Button type='toolkit nst-ico ic_pencil_solid_16' onClick={() => this.editField(EditableFields.phone)}></Button>
@@ -276,17 +281,17 @@ class View extends React.Component<IViewProps, IViewState> {
             </Col>
             <Col span={14}>
             {
-              this.props.account.dob &&
-              <span>{this.props.account.dob}</span>
+              this.state.account.dob &&
+              <span>{this.state.account.dob}</span>
             }
             {
-              !this.props.account.dob &&
+              !this.state.account.dob &&
               <a onClick={() => this.setState({ setDateOfBirth: true })}><i>-click to assign-</i></a>
             }
             </Col>
             <Col span={2}>
               {
-                this.props.account.dob &&
+                this.state.account.dob &&
                 <Button type='toolkit nst-ico ic_pencil_solid_16' onClick={() => this.editField(EditableFields.dob)}></Button>
               }
             </Col>
@@ -297,17 +302,17 @@ class View extends React.Component<IViewProps, IViewState> {
             </Col>
             <Col span={14}>
               {
-                this.props.account.email &&
-                <span>{this.props.account.email}</span>
+                this.state.account.email &&
+                <span>{this.state.account.email}</span>
               }
               {
-                !this.props.account.email &&
+                !this.state.account.email &&
                 <a onClick={() => this.setState({ setEmail: true })}><i>-click to assign-</i></a>
               }
             </Col>
             <Col span={2}>
               {
-                this.props.account.email &&
+                this.state.account.email &&
                 <Button type='toolkit nst-ico ic_pencil_solid_16' onClick={() => this.editField(EditableFields.email)}></Button>
               }
             </Col>
@@ -368,7 +373,7 @@ class View extends React.Component<IViewProps, IViewState> {
                   <Button key='submit' type='primary' size='large' loading={this.state.updateProgress} onClick={() => this.applyChanges(this.form)}>Save</Button>,
                 ]}
           >
-            <EditForm ref={this.saveForm} {...this.props.account} />
+            <EditForm ref={this.saveForm} {...accountClone} />
           </Modal>
         </Modal>
         </Row>

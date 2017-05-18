@@ -109,15 +109,7 @@ export default class AccountApi {
         this.api.server.request({
             cmd: 'admin/account_update',
             data: {}
-        }).then((result) => {
-          if (result && result.err_code) {
-            reject(result);
-          } else {
-            resolve(result);
-          }
-        }).catch((error) => {
-          reject(error);
-        });
+        }).then(resolve, reject);
       });
     }
 }
