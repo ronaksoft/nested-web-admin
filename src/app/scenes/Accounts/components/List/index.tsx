@@ -33,7 +33,6 @@ interface IListProps {
 
 interface IListState {
     users : IPerson[];
-    filter : FilterGroup;
     viewAccount : boolean;
     chosen : IAccount;
 }
@@ -60,6 +59,7 @@ IListState > {
     };
 
     COLUMNS_STORAGE_KEY = 'ronak.nested.admin.accounts.columns';
+    PAGE_SIZE = 10;
 
     // columns Render Handlers
 
@@ -312,17 +312,17 @@ IListState > {
 
     componentDidMount() {
         this.accountApi = new AccountApi();
-        this.load(1);
+        this.load(1, this.PAGE_SIZE, FilterGroup.Total);
     }
 
     componentWillReceiveProps(nextProps : IListProps) {
-        this.setState({filter: nextProps.filter});
-        this.load();
+      if (_.has(nextProps, 'filter')) {
+        this.load(1, this.PAGE_SIZE, nextProps.filter);
+      }
     }
 
     onPageChange(value : Number) {
-        this.load(value);
-        this.setState({currentPage: value});
+        this.load(value, this.PAGE_SIZE, this.props.filter);
     }
 
     handleChange(account : IPerson) {
@@ -390,30 +390,28 @@ IListState > {
         );
     }
 
-    private load(page : Number, size : Number = 10) {
-      console.log('filter', this.state.filter);
+    private load(page: Number, size: Number, filter: FilterGroup) {
         this.setState({loading: true});
         page = page || this.state.currentPage;
         const skip = (page - 1) * size;
-        let filter = null;
-        switch (this.state.filter) {
+        let filterValue = null;
+        switch (filter) {
             case FilterGroup.Active:
-                filter = 'users_enabled';
+                filterValue = 'users_enabled';
                 break;
             case FilterGroup.Deactive:
-                filter = 'users_disabled';
+                filterValue = 'users_disabled';
                 break;
             default:
-                filter = 'users';
+                filterValue = 'users';
                 break;
 
         }
 
-        return this.accountApi.getAll({skip: skip, limit: size, filter: filter}).then((result) => {
-            this.setState({accounts: result.accounts, loading: false});
-            // console.log(result.accounts);
+        return this.accountApi.getAll({skip: skip, limit: size, filter: filterValue}).then((result) => {
+            this.setState({accounts: result.accounts, loading: false, currentPage: page});
         }).catch((error) => {
-            this.setState({loading: false});
+            this.setState({loading: false, page: page});
             notification.error('Accounts', 'An error has occured while trying to get ');
         });
     }
