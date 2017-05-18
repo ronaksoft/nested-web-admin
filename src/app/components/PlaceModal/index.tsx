@@ -134,7 +134,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 {place.counters.childs} Sub-places
                             </Col>
                         </Row>
-                        <Row>
+                        <Row className='remove-margin'>
                             <PlaceItem place={place} key={place._id} />
                         </Row>
                         <Row className='devide-row'>
