@@ -29,7 +29,7 @@ interface IListState {
 export default class PlaceList extends React.Component<IListProps, IListState> {
   users = {};
   pageLimit: number = 20;
-
+  selectedPlace: IPlace | null = null;
   constructor(props: any) {
     super(props);
     const counter = props.counters;
@@ -87,12 +87,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
   }
 
   showPlaceModal(record: IPlace, index: number) {
-    if (record) {
-      this.setState({
-        selectedPlace: record,
-        visibelPlaceModal: true,
-      });
-    }
+    this.selectedPlace = record;
+    this.setState({
+      selectedPlace: record,
+      visibelPlaceModal: true,
+    });
   }
 
   closePlaceModal() {
@@ -146,7 +145,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 }
 
 renderPlaceCell(text: string, record: IPlace, index: any) {
-  return <a onClick={() => { this.showPlaceModal(record, 1); } }><PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView></a>;
+  return <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>;
 }
 
 renderUsersCell(text: string, record: IPlace, index: any) {
@@ -198,7 +197,7 @@ getColumns() {
 
     switch (column.renderer) {
       case 'place':
-        renderer = this.renderPlaceCell.bind(this);
+        renderer = this.renderPlaceCell;
         break;
       case 'users':
         renderer = this.renderUsersCell.bind(this);
@@ -230,13 +229,14 @@ render() {
   let column = this.getColumns();
   return (
     <Card>
-      {this.state.selectedPlace &&
-        <PlaceModal visible={this.state.visibelPlaceModal} place={this.state.selectedPlace} onClose={this.closePlaceModal.bind(this) } />
+      {this.state.visibelPlaceModal &&
+        <PlaceModal visible={this.state.visibelPlaceModal} place={this.selectedPlace} onClose={this.closePlaceModal.bind(this)}/>
       }
       <Table
         pagination={this.state.pagination}
         onChange={this.handleTableChange.bind(this) }
         rowKey='_id'
+        onRowClick={this.showPlaceModal.bind(this) }
         columns={column}
         loading={this.state.loading}
         dataSource={this.state.places}

@@ -359,7 +359,7 @@ class View extends React.Component<IViewProps, IViewState> {
               }
               {
                 memberInPlaces.length > 0 &&
-                <Row>
+                <Row className='remove-margin'>
                   <Col span={24}>
                     {memberInPlaces.map((place) => <PlaceItem place={place} key={place._id} />)}
                   </Col>
@@ -383,7 +383,7 @@ class View extends React.Component<IViewProps, IViewState> {
             <EditForm ref={this.saveForm} {...accountClone} />
           </Modal>
         </Modal>
-        </Row>
+      </Row>
     );
   }
 }
