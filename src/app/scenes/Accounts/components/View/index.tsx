@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Modal, Row, Col, Spin, Button, Form, Input, notification, DatePicker} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
-import PlaceItem from './components/PlaceItem/index';
+import PlaceItem from '../../../../components/PlaceItem/index';
 import IPerson from '../../IPerson';
 import PlaceApi from '../../../../api/place/index';
 import AccountApi from '../../../../api/account/account';

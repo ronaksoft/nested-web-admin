@@ -2,6 +2,8 @@ import * as React from 'react';
 import IPlace from '../../api/place/interfaces/IPlace';
 import {Modal, Row, Col, Icon} from 'antd';
 import PlaceView from './../placeview/index';
+import PlaceItem from '../PlaceItem/index';
+import UserItem from '../UserItem/index';
 
 interface IProps {
     place?: IPlace;
@@ -58,7 +60,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             height: '16px',
             verticalAlign: 'middle'
         };
-        let lockedIcon, lockedTxt, reciveIcon, reciveTxt, searchableIcon, seachabeTxt;
+        let lockedIcon, lockedTxt, reciveIcon, reciveTxt, searchableIcon, searchableTxt;
 
         if (place.privacy.locked === true) {
             lockedIcon = <Icon type=' nst-ico ic_brick_wall_solid_16' style={iconStyle}/>;
@@ -70,10 +72,18 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
 
         if (place.privacy.search === true) {
             searchableIcon = <Icon type=' nst-ico ic_search_24' style={iconStyle}/>;
-            seachabeTxt = 'This place shows in search results.';
+            searchableTxt = 'This place shows in search results.';
         } else {
             searchableIcon = <Icon type=' nst-ico ic_non_search_24' style={iconStyle}/>;
-            seachabeTxt = 'This place does’nt show in search results.';
+            searchableTxt = 'This place does’nt show in search results.';
+        }
+
+        if (place.privacy.receptive === 'external') {
+            reciveIcon = <Icon type=' nst-ico ic_earth_solid_24' style={iconStyle}/>;
+            reciveTxt = '..';
+        } else {
+            reciveIcon = <Icon type=' nst-ico ic_manager_solid_24' style={iconStyle}/>;
+            reciveTxt = '...';
         }
         return (
             <div>
@@ -86,14 +96,16 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         title = 'Place Info'>
                         <Row type='flex' align='middle'>
                             <Col span={6}> 
-                                { lockedIcon }
                                 <PlaceView avatar size={64} place={place} />
                             </Col>
-                            <Col span={18}>
-                                <PlaceView id name size={64} place={place} />
+                            <Col span={18} className='Place-Des'>
+                                <p>{place.name}
+                                    <br></br>
+                                    <span>{place._id}</span>
+                                </p>
                             </Col>
                         </Row>
-                        <Row type='flex' align='middle'>
+                        <Row type='flex' align='middle' justify='center'>
                             <Col span={6}>
                                 { lockedIcon }
                             </Col>
@@ -101,21 +113,37 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 { lockedTxt }
                             </Col>
                         </Row>
+                        <Row type='flex' align='middle' justify='center'>
+                            <Col span={6}>
+                                { reciveIcon }
+                            </Col>
+                            <Col span={18}>
+                                { reciveTxt }
+                            </Col>
+                        </Row>
+                        <Row type='flex' align='middle' justify='center'>
+                            <Col span={6}>
+                                { searchableIcon }
+                            </Col>
+                            <Col span={18}>
+                                { searchableTxt }
+                            </Col>
+                        </Row>
                         <Row className='devide-row'>
                             <Col span={24}>
-                                9 Sub-places
+                                {place.counters.childs} Sub-places
                             </Col>
                         </Row>
                         <Row>
-                            {/*<PlaceItem place={place} key={place._id} />*/}
+                            <PlaceItem place={place} key={place._id} />
                         </Row>
                         <Row className='devide-row'>
                             <Col span={24}>
-                                424 Members
+                                {place.counters.creators + place.counters.key_holders} Members
                             </Col>
                         </Row>
                         <Row>
-                            {/*<UserItem place={place} key={place._id} />*/}
+                            {/*<UserItem user={place} key={place._id} />*/}
                         </Row>
                     </Modal>
                 }
