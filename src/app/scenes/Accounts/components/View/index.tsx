@@ -80,37 +80,44 @@ class View extends React.Component<IViewProps, IViewState> {
   }
 
   applyChanges(form: any) {
-    const changedProps = _.mapValues(form.getFieldsValue(), (value, key) => {
-      if (key === 'dob') {
-        return value.format(this.DATE_FORMAT);
+    form.validateFields((errors, values) => {
+      const errors = _(errors).map((value, key) => value.errors).flatten().value();
+      if (_.size(errors) > 0) {
+        return;
       }
 
-      return value;
-    });
+      const changedProps = _.mapValues(values, (value, key) => {
+        if (key === 'dob') {
+          return value.format(this.DATE_FORMAT);
+        }
 
-
-    let editedAccount = _.clone(this.state.account);
-    _.merge(editedAccount, changedProps);
-
-    this.setState({
-      updateProgress: true,
-      account: editedAccount
-    });
-
-
-    this.accountApi.edit(_.merge(changedProps, { account_id: this.state.account._id })).then((result) => {
-      this.setState({
-        updateProgress: false,
-        showEdit: false,
+        return value;
       });
-      this.props.onChange(editedAccount);
-    }, (error) => {
+
+
+      let editedAccount = _.clone(this.state.account);
+      _.merge(editedAccount, changedProps);
+
       this.setState({
-        updateProgress: false
+        updateProgress: true,
+        account: editedAccount
       });
-      notification.error({
-        message: 'Update Error',
-        description: 'We were not able to update the field!'
+
+
+      this.accountApi.edit(_.merge(changedProps, { account_id: this.state.account._id })).then((result) => {
+        this.setState({
+          updateProgress: false,
+          showEdit: false,
+        });
+        this.props.onChange(editedAccount);
+      }, (error) => {
+        this.setState({
+          updateProgress: false
+        });
+        notification.error({
+          message: 'Update Error',
+          description: 'We were not able to update the field!'
+        });
       });
     });
   }
