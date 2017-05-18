@@ -7,6 +7,7 @@ import IPromoteRequest from './interfaces/IPromoteRequest';
 import IDemoteRequest from './interfaces/IDemoteRequest';
 import IEnableRequest from './interfaces/IEnableRequest';
 import IDisableRequest from './interfaces/IDisableRequest';
+import IGetMembersRequest from './interfaces/IGetMembersRequest';
 import IUser from './interfaces/IUser';
 
 export default class AccountApi {
@@ -42,6 +43,17 @@ export default class AccountApi {
     getAll(params: IGetListRequest) : Promise<any> {
       return this.api.server.request({
         cmd: 'admin/account_list',
+        data: params,
+      }).then((res: any) => {
+        return res;
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+
+    getMembers(params: IGetMembersRequest) : Promise<any> {
+      return this.api.server.request({
+        cmd: 'admin/place_list_members',
         data: params,
       }).then((res: any) => {
         return res;

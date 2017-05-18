@@ -12,7 +12,7 @@ function UserItem(props: any) {
   return (
     <Row className='user-row' type='flex' align='middle'>
       <Col span={3}>
-        <UserAvatar borderRadius={16} place={props.user} size={32} avatar></PlaceView>
+        <UserAvatar borderRadius={16} place={props.user} size={32} avatar></UserAvatar>
       </Col>
       <Col span={15}>
         <p>

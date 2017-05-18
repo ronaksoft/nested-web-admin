@@ -4,6 +4,8 @@ import {Modal, Row, Col, Icon} from 'antd';
 import PlaceView from './../placeview/index';
 import PlaceItem from '../PlaceItem/index';
 import UserItem from '../UserItem/index';
+import AccountApi from '../../api/account/account';
+import _ from 'lodash';
 
 interface IProps {
     place?: IPlace;
@@ -41,8 +43,25 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 visible: this.props.visible,
             });
         }
+        this.AccountApi = new AccountApi();
+        this.loadPlaces(this.props.place._id);
     }
 
+    loadPlaces(placeId: string) {
+
+
+        this.AccountApi.getMembers({
+            place_id: placeId
+        }).then((result) => {
+            console.log(result.accounts);
+        this.setState({
+            members: result.accounts,
+            loading: false
+        });
+        }).catch((error) => {
+            console.log('error', error);
+        });
+    }
     handleCancel() {
         this.setState({
             visible: false,
@@ -53,7 +72,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     }
 
     render() {
-        console.log(this);
         const {place} = this.props;
         const iconStyle = {
             width: '16px',
@@ -143,7 +161,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             </Col>
                         </Row>
                         <Row>
-                            {/*<UserItem user={place} key={place._id} />*/}
+                            {_(this.state.members).map((item) => <UserItem user={item} key={item._id} />)}
                         </Row>
                     </Modal>
                 }
