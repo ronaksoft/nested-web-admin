@@ -38,7 +38,8 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
       name,
       id
     } = this.props;
-
+    let placeAvatar;
+    if (size === 64) { placeAvatar = true; };
     size = size.toString(10) + 'px';
 
     const ImageHolder = {
@@ -96,9 +97,14 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
     let placeName = `${place.name}`;
 
     if (avatar) {
-      let src = place.picture.x32 ? `${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x32}` : './../../../style/images/absents_place.svg';
+      if ( placeAvatar ) {
+        let src = place.picture.x64 ? `${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x64}` : './../../../style/images/absents_place.svg';
+        imgDOM = <img className='PlaceView--img' style={imageStyle} src={src}  alt={place.name} />;
+      } else {
+        let src = place.picture.x32 ? `${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x32}` : './../../../style/images/absents_place.svg';
+        imgDOM = <img className='PlaceView--img' style={imageStyle} src={src}  alt={place.name} />;
+      }
 
-      imgDOM = <img className='PlaceView--img' style={imageStyle} src={src}  alt={place.name} />;
     }
 
     if ( name ) {
@@ -116,7 +122,7 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
     return (
       <div aria-label={placeName} className={classes.join(' ')} style={style}>
         <div className='PlaceView--inner' style={innerStyle}>
-          <div className='ImageHolder-place' style={ImageHolder}>
+          <div className={placeAvatar ? '' : 'ImageHolder-place'} style={ImageHolder}>
             {avatar && imgDOM}
           </div>
           <div className='PlaveView-detail'>
