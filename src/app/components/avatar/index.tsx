@@ -156,9 +156,19 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     let imgDOM, nameDOM, idDOM, classes = [className, 'UserAvatar'];
     let nameOfUser = `${user.fname} ${user.lname}`;
 
+    let pictureId = null;
+
+    if (this.props.size <= 32) {
+      pictureId = user.picture.x32;
+    } else if (this.props.size <= 64) {
+      pictureId = user.picture.x64;
+    } else {
+      pictureId = user.picture.x128;
+    }
+
     if (avatar) {
-      if (user.picture.x32) {
-        imgDOM = <img className='UserAvatar--img' style={imageStyle} src={`${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${user.picture.x32}`}  alt={user.name} />;
+      if (pictureId) {
+        imgDOM = <img className='UserAvatar--img' style={imageStyle} src={`${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${pictureId}`}  alt={user.name} />;
       } else {
         // iTODO Initails
         let abbr, finalColor;
