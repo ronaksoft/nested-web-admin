@@ -17,8 +17,12 @@ function PlaceItem(props: any) {
       </Col>
       <Col span={15}>
         <p>
+        {props.place.privacy.locked &&
           <Icon type=' nst-ico ic_brick_wall_solid_16' style={iconStyle}/>
+        }
+        {!props.place.privacy.locked &&
           <Icon type=' nst-ico ic_window_solid_16' style={iconStyle}/>
+        }
           {props.place.name}
         </p>
         <span>{props.place._id}</span>

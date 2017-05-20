@@ -1,7 +1,9 @@
 import * as React from 'react';
+import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
 import {Modal, Row, Col, Icon} from 'antd';
 import PlaceView from './../placeview/index';
+import Avatar from './../avatar/index';
 import PlaceItem from '../PlaceItem/index';
 import UserItem from '../UserItem/index';
 import AccountApi from '../../api/account/account';
@@ -16,6 +18,7 @@ interface IProps {
 interface IStates {
     visible: boolean;
     place?: IPlace;
+    members?: any;
 }
 
 
@@ -25,7 +28,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         super(props);
         this.state = {
             visible: false,
-            place : null
+            place: null,
+            members: [],
         };
     }
 
@@ -33,6 +37,18 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         this.setState({
             place: props.place,
             visible: props.visible,
+        });
+        this.fetchUsers();
+    }
+
+    fetchUsers() {
+        let placeApi = new PlaceApi();
+        placeApi.getPlaceListMemebers({
+            place_id: this.props.place._id
+        }).then((accounts) => {
+            this.setState({
+                members: accounts,
+            });
         });
     }
 
@@ -43,25 +59,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 visible: this.props.visible,
             });
         }
-        this.AccountApi = new AccountApi();
-        this.loadPlaces(this.props.place._id);
+        this.fetchUsers();
     }
 
-    loadPlaces(placeId: string) {
 
-
-        this.AccountApi.getMembers({
-            place_id: placeId
-        }).then((result) => {
-            console.log(result.accounts);
-        this.setState({
-            members: result.accounts,
-            loading: false
-        });
-        }).catch((error) => {
-            console.log('error', error);
-        });
-    }
     handleCancel() {
         this.setState({
             visible: false,
@@ -71,7 +72,17 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         }
     }
 
+    isManager(user: any) {
+        let creator = _.indexOf(this.props.place.creators, user._id);
+        if (creator > -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     render() {
+        console.log(this);
         const {place} = this.props;
         const iconStyle = {
             width: '16px',
@@ -93,15 +104,21 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             searchableTxt = 'This place shows in search results.';
         } else {
             searchableIcon = <Icon type=' nst-ico ic_non_search_24' style={iconStyle}/>;
-            searchableTxt = 'This place does’nt show in search results.';
+            searchableTxt = 'This place doesn\'t show in search results.';
         }
 
-        if (place.privacy.receptive === 'external') {
+        if (place.privacy.receptive === 'external' && place.policy.add_post === 'everyone') {
             reciveIcon = <Icon type=' nst-ico ic_earth_solid_24' style={iconStyle}/>;
-            reciveTxt = '..';
-        } else {
+            reciveTxt = 'Everyone can share post.';
+        } else if (place.privacy.receptive === 'internal' && place.policy.add_post === 'everyone') {
+            reciveIcon = <Icon type=' nst-ico ic_team_solid_24' style={iconStyle}/>;
+            reciveTxt = 'All grand-place members can share post';
+        } else if (place.privacy.receptive === 'off' && place.policy.add_post === 'everyone') {
+            reciveIcon = <Icon type=' nst-ico ic_manager-and-member_solid_24' style={iconStyle}/>;
+            reciveTxt = 'All place members can share post';
+        } else if (place.privacy.receptive === 'off' && place.policy.add_post === 'creators') {
             reciveIcon = <Icon type=' nst-ico ic_manager_solid_24' style={iconStyle}/>;
-            reciveTxt = '...';
+            reciveTxt = 'Only managers can share post';
         }
         return (
             <div>
@@ -113,7 +130,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         footer={null}
                         title = 'Place Info'>
                         <Row type='flex' align='middle'>
-                            <Col span={6}> 
+                            <Col span={6}>
                                 <PlaceView avatar size={64} place={place} />
                             </Col>
                             <Col span={18} className='Place-Des'>
@@ -147,21 +164,28 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 { searchableTxt }
                             </Col>
                         </Row>
-                        <Row className='devide-row'>
-                            <Col span={24}>
-                                {place.counters.childs} Sub-places
-                            </Col>
-                        </Row>
-                        <Row className='remove-margin'>
-                            <PlaceItem place={place} key={place._id} />
-                        </Row>
+                        {place.counters.childs > 0 &&
+                            <div>
+                                <Row className='devide-row'>
+                                    <Col span={24}>
+                                        {place.counters.childs} Sub-places
+                                    </Col>
+                                </Row>
+                                <Row className='remove-margin'>
+                                    <PlaceItem place={place} key={place._id} />
+                                </Row>
+                            </div>
+                        }
                         <Row className='devide-row'>
                             <Col span={24}>
                                 {place.counters.creators + place.counters.key_holders} Members
                             </Col>
                         </Row>
                         <Row>
-                            {_(this.state.members).map((item) => <UserItem user={item} key={item._id} />)}
+                            {this.state.members &&
+                                this.state.members.map((item) => {
+                                    return (<UserItem user={item} manager={this.isManager(item) } key={item._id} />);
+                                }) }
                         </Row>
                     </Modal>
                 }

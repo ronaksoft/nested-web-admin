@@ -1,6 +1,8 @@
 import Api from './../index';
 import IPlaceListResponse from './interfaces/IPlaceListResponse';
 import IPlaceListRequest from './interfaces/IPlaceListRequest';
+import IPlaceListMembersRequest from './interfaces/IPlaceListMembersRequest';
+import IPlaceListMembersResponse from './interfaces/IPlaceListMembersResponse';
 
 export default class PlaceApi {
   private api;
@@ -26,6 +28,16 @@ export default class PlaceApi {
       cmd: 'admin/account_list_places',
       data: params,
     });
+  }
+
+  getPlaceListMemebers(params: IPlaceListMembersRequest): Promise<any> {
+    return this.api.server.request({
+      cmd: 'admin/place_list_members',
+      data: params,
+    })
+      .then((res: IPlaceListMembersResponse) => {
+        return res.accounts;
+      });
   }
 
 };
