@@ -120,7 +120,7 @@ export default class AccountApi {
       return new Promise((resolve, reject) => {
         this.api.server.request({
             cmd: 'admin/account_update',
-            data: {}
+            data: params
         }).then(resolve, reject);
       });
     }

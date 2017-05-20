@@ -48,8 +48,9 @@ class View extends React.Component<IViewProps, IViewState> {
   }
 
   componentWillReceiveProps(nextProps : IViewProps) {
-    if (nextProps.account && nextProps.account._id) {
-      this.setState({ account: nextProps.account });
+    if (nextProps.account && nextProps.account._id && nextProps.account._id !== this.state.account._id) {
+      console.log('received new props');
+      this.setState({ account: nextProps.account, places: [] });
       this.loadPlaces(nextProps.account._id);
     }
   }
@@ -102,11 +103,10 @@ class View extends React.Component<IViewProps, IViewState> {
 
 
       let editedAccount = _.clone(this.state.account);
-      _.merge(editedAccount, changedProps);
 
       this.setState({
         updateProgress: true,
-        account: editedAccount
+        account: _.merge(editedAccount, changedProps)
       });
 
 
@@ -274,7 +274,7 @@ class View extends React.Component<IViewProps, IViewState> {
               <i>Last changed: {this.state.account.last_pass_change}</i>
             </Col>
             <Col span={2}>
-              <Button type='toolkit nst-ico ic_more_solid_16' onClick={() => this.editField(EditableFields.dob)}></Button>
+              <Button type='toolkit nst-ico ic_more_solid_16'></Button>
             </Col>
           </Row>
           <Row>
