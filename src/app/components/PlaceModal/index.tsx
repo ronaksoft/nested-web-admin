@@ -123,7 +123,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 </p>
                             </Col>
                         </Row>
-                        <Row type='flex' align='middle' justify='center'>
+                        <Row type='flex' align='middle'>
                             <Col span={6}>
                                 { lockedIcon }
                             </Col>
@@ -131,7 +131,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 { lockedTxt }
                             </Col>
                         </Row>
-                        <Row type='flex' align='middle' justify='center'>
+                        <Row type='flex' align='middle'>
                             <Col span={6}>
                                 { reciveIcon }
                             </Col>
@@ -139,7 +139,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 { reciveTxt }
                             </Col>
                         </Row>
-                        <Row type='flex' align='middle' justify='center'>
+                        <Row type='flex' align='middle'>
                             <Col span={6}>
                                 { searchableIcon }
                             </Col>
