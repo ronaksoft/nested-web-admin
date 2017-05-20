@@ -11,6 +11,7 @@ import IGetMembersRequest from './interfaces/IGetMembersRequest';
 import IUser from './interfaces/IUser';
 import ISetPictureRequest from './interfaces/ISetPictureRequest';
 import IRemovePictureRequest from './interfaces/IRemovePictureRequest';
+import ISetPasswordRequest from './interfaces/ISetPasswordRequest';
 
 export default class AccountApi {
     private api;
@@ -142,6 +143,13 @@ export default class AccountApi {
     }
 
     removePicture(params: IRemovePictureRequest): Promise<any> {
+      return this.api.server.request({
+        cmd: 'admin/account_remove_picture',
+        data: params
+      });
+    }
+
+    setPassword(params: ISetPasswordRequest): Promise<any> {
       return this.api.server.request({
         cmd: 'admin/account_remove_picture',
         data: params

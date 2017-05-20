@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Modal, Row, Col, Spin, Button, Form, Input, notification, DatePicker, Upload, Icon, message} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
+import md5 from 'md5';
 import PlaceItem from '../../../../components/PlaceItem/index';
 import IPerson from '../../IPerson';
 import PlaceApi from '../../../../api/place/index';
@@ -121,30 +122,52 @@ class View extends React.Component<IViewProps, IViewState> {
         return value;
       });
 
+      if (_.has(changedProps, 'pass')) {
+        this.accountApi.setPassword({
+          account_id: this.state.account._id,
+          new_pass: md5(changedProps.pass)
+        }).then((result) => {
+          this.setState({
+            updateProgress: false,
+            showEdit: false,
+          });
 
-      let editedAccount = _.clone(this.state.account);
+          message.success('The account password has been changed successfully.');
+        }, (error) => {
+          this.setState({
+            updateProgress: false
+          });
 
-      this.setState({
-        updateProgress: true,
-        account: _.merge(editedAccount, changedProps)
-      });
+          notification.error({
+            message: 'Update Error',
+            description: 'An error happened while trying to set a new password.'
+          });
+        });
+      } else {
+        let editedAccount = _.clone(this.state.account);
 
-
-      this.accountApi.edit(_.merge(changedProps, { account_id: this.state.account._id })).then((result) => {
         this.setState({
-          updateProgress: false,
-          showEdit: false,
+          updateProgress: true,
+          account: _.merge(editedAccount, changedProps)
         });
-        this.props.onChange(editedAccount);
-      }, (error) => {
-        this.setState({
-          updateProgress: false
+
+
+        this.accountApi.edit(_.merge(changedProps, { account_id: this.state.account._id })).then((result) => {
+          this.setState({
+            updateProgress: false,
+            showEdit: false,
+          });
+          this.props.onChange(editedAccount);
+        }, (error) => {
+          this.setState({
+            updateProgress: false
+          });
+          notification.error({
+            message: 'Update Error',
+            description: 'We were not able to update the field!'
+          });
         });
-        notification.error({
-          message: 'Update Error',
-          description: 'We were not able to update the field!'
-        });
-      });
+      }
     });
   }
 
@@ -285,6 +308,19 @@ class View extends React.Component<IViewProps, IViewState> {
               )}
             </Form.Item>
           }
+          {
+            this.state.editTarget === EditableFields.pass &&
+            <Form.Item label='Password'>
+              {getFieldDecorator('pass', {
+                rules: [
+                  { required: true, message: 'Password is required!' },
+                  { min: 6, message: 'Password must be more than 6 characters.' }
+                ],
+              })(
+                <Input placeholder='New password' />
+              )}
+            </Form.Item>
+          }
 
         </Form>
       );
@@ -365,10 +401,10 @@ class View extends React.Component<IViewProps, IViewState> {
               <label>Password</label>
             </Col>
             <Col span={14}>
-              <i>Last changed: {this.state.account.last_pass_change}</i>
+              <i>●●●●●●●●</i>
             </Col>
             <Col span={2}>
-              <Button type='toolkit nst-ico ic_more_solid_16'></Button>
+              <Button type='toolkit nst-ico ic_more_solid_16' onClick={() => this.editField(EditableFields.pass)}></Button>
             </Col>
           </Row>
           <Row>
