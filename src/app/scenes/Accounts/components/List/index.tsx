@@ -370,8 +370,16 @@ IListState > {
         };
 
         let total = 0;
-        if (this.props.counters) {
-            total = this.props.counters.enabled_accounts + this.props.counters.disabled_accounts;
+        switch (this.props.filter) {
+          case FilterGroup.Active:
+            total = this.props.counters.enabled_accounts || 0;
+            break;
+          case FilterGroup.Deactive:
+            total = this.props.counters.disabled_accounts || 0;
+            break;
+          default:
+            total = (this.props.counters.enabled_accounts || 0) + (this.props.counters.disabled_accounts || 0);
+            break;
         }
         return (
             <Card>

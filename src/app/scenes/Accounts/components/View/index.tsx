@@ -1,14 +1,16 @@
 import * as React from 'react';
-import {Modal, Row, Col, Spin, Button, Form, Input, notification, DatePicker} from 'antd';
+import {Modal, Row, Col, Spin, Button, Form, Input, notification, DatePicker, Upload, Icon, message} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
+import md5 from 'md5';
 import PlaceItem from '../../../../components/PlaceItem/index';
 import IPerson from '../../IPerson';
 import PlaceApi from '../../../../api/place/index';
 import AccountApi from '../../../../api/account/account';
 import UserAvatar from '../../../../components/avatar/index';
 import EditableFields from './EditableFields';
-
+import CONFIG from '../../../../../app.config';
+import AAA from './../../../../services/classes/aaa/index';
 
 interface IViewProps {
   visible: boolean;
@@ -21,6 +23,7 @@ interface IViewState {
   setEmail: boolean;
   setDateOfBirth: boolean;
   account: IPerson;
+  token: string;
 }
 
 class View extends React.Component<IViewProps, IViewState> {
@@ -36,6 +39,10 @@ class View extends React.Component<IViewProps, IViewState> {
     this.loadPlaces = this.loadPlaces.bind(this);
     this.editField = this.editField.bind(this);
     this.applyChanges = this.applyChanges.bind(this);
+    this.pictureChange = this.pictureChange.bind(this);
+    this.loadUploadToken = this.loadUploadToken.bind(this);
+    this.beforeUpload = this.beforeUpload.bind(this);
+    this.removePicture = this.removePicture.bind(this);
   }
 
   componentDidMount() {
@@ -45,11 +52,14 @@ class View extends React.Component<IViewProps, IViewState> {
     if (this.state.account && this.state.account._id) {
       this.loadPlaces(this.state.account._id);
     }
+
+    this.loadUploadToken();
   }
 
   componentWillReceiveProps(nextProps : IViewProps) {
-    if (nextProps.account && nextProps.account._id) {
-      this.setState({ account: nextProps.account });
+    if (nextProps.account && nextProps.account._id && nextProps.account._id !== this.state.account._id) {
+      console.log('received new props');
+      this.setState({ account: nextProps.account, places: [] });
       this.loadPlaces(nextProps.account._id);
     }
   }
@@ -72,6 +82,18 @@ class View extends React.Component<IViewProps, IViewState> {
       this.setState({
         places: [],
         loading: false
+      });
+    });
+  }
+
+  loadUploadToken() {
+    this.accountApi.getUploadToken().then((result) => {
+      this.setState({
+        token: result.token
+      });
+    }, (error) => {
+      this.setState({
+        token: null
       });
     });
   }
@@ -99,39 +121,117 @@ class View extends React.Component<IViewProps, IViewState> {
 
         return value;
       });
+      console.log('changedProps', changedProps);
+      if (_.has(changedProps, 'pass')) {
+        this.accountApi.setPassword({
+          account_id: this.state.account._id,
+          new_pass: md5(changedProps.pass)
+        }).then((result) => {
+          this.setState({
+            updateProgress: false,
+            showEdit: false,
+          });
 
+          message.success('The account password has been changed successfully.');
+        }, (error) => {
+          this.setState({
+            updateProgress: false
+          });
 
-      let editedAccount = _.clone(this.state.account);
-      _.merge(editedAccount, changedProps);
+          notification.error({
+            message: 'Update Error',
+            description: 'An error happened while trying to set a new password.'
+          });
+        });
+      } else {
+        let editedAccount = _.clone(this.state.account);
 
-      this.setState({
-        updateProgress: true,
-        account: editedAccount
-      });
-
-
-      this.accountApi.edit(_.merge(changedProps, { account_id: this.state.account._id })).then((result) => {
         this.setState({
-          updateProgress: false,
-          showEdit: false,
+          updateProgress: true,
+          account: _.merge(editedAccount, changedProps)
         });
-        this.props.onChange(editedAccount);
-      }, (error) => {
-        this.setState({
-          updateProgress: false
+
+
+        this.accountApi.edit(_.merge(changedProps, { account_id: this.state.account._id })).then((result) => {
+          this.setState({
+            updateProgress: false,
+            showEdit: false,
+          });
+          this.props.onChange(editedAccount);
+        }, (error) => {
+          this.setState({
+            updateProgress: false
+          });
+          notification.error({
+            message: 'Update Error',
+            description: 'We were not able to update the field!'
+          });
         });
-        notification.error({
-          message: 'Update Error',
-          description: 'We were not able to update the field!'
-        });
-      });
+      }
     });
   }
 
   saveForm = (form) => this.form = form;
 
+  removePicture() {
+    this.accountApi.removePicture({
+      account_id: this.state.account._id
+    }).then((result) => {
+      let editedAccount = _.clone(this.state.account);
+      editedAccount.picture = {};
+      this.setState({
+        account: editedAccount
+      });
+      this.props.onChange(editedAccount);
+    }).catch((error) => {
+      notification.error({
+        message: 'Update Error',
+        description: 'An error has occured while removing the account picture.'
+      });
+    });
+  }
+
+  pictureChange(info: any) {
+    if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+      return;
+    }
+
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} file uploaded successfully`);
+
+      this.accountApi.setPicture({
+        account_id: this.state.account._id,
+        universal_id: info.file.response.data[0].universal_id
+      }).then((result) => {
+        let editedAccount = _.clone(this.state.account);
+        editedAccount.picture = info.file.response.data[0].thumbs;
+        this.setState({
+          account: editedAccount
+        });
+        this.props.onChange(editedAccount);
+      }, (error) => {
+        notification.error({
+          message: 'Update Error',
+          description: 'We were not able to set the picture!'
+        });
+      });
+    }
+  }
+
+  beforeUpload(file: any, fileList: any) {
+    console.log('token', this.state.token);
+    if (!this.state.token) {
+      notification.error({
+        message: 'Error',
+        description: 'We are not able to upload the picture.'
+      });
+      return false;
+    }
+  }
+
   render() {
-    const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.accesses, 'C'));
+    const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.access, 'C'));
     const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
 
     const EditForm = Form.create({
@@ -208,22 +308,52 @@ class View extends React.Component<IViewProps, IViewState> {
               )}
             </Form.Item>
           }
+          {
+            this.state.editTarget === EditableFields.pass &&
+            <Form.Item label='Password'>
+              {getFieldDecorator('pass', {
+                rules: [
+                  { required: true, message: 'Password is required!' },
+                  { min: 6, message: 'Password must be more than 6 characters.' }
+                ],
+              })(
+                <Input placeholder='New password' />
+              )}
+            </Form.Item>
+          }
 
         </Form>
       );
     });
     const accountClone = _.clone(this.state.account);
+    const credentials = AAA.getInstance().getCredentials();
+    const uploadUrl = `${CONFIG.STORE.URL}/upload/profile_pic/${credentials.sk}/${this.state.token}`;
     return (
       <Row>
         <Modal key={this.state.account._id} visible={this.props.visible} onCancel={this.props.onClose} footer={null}
         afterClose={this.cleanup} className='account-modal nst-modal' width={480} title='Account Info'>
           <Row type='flex' align='middle'>
             <Col span={8}>
-            <UserAvatar avatar size={64} user={this.state.account} />
+              <UserAvatar avatar size={64} user={this.state.account} />
             </Col>
             <Col span={16}>
-              <a className='change-photo' onClick={this.changePhoto}>Change Photo</a>
-              <a className='remove-photo' onClick={this.removePhoto}>Remove Photo</a>
+              {
+                this.state.token &&
+                <Upload
+                        name='avatar'
+                        action={uploadUrl}
+                        accept='image/*'
+                        onChange={this.pictureChange}
+                        beforeUpload={this.beforeUpload}
+                        showUploadList={false}
+                        >
+                          <a className='change-photo' onClick={this.changePhoto}>Change Photo</a>
+                </Upload>
+              }
+              {
+                this.state.account.picture && this.state.account.picture.org &&
+                <a className='remove-photo' onClick={this.removePicture}>Remove Photo</a>
+              }
             </Col>
           </Row>
           <Row>
@@ -271,10 +401,10 @@ class View extends React.Component<IViewProps, IViewState> {
               <label>Password</label>
             </Col>
             <Col span={14}>
-              <i>Last changed: {this.state.account.last_pass_change}</i>
+              <i>●●●●●●●●</i>
             </Col>
             <Col span={2}>
-              <Button type='toolkit nst-ico ic_more_solid_16' onClick={() => this.editField(EditableFields.dob)}></Button>
+              <Button type='toolkit nst-ico ic_more_solid_16' onClick={() => this.editField(EditableFields.pass)}></Button>
             </Col>
           </Row>
           <Row>

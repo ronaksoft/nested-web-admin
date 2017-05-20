@@ -9,7 +9,6 @@ function PlaceItem(props: any) {
     height: '16px',
     verticalAlign: 'middle'
   };
-  console.log(props.place);
   return (
     <Row className='place-row' type='flex' align='middle'>
       <Col span={3}>
