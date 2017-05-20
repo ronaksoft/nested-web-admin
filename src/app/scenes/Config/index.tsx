@@ -3,30 +3,21 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 
 import Filter from './../../components/Filter/index';
-import {Row, Col, Icon} from 'antd';
-import PlaceList from './List/index';
+import {Row, Col, Icon, Button, Card} from 'antd';
 import SystemApi from '../../api/system/index';
 import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 
 
-export interface IAccountsProps {
+export interface IConfigProps {
 }
 
-export interface IAccountsState {
-  counters: IGetSystemCountersResponse;
-  loadCounters: boolean;
-  selectedFilter: string;
-}
+export interface IConfigState {}
 
-class Accounts extends React.Component<IAccountsProps, IAccountsState> {
-  constructor(props: IAccountsProps) {
+class Config extends React.Component<IConfigProps, IConfigState> {
+  constructor(props: IConfigProps) {
     super(props);
-    this.state = {
-      selectedFilter: CPlaceFilterTypes.GRAND_PLACES,
-      counters: {},
-      loadCounters: false,
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -40,59 +31,86 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
       });
   }
 
-  changeFilter(key: string) {
-    this.setState({
-      selectedFilter: key,
-    });
-  }
 
   render() {
 
-    const filterItems = [
-      {
-        key: CPlaceFilterTypes.ALL,
-        name: 'Total',
-        count: this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places,
-        disableChart: true,
-      },
-      {
-        key: CPlaceFilterTypes.GRAND_PLACES,
-        name: 'Grand Places',
-        count: this.state.counters.grand_places,
-        chartColor: '#00B45A',
-        bgChartColor: '#CBEFDD',
-      },
-      {
-        key: CPlaceFilterTypes.UNLOCKED_PLACES,
-        name: 'Unlocked Places',
-        count: this.state.counters.unlocked_places,
-        chartColor: '#3296FF',
-        bgChartColor: '#D9EBFF',
-      },
-      {
-        key: CPlaceFilterTypes.LOCKED_PLACES,
-        name: 'Locked Places',
-        count: this.state.counters.locked_places,
-        chartColor: '#FF6464',
-        bgChartColor: '#FFDFDF',
-      }
-    ];
 
     return (
       <div>
         <Row className='toolbar' type='flex' align='center'>
           <Col span={6}>
-            {this.state.loadCounters &&
-            <Filter totalCount={filterItems[0].count} menus={filterItems} onChange={this.changeFilter.bind(this)}/>
-            }
+            <h3>System Limits</h3>
           </Col>
-          <Col span={18}></Col>
+          <Col span={18}>
+            <Button type='discard' size='large' onClick={this.create}>Discard</Button>
+            <Button type='apply' size='large' onClick={this.create}>Apply & Restart Server</Button>
+          </Col>
         </Row>
-        <Row>
-          <Col span={24}>
-            {this.state.loadCounters &&
-            <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter}/>
-            }
+        <Row gutter={24} className='dashboardRow' type='flex' align='center'>
+          <Col span={12}>
+            <Card className='optionCard' loading={false} title='Account Policies'>
+                <ul>
+                  <li>
+                    <div className='option'>
+                      <label>Account Register Mode</label>
+                      <select>
+                        <option value='admin'>Admin Only</option>
+                      </select>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut.</p>
+                  </li>
+                  <li>
+                    <div className='option'>
+                      <label>Password Policy</label>
+                      <select>
+                        <option value='admin'>Modrate</option>
+                      </select>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut.</p>
+                  </li>
+                </ul>
+            </Card>
+
+            <Card className='optionCard' loading={false} title='Place Policies'>
+                <ul>
+                  <li>
+                    <div className='option'>
+                      <label>Max. Place Levels</label>
+                      <select>
+                        <option value='admin'>3 Levels</option>
+                      </select>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut.</p>
+                  </li>
+                </ul>
+            </Card>
+          </Col>
+          <Col span={12}>
+          <Card className='optionCard' loading={false} title='Post Limits'>
+              <ul>
+                  <li>
+                    <div className='option'>
+                      <label>Max. Attachments per Post</label>
+                      <input type='text'/>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut.</p>
+                  </li>
+                  <li>
+                    <div className='option'>
+                      <label>Max. Attachments Size (Megabytes)</label>
+                      <input type='text'/>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut.</p>
+                  </li>
+                  <li>
+                    <div className='option'>
+                      <label>Max. Post Destinations</label>
+                      <input type='text'/>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut.</p>
+                  </li>
+                </ul>
+            </Card>
           </Col>
         </Row>
       </div>
@@ -111,4 +129,4 @@ function mapDispatchToProps(dispatch: IDispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Accounts);
+)(Config);
