@@ -151,7 +151,7 @@ export default class AccountApi {
 
     setPassword(params: ISetPasswordRequest): Promise<any> {
       return this.api.server.request({
-        cmd: 'admin/account_remove_picture',
+        cmd: 'admin/account_set_pass',
         data: params
       });
     }

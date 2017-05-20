@@ -121,7 +121,7 @@ class View extends React.Component<IViewProps, IViewState> {
 
         return value;
       });
-
+      console.log('changedProps', changedProps);
       if (_.has(changedProps, 'pass')) {
         this.accountApi.setPassword({
           account_id: this.state.account._id,
@@ -231,7 +231,7 @@ class View extends React.Component<IViewProps, IViewState> {
   }
 
   render() {
-    const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.accesses, 'C'));
+    const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.access, 'C'));
     const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
 
     const EditForm = Form.create({
