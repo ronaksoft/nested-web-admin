@@ -53,9 +53,13 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const model = this.props.form.getFieldsValue();
-    this.SetData(model);
-
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      console.log(arguments);
+      if (!err) {
+        const model = this.props.form.getFieldsValue();
+        this.SetData(model);
+      }
+    });
   }
 
   handleReset = () => {
@@ -76,56 +80,56 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     const form = this.props.form;
     switch (rule.field) {
       case 'account_grandplaces_limit':
-        if (value > appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES && value < appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES) {
+        if (value >= appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES && value <= appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES) {
           callback();
         } else {
           callback('it must be grather than ' + appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES + ' and lower than ' + appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES);
         }
       break;
       case 'account_register_mode':
-        if (value => 0 && value <= 1 ) {
+        if (value >= 0 && value <= 1 ) {
           callback();
         } else {
           callback('it wrong selection');
         }
       break;
       case 'place_max_keyholders':
-        if (value > appConfig.DEFAULT_PLACE_MIN_KEYHOLDERS && value < appConfig.DEFAULT_PLACE_MAX_KEYHOLDERS ) {
+        if (value >= appConfig.DEFAULT_PLACE_MIN_KEYHOLDERS && value <= appConfig.DEFAULT_PLACE_MAX_KEYHOLDERS ) {
           callback();
         } else {
           callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_KEYHOLDERS + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_KEYHOLDERS);
         }
       break;
       case 'place_max_creators':
-        if (value > appConfig.DEFAULT_PLACE_MIN_CREATORS && value < appConfig.DEFAULT_PLACE_MAX_CREATORS ) {
+        if (value >= appConfig.DEFAULT_PLACE_MIN_CREATORS && value <= appConfig.DEFAULT_PLACE_MAX_CREATORS ) {
           callback();
         } else {
           callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CREATORS + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_CREATORS);
         }
       break;
       case 'place_max_children':
-        if (value > appConfig.DEFAULT_PLACE_MIN_CHILDREN && value < appConfig.DEFAULT_PLACE_MAX_CHILDREN ) {
+        if (value >= appConfig.DEFAULT_PLACE_MIN_CHILDREN && value <= appConfig.DEFAULT_PLACE_MAX_CHILDREN ) {
           callback();
         } else {
           callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CHILDREN + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_CHILDREN);
         }
       break;
       case 'post_max_attachments':
-        if (value > appConfig.DEFAULT_POST_MIN_ATTACHMENTS && value < appConfig.DEFAULT_POST_MAX_ATTACHMENTS ) {
+        if (value >= appConfig.DEFAULT_POST_MIN_ATTACHMENTS && value <= appConfig.DEFAULT_POST_MAX_ATTACHMENTS ) {
           callback();
         } else {
           callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_ATTACHMENTS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_ATTACHMENTS);
         }
       break;
       case 'post_max_targets':
-        if (value > appConfig.DEFAULT_POST_MIN_TARGETS && value < appConfig.DEFAULT_POST_MAX_TARGETS ) {
+        if (value >= appConfig.DEFAULT_POST_MIN_TARGETS && value <= appConfig.DEFAULT_POST_MAX_TARGETS ) {
           callback();
         } else {
           callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_TARGETS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_TARGETS);
         }
       break;
       case 'post_retract_time':
-        if (value > appConfig.DEFAULT_POST_MIN_RETRACT_TIME && value < appConfig.DEFAULT_POST_MAX_RETRACT_TIME ) {
+        if (value >= appConfig.DEFAULT_POST_MIN_RETRACT_TIME && value <= appConfig.DEFAULT_POST_MAX_RETRACT_TIME ) {
           callback();
         } else {
           callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_RETRACT_TIME + ' and lower than ' + appConfig.DEFAULT_POST_MAX_RETRACT_TIME);
