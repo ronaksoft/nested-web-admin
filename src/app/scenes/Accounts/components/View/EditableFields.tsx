@@ -3,7 +3,8 @@ enum EditableFields {
   lname,
   phone,
   dob,
-  email
+  email,
+  pass
 }
 
 export default EditableFields;

@@ -77,6 +77,7 @@
       "less": "npm:systemjs-less-plugin@^2.0.0",
       "lodash": "npm:lodash@^4.17.4",
       "loglevel": "npm:loglevel@^1.4.1",
+      "md5": "npm:md5@^2.2.1",
       "moment": "npm:moment@^2.18.1",
       "react-inlinesvg": "npm:react-inlinesvg@^0.6.0",
       "react-router": "npm:react-router@^3.0.2",

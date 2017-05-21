@@ -143,6 +143,7 @@ SystemJS.config({
     'less': 'npm:systemjs-less-plugin@2.0.0',
     'lodash': 'npm:lodash@4.17.4',
     'loglevel': 'npm:loglevel@1.4.1',
+    'md5': 'npm:md5@2.2.1',
     'module': 'github:jspm/nodelibs-module@0.2.0-alpha',
     'moment': 'npm:moment@2.18.1',
     'net': 'github:jspm/nodelibs-net@0.2.0-alpha',
@@ -315,7 +316,7 @@ SystemJS.config({
         'core-util-is': 'npm:core-util-is@1.0.2',
         'isarray': 'npm:isarray@1.0.0',
         'process-nextick-args': 'npm:process-nextick-args@1.0.7',
-        'string_decoder': 'npm:string_decoder@1.0.0',
+        'string_decoder': 'npm:string_decoder@1.0.1',
         'util-deprecate': 'npm:util-deprecate@1.0.2'
       }
     },
@@ -347,11 +348,6 @@ SystemJS.config({
     'github:jspm/nodelibs-zlib@0.2.0-alpha': {
       'map': {
         'zlib-browserify': 'npm:browserify-zlib@0.1.4'
-      }
-    },
-    'npm:string_decoder@1.0.0': {
-      'map': {
-        'buffer-shims': 'npm:buffer-shims@1.0.0'
       }
     },
     'npm:buffer@4.9.1': {
@@ -1118,6 +1114,18 @@ SystemJS.config({
         'ripemd160': 'npm:ripemd160@2.0.1',
         'safe-buffer': 'npm:safe-buffer@5.0.1',
         'sha.js': 'npm:sha.js@2.4.8'
+      }
+    },
+    'npm:md5@2.2.1': {
+      'map': {
+        'crypt': 'npm:crypt@0.0.2',
+        'is-buffer': 'npm:is-buffer@1.1.5',
+        'charenc': 'npm:charenc@0.0.2'
+      }
+    },
+    'npm:string_decoder@1.0.1': {
+      'map': {
+        'safe-buffer': 'npm:safe-buffer@5.0.1'
       }
     }
   }

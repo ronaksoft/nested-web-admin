@@ -49,6 +49,9 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
           },
           phone: {
             value: props.phone
+          },
+          pass: {
+            value: props.pass
           }
         };
       }
@@ -116,6 +119,26 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                   {
                     required: true,
                     message: 'Last name is required!'
+                  }
+                ]
+              })(
+                <Input
+                      placeholder='Doe'
+                      disabled={disabled}
+                />
+              )}
+
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('pass', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Password is required!'
+                  },
+                  {
+                    min: 6,
+                    message: 'Password must be at least 6 characters.'
                   }
                 ]
               })(
