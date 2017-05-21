@@ -30,6 +30,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
   GetData() {
     this.SystemApi.getConstants().then((result) => {
+      console.log(result);
       this.setState({
         data: result
       });
@@ -84,7 +85,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
           callback('it must be grather than ' + appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES + ' and lower than ' + appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES);
         }
       break;
-      case 'account_register_mode':
+      case 'register_mode':
         if (value >= appConfig.DEFAULT_ACCOUNT_MIN_REGISTER_MODE && value <= appConfig.DEFAULT_ACCOUNT_MAX_REGISTER_MODE ) {
           callback();
         } else {
@@ -110,6 +111,13 @@ class Config extends React.Component<IConfigProps, IConfigState> {
           callback();
         } else {
           callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CHILDREN + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_CHILDREN);
+        }
+      break;
+      case 'place_max_level':
+        if (value >= appConfig.DEFAULT_PLACE_MIN_LEVELS && value <= appConfig.DEFAULT_PLACE_MAX_LEVELS ) {
+          callback();
+        } else {
+          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_LEVELS + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_LEVELS);
         }
       break;
       case 'post_max_attachments':
@@ -185,8 +193,8 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                   <div className='option'>
                     <label>Account Register Mode</label>
                     <FormItem>
-                      {getFieldDecorator('account_register_mode', {
-                        initialValue: this.state.data.register_mode === 1 ? 'Admin only' : 'Everyone',
+                      {getFieldDecorator('register_mode', {
+                        initialValue: this.state.data.register_mode,
                         rules: [
                           {
                             required: true,
@@ -197,7 +205,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                           }
                         ]
                       })(
-                        <Select style={{ width: 88 }} onChange={this.handleChange}>
+                        <Select placeholder={this.state.data.register_mode === 1 ? 'Admin only' : 'Everyone'} style={{ width: 88 }} onChange={this.handleChange}>
                           <Option value={1}>Admin only</Option>
                           <Option value={2}>Everyone</Option>
                         </Select>
@@ -259,6 +267,27 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                     <FormItem>
                       {getFieldDecorator('place_max_children', {
                         initialValue: this.state.data.place_max_children,
+                        rules: [
+                          {
+                            required: true,
+                            message: 'Required'
+                          },
+                          {
+                            validator: this.checkConfirm,
+                          }
+                        ]
+                      })(
+                        <Input/>
+                      )}
+                    </FormItem>
+                  </div>
+                </li>
+                <li>
+                  <div className='option'>
+                    <label>Max. Place Childrens Level</label>
+                    <FormItem>
+                      {getFieldDecorator('place_max_level', {
+                        initialValue: this.state.data.place_max_level,
                         rules: [
                           {
                             required: true,
