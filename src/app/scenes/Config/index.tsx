@@ -3,9 +3,9 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 
 import Filter from './../../components/Filter/index';
-import {Form, Row, Col, InputNumber, Button, Card, Input, Select} from 'antd';
-import ConfigApi from '../../api/config/index';
-import IGetConstantsResponse from '../../api/config/interfaces/IGetConstantsResponse';
+import {Form, Row, Col, InputNumber, Button, Card, Input, Select, message} from 'antd';
+import SystemApi from '../../api/system/index';
+import IGetConstantsResponse from '../../api/system/interfaces/IGetConstantsResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import appConfig from '../../../app.config';
 
@@ -20,17 +20,16 @@ export interface IConfigState {
 class Config extends React.Component<IConfigProps, IConfigState> {
   constructor(props: IConfigProps) {
     super(props);
-    this.state = {data: {}};
+    this.state = {data: {}, disableBtn: true};
   }
 
   componentDidMount() {
-    this.ConfigApi = new ConfigApi();
+    this.SystemApi = new SystemApi();
     this.GetData();
   }
 
   GetData() {
-    this.ConfigApi.getConstants().then((result) => {
-      console.log(result);
+    this.SystemApi.getConstants().then((result) => {
       this.setState({
         data: result
       });
@@ -40,30 +39,103 @@ class Config extends React.Component<IConfigProps, IConfigState> {
   }
 
   SetData(req: IGetConstantsResponse) {
-    this.ConfigApi.setConstants(req).then((result) => {
-      console.log(result);
+    this.SystemApi.setConstants(req).then((result) => {
+      message.success('Your new configs is set');
+      this.setState({
+        disableBtn: true
+      });
+      this.GetData();
     }).catch((error) => {
-      console.log('error', error);
+      console.log(error);
+      message.error('Your config not updated !');
     });
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(this);
-    const model = this.props.form.getFieldsValue();
-    console.log(model);
-    this.SetData(model);
-    // this.props.form.validateFields((err, values) => {
-    //   console.log('Received values of form: ', values);
-    // });
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const model = this.props.form.getFieldsValue();
+        this.SetData(model);
+      }
+    });
   }
 
   handleReset = () => {
     this.props.form.resetFields();
+    this.setState({
+      disableBtn: true
+    });
   }
 
   handleChange = (value) => {
-    console.log(value);
+    this.setState({
+      disableBtn: false
+    });
+  }
+
+  checkConfirm = (rule, value, callback) => {
+    const form = this.props.form;
+    switch (rule.field) {
+      case 'account_grandplaces_limit':
+        if (value >= appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES && value <= appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES) {
+          callback();
+        } else {
+          callback('it must be grather than ' + appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES + ' and lower than ' + appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES);
+        }
+      break;
+      case 'account_register_mode':
+        if (value >= appConfig.DEFAULT_ACCOUNT_MIN_REGISTER_MODE && value <= appConfig.DEFAULT_ACCOUNT_MAX_REGISTER_MODE ) {
+          callback();
+        } else {
+          callback('it wrong selection');
+        }
+      break;
+      case 'place_max_keyholders':
+        if (value >= appConfig.DEFAULT_PLACE_MIN_KEYHOLDERS && value <= appConfig.DEFAULT_PLACE_MAX_KEYHOLDERS ) {
+          callback();
+        } else {
+          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_KEYHOLDERS + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_KEYHOLDERS);
+        }
+      break;
+      case 'place_max_creators':
+        if (value >= appConfig.DEFAULT_PLACE_MIN_CREATORS && value <= appConfig.DEFAULT_PLACE_MAX_CREATORS ) {
+          callback();
+        } else {
+          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CREATORS + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_CREATORS);
+        }
+      break;
+      case 'place_max_children':
+        if (value >= appConfig.DEFAULT_PLACE_MIN_CHILDREN && value <= appConfig.DEFAULT_PLACE_MAX_CHILDREN ) {
+          callback();
+        } else {
+          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CHILDREN + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_CHILDREN);
+        }
+      break;
+      case 'post_max_attachments':
+        if (value >= appConfig.DEFAULT_POST_MIN_ATTACHMENTS && value <= appConfig.DEFAULT_POST_MAX_ATTACHMENTS ) {
+          callback();
+        } else {
+          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_ATTACHMENTS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_ATTACHMENTS);
+        }
+      break;
+      case 'post_max_targets':
+        if (value >= appConfig.DEFAULT_POST_MIN_TARGETS && value <= appConfig.DEFAULT_POST_MAX_TARGETS ) {
+          callback();
+        } else {
+          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_TARGETS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_TARGETS);
+        }
+      break;
+      case 'post_retract_time':
+        if (value >= appConfig.DEFAULT_POST_MIN_RETRACT_TIME && value <= appConfig.DEFAULT_POST_MAX_RETRACT_TIME ) {
+          callback();
+        } else {
+          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_RETRACT_TIME + ' and lower than ' + appConfig.DEFAULT_POST_MAX_RETRACT_TIME);
+        }
+      break;
+      default:
+        callback();
+    }
   }
 
   saveForm = (form) => this.form = form;
@@ -76,9 +148,9 @@ class Config extends React.Component<IConfigProps, IConfigState> {
           <Col span={6}>
             <h3>System Limits</h3>
           </Col>
-          <Col span={18}>
-            <Button type='discard' size='large' onClick={this.handleReset}>Discard</Button>
-            <Button type='apply' size='large' onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply & Restart
+          <Col span={18}>{this.state.activeBtn}
+            <Button disabled={this.state.disableBtn} type='discard' size='large' onClick={this.handleReset}>Discard</Button>
+            <Button disabled={this.state.disableBtn} type='apply' size='large' onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply & Restart
               Server</Button>
           </Col>
         </Row>
@@ -94,9 +166,11 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         initialValue: this.state.data.account_grandplaces_limit,
                         rules: [
                           {
-                            min: appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES,
-                            max: appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES,
-                            message: 'Not acceptable'
+                            required: true,
+                            message: 'Required'
+                          },
+                          {
+                            validator: this.checkConfirm,
                           }
                         ]
                       })(
@@ -104,35 +178,32 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                       )}
                     </FormItem>
                   </div>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>
+                  {/*<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
+                    tincidunt ut.</p>*/}
                 </li>
                 <li>
                   <div className='option'>
                     <label>Account Register Mode</label>
                     <FormItem>
                       {getFieldDecorator('account_register_mode', {
-                        initialValue: this.state.data.register_mode,
+                        initialValue: this.state.data.register_mode === 1 ? 'Admin only' : 'Everyone',
                         rules: [
                           {
                             required: true,
-                            message: 'User ID is required!'
+                            message: 'Required'
                           },
                           {
-                            min: 5,
-                            message: 'The user ID is too short!'
+                            validator: this.checkConfirm,
                           }
                         ]
                       })(
-                        <Select onChange={this.handleChange}>
-                          <Option value='0'>Admin only</Option>
-                          <Option value='1'>Anyone</Option>
+                        <Select style={{ width: 88 }} onChange={this.handleChange}>
+                          <Option value={1}>Admin only</Option>
+                          <Option value={2}>Everyone</Option>
                         </Select>
                       )}
                     </FormItem>
                   </div>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>
                 </li>
               </ul>
             </Card>
@@ -148,11 +219,10 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         rules: [
                           {
                             required: true,
-                            message: 'User ID is required!'
+                            message: 'Required'
                           },
                           {
-                            min: 5,
-                            message: 'The user ID is too short!'
+                            validator: this.checkConfirm,
                           }
                         ]
                       })(
@@ -160,8 +230,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                       )}
                     </FormItem>
                   </div>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>
                 </li>
                 <li>
                   <div className='option'>
@@ -173,11 +241,10 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         rules: [
                           {
                             required: true,
-                            message: 'User ID is required!'
+                            message: 'Required'
                           },
                           {
-                            min: 5,
-                            message: 'The user ID is too short!'
+                            validator: this.checkConfirm,
                           }
                         ]
                       })(
@@ -185,8 +252,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                       )}
                     </FormItem>
                   </div>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>
                 </li>
                 <li>
                   <div className='option'>
@@ -197,11 +262,10 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         rules: [
                           {
                             required: true,
-                            message: 'User ID is required!'
+                            message: 'Required'
                           },
                           {
-                            min: 5,
-                            message: 'The user ID is too short!'
+                            validator: this.checkConfirm,
                           }
                         ]
                       })(
@@ -209,8 +273,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                       )}
                     </FormItem>
                   </div>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>
                 </li>
               </ul>
             </Card>
@@ -228,11 +290,10 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         rules: [
                           {
                             required: true,
-                            message: 'User ID is required!'
+                            message: 'Required!'
                           },
                           {
-                            min: 0,
-                            message: 'The user ID is too short!'
+                            validator: this.checkConfirm,
                           }
                         ]
                       })(
@@ -240,8 +301,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                       )}
                     </FormItem>
                   </div>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>
                 </li>
                 <li>
                   <div className='option'>
@@ -253,11 +312,10 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         rules: [
                           {
                             required: true,
-                            message: 'User ID is required!'
+                            message: 'Required'
                           },
                           {
-                            min: 5,
-                            message: 'The user ID is too short!'
+                            validator: this.checkConfirm,
                           }
                         ]
                       })(
@@ -265,8 +323,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                       )}
                     </FormItem>
                   </div>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>
                 </li>
                 <li>
                   <div className='option'>
@@ -279,11 +335,10 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         rules: [
                           {
                             required: true,
-                            message: 'User ID is required!'
+                            message: 'Required'
                           },
                           {
-                            min: 5,
-                            message: 'The user ID is too short!'
+                            validator: this.checkConfirm,
                           }
                         ]
                       })(
@@ -291,8 +346,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                       )}
                     </FormItem>
                   </div>
-                  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>
                 </li>
               </ul>
             </Card>
