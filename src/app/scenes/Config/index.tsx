@@ -70,7 +70,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    console.log(this.state);
     return (
       <Form onSubmit={this.handleSubmit.bind(this)} onChange={this.handleChange.bind(this)}>
         <Row className='toolbar' type='flex' align='center'>

@@ -20,91 +20,91 @@ export default class AccountApi {
         this.api = Api.getInstance();
     }
 
-    sessionRecall(sessionRecallParams: ISessionRecallRequest) : Promise<any> {
+    sessionRecall(sessionRecallParams: ISessionRecallRequest): Promise<any> {
         return this.api.server.request({
             cmd: 'session/recall',
             data: sessionRecallParams,
-            withoutQueue : true,
+            withoutQueue: true,
         }).then((res: ISessionRecallResponse) => {
             return res;
         });
     }
 
 
-    accountGet(accountGetRequest: IAccountGetRequest) : Promise<any> {
+    accountGet(accountGetRequest: IAccountGetRequest): Promise<any> {
         return this.api.server.request({
-          cmd: 'account/get',
-          data: accountGetRequest,
+            cmd: 'account/get',
+            data: accountGetRequest,
         }).then((res: IUser) => {
-          return res;
+            return res;
         }).catch((err) => {
-          console.log(err);
+            console.log(err);
         });
     }
 
 
-    getAll(params: IGetListRequest) : Promise<any> {
-      return this.api.server.request({
-        cmd: 'admin/account_list',
-        data: params,
-      }).then((res: any) => {
-        return res;
-      }).catch((err) => {
-        console.log(err);
-      });
+    getAll(params: IGetListRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/account_list',
+            data: params,
+        }).then((res: any) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
-    getMembers(params: IGetMembersRequest) : Promise<any> {
-      return this.api.server.request({
-        cmd: 'admin/place_list_members',
-        data: params,
-      }).then((res: any) => {
-        return res;
-      }).catch((err) => {
-        console.log(err);
-      });
+    getMembers(params: IGetMembersRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/place_list_members',
+            data: params,
+        }).then((res: any) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
-    register(req: IRegisterRequest) : Promise<any> {
+    register(req: IRegisterRequest): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/account_register',
             data: req,
         });
     }
 
-    promote(req: IPromoteRequest) : Promise<any> {
+    promote(req: IPromoteRequest): Promise<any> {
         return this.api.server.request({
-          cmd: 'admin/promote',
-          data: req,
+            cmd: 'admin/promote',
+            data: req,
         }).then((res: IUser) => {
-          return res;
+            return res;
         });
     }
 
-    demote(req: IDemoteRequest) : Promise<any> {
+    demote(req: IDemoteRequest): Promise<any> {
         return this.api.server.request({
-          cmd: 'admin/demote',
-          data: req,
+            cmd: 'admin/demote',
+            data: req,
         }).then((res: IUser) => {
-          return res;
+            return res;
         });
     }
 
-    disable(req: IDisableRequest) : Promise<any> {
+    disable(req: IDisableRequest): Promise<any> {
         return this.api.server.request({
-          cmd: 'admin/account_disable',
-          data: req,
+            cmd: 'admin/account_disable',
+            data: req,
         }).then((res: IUser) => {
-          return res;
+            return res;
         });
     }
 
-    enable(req: IEnableRequest) : Promise<any> {
+    enable(req: IEnableRequest): Promise<any> {
         return this.api.server.request({
-          cmd: 'admin/account_enable',
-          data: req,
+            cmd: 'admin/account_enable',
+            data: req,
         }).then((res: IUser) => {
-          return res;
+            return res;
         });
     }
 
@@ -120,39 +120,65 @@ export default class AccountApi {
     }
 
     edit(params: IEditAccountRequest): Promise<any> {
-      return new Promise((resolve, reject) => {
-        this.api.server.request({
-            cmd: 'admin/account_update',
-            data: params
-        }).then(resolve, reject);
-      });
+        return new Promise((resolve, reject) => {
+            this.api.server.request({
+                cmd: 'admin/account_update',
+                data: params
+            }).then(resolve, reject);
+        });
     }
 
     getUploadToken(): Promise<any> {
-      return this.api.server.request({
-        cmd: 'file/get_upload_token',
-        data: {}
-      });
+        return this.api.server.request({
+            cmd: 'file/get_upload_token',
+            data: {}
+        });
     }
 
     setPicture(params: ISetPictureRequest): Promise<any> {
-      return this.api.server.request({
-        cmd: 'admin/account_set_picture',
-        data: params
-      });
+        return this.api.server.request({
+            cmd: 'admin/account_set_picture',
+            data: params
+        });
     }
 
     removePicture(params: IRemovePictureRequest): Promise<any> {
-      return this.api.server.request({
-        cmd: 'admin/account_remove_picture',
-        data: params
-      });
+        return this.api.server.request({
+            cmd: 'admin/account_remove_picture',
+            data: params
+        });
     }
 
     setPassword(params: ISetPasswordRequest): Promise<any> {
-      return this.api.server.request({
-        cmd: 'admin/account_set_pass',
-        data: params
-      });
+        return this.api.server.request({
+            cmd: 'admin/account_set_pass',
+            data: params
+        });
+    }
+
+    phoneAvailable(params: { phone: string }): Promise<any> {
+        return this.api.server.request({
+            cmd: 'auth/phone_available',
+            data: params
+        }).then((res) => {
+            if (res.err_code) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+    }
+
+    usernameAvailable(params: { account_id: string }): Promise<any> {
+        return this.api.server.request({
+            cmd: 'account/available',
+            data: params
+        }).then((res) => {
+            if (res.err_code) {
+                return false;
+            } else {
+                return true;
+            }
+        });
     }
 }
