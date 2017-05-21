@@ -35,7 +35,9 @@ export default class Sidebar extends React.Component<IHeaderProps, IHeaderState>
           </Menu.Item>
           <Menu.Item key='accounts'>
             <Link to='/accounts' activeClassName='active'><Icon type=' nst-ico ic_account_solid_24' /><span>Accounts</span></Link>
-            
+          </Menu.Item>
+          <Menu.Item key='config'>
+            <Link to='/config' activeClassName='active'><Icon type=' nst-ico ic_access_solid_24' /><span>System Limits</span></Link>
           </Menu.Item>
           
         </Menu>
