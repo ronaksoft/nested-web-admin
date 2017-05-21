@@ -4,8 +4,8 @@ import {connect} from 'react-redux';
 
 import Filter from './../../components/Filter/index';
 import {Form, Row, Col, InputNumber, Button, Card, Input, Select} from 'antd';
-import ConfigApi from '../../api/config/index';
-import IGetConstantsResponse from '../../api/config/interfaces/IGetConstantsResponse';
+import SystemApi from '../../api/system/index';
+import IGetConstantsResponse from '../../api/system/interfaces/IGetConstantsResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import appConfig from '../../../app.config';
 
@@ -24,12 +24,12 @@ class Config extends React.Component<IConfigProps, IConfigState> {
   }
 
   componentDidMount() {
-    this.ConfigApi = new ConfigApi();
+    this.SystemApi = new SystemApi();
     this.GetData();
   }
 
   GetData() {
-    this.ConfigApi.getConstants().then((result) => {
+    this.SystemApi.getConstants().then((result) => {
       console.log(result);
       this.setState({
         data: result
