@@ -54,7 +54,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      console.log(arguments);
       if (!err) {
         const model = this.props.form.getFieldsValue();
         this.SetData(model);
@@ -73,7 +72,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     this.setState({
       disableBtn: false
     });
-    // console.log(value);
   }
 
   checkConfirm = (rule, value, callback) => {
