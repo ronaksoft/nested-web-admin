@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Row, Col, Popover, Button, Card} from 'antd';
 import SystemApi from '../../api/system/index';
-import {PieChart, Pie, Legend, Sector, Tooltip, Cell} from 'recharts';
+import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
 const data = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300},
                   {name: 'Group C', value: 300}];
 const COLORS = ['#14D769', '#A9EFC7', '#CFF6E0'];
@@ -33,6 +33,18 @@ const content = (
     <p>Content</p>
   </div>
 );
+
+const renderCustomizedLabel = ({ cx, cy, midAngle, name, innerRadius, outerRadius, percent, index }) => {
+ 	const radius = outerRadius * 1.3;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text x={x} y={y} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline='central' key={`label-${index}-${name}`}>
+    	{`${(percent * 100).toFixed(0)}% ${name}`}
+    </text>
+  );
+};
 
 class DashboardComponent extends React.Component<IDashboardProps, IDashboardState> {
     constructor(props: IDashboardProps) {
@@ -106,24 +118,28 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
               <Row gutter={24} className='dashboardRow'>
                 <Col span={8}>
                     <Card loading={this.state.loading} title={card3Title} extra={card3Extra}>
-                        <PieChart width={224} height={200} onMouseEnter={this.onPieEnter}>
-                            <Pie data={this.state.data.places} activeIndex={this.state.activeIndex} label fill='#8884d8' cx={104} cy={104} innerRadius={40} outerRadius={66} paddingAngle={0}>
-                            {
-                                data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
-                            }
-                            </Pie>
-                        </PieChart>
+                        <ResponsiveContainer width='100%' height={200}>
+                            <PieChart onMouseEnter={this.onPieEnter}>
+                                <Pie data={this.state.data.places} activeIndex={this.state.activeIndex} label={renderCustomizedLabel} fill='#8884d8' innerRadius={40} outerRadius={66} paddingAngle={0}>
+                                {
+                                    data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
+                                }
+                                </Pie>
+                            </PieChart>
+                        </ResponsiveContainer>
                     </Card>
                 </Col>
                 <Col span={8}>
                     <Card loading={this.state.loading} title={card4Title} extra={card4Extra}>
-                        <PieChart width={224} height={200} onMouseEnter={this.onPieEnter}>
-                            <Pie data={this.state.data.accounts} activeIndex={this.state.activeIndex} label fill='#FFDFDF' cx={104} cy={104} innerRadius={40} outerRadius={66} paddingAngle={0}>
-                            {
-                                data.map((entry, index) => <Cell fill='#FF6464'/>)
-                            }
-                            </Pie>
-                        </PieChart>
+                        <ResponsiveContainer width='100%' height={200}>
+                            <PieChart onMouseEnter={this.onPieEnter}>
+                                <Pie data={this.state.data.accounts} activeIndex={this.state.activeIndex}  label={renderCustomizedLabel} fill='#FFDFDF' innerRadius={40} outerRadius={66} paddingAngle={0}>
+                                {
+                                    data.map((entry, index) => <Cell fill='#FF6464'/>)
+                                }
+                                </Pie>
+                            </PieChart>
+                        </ResponsiveContainer>
                     </Card>
                 </Col>
                 <Col span={8}>

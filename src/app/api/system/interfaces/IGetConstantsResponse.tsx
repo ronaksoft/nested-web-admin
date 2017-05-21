@@ -4,6 +4,7 @@ interface IGetConstantsResponse {
     post_max_attachments: number;
     post_retract_time: number;
     account_grandplaces_limit: number;
+    place_max_level: number;
     place_max_children: number;
     place_max_creators: number;
     place_max_keyholders: number;
