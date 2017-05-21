@@ -44,10 +44,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             });
         }
         this.AccountApi = new AccountApi();
-        this.loadPlaces(this.props.place._id);
+        this.loadMembers(this.props.place._id);
     }
 
-    loadPlaces(placeId: string) {
+    loadMembers(placeId: string) {
 
 
         this.AccountApi.getMembers({
