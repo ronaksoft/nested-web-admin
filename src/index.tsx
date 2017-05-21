@@ -4,7 +4,7 @@ import {IStore} from '~react-redux~redux';
 import {Provider} from 'react-redux';
 import App from './app/scenes/index';
 import configureStore from './app/services/store/configureStore';
-import {Router, Route, browserHistory} from 'react-router';
+import {Router, Route, browserHistory, IndexRoute} from 'react-router';
 
 
 // import Components
@@ -23,6 +23,7 @@ ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
             <Route path='/' component={App}>
+                <IndexRoute component={Dashboard}/>
                 <Route path='/dashboard' component={Dashboard}/>
                 <Route path='/accounts' component={Accounts}/>
                 <Route path='/places' component={Places}/>
