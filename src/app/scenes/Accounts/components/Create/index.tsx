@@ -50,7 +50,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
       return;
     }
 
-    const account = new Account(model._id, model.fname, model.lname, model.phone);
+    const account = new Account(model._id, model.fname, model.lname, model.phone, model.pass);
     packet.model = account;
     const hasError = _.some(errors, (error) => _.isArray(error) && _.size(error) > 0);
     packet.state = hasError ? PacketState.Invalid : PacketState.Valid;
@@ -90,7 +90,8 @@ class Create extends React.Component<ICreateProps, ICreateState> {
       uid: packet.model._id,
       fname: packet.model.fname,
       lname: packet.model.lname,
-      phone: packet.model.phone
+      phone: packet.model.phone,
+      pass: packet.model.pass
     }).then((result) => {
       // apply changes
 
@@ -164,10 +165,11 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             <Row>
               <Col span={22}>
                 <Row>
-                  <Col span={6}><b>Phone Number</b><span>(with country code)</span></Col>
-                  <Col span={6}><b>Username</b></Col>
-                  <Col span={6}><b>First Name</b></Col>
-                  <Col span={6}><b>Last Name</b></Col>
+                  <Col span={5}><b>Phone Number</b><span>(with country code)</span></Col>
+                  <Col span={5}><b>Username</b></Col>
+                  <Col span={5}><b>First Name</b></Col>
+                  <Col span={5}><b>Last Name</b></Col>
+                  <Col span={4}><b>Password</b></Col>
                 </Row>
               </Col>
             </Row>
