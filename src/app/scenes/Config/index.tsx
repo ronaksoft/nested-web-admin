@@ -3,7 +3,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 
 import Filter from './../../components/Filter/index';
-import {Form, Row, Col, InputNumber, Button, Card, Input, Select} from 'antd';
+import {Form, Row, Col, InputNumber, Button, Card, Input, Select, message} from 'antd';
 import SystemApi from '../../api/system/index';
 import IGetConstantsResponse from '../../api/system/interfaces/IGetConstantsResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
@@ -20,7 +20,7 @@ export interface IConfigState {
 class Config extends React.Component<IConfigProps, IConfigState> {
   constructor(props: IConfigProps) {
     super(props);
-    this.state = {data: {}};
+    this.state = {data: {}, disableBtn: true};
   }
 
   componentDidMount() {
@@ -30,7 +30,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
   GetData() {
     this.SystemApi.getConstants().then((result) => {
-      console.log(result);
       this.setState({
         data: result
       });
@@ -41,9 +40,14 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
   SetData(req: IGetConstantsResponse) {
     this.SystemApi.setConstants(req).then((result) => {
-      console.log(result);
+      message.success('Your new configs is set');
+      this.setState({
+        disableBtn: true
+      });
+      this.GetData();
     }).catch((error) => {
-      console.log('error', error);
+      console.log(error);
+      message.error('Your config not updated !');
     });
   }
 
@@ -56,9 +60,15 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
   handleReset = () => {
     this.props.form.resetFields();
+    this.setState({
+      disableBtn: true
+    });
   }
 
   handleChange = (value) => {
+    this.setState({
+      disableBtn: false
+    });
     // console.log(value);
   }
 
@@ -69,7 +79,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         if (value > appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES && value < appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES) {
           callback();
         } else {
-          callback('it must be grather than ' + appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES + ' and lower than' + appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES);
+          callback('it must be grather than ' + appConfig.DEFAULT_ACCOUNT_MIN_GRAND_PLACES + ' and lower than ' + appConfig.DEFAULT_ACCOUNT_MAX_GRAND_PLACES);
         }
       break;
       case 'account_register_mode':
@@ -83,42 +93,42 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         if (value > appConfig.DEFAULT_PLACE_MIN_KEYHOLDERS && value < appConfig.DEFAULT_PLACE_MAX_KEYHOLDERS ) {
           callback();
         } else {
-          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_KEYHOLDERS + ' and lower than' + appConfig.DEFAULT_PLACE_MAX_KEYHOLDERS);
+          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_KEYHOLDERS + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_KEYHOLDERS);
         }
       break;
       case 'place_max_creators':
         if (value > appConfig.DEFAULT_PLACE_MIN_CREATORS && value < appConfig.DEFAULT_PLACE_MAX_CREATORS ) {
           callback();
         } else {
-          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CREATORS + ' and lower than' + appConfig.DEFAULT_PLACE_MAX_CREATORS);
+          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CREATORS + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_CREATORS);
         }
       break;
       case 'place_max_children':
         if (value > appConfig.DEFAULT_PLACE_MIN_CHILDREN && value < appConfig.DEFAULT_PLACE_MAX_CHILDREN ) {
           callback();
         } else {
-          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CHILDREN + ' and lower than' + appConfig.DEFAULT_PLACE_MAX_CHILDREN);
+          callback('it must be grather than ' + appConfig.DEFAULT_PLACE_MIN_CHILDREN + ' and lower than ' + appConfig.DEFAULT_PLACE_MAX_CHILDREN);
         }
       break;
       case 'post_max_attachments':
         if (value > appConfig.DEFAULT_POST_MIN_ATTACHMENTS && value < appConfig.DEFAULT_POST_MAX_ATTACHMENTS ) {
           callback();
         } else {
-          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_ATTACHMENTS + ' and lower than' + appConfig.DEFAULT_POST_MAX_ATTACHMENTS);
+          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_ATTACHMENTS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_ATTACHMENTS);
         }
       break;
       case 'post_max_targets':
         if (value > appConfig.DEFAULT_POST_MIN_TARGETS && value < appConfig.DEFAULT_POST_MAX_TARGETS ) {
           callback();
         } else {
-          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_TARGETS + ' and lower than' + appConfig.DEFAULT_POST_MAX_TARGETS);
+          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_TARGETS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_TARGETS);
         }
       break;
       case 'post_retract_time':
         if (value > appConfig.DEFAULT_POST_MIN_RETRACT_TIME && value < appConfig.DEFAULT_POST_MAX_RETRACT_TIME ) {
           callback();
         } else {
-          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_RETRACT_TIME + ' and lower than' + appConfig.DEFAULT_POST_MAX_RETRACT_TIME);
+          callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_RETRACT_TIME + ' and lower than ' + appConfig.DEFAULT_POST_MAX_RETRACT_TIME);
         }
       break;
       default:
@@ -136,9 +146,9 @@ class Config extends React.Component<IConfigProps, IConfigState> {
           <Col span={6}>
             <h3>System Limits</h3>
           </Col>
-          <Col span={18}>
-            <Button type='discard' size='large' onClick={this.handleReset}>Discard</Button>
-            <Button type='apply' size='large' onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply & Restart
+          <Col span={18}>{this.state.activeBtn}
+            <Button disabled={this.state.disableBtn} type='discard' size='large' onClick={this.handleReset}>Discard</Button>
+            <Button disabled={this.state.disableBtn} type='apply' size='large' onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply & Restart
               Server</Button>
           </Col>
         </Row>
