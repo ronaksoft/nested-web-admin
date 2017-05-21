@@ -85,7 +85,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         }
       break;
       case 'account_register_mode':
-        if (value >= 0 && value <= 1 ) {
+        if (value >= appConfig.DEFAULT_ACCOUNT_MIN_REGISTER_MODE && value <= appConfig.DEFAULT_ACCOUNT_MAX_REGISTER_MODE ) {
           callback();
         } else {
           callback('it wrong selection');
@@ -186,7 +186,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                     <label>Account Register Mode</label>
                     <FormItem>
                       {getFieldDecorator('account_register_mode', {
-                        initialValue: this.state.data.register_mode,
+                        initialValue: this.state.data.register_mode === 1 ? 'Admin only' : 'Everyone',
                         rules: [
                           {
                             required: true,
@@ -197,9 +197,9 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                           }
                         ]
                       })(
-                        <Select onChange={this.handleChange}>
-                          <Option value='0'>Admin only</Option>
-                          <Option value='1'>Anyone</Option>
+                        <Select style={{ width: 88 }} onChange={this.handleChange}>
+                          <Option value={1}>Admin only</Option>
+                          <Option value={2}>Everyone</Option>
                         </Select>
                       )}
                     </FormItem>
