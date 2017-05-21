@@ -40,7 +40,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
   }
 
   SetData(req: IGetConstantsResponse) {
-    this.ConfigApi.setConstants(req).then((result) => {
+    this.SystemApi.setConstants(req).then((result) => {
       console.log(result);
     }).catch((error) => {
       console.log('error', error);
