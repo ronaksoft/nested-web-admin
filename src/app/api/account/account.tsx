@@ -26,7 +26,7 @@ export default class AccountApi {
             data: sessionRecallParams,
             withoutQueue: true,
         }).then((res: ISessionRecallResponse) => {
-            return res;
+            return res.account;
         });
     }
 
@@ -59,6 +59,17 @@ export default class AccountApi {
       return this.api.server.request({
         cmd: 'session/register',
         data: data,
+      }).then((res: any) => {
+        return res;
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+
+
+    signout() : Promise<any> {
+      return this.api.server.request({
+        cmd: 'session/close'
       }).then((res: any) => {
         return res;
       }).catch((err) => {

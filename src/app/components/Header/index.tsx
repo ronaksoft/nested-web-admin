@@ -1,19 +1,21 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Input, Row, Col, Button, AutoComplete, Icon, notification } from 'antd';
+import {Input, Row, Col, Button, AutoComplete, Icon, notification} from 'antd';
 import UserAvatar from './../avatar/index';
 import AAA from './../../services/classes/aaa/index';
 import AccountApi from '../../api/account/account';
 import PlaceApi from '../../api/place/index';
 import PlaceModal from '../../components/PlaceModal/index';
 import UserModal from '../../scenes/Accounts/components/View/index';
+import {browserHistory} from 'react-router';
 // import PlaceItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 // import UserItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 
 const Search = Input.Search;
 
 
-interface IHeaderProps { };
+interface IHeaderProps {
+};
 
 interface IHeaderState {
     showPlaceModal: boolean;
@@ -53,7 +55,6 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         });
 
         Promise.all([getAccountPromise, getPlacePromise]).then((resultSet) => {
-            console.log('resultSet', resultSet);
             const result = [];
             result[0] = {
                 key: 'accounts',
@@ -77,12 +78,22 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         });
     }
 
+    signOut() {
+        let aaa = AAA.getInstance();
+        let accountApi = new AccountApi();
+        accountApi.signout()
+            .then(() => {
+                aaa.setIsUnAthenticated();
+                browserHistory.push('/signin');
+            });
+    }
+
     handleSelect(value: string, option: any) {
         const group = value.split('___')[0];
         const key = value.split('___')[1];
 
         if (group === 'accounts') {
-            this.selectedUser = _.find(this.state.result[0].items, { _id: key });
+            this.selectedUser = _.find(this.state.result[0].items, {_id: key});
             console.log(this.selectedUser);
             this.setState({
                 showUserModal: true,
@@ -90,7 +101,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         }
 
         if (group === 'places') {
-            this.selectedPlace = _.find(this.state.result[1].items, { _id: key });
+            this.selectedPlace = _.find(this.state.result[1].items, {_id: key});
             this.setState({
                 showPlaceModal: true,
             });
@@ -116,20 +127,20 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         const Option = AutoComplete.Option;
 
         const suggestedOptions = this.state.result.map((group) => {
-            return (
-                <Group
-                    key={group.key}
-                    label={group.title}
+                return (
+                    <Group
+                        key={group.key}
+                        label={group.title}
                     >
-                    {
-                        group.items.map((item) =>
-                            <Option key={group.key + '_' + item._id} value={group.key + '___' + item._id}>
-                                {item._id}
-                            </Option>)
-                    }
-                </Group>
-            );
-        }
+                        {
+                            group.items.map((item) =>
+                                <Option key={group.key + '_' + item._id} value={group.key + '___' + item._id}>
+                                    {item._id}
+                                </Option>)
+                        }
+                    </Group>
+                );
+            }
         );
 
         return (
@@ -137,34 +148,43 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                 <Row>
                     <Col span={10}>
                         {this.state.showPlaceModal &&
-                            <PlaceModal visible={this.state.showPlaceModal} place={this.selectedPlace} onClose={this.closePlaceModal.bind(this) }/>
+                        <PlaceModal visible={this.state.showPlaceModal} place={this.selectedPlace}
+                                    onClose={this.closePlaceModal.bind(this) }/>
                         }
                         {this.state.showUserModal &&
-                            <UserModal visible={this.state.showUserModal} account={this.selectedUser} onClose={this.closeUserModal.bind(this) }/>
+                        <UserModal visible={this.state.showUserModal} account={this.selectedUser}
+                                   onClose={this.closeUserModal.bind(this) }/>
                         }
                         <AutoComplete
                             size='large'
-                            style={{ width: '100%' }}
+                            style={{width: '100%'}}
                             dataSource={suggestedOptions}
                             onSearch={this.search}
                             onSelect={this.handleSelect.bind(this) }
                             optionLabelProp='_id'
-                            >
+                        >
                             <Input
                                 placeholder='Search here...'
                                 size='large'
-                                prefix={<Icon type='search' className='certain-category-icon' />}
-                                />
+                                prefix={<Icon type='search' className='certain-category-icon'/>}
+                            />
                         </AutoComplete>
                     </Col>
                     <Col span={14}>
                         <Row type='flex' justify='end'>
                             <Col>
-                                <Button type='toolkit nst-ico ic_open_message_solid_24' shape='circle' icon='notification'></Button>
-                                <Button type='toolkit nst-ico ic_bell_solid_24' shape='circle' icon='notification'></Button>
-                                <Button type='toolkit nst-ico ic_gear_solid_-1' shape='circle' icon='logout'></Button>
-                                <Button type='toolkit nst-ico ic_lock_solid_24' shape='circle' icon='setting'></Button>
-                                <Button type='toolkit nst-ico ic_logout_solid_24' shape='circle' icon='lock'></Button>
+                                {/*<Button type='toolkit nst-ico ic_open_message_solid_24'*/}
+                                        {/*shape='circle'*/}
+                                        {/*icon='notification'></Button>*/}
+                                {/*<Button type='toolkit nst-ico ic_bell_solid_24'*/}
+                                        {/*shape='circle'*/}
+                                        {/*icon='notification'></Button>*/}
+                                {/*<Button type='toolkit nst-ico ic_gear_solid_-1' shape='circle'></Button>*/}
+                                {/*<Button type='toolkit nst-ico ic_lock_solid_24' shape='circle' icon='setting'></Button>*/}
+                                <Button type='toolkit nst-ico ic_logout_solid_24' onClick={() => {
+                                    this.signOut();
+                                }}
+                                        shape='circle'></Button>
                                 <Button type='toolkit-user' shape='circle' className='oddcondi'>
                                     <UserAvatar size={24} user={loggedUser} avatar/>
                                 </Button>

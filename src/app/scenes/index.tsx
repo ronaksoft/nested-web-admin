@@ -24,7 +24,7 @@ interface IAppState {
 
 class App extends React.Component<IAppProps, IAppState> {
     state = {
-        isReady : false,
+        isReady: false,
     };
 
     constructor(props: any) {
@@ -35,42 +35,59 @@ class App extends React.Component<IAppProps, IAppState> {
         let accountApi = new AccountApi();
         let aaa = AAA.getInstance();
         const credential = aaa.getCredentials();
-        accountApi.sessionRecall({
-            _ss : credential.ss,
-            _sk : credential.sk,
-        }).then((user: IUser) => {
-            aaa.setUser(user);
-            this.setState({
-              isReady : true,
-            });
-        }).catch((err) => {
-            console.log(err);
+        const user = aaa.getUser();
+
+        if (!credential.sk || !credential.ss) {
             aaa.setIsUnAthenticated();
             browserHistory.push('/signin');
-        });
+            return;
+        }
+
+        if (!user) {
+            accountApi.sessionRecall({
+                _ss: credential.ss,
+                _sk: credential.sk,
+            }).then((user: IUser) => {
+                if (!user.admin) {
+                    browserHistory.push('/403');
+                    return;
+                }
+                aaa.setUser(user);
+                this.setState({
+                    isReady: true,
+                });
+            }).catch((err) => {
+                aaa.setIsUnAthenticated();
+                browserHistory.push('/signin');
+            });
+        } else {
+            this.setState({
+                isReady: true,
+            });
+        }
 
     }
 
     render() {
-      const children = this.props.children;
+        const children = this.props.children;
 
         return (
-          <div>
-            {this.state.isReady &&
+            <div>
+                {this.state.isReady &&
                 <Layout>
-                  <Sider width='226'>
-                    <SidebarComponent/>
-                  </Sider>
-                  <Layout className='container'>
-                    <Header>
-                      <HeaderComponent/>
-                    </Header>
-                    <Content>{children}</Content>
-                    {/*<Footer>Footer</Footer>*/}
-                  </Layout>
+                    <Sider width='226'>
+                        <SidebarComponent/>
+                    </Sider>
+                    <Layout className='container'>
+                        <Header>
+                            <HeaderComponent/>
+                        </Header>
+                        <Content>{children}</Content>
+                        {/*<Footer>Footer</Footer>*/}
+                    </Layout>
                 </Layout>
-              }
-          </div>
+                }
+            </div>
         );
     }
 }

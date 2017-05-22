@@ -51,7 +51,8 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
 
     register = (data) => {
         data.pass = md5(data.pass);
-        this.accountApi.login(data).then((data) => {
+        this.accountApi.login(data)
+            .then((data) => {
             if (data.account && data.account.admin) {
                 AAA.getInstance().setCredentials(data);
                 // fixme : data or data.account ?

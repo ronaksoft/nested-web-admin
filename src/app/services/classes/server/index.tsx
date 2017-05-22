@@ -39,11 +39,11 @@ export default class Server {
         };
 
 
-        if (credential.sk) {
+        if (credential.sk && credential.sk !== 'null') {
             socketRequest._sk = credential.sk;
         }
 
-        if (credential.ss) {
+        if (credential.ss && credential.ss !== 'null') {
             socketRequest._ss = credential.ss;
         }
 
