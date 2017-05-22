@@ -54,6 +54,18 @@ export default class AccountApi {
         });
     }
 
+
+    login(data: any) : Promise<any> {
+      return this.api.server.request({
+        cmd: 'session/register',
+        data: data,
+      }).then((res: any) => {
+        return res;
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+
     getMembers(params: IGetMembersRequest): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/place_list_members',

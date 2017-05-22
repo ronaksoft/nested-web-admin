@@ -25,6 +25,11 @@ export default class AAA {
       };
     }
 
+    setCredentials (d: any) {
+        Cookies.set('nss', d._ss);
+        Cookies.set('nsk', d._sk);
+    }
+
     setUser(account: any ): void {
         this.account = account;
         this.isAthenticated = true;
