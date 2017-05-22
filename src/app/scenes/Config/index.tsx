@@ -158,8 +158,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
           </Col>
           <Col span={18}>{this.state.activeBtn}
             <Button disabled={this.state.disableBtn} type='discard' size='large' onClick={this.handleReset}>Discard</Button>
-            <Button disabled={this.state.disableBtn} type='apply' size='large' onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply & Restart
-              Server</Button>
+            <Button disabled={this.state.disableBtn} type='apply' size='large' onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply</Button>
           </Col>
         </Row>
         <Row gutter={24} className='dashboardRow' type='flex' align='center'>
