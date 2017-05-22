@@ -181,7 +181,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                                         {/*icon='notification'></Button>*/}
                                 {/*<Button type='toolkit nst-ico ic_gear_solid_-1' shape='circle'></Button>*/}
                                 {/*<Button type='toolkit nst-ico ic_lock_solid_24' shape='circle' icon='setting'></Button>*/}
-                                <Button type='toolkit nst-ico ic_logout_solid_24' onClick={() => {
+                                <Button type='toolkit nst-ico ic_logout_solid_24' icon='signout' onClick={() => {
                                     this.signOut();
                                 }}
                                         shape='circle'></Button>
