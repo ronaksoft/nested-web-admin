@@ -47,6 +47,18 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
     componentDidMount() {
         this.fetchPlaces();
+
+        const counter = this.props.counters;
+        let totalCounter: number = counter.grand_places + counter.locked_places + counter.unlocked_places;
+
+        this.setState({
+            selectedFilter: this.props.selectedFilter,
+            pagination: {
+                pageSize: this.pageLimit,
+                current: 1,
+                total: totalCounter,
+            }
+        });
     }
 
     componentWillReceiveProps(props: IListProps) {
@@ -62,7 +74,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             }
 
 
-            this.state = {
+            this.setState({
                 selectedFilter: props.selectedFilter,
                 counters: props.counters,
                 pagination: {
@@ -70,7 +82,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     current: 1,
                     total: totalCounter,
                 }
-            };
+            });
             setTimeout(() => {
                 this.fetchPlaces();
             }, 100);
