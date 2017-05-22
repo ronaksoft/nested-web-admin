@@ -58,14 +58,12 @@ class View extends React.Component<IViewProps, IViewState> {
 
   componentWillReceiveProps(nextProps : IViewProps) {
     if (nextProps.account && nextProps.account._id && nextProps.account._id !== this.state.account._id) {
-      console.log('received new props');
       this.setState({ account: nextProps.account, places: [] });
       this.loadPlaces(nextProps.account._id);
     }
   }
 
   loadPlaces(accountId: string) {
-    console.log('loading places');
     this.setState({
       loading: true
     });

@@ -94,7 +94,6 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
 
         if (group === 'accounts') {
             this.selectedUser = _.find(this.state.result[0].items, {_id: key});
-            console.log(this.selectedUser);
             this.setState({
                 showUserModal: true,
             });
@@ -174,11 +173,11 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                         <Row type='flex' justify='end'>
                             <Col>
                                 {/*<Button type='toolkit nst-ico ic_open_message_solid_24'*/}
-                                        {/*shape='circle'*/}
-                                        {/*icon='notification'></Button>*/}
+                                {/*shape='circle'*/}
+                                {/*icon='notification'></Button>*/}
                                 {/*<Button type='toolkit nst-ico ic_bell_solid_24'*/}
-                                        {/*shape='circle'*/}
-                                        {/*icon='notification'></Button>*/}
+                                {/*shape='circle'*/}
+                                {/*icon='notification'></Button>*/}
                                 {/*<Button type='toolkit nst-ico ic_gear_solid_-1' shape='circle'></Button>*/}
                                 {/*<Button type='toolkit nst-ico ic_lock_solid_24' shape='circle' icon='setting'></Button>*/}
                                 <Button type='toolkit nst-ico ic_logout_solid_24' onClick={() => {
