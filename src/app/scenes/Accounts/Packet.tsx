@@ -1,5 +1,5 @@
 import PacketState from './PacketState';
-import IUnique from './IUnique';
+import IUnique from './interfaces/IUnique';
 import _ from 'lodash';
 
 export default class Packet<T> implements IUnique {

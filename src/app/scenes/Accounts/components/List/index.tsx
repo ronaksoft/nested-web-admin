@@ -14,9 +14,9 @@ import {
 import _ from 'lodash';
 import moment from 'moment';
 import Account from '../../Account';
-import {IAccount} from '../../IAccount';
-import IUnique from '../../IUnique';
-import IPerson from '../../IPerson';
+import {IAccount} from '../../interfaces/IAccount';
+import IUnique from '../../interfaces/IUnique';
+import IPerson from '../../interfaces/IPerson';
 import AccountApi from '../../../../api/account/account';
 import UserAvatar from '../../../../components/avatar/index';
 import IEnableRequest from '../../../../api/account/interfaces/IEnableRequest';

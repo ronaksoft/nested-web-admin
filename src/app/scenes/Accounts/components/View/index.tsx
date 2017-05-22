@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import md5 from 'md5';
 import PlaceItem from '../../../../components/PlaceItem/index';
-import IPerson from '../../IPerson';
+import IPerson from '../../interfaces/IPerson';
 import PlaceApi from '../../../../api/place/index';
 import AccountApi from '../../../../api/account/account';
 import UserAvatar from '../../../../components/avatar/index';
