@@ -460,10 +460,7 @@ class View extends React.Component<IViewProps, IViewState> {
               }
             </Col>
           </Row>
-          <Row>
-            <Col span={24}>
-
-              {
+          {
                 managerInPlaces.length > 0 &&
                 <Row className='devide-row'>
                   <Col span={18}>
@@ -501,9 +498,6 @@ class View extends React.Component<IViewProps, IViewState> {
                   </Col>
                 </Row>
               }
-
-            </Col>
-          </Row>
           <Modal
                 key={this.props.account._id}
                 title='Edit'
