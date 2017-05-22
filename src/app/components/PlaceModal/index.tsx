@@ -181,7 +181,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 {place.counters.creators + place.counters.key_holders} Members
                             </Col>
                         </Row>
-                        <Row>
+                        <Row className='remove-margin'>
                             {this.state.members &&
                                 this.state.members.map((item) => {
                                     return (<UserItem user={item} manager={this.isManager(item) } key={item._id} />);

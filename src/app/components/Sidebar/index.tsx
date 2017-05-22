@@ -23,20 +23,20 @@ export default class Sidebar extends React.Component<IHeaderProps, IHeaderState>
         className='main-menu'>
         <Link to='/dashboard' activeClassName='active'><div className='logo'></div></Link>
         <Menu
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
+          defaultSelectedKeys={['dahboard']}
+          defaultOpenKeys={['dahboard']}
           mode='inline'
           >
-          <Menu.Item key='dashboard'>
+          <Menu.Item key='dashboard' key='dahboard'>
             <Link to='/dashboard' activeClassName='active'><Icon type=' nst-ico ic_dashboard_solid_24' /><span>Dashboard</span></Link>
           </Menu.Item>
-          <Menu.Item key='places'>
+          <Menu.Item key='places' key='places'>
             <Link to='/places' activeClassName='active'><Icon type=' nst-ico ic_places_solid_24' /><span>Places</span></Link>
           </Menu.Item>
-          <Menu.Item key='accounts'>
+          <Menu.Item key='accounts' key='accounts'>
             <Link to='/accounts' activeClassName='active'><Icon type=' nst-ico ic_account_solid_24' /><span>Accounts</span></Link>
           </Menu.Item>
-          <Menu.Item key='config'>
+          <Menu.Item key='config' key='config'>
             <Link to='/config' activeClassName='active'><Icon type=' nst-ico ic_access_solid_24' /><span>System Limits</span></Link>
           </Menu.Item>
           

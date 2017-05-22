@@ -9,6 +9,7 @@ function PlaceItem(props: any) {
     height: '16px',
     verticalAlign: 'middle'
   };
+  console.log(props.place);
   return (
     <Row className='place-row' type='flex' align='middle'>
       <Col span={3}>
@@ -27,7 +28,7 @@ function PlaceItem(props: any) {
         <span>{props.place._id}</span>
       </Col>
       <Col span={6}>
-        <aside>{22} Members</aside>
+        <aside>{props.place.counters.creators + props.place.counters.key_holders} Members</aside>
       </Col>
     </Row>
   );
