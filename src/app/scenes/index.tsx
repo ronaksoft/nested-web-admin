@@ -46,7 +46,7 @@ class App extends React.Component<IAppProps, IAppState> {
         }).catch((err) => {
             console.log(err);
             aaa.setIsUnAthenticated();
-            // browserHistory.push('/403');
+            browserHistory.push('/signin');
         });
 
     }
