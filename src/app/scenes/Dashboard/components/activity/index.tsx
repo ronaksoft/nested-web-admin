@@ -30,7 +30,6 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
       from: aWeekAgo,
       to: now
     }).then((response) => {
-      console.log('res', response);
       this.setState({
         activities: response.result
       });
@@ -51,8 +50,6 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
         };
       })
       .value();
-
-    console.log('data', data);
 
     return (
         <ResponsiveContainer width='100%' height={300}>
