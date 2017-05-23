@@ -252,7 +252,7 @@ class View extends React.Component<IViewProps, IViewState> {
     })((props: any) => {
       const { getFieldDecorator } = props.form;
       return (
-        <Form>
+        <Form onSubmit={() => this.applyChanges(this.form)}>
           {
             this.state.editTarget === EditableFields.fname &&
             <Form.Item label='First Name'>
