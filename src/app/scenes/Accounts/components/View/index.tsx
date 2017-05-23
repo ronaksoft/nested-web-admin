@@ -58,14 +58,12 @@ class View extends React.Component<IViewProps, IViewState> {
 
   componentWillReceiveProps(nextProps : IViewProps) {
     if (nextProps.account && nextProps.account._id && nextProps.account._id !== this.state.account._id) {
-      console.log('received new props');
       this.setState({ account: nextProps.account, places: [] });
       this.loadPlaces(nextProps.account._id);
     }
   }
 
   loadPlaces(accountId: string) {
-    console.log('loading places');
     this.setState({
       loading: true
     });
@@ -78,7 +76,6 @@ class View extends React.Component<IViewProps, IViewState> {
         loading: false
       });
     }).catch((error) => {
-      console.log('error', error);
       this.setState({
         places: [],
         loading: false
@@ -121,7 +118,6 @@ class View extends React.Component<IViewProps, IViewState> {
 
         return value;
       });
-      console.log('changedProps', changedProps);
       if (_.has(changedProps, 'pass')) {
         this.accountApi.setPassword({
           account_id: this.state.account._id,
@@ -220,7 +216,6 @@ class View extends React.Component<IViewProps, IViewState> {
   }
 
   beforeUpload(file: any, fileList: any) {
-    console.log('token', this.state.token);
     if (!this.state.token) {
       notification.error({
         message: 'Error',
