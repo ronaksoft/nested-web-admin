@@ -116,35 +116,6 @@ IListState > {
             notification.warning({message: 'Deactivated', description: `"${user._id}" is disabled now.`});
         });
     }
-    promote = (user) => {
-        this.accountApi.promote({account_id: user._id}).then((result) => {
-            user.admin = true;
-            notification.success({message: 'Promoted', description: `"${user._id}" can access Nested Administrator.`});
-            this.setState({
-                users: _.clone(this.state.accounts)
-            });
-        });
-    }
-    demote = (user) => {
-        this.accountApi.demote({account_id: user._id}).then((result) => {
-            user.admin = false;
-            notification.warning({message: 'Demoted', description: `"${user._id}" is no longer able to access Nested Administrator.`});
-            this.setState({
-                users: _.clone(this.state.accounts)
-            });
-        });
-    }
-    confirmPromote = (user) => {
-        Modal.confirm({
-            title: 'Confirm',
-            content: `Are you sure you want to promote the user?`,
-            onOk: () => {
-                this.promote(user);
-            },
-            okText: 'Yes',
-            cancelText: 'No'
-        });
-    }
     optionsRender = (text, user, index) => {
         const optionsMenu = (
             <Menu>
@@ -158,18 +129,9 @@ IListState > {
                     <a href='#' onClick={() => this.disable(user)}>Deactivate</a>
                 </Menu.Item>
 }
-                {!user.admin && <Menu.Item key='2'>
-                    <Icon type='arrow-up'/>
-                    <a href='#' onClick={() => this.confirmPromote(user)}>Promote</a>
-                </Menu.Item>
-}
-                {user.admin && <Menu.Item key='3'>
-                    <Icon type='arrow-down'/>
-                    <a href='#' onClick={() => this.demote(user)}>Demote</a>
-                </Menu.Item>
-}
-                <Menu.Item key='4'>
-                    <Icon type='lock'/>Set Password
+                <Menu.Item key='2'>
+                    <Icon type='eye-o'/>
+                    <a href='#' onClick={() => this.onItemClick(user)}>View</a>
                 </Menu.Item>
             </Menu>
         );
