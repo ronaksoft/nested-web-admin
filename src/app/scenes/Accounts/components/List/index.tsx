@@ -9,7 +9,8 @@ import {
     Popover,
     Button,
     notification,
-    Pagination
+    Pagination,
+    Modal
 } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
@@ -105,14 +106,14 @@ IListState > {
         this.accountApi.enable({account_id: user._id}).then((result) => {
             user.disabled = false;
             this.handleChange(user);
-            notification.success({message: 'Activate', description: `"${user._id}" is enabled now.`});
+            notification.success({message: 'Activated', description: `"${user._id}" is enabled now.`});
         });
     }
     disable = (user) => {
         this.accountApi.disable({account_id: user._id}).then((result) => {
             user.disabled = true;
             this.handleChange(user);
-            notification.warning({message: 'Deactivate', description: `"${user._id}" is disabled now.`});
+            notification.warning({message: 'Deactivated', description: `"${user._id}" is disabled now.`});
         });
     }
     promote = (user) => {
@@ -133,6 +134,17 @@ IListState > {
             });
         });
     }
+    confirmPromote = (user) => {
+        Modal.confirm({
+            title: 'Confirm',
+            content: `Are you sure you want to promote the user?`,
+            onOk: () => {
+                this.promote(user);
+            },
+            okText: 'Yes',
+            cancelText: 'No'
+        });
+    }
     optionsRender = (text, user, index) => {
         const optionsMenu = (
             <Menu>
@@ -148,7 +160,7 @@ IListState > {
 }
                 {!user.admin && <Menu.Item key='2'>
                     <Icon type='arrow-up'/>
-                    <a href='#' onClick={() => this.promote(user)}>Promote</a>
+                    <a href='#' onClick={() => this.confirmPromote(user)}>Promote</a>
                 </Menu.Item>
 }
                 {user.admin && <Menu.Item key='3'>
