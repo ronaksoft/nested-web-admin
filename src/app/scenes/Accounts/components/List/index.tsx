@@ -82,8 +82,8 @@ IListState > {
         return this.genders[user.gender] || '-';
     }
     disabledRender = (text, user, index) => user.disabled
-        ? 'Disabled'
-        : 'Enabled';
+        ? 'Inactive'
+        : 'Active';
     dobRender = (text, user, index) => {
         const value = moment(user.joined_on, 'YYYY-MM-DD');
         if (value.isValid()) {
@@ -104,19 +104,15 @@ IListState > {
     enable = (user) => {
         this.accountApi.enable({account_id: user._id}).then((result) => {
             user.disabled = false;
-            notification.success({message: 'Enabled', description: `"${user._id}" is enabled now.`});
-            this.setState({
-                users: _.clone(this.state.accounts)
-            });
+            this.handleChange(user);
+            notification.success({message: 'Activate', description: `"${user._id}" is enabled now.`});
         });
     }
     disable = (user) => {
         this.accountApi.disable({account_id: user._id}).then((result) => {
             user.disabled = true;
-            notification.warning({message: 'Disabled', description: `"${user._id}" is disabled now.`});
-            this.setState({
-                users: _.clone(this.state.accounts)
-            });
+            this.handleChange(user);
+            notification.warning({message: 'Deactivate', description: `"${user._id}" is disabled now.`});
         });
     }
     promote = (user) => {
@@ -142,12 +138,12 @@ IListState > {
             <Menu>
                 {user.disabled && <Menu.Item key='0'>
                     <Icon type='check'/>
-                    <a href='#' onClick={() => this.enable(user)}>Enable</a>
+                    <a href='#' onClick={() => this.enable(user)}>Activate</a>
                 </Menu.Item>
 }
                 {!user.disabled && <Menu.Item key='1'>
                     <Icon type='close'/>
-                    <a href='#' onClick={() => this.disable(user)}>Disable</a>
+                    <a href='#' onClick={() => this.disable(user)}>Deactivate</a>
                 </Menu.Item>
 }
                 {!user.admin && <Menu.Item key='2'>
