@@ -332,11 +332,11 @@ class View extends React.Component<IViewProps, IViewState> {
       <Row>
         <Modal key={this.state.account._id} visible={this.props.visible} onCancel={this.props.onClose} footer={null}
         afterClose={this.cleanup} className='account-modal nst-modal' width={480} title='Account Info'>
-          <Row type='flex' align='middle'>
+          <Row type='flex' align='top'>
             <Col span={8}>
               <UserAvatar avatar size={64} user={this.state.account} />
             </Col>
-            <Col span={16}>
+            <Col span={8}>
               {
                 this.state.token &&
                 <Upload
@@ -345,11 +345,12 @@ class View extends React.Component<IViewProps, IViewState> {
                         accept='image/*'
                         onChange={this.pictureChange}
                         beforeUpload={this.beforeUpload}
-                        showUploadList={false}
                         >
                           <a className='change-photo' onClick={this.changePhoto}>Change Photo</a>
                 </Upload>
               }
+            </Col>
+            <Col span={8}>
               {
                 this.state.account.picture && this.state.account.picture.org &&
                 <a className='remove-photo' onClick={this.removePicture}>Remove Photo</a>
