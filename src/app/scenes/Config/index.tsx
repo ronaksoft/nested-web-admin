@@ -153,7 +153,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
       <Form onSubmit={this.handleSubmit.bind(this)} onChange={this.handleChange.bind(this)}>
         <Row className='toolbar' type='flex' align='center'>
           <Col span={6}>
-            <h3>System Limits</h3>
+            <h2>System Limits</h2>
           </Col>
           <Col span={18}>{this.state.activeBtn}
             <Button disabled={this.state.disableBtn} type='discard' size='large' onClick={this.handleReset}>Discard</Button>

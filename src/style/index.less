@@ -21,9 +21,19 @@ body {
     width: 100%;
     min-height: 100%;
 }
-
+.ant-layout-content {
+  margin-bottom: 64px;
+}
+.ant-layout-sider {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
 .container {
-    padding: 0 24px;
+  padding: 0 24px;
+  padding: 0 24px;
+  margin-left: 226px;
 }
 
 .ant-layout-header {
@@ -392,6 +402,7 @@ select {
     color: black;
     .ant-modal-content {
         border-radius: 0;
+        min-height: 100vh;
     }
     .ant-modal-header {
         padding: 16px;
@@ -407,6 +418,12 @@ select {
         padding: 0 32px;
         margin-bottom: 24px;
         min-height: 21px;
+        &.user-row {
+          margin-bottom: 0
+        }
+        &.place-row {
+          margin-bottom: 0
+        }
     }
     label {
         color: rgba(0, 0, 0, .64);
@@ -462,6 +479,7 @@ select {
     span {
         font-size: 14px;
         line-height: 16px;
+        margin-top: 4px;
         color: rgba(0, 0, 0, .48);
     }
 }
@@ -505,7 +523,13 @@ select {
         color: @force-wire-color;
     }
 }
-
+.placemodal {
+  img {
+    border: 3px solid white;
+    border-radius: 6px;
+    box-shadow: 0 3px 8px rgba(0,0,0,.16);
+  }
+}
 .main-menu {
     .logo {
         height: 72px;

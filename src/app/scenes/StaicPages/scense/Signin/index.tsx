@@ -38,7 +38,7 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
         this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
             const model = this.props.form.getFieldsValue();
-            this.register(model);
+            this.login(model);
         }
         });
     }
@@ -49,7 +49,7 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
         });
     }
 
-    register = (data) => {
+    login = (data) => {
         data.pass = md5(data.pass);
         this.accountApi.login(data)
             .then((data) => {
@@ -99,7 +99,7 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
                                 <Input placeholder='password' type='password' />
                             )}
                         </Form.Item>
-                        <Button disabled={this.state.disableBtn} type='primary' size='large' onClick={this.handleSubmit}>Sign in</Button>
+                        <Button disabled={this.state.disableBtn} type='primary' size='large' htmlType='submit' onClick={this.handleSubmit}>Sign in</Button>
                     </Card>
                 </div>
             </Form>
