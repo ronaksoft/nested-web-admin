@@ -4,6 +4,8 @@ import _ from 'lodash';
 import IAccount from '../../../../interfaces/IAccount';
 import PacketState from '../../../../PacketState';
 import AccountApi from '../../../../../../api/account/account';
+import Packet from '../../../../Packet';
+import CONFIG from '../../../../../../../app.config';
 
 interface IInputRowProps {
     account: Packet<IAccount>;
@@ -47,6 +49,12 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     }
 
     checkUsernameAvailable(rule: any, value: string, callback: any) {
+
+        if (!CONFIG.GRAND_PLACE_REGEX.test(value)) {
+            callback(new Error('Is Not Valid!'));
+            return;
+        }
+
         let accountApi = new AccountApi();
         // callback();
         accountApi.usernameAvailable({account_id: value})
@@ -109,7 +117,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                                 min: 5,
                                 message: 'The user ID is too short!'
                             },
-                            _.debounce(this.checkUsernameAvailable, 100)
+                            _.debounce(this.checkUsernameAvailable, 1000)
                         ]
                     })(
                         <Input

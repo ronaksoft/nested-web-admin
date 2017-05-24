@@ -45,9 +45,9 @@ export default class Options extends React.Component<IOptionsProps, IOptionsStat
           <Button type='default' onClick={this.openCreate}>
             <Icon type='plus' />
           </Button>
-          <Button type='default'>
-            <Icon type='setting' />
-          </Button>
+          {/*<Button type='default'>*/}
+            {/*<Icon type='setting' />*/}
+          {/*</Button>*/}
         </Button.Group>
         <Create visible={this.state.showCreate} handleClose={this.closeCreate}/>
       </div>

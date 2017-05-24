@@ -7,6 +7,7 @@ import List from './components/List/index';
 import {Row, Col, notification} from 'antd';
 import AccountApi from '../../api/account/account';
 import FilterGroup from './FilterGroup';
+import IUser from '../../api/account/interfaces/IUser';
 
 export interface IAccountsProps {}
 

@@ -10,6 +10,7 @@ import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 
 const data = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300},
     {name: 'Group C', value: 300}];
 const COLORS = ['#14D769', '#A9EFC7', '#CFF6E0'];
+const RED_COLORS = ['#ff6464', '#fbc4c4', '#CFF6E0'];
 
 const RADIAN = Math.PI / 180;
 
@@ -83,12 +84,12 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 data: {
                     places: [
                         {name: 'Grand', value: result.grand_places},
-                        {name: 'Locked', value: result.locked_places},
-                        {name: 'Unlocked', value: result.unlocked_places}
+                        {name: 'Private', value: result.locked_places},
+                        {name: 'Common', value: result.unlocked_places}
                     ],
                     accounts: [
-                        {name: 'Enabled', value: result.enabled_accounts},
-                        {name: 'Disabled', value: result.disabled_accounts},
+                        {name: 'Active', value: result.enabled_accounts},
+                        {name: 'Inactive', value: result.disabled_accounts},
                     ]
                 },
                 loading: false
@@ -148,7 +149,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                                          label={renderCustomizedLabel} fill='#FFDFDF' innerRadius={40} outerRadius={66}
                                          paddingAngle={0}>
                                         {
-                                            data.map((entry, index) => <Cell fill='#FF6464'/>)
+                                            data.map((entry, index) => <Cell fill={RED_COLORS[index % COLORS.length]}/>)
                                         }
                                     </Pie>
                                 </PieChart>

@@ -60,7 +60,6 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
                 {name: menu.name, value: menu.count},
                 {name: 'total', value: this.props.totalCount - menu.count}
             ];
-            console.log(data);
 
             const COLORS = [menu.chartColor, menu.bgChartColor];
 

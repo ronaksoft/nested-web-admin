@@ -8,6 +8,8 @@ import PlaceItem from '../PlaceItem/index';
 import UserItem from '../UserItem/index';
 import AccountApi from '../../api/account/account';
 import _ from 'lodash';
+import View from '../../scenes/Accounts/components/View/index';
+import IUser from '../../api/account/interfaces/IUser';
 
 interface IProps {
     place?: IPlace;
@@ -19,6 +21,8 @@ interface IStates {
     visible: boolean;
     place?: IPlace;
     members?: any;
+    chosen ?: IUser;
+    viewAccount: boolean;
 }
 
 
@@ -30,6 +34,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             visible: false,
             place: null,
             members: [],
+            viewAccount: false
         };
     }
 
@@ -60,6 +65,27 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             });
         }
         this.fetchUsers();
+    }
+
+    onItemClick = (account) => {
+        this.setState({chosen: account, viewAccount: true, visible: false});
+    }
+
+    onCloseView = () => {
+        this.setState({viewAccount: false, visible: true});
+    }
+
+    handleChange(account: IUser) {
+        const accounts = _.clone(this.state.members);
+        const index = _.findIndex(accounts, {_id: account._id});
+        if (index === -1) {
+            return;
+        }
+
+        accounts.splice(index, 1, account);
+        this.setState({
+            members: accounts
+        });
     }
 
 
@@ -122,72 +148,80 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         }
         return (
             <div>
+                {
+                    this.state.chosen && this.state.chosen._id &&
+                    <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
+                          onClose={this.onCloseView}/>
+                }
                 {place &&
-                    <Modal className='place-modal nst-modal'
-                        closable={true}
-                        onCancel={this.handleCancel.bind(this) }
-                        visible = {this.state.visible}
-                        footer={null}
-                        title = 'Place Info'>
-                        <Row type='flex' align='middle'>
-                            <Col span={6}>
-                                <PlaceView avatar size={64} place={place} />
-                            </Col>
-                            <Col span={18} className='Place-Des'>
-                                <p>{place.name}
-                                    <br></br>
-                                    <span>{place._id}</span>
-                                </p>
-                            </Col>
-                        </Row>
-                        <Row type='flex' align='middle'>
-                            <Col span={6}>
-                                { lockedIcon }
-                            </Col>
-                            <Col span={18}>
-                                { lockedTxt }
-                            </Col>
-                        </Row>
-                        <Row type='flex' align='middle'>
-                            <Col span={6}>
-                                { reciveIcon }
-                            </Col>
-                            <Col span={18}>
-                                { reciveTxt }
-                            </Col>
-                        </Row>
-                        <Row type='flex' align='middle'>
-                            <Col span={6}>
-                                { searchableIcon }
-                            </Col>
-                            <Col span={18}>
-                                { searchableTxt }
-                            </Col>
-                        </Row>
-                        {place.counters.childs > 0 &&
-                            <div>
-                                <Row className='devide-row'>
-                                    <Col span={24}>
-                                        {place.counters.childs} Sub-places
-                                    </Col>
-                                </Row>
-                                <Row className='remove-margin'>
-                                    <PlaceItem place={place} key={place._id} />
-                                </Row>
-                            </div>
-                        }
+                <Modal className='place-modal nst-modal'
+                       maskClosable={true}
+                       width={480}
+                       closable={true}
+                       onCancel={this.handleCancel.bind(this) }
+                       visible={this.state.visible}
+                       footer={null}
+                       title='Place Info'>
+                    <Row type='flex' align='middle'>
+                        <Col span={6}>
+                            <PlaceView avatar size={64} place={place}/>
+                        </Col>
+                        <Col span={18} className='Place-Des'>
+                            <p>{place.name}
+                                <br></br>
+                                <span>{place._id}</span>
+                            </p>
+                        </Col>
+                    </Row>
+                    <Row type='flex' align='middle'>
+                        <Col span={6}>
+                            { lockedIcon }
+                        </Col>
+                        <Col span={18}>
+                            { lockedTxt }
+                        </Col>
+                    </Row>
+                    <Row type='flex' align='middle'>
+                        <Col span={6}>
+                            { reciveIcon }
+                        </Col>
+                        <Col span={18}>
+                            { reciveTxt }
+                        </Col>
+                    </Row>
+                    <Row type='flex' align='middle'>
+                        <Col span={6}>
+                            { searchableIcon }
+                        </Col>
+                        <Col span={18}>
+                            { searchableTxt }
+                        </Col>
+                    </Row>
+                    {place.counters.childs > 0 &&
+                    <div>
                         <Row className='devide-row'>
                             <Col span={24}>
-                                {place.counters.creators + place.counters.key_holders} Members
+                                {place.counters.childs} Sub-places
                             </Col>
                         </Row>
                         <Row className='remove-margin'>
-                            {this.state.members &&
-                                this.state.members.map((item) => {
-                                    return (<UserItem user={item} manager={this.isManager(item) } key={item._id} />);
-                                }) }
+                            <PlaceItem place={place} key={place._id}/>
                         </Row>
-                    </Modal>
+                    </div>
+                    }
+                    <Row className='devide-row'>
+                        <Col span={24}>
+                            {place.counters.creators + place.counters.key_holders} Members
+                        </Col>
+                    </Row>
+                    <Row className='remove-margin'>
+                        {this.state.members &&
+                        this.state.members.map((item) => {
+                            return (<UserItem user={item} onClick={() => this.onItemClick(item)}
+                                              manager={this.isManager(item) } key={item._id}/>);
+                        }) }
+                    </Row>
+                </Modal>
                 }
             </div>
         );
