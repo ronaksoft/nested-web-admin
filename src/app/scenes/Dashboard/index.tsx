@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Row, Col, Popover, Button, Card} from 'antd';
 import SystemApi from '../../api/system/index';
+import Activity from './components/activity/index';
 import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
 
 const data = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300},
@@ -116,7 +117,7 @@ class  DashboardComponent extends React.Component<IDashboardProps, IDashboardSta
                 <Row gutter={24} className='dashboardRow'>
                     <Col span={16}>
                         <Card loading={this.state.loading} title={card1Title} extra={card1Extra}>
-                            Whatever content
+                            <Activity />
                         </Card>
                     </Col>
                     <Col span={8}>

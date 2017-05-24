@@ -58,14 +58,12 @@ class View extends React.Component<IViewProps, IViewState> {
 
   componentWillReceiveProps(nextProps : IViewProps) {
     if (nextProps.account && nextProps.account._id && nextProps.account._id !== this.state.account._id) {
-      console.log('received new props');
       this.setState({ account: nextProps.account, places: [] });
       this.loadPlaces(nextProps.account._id);
     }
   }
 
   loadPlaces(accountId: string) {
-    console.log('loading places');
     this.setState({
       loading: true
     });
@@ -78,7 +76,6 @@ class View extends React.Component<IViewProps, IViewState> {
         loading: false
       });
     }).catch((error) => {
-      console.log('error', error);
       this.setState({
         places: [],
         loading: false
@@ -121,7 +118,6 @@ class View extends React.Component<IViewProps, IViewState> {
 
         return value;
       });
-      console.log('changedProps', changedProps);
       if (_.has(changedProps, 'pass')) {
         this.accountApi.setPassword({
           account_id: this.state.account._id,
@@ -220,7 +216,6 @@ class View extends React.Component<IViewProps, IViewState> {
   }
 
   beforeUpload(file: any, fileList: any) {
-    console.log('token', this.state.token);
     if (!this.state.token) {
       notification.error({
         message: 'Error',
@@ -257,7 +252,7 @@ class View extends React.Component<IViewProps, IViewState> {
     })((props: any) => {
       const { getFieldDecorator } = props.form;
       return (
-        <Form>
+        <Form onSubmit={() => this.applyChanges(this.form)}>
           {
             this.state.editTarget === EditableFields.fname &&
             <Form.Item label='First Name'>
@@ -332,11 +327,11 @@ class View extends React.Component<IViewProps, IViewState> {
       <Row>
         <Modal key={this.state.account._id} visible={this.props.visible} onCancel={this.props.onClose} footer={null}
         afterClose={this.cleanup} className='account-modal nst-modal' width={480} title='Account Info'>
-          <Row type='flex' align='middle'>
+          <Row type='flex' align='top'>
             <Col span={8}>
               <UserAvatar avatar size={64} user={this.state.account} />
             </Col>
-            <Col span={16}>
+            <Col span={8}>
               {
                 this.state.token &&
                 <Upload
@@ -345,11 +340,12 @@ class View extends React.Component<IViewProps, IViewState> {
                         accept='image/*'
                         onChange={this.pictureChange}
                         beforeUpload={this.beforeUpload}
-                        showUploadList={false}
                         >
                           <a className='change-photo' onClick={this.changePhoto}>Change Photo</a>
                 </Upload>
               }
+            </Col>
+            <Col span={8}>
               {
                 this.state.account.picture && this.state.account.picture.org &&
                 <a className='remove-photo' onClick={this.removePicture}>Remove Photo</a>
