@@ -21,6 +21,10 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
 
 
     render() {
+        let location = this.props.location.pathname;
+        if ( location === '/') {
+            location = '/dashboard';
+        }
         return (
             <div
                 className='main-menu'>
@@ -28,8 +32,8 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
                     <div className='logo'></div>
                 </Link>
                 <Menu
-                    defaultSelectedKeys={[this.props.location.pathname]}
-                    defaultOpenKeys={[this.props.location.pathname]}
+                    defaultSelectedKeys={[location]}
+                    defaultOpenKeys={[location]}
                     mode='inline'
                 >
                     <Menu.Item key='/dashboard'>
