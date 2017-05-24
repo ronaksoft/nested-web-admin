@@ -24,10 +24,10 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
   componentDidMount() {
     this.reportApi = new ReportApi();
     const now = moment.utc().format('YYYY-MM-DD:HH');
-    const aWeekAgo = moment().subtract(7, 'days').startOf('day').utc().format('YYYY-MM-DD:HH');
+    const twoWeekAgo = moment().subtract(14, 'days').startOf('day').utc().format('YYYY-MM-DD:HH');
 
     this.reportApi.getRequests({
-      from: aWeekAgo,
+      from: twoWeekAgo,
       to: now
     }).then((response) => {
       this.setState({
@@ -39,21 +39,33 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
   }
 
   render() {
-    const data = _(this.state.activities)
+    const activities = _(this.state.activities)
       .groupBy((item) => {
-        return moment.utc(item.date, 'YYYY-MM-DD:HH').format('ddd');
-      })
-      .map((items, key) => {
-        return {
-          day: key,
-          count: _.sumBy(items, 'sum')
-        };
+        return item.date.split(':')[0];
       })
       .value();
 
+    console.log('activities', activities);
+
+    const thisWeekStart = moment().startOf('week');
+    const preWeekStart = moment().subtract(1, 'weeks').startOf('week');
+
+    const days = _.times(7, (weekDay) => {
+      const thisWeekDate = thisWeekStart.clone().add(weekDay, 'days');
+      const preWeekDate = preWeekStart.clone().add(weekDay, 'days');
+      const thisWeekDateString = thisWeekDate.format('YYYY-MM-DD');
+      const preWeekDateString = preWeekDate.format('YYYY-MM-DD');
+
+      return {
+        label: thisWeekDate.format('dddd'),
+        thisWeek: _.sumBy(activities[thisWeekDateString], 'sum'),
+        preWeek: _.sumBy(activities[preWeekDateString], 'sum')
+      };
+    });
+
     return (
         <ResponsiveContainer width='100%' height={300}>
-          <AreaChart data={data} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
+          <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
             <defs>
               <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
                 <stop offset='5%' stopColor='#00B45A' stopOpacity={0.5}/>
@@ -64,11 +76,11 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
                 <stop offset='95%' stopColor='#FF6464' stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <XAxis dataKey='day' tickLine={false} axisLine={false}/>
+            <XAxis dataKey='label' tickLine={false} axisLine={false}/>
             <CartesianGrid strokeDasharray='1 1'/>
             <Tooltip/>
-            <Area type='monotone' dataKey='count' stroke='#00B45A' fill='url(#colorUv)' />
-            <Line name='This week' type='monotone' dataKey='count' stroke='#00B45A' />
+            <Area type='monotone' dataKey='preWeek' name='Last Week' stroke='#FF6464' fill='url(#colorPv)' />
+            <Area type='monotone' dataKey='thisWeek' name='This Week' stroke='#00B45A' fill='url(#colorUv)' />
           </AreaChart>
         </ResponsiveContainer>
     );
