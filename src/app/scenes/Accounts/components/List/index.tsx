@@ -9,7 +9,8 @@ import {
     Popover,
     Button,
     notification,
-    Pagination
+    Pagination,
+    Modal
 } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
@@ -37,7 +38,8 @@ interface IListState {
     chosen: IAccount;
 }
 
-class List extends React.Component <IListProps, IListState> {
+class List extends React.Component <IListProps,
+    IListState> {
 
     dataColumns = {
         'name': 'Name',
@@ -81,8 +83,8 @@ class List extends React.Component <IListProps, IListState> {
         return this.genders[user.gender] || '-';
     }
     disabledRender = (text, user, index) => user.disabled
-        ? 'Disabled'
-        : 'Enabled';
+        ? 'Inactive'
+        : 'Active';
     dobRender = (text, user, index) => {
         const value = moment(user.joined_on, 'YYYY-MM-DD');
         if (value.isValid()) {
@@ -103,40 +105,15 @@ class List extends React.Component <IListProps, IListState> {
     enable = (user) => {
         this.accountApi.enable({account_id: user._id}).then((result) => {
             user.disabled = false;
-            notification.success({message: 'Enabled', description: `"${user._id}" is enabled now.`});
-            this.setState({
-                users: _.clone(this.state.accounts)
-            });
+            this.handleChange(user);
+            notification.success({message: 'Activated', description: `"${user._id}" is enabled now.`});
         });
     }
     disable = (user) => {
         this.accountApi.disable({account_id: user._id}).then((result) => {
             user.disabled = true;
-            notification.warning({message: 'Disabled', description: `"${user._id}" is disabled now.`});
-            this.setState({
-                users: _.clone(this.state.accounts)
-            });
-        });
-    }
-    promote = (user) => {
-        this.accountApi.promote({account_id: user._id}).then((result) => {
-            user.admin = true;
-            notification.success({message: 'Promoted', description: `"${user._id}" can access Nested Administrator.`});
-            this.setState({
-                users: _.clone(this.state.accounts)
-            });
-        });
-    }
-    demote = (user) => {
-        this.accountApi.demote({account_id: user._id}).then((result) => {
-            user.admin = false;
-            notification.warning({
-                message: 'Demoted',
-                description: `"${user._id}" is no longer able to access Nested Administrator.`
-            });
-            this.setState({
-                users: _.clone(this.state.accounts)
-            });
+            this.handleChange(user);
+            notification.warning({message: 'Deactivated', description: `"${user._id}" is disabled now.`});
         });
     }
     optionsRender = (text, user, index) => {
@@ -144,26 +121,17 @@ class List extends React.Component <IListProps, IListState> {
             <Menu>
                 {user.disabled && <Menu.Item key='0'>
                     <Icon type='check'/>
-                    <a href='#' onClick={() => this.enable(user)}>Enable</a>
+                    <a href='#' onClick={() => this.enable(user)}>Activate</a>
                 </Menu.Item>
                 }
                 {!user.disabled && <Menu.Item key='1'>
                     <Icon type='close'/>
-                    <a href='#' onClick={() => this.disable(user)}>Disable</a>
+                    <a href='#' onClick={() => this.disable(user)}>Deactivate</a>
                 </Menu.Item>
                 }
-                {!user.admin && <Menu.Item key='2'>
-                    <Icon type='arrow-up'/>
-                    <a href='#' onClick={() => this.promote(user)}>Promote</a>
-                </Menu.Item>
-                }
-                {user.admin && <Menu.Item key='3'>
-                    <Icon type='arrow-down'/>
-                    <a href='#' onClick={() => this.demote(user)}>Demote</a>
-                </Menu.Item>
-                }
-                <Menu.Item key='4'>
-                    <Icon type='lock'/>Set Password
+                <Menu.Item key='2'>
+                    <Icon type='eye-o'/>
+                    <a href='#' onClick={() => this.onItemClick(user)}>View</a>
                 </Menu.Item>
             </Menu>
         );
@@ -387,23 +355,17 @@ class List extends React.Component <IListProps, IListState> {
         return (
             <Card>
                 <Table
+                    onRowClick={(user) => {
+                        this.onItemClick(user);
+                    }}
                     pagination={{
                         total: total,
                         current: this.state.currentPage,
                         onChange: this.onPageChange
-                    }}
-                    rowKey='_id'
-                    rowSelection={rowSelection}
-                    columns={columns}
-                    dataSource={this.state.accounts}
-                    size='middle'
-                    className='nst-table'
-                    scroll={{
-                        x: 960
-                    }}
-                    loading={this.state.loading}
-                    onRowClick={this.onItemClick}
-                />
+                    }} rowKey='_id' rowSelection={rowSelection} columns={columns} dataSource={this.state.accounts}
+                    size='middle' className='nst-table' scroll={{
+                    x: 960
+                }} loading={this.state.loading}/>
                 {
                     this.state.chosen && this.state.chosen._id &&
                     <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
