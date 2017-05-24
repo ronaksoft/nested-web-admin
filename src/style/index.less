@@ -479,7 +479,7 @@ select {
 .Place-Des {
     p {
         font-size: 16px;
-        line-height: 16px;
+        line-height: 19px;
     }
     span {
         font-size: 14px;
@@ -491,7 +491,6 @@ select {
 
 .user-row {
     height: 64px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     p {
         font-size: 14px;
     }
@@ -503,6 +502,15 @@ select {
         font-size: 12px;
         text-align: right;
         color: rgba(0, 0, 0, .40)
+    }
+    .user-row-inner {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      height: 100%;
+      .ant-row-flex {
+        margin: 0;
+        height: 100%;
+        padding: 0;
+      }
     }
 }
 

@@ -124,6 +124,7 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
       lineHeight: size,
       display: 'flex',
       textAlign: 'center',
+      justifyContent: 'center',
       borderRadius
     };
 

@@ -10,24 +10,28 @@ function UserItem(props: any) {
         verticalAlign: 'middle'
     };
     return (
-        <Row className='user-row' type='flex' align='middle' onClick={() => {
+        <Row className='user-row remove-margin' type='flex' align='middle' onClick={() => {
             if (typeof props.onClick === 'function') {
                 props.onClick();
             }
         }}>
-            <Col span={3}>
+            <Col span={4}>
                 <UserAvatar user={props.user} borderRadius={16} place={props.user} size={32} avatar></UserAvatar>
             </Col>
-            <Col span={15}>
-                <p>
-                    {props.user.name}
-                </p>
-                <span>{props.user._id}</span>
-            </Col>
-            <Col span={6}>
-                {props.manager &&
-                <aside>Manager</aside>
-                }
+            <Col className='user-row-inner' span={20}>
+                <Row type='flex' align='middle'>
+                    <Col span={15}>
+                        <p>
+                            {props.user.name}
+                        </p>
+                        <span>{props.user._id}</span>
+                    </Col>
+                    <Col span={6}>
+                        {props.manager &&
+                        <aside>Manager</aside>
+                        }
+                    </Col>
+                </Row>
             </Col>
         </Row>
     );
