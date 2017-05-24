@@ -154,7 +154,7 @@ class List extends React.Component <IListProps,
     }
 
     onCloseView = () => {
-        this.setState({viewAccount: false});
+        this.setState({chosen: null, viewAccount: false});
     }
 
     onColumnCheckChange = (item) => {
@@ -367,7 +367,7 @@ class List extends React.Component <IListProps,
                     x: 960
                 }} loading={this.state.loading}/>
                 {
-                    this.state.chosen && this.state.chosen._id &&
+                    this.state.viewAccount &&
                     <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
                           onClose={this.onCloseView}/>
                 }

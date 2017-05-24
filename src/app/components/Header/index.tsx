@@ -54,28 +54,29 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
             keyword: keyword
         });
 
-        Promise.all([getAccountPromise, getPlacePromise]).then((resultSet) => {
-            const result = [];
-            result[0] = {
-                key: 'accounts',
-                title: 'Aaccounts',
-                items: resultSet[0].accounts
-            };
-            result[1] = {
-                key: 'places',
-                title: 'Places',
-                items: resultSet[1]
-            };
+        Promise.all([getAccountPromise, getPlacePromise])
+            .then((resultSet) => {
+                const result = [];
+                result[0] = {
+                    key: 'accounts',
+                    title: 'Aaccounts',
+                    items: resultSet[0].accounts
+                };
+                result[1] = {
+                    key: 'places',
+                    title: 'Places',
+                    items: resultSet[1]
+                };
 
-            this.setState({
-                result: result
+                this.setState({
+                    result: result
+                });
+            }, (error) => {
+                notification.error({
+                    message: 'Error',
+                    description: 'We are not able to search right now!'
+                });
             });
-        }, (error) => {
-            notification.error({
-                message: 'Error',
-                description: 'We are not able to search right now!'
-            });
-        });
     }
 
     signOut() {
@@ -185,6 +186,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                                 }}
                                         shape='circle'></Button>
                                 <Button type='toolkit-user' shape='circle' className='oddcondi'>
+
                                     <UserAvatar size={24} user={loggedUser} avatar/>
                                 </Button>
                             </Col>
