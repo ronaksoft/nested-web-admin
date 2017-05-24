@@ -20,15 +20,17 @@ function UserItem(props: any) {
             </Col>
             <Col className='user-row-inner' span={20}>
                 <Row type='flex' align='middle'>
-                    <Col span={18}>
+                    <Col span={16}>
                         <p>
                             {props.user.name}
                         </p>
                         <span>{props.user._id}</span>
                     </Col>
-                    <Col span={6}>
+                    <Col span={8}>
                         {props.manager &&
-                        <aside>Manager</aside>
+                        <aside>Manager
+                            <Icon type=' nst-ico ic_crown_shine_24'></Icon>
+                        </aside>
                         }
                     </Col>
                 </Row>
