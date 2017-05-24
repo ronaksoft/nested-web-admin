@@ -572,7 +572,7 @@ class View extends React.Component<IViewProps, IViewState> {
                             <Switch
                                     checkedChildren={<Icon type='check' />}
                                     unCheckedChildren={<Icon type='cross' />}
-                                    defaultChecked={!this.state.account.privacy.change_profile}
+                                    defaultChecked={this.state.account.privacy.change_profile}
                                     onChange={(checked) => this.onPrivacyChange({ change_profile: checked })}
                             />
                         </Col>
@@ -586,7 +586,7 @@ class View extends React.Component<IViewProps, IViewState> {
                             <Switch
                                     checkedChildren={<Icon type='check' />}
                                     unCheckedChildren={<Icon type='cross' />}
-                                    defaultChecked={!this.state.account.privacy.change_picture}
+                                    defaultChecked={this.state.account.privacy.change_picture}
                                     onChange={(checked) => this.onPrivacyChange({ change_picture: checked })}
                             />
                         </Col>
@@ -600,7 +600,7 @@ class View extends React.Component<IViewProps, IViewState> {
                             <Switch
                                     checkedChildren={<Icon type='check' />}
                                     unCheckedChildren={<Icon type='cross' />}
-                                    defaultChecked={!this.state.account.admin}
+                                    defaultChecked={this.state.account.admin}
                                     onChange={this.onAdminChange}
                             />
                         </Col>
