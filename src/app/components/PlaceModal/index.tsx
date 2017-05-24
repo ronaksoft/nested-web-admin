@@ -173,30 +173,30 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             </p>
                         </Col>
                     </Row>
-                    <Row type='flex' align='middle'>
+                    {lockedIcon && <Row type='flex' align='middle'>
                         <Col span={6}>
                             { lockedIcon }
                         </Col>
                         <Col span={18}>
                             { lockedTxt }
                         </Col>
-                    </Row>
-                    <Row type='flex' align='middle'>
+                    </Row>}
+                    { reciveIcon && <Row type='flex' align='middle'>
                         <Col span={6}>
                             { reciveIcon }
                         </Col>
                         <Col span={18}>
                             { reciveTxt }
                         </Col>
-                    </Row>
-                    <Row type='flex' align='middle'>
+                    </Row>}
+                    {searchableIcon && <Row type='flex' align='middle'>
                         <Col span={6}>
                             { searchableIcon }
                         </Col>
                         <Col span={18}>
                             { searchableTxt }
                         </Col>
-                    </Row>
+                    </Row>}
                     {place.counters.childs > 0 &&
                     <div>
                         <Row className='devide-row'>
