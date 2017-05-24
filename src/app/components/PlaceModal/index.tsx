@@ -164,7 +164,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                        title='Place Info'>
                     <Row type='flex' align='middle'>
                         <Col span={6}>
-                            <PlaceView avatar size={64} place={place}/>
+                            <PlaceView className='placemodal' avatar size={64} place={place}/>
                         </Col>
                         <Col span={18} className='Place-Des'>
                             <p>{place.name}
