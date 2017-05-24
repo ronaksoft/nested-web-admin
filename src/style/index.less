@@ -504,7 +504,15 @@ select {
     aside {
         font-size: 12px;
         text-align: right;
-        color: rgba(0, 0, 0, .40)
+        color: rgba(0, 0, 0, .40);
+        align-items: center;
+        display: flex;
+        flex: none;
+        i.nst-ico {
+            width: 24px;
+            height: 24px;
+            margin-left: 4px;
+        }
     }
     .user-row-inner {
       border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -657,6 +665,12 @@ select {
 .ic_check_senesewire_24:hover,
 .ic_check_senesewire_24:focus {
     background-image: url('../style/images/ic_check_senesewire_24.png');
+}
+
+.ic_crown_shine_24,
+.ic_crown_shine_24:hover,
+.ic_crown_shine_24:focus {
+    background-image: url('../style/images/ic_crown_shine_24.png');
 }
 
 .ic_dashboard_sensewire_24,
@@ -899,7 +913,7 @@ select {
     background-image: url('../style/images/img_tickets.png');
 }
 
-.active {
+.ant-menu-item-selected {
     .ic_dashboard_solid_24,
     .ic_dashboard_solid_24:hover,
     .ic_dashboard_solid_24:focus {
@@ -987,6 +1001,12 @@ select {
     .ic_check_senesewire_24:hover,
     .ic_check_senesewire_24:focus {
         background-image: url('../style/images/ic_check_senesewire_24@2x.png');
+    }
+
+    .ic_crown_shine_24,
+    .ic_crown_shine_24:hover,
+    .ic_crown_shine_24:focus {
+        background-image: url('../style/images/ic_crown_shine_24@2x.png');
     }
 
     .ic_dashboard_sensewire_24,
@@ -1229,7 +1249,7 @@ select {
         background-image: url('../style/images/img_tickets@2x.png');
     }
 
-    .active {
+    .ant-menu-item-selected {
         .ic_dashboard_solid_24,
         .ic_dashboard_solid_24:hover,
         .ic_dashboard_solid_24:focus {
