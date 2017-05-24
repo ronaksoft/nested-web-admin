@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
-import {Modal, Row, Col, Icon, Button} from 'antd';
+import {Modal, Row, Col, Icon, Button, message} from 'antd';
 import PlaceView from './../placeview/index';
 import Avatar from './../avatar/index';
 import PlaceItem from '../PlaceItem/index';
@@ -25,6 +25,7 @@ interface IStates {
     members?: any;
     chosen ?: IUser;
     viewAccount: boolean;
+    creators: Array<string>;
 }
 
 
@@ -37,7 +38,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             visible: false,
             place: null,
             members: [],
-            viewAccount: false
+            viewAccount: false,
+            creators: this.props.place.creators,
         };
         this.currentUser = AAA.getInstance().getUser();
     }
@@ -45,6 +47,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     componentWillReceiveProps(props: any) {
         this.setState({
             place: props.place,
+            creators: props.place.creators,
             visible: props.visible,
         });
         this.fetchUsers();
@@ -65,6 +68,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         if (this.props.place) {
             this.setState({
                 place: this.props.place,
+                creators: this.props.place.creators,
                 visible: this.props.visible,
             });
         }
@@ -103,7 +107,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     }
 
     isManager(user: any) {
-        let creator = _.indexOf(this.props.place.creators, user._id);
+        let creator = _.indexOf(this.state.creators, user._id);
         if (creator > -1) {
             return true;
         } else {
@@ -111,8 +115,24 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         }
     }
 
+    addAsManager() {
+        let placeApi = new PlaceApi();
+        placeApi.placeAddMember({
+            account_id: this.currentUser._id,
+            place_id: this.props.place._id,
+        }).then(() => {
+            message.success(`You are added as admin in "${this.props.place.name}"`);
+            this.setState({
+                creators: _.concat(this.state.creators, [this.currentUser._id])
+            });
+            this.fetchUsers();
+        }).catch((err: any) => {
+            console.log(err);
+        });
+    }
+
     render() {
-        console.log(this);
+        console.log(this.state);
         const {place} = this.props;
         const iconStyle = {
             width: '16px',
@@ -201,12 +221,12 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             { searchableTxt }
                         </Col>
                     </Row>}
-                    {!this.isManager(this.currentUser) &&
-                        <Row>
-                            <Col>
-                                <Button>Add you as a Manager</Button>
-                            </Col>
-                        </Row>
+                    {!this.isManager(this.currentUser) && place.type !== 'personal' &&
+                    <Row>
+                        <Col>
+                            <Button onClick={this.addAsManager.bind(this)}>Add you as a Manager</Button>
+                        </Col>
+                    </Row>
                     }
                     {place.counters.childs > 0 &&
                     <div>

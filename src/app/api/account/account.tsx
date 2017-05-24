@@ -12,6 +12,7 @@ import IUser from './interfaces/IUser';
 import ISetPictureRequest from './interfaces/ISetPictureRequest';
 import IRemovePictureRequest from './interfaces/IRemovePictureRequest';
 import ISetPasswordRequest from './interfaces/ISetPasswordRequest';
+import IGetListRequest from './interfaces/IGetListRequest';
 
 export default class AccountApi {
     private api;

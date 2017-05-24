@@ -43,7 +43,7 @@ export default class PlaceApi {
 
     placeAddMember(params: IPlaceAddMembersRequest): Promise<any> {
         return this.api.server.request({
-            cmd: 'admin/place_list_members',
+            cmd: 'admin/place_add_member',
             data: params,
         });
 
