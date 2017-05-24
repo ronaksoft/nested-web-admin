@@ -20,7 +20,7 @@ function UserItem(props: any) {
             </Col>
             <Col className='user-row-inner' span={20}>
                 <Row type='flex' align='middle'>
-                    <Col span={15}>
+                    <Col span={18}>
                         <p>
                             {props.user.name}
                         </p>
