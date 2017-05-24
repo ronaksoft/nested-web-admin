@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Layout} from 'antd';
+import {Row, Col, Layout, Content, Header, Footer} from 'antd';
+import {Link} from 'react-router';
 
 interface IAppProps {
 }
@@ -15,7 +16,15 @@ class NotFound extends React.Component<IAppProps, IAppState> {
 
     render() {
         return (
-            <h1>403</h1>
+            <Row align='middle'>
+                <Col span={8} offset={8}>
+                    <p className='text-center' style={{marginTop: 96}}>
+                        <h1>403</h1>
+                        <p >Sorry, You are not authorized!</p>
+                        <Link to='/signin'><b>Sign-in</b></Link>
+                    </p>
+                </Col>
+            </Row>
         );
     }
 }
