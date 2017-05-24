@@ -114,19 +114,19 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                     </Col>
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
-                    <Col span={16}>
+                    <Col span={24}>
                         <Card loading={this.state.loading} title={card1Title} extra={card1Extra}>
                             <Activity />
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    {/*<Col span={8}>
                         <Card loading={this.state.loading} title={card2Title} extra={card2Extra}>
                             Whatever content
                         </Card>
-                    </Col>
+                    </Col>*/}
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
-                    <Col span={8}>
+                    <Col span={12}>
                         <Card loading={this.state.loading} title={card3Title} extra={card3Extra}>
                             <ResponsiveContainer width='100%' height={200}>
                                 <PieChart onMouseEnter={this.onPieEnter}>
@@ -141,7 +141,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                             </ResponsiveContainer>
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    <Col span={12}>
                         <Card loading={this.state.loading} title={card4Title} extra={card4Extra}>
                             <ResponsiveContainer width='100%' height={200}>
                                 <PieChart onMouseEnter={this.onPieEnter}>
@@ -156,11 +156,11 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                             </ResponsiveContainer>
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    {/*<Col span={8}>
                         <Card loading={this.state.loading} title={card5Title} extra={card5Extra}>
                             Whatever content
                         </Card>
-                    </Col>
+                    </Col>*/}
                 </Row>
             </div>
         );
