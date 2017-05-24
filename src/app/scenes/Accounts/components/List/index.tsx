@@ -30,6 +30,7 @@ import View from '../View/index';
 interface IListProps {
     counters: any;
     filter: FilterGroup;
+    onChange: any;
 }
 
 interface IListState {
@@ -104,6 +105,7 @@ class List extends React.Component <IListProps,
     }
     enable = (user) => {
         this.accountApi.enable({account_id: user._id}).then((result) => {
+            this.props.onChange();
             user.disabled = false;
             this.handleChange(user);
             notification.success({message: 'Activated', description: `"${user._id}" is enabled now.`});
@@ -111,6 +113,7 @@ class List extends React.Component <IListProps,
     }
     disable = (user) => {
         this.accountApi.disable({account_id: user._id}).then((result) => {
+            this.props.onChange();
             user.disabled = true;
             this.handleChange(user);
             notification.warning({message: 'Deactivated', description: `"${user._id}" is disabled now.`});
@@ -362,7 +365,7 @@ class List extends React.Component <IListProps,
                         total: total,
                         current: this.state.currentPage,
                         onChange: this.onPageChange
-                    }} rowKey='_id' rowSelection={rowSelection} columns={columns} dataSource={this.state.accounts}
+                    }} rowKey='_id' columns={columns} dataSource={this.state.accounts}
                     size='middle' className='nst-table' scroll={{
                     x: 960
                 }} loading={this.state.loading}/>

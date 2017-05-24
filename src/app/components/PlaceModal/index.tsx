@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
-import {Modal, Row, Col, Icon} from 'antd';
+import {Modal, Row, Col, Icon, Button} from 'antd';
 import PlaceView from './../placeview/index';
 import Avatar from './../avatar/index';
 import PlaceItem from '../PlaceItem/index';
@@ -10,6 +10,8 @@ import AccountApi from '../../api/account/account';
 import _ from 'lodash';
 import View from '../../scenes/Accounts/components/View/index';
 import IUser from '../../api/account/interfaces/IUser';
+import AAA from '../../services/classes/aaa/index';
+
 
 interface IProps {
     place?: IPlace;
@@ -27,6 +29,7 @@ interface IStates {
 
 
 export default class PlaceModal extends React.Component<IProps, IStates> {
+    currentUser: IUser;
 
     constructor(props: any) {
         super(props);
@@ -36,6 +39,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             members: [],
             viewAccount: false
         };
+        this.currentUser = AAA.getInstance().getUser();
     }
 
     componentWillReceiveProps(props: any) {
@@ -197,6 +201,13 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             { searchableTxt }
                         </Col>
                     </Row>}
+                    {!this.isManager(this.currentUser) &&
+                        <Row>
+                            <Col>
+                                <Button>Add you as a Manager</Button>
+                            </Col>
+                        </Row>
+                    }
                     {place.counters.childs > 0 &&
                     <div>
                         <Row className='devide-row'>

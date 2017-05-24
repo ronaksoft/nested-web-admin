@@ -25,17 +25,22 @@ export interface IFilterState {
 }
 
 class Filter extends React.Component<IFilterProps, IFilterState> {
+    selectedMenuIndex: number;
 
     constructor(props: IFilterProps) {
         super(props);
         if (this.props.menus[0]) {
+            this.selectedMenuIndex = 0;
             this.state = {
-                selectedItem: this.props.menus[0]
+                selectedItem: this.props.menus[0],
+                menus: this.props.menus
             };
         }
     }
 
-    handleGroupChange(menu: IMenuItem) {
+    handleGroupChange(menu: IMenuItem, index: number) {
+        console.log(arguments);
+        this.selectedMenuIndex = index;
         this.setState({
             selectedItem: menu,
         });
@@ -43,6 +48,13 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
         if (typeof this.props.onChange === 'function') {
             this.props.onChange(menu.key);
         }
+    }
+
+    componentWillReceiveProps(newProps: IFilterProps) {
+        this.setState({
+            selectedItem: newProps.menus[this.selectedMenuIndex],
+            menus: newProps.menus
+        });
     }
 
 
@@ -55,7 +67,7 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
         };
 
         const menus = [];
-        this.props.menus.forEach((menu: IMenuItem, index: number) => {
+        this.state.menus.forEach((menu: IMenuItem, index: number) => {
             const data = [
                 {name: menu.name, value: menu.count},
                 {name: 'total', value: this.props.totalCount - menu.count}
@@ -65,7 +77,7 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
 
             menus.push(
                 <Menu.Item key={menu.key}>
-                    <Row style={{width: 300}} onClick={() => this.handleGroupChange(menu)}>
+                    <Row style={{width: 300}} onClick={() => this.handleGroupChange(menu, index)}>
                         <Col span={2}>
                             {
                                 this.state.selectedItem.key === menu.key &&
