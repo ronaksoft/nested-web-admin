@@ -10,6 +10,7 @@ import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 
 const data = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300},
     {name: 'Group C', value: 300}];
 const COLORS = ['#14D769', '#A9EFC7', '#CFF6E0'];
+const RED_COLORS = ['#ff6464', '#fbc4c4', '#CFF6E0'];
 
 const RADIAN = Math.PI / 180;
 
@@ -21,15 +22,15 @@ export interface IDashboardState {
 
 
 const card1Title = <h5>Last 7 Days Activity</h5>;
-const card1Extra = <div>extra</div>;
+const card1Extra = <div></div>;
 const card2Title = <h5>Company Chart</h5>;
-const card2Extra = <div>extra</div>;
+const card2Extra = <div></div>;
 const card3Title = <h5>Places</h5>;
-const card3Extra = <div>extra</div>;
+const card3Extra = <div></div>;
 const card4Title = <h5>Accounts</h5>;
-const card4Extra = <div>extra</div>;
+const card4Extra = <div></div>;
 const card5Title = <h5>Storage & Plan</h5>;
-const card5Extra = <div>extra</div>;
+const card5Extra = <div></div>;
 
 const headline = <h1>Title</h1>;
 const content = (
@@ -50,14 +51,14 @@ const renderCustomizedLabel = ({cx, cy, midAngle, name, innerRadius, outerRadius
             <tspan x={x} textAnchor={x > cx ? 'start' : 'end'}>
                 {`${(percent * 100).toFixed(0)}%`}
             </tspan>
-            <tspan x={x}  dy='1.2em' textAnchor={x > cx ? 'start' : 'end'}>
+            <tspan x={x} dy='1.2em' textAnchor={x > cx ? 'start' : 'end'}>
                 {name}
             </tspan>
         </text>
     );
 };
 
-class  DashboardComponent extends React.Component<IDashboardProps, IDashboardState> {
+class DashboardComponent extends React.Component<IDashboardProps, IDashboardState> {
     constructor(props: IDashboardProps) {
         super(props);
         this.state = {loading: true, data: {}, activeIndex: 0};
@@ -83,12 +84,12 @@ class  DashboardComponent extends React.Component<IDashboardProps, IDashboardSta
                 data: {
                     places: [
                         {name: 'Grand', value: result.grand_places},
-                        {name: 'Locked', value: result.locked_places},
-                        {name: 'Unlocked', value: result.unlocked_places}
+                        {name: 'Private', value: result.locked_places},
+                        {name: 'Common', value: result.unlocked_places}
                     ],
                     accounts: [
-                        {name: 'Enabled', value: result.enabled_accounts},
-                        {name: 'Disabled', value: result.disabled_accounts},
+                        {name: 'Active', value: result.enabled_accounts},
+                        {name: 'Inactive', value: result.disabled_accounts},
                     ]
                 },
                 loading: false
@@ -109,9 +110,7 @@ class  DashboardComponent extends React.Component<IDashboardProps, IDashboardSta
             <div>
                 <Row className='toolbar' type='flex' align='center'>
                     <Col span={6}>
-                        <Popover placement='rightTop' title={headline} content={content} arrowPointAtCenter>
-                            <h1>Company Name Dashboard</h1>
-                        </Popover>
+                        <h1>Dashboard</h1>
                     </Col>
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
@@ -150,7 +149,7 @@ class  DashboardComponent extends React.Component<IDashboardProps, IDashboardSta
                                          label={renderCustomizedLabel} fill='#FFDFDF' innerRadius={40} outerRadius={66}
                                          paddingAngle={0}>
                                         {
-                                            data.map((entry, index) => <Cell fill='#FF6464'/>)
+                                            data.map((entry, index) => <Cell fill={RED_COLORS[index % COLORS.length]}/>)
                                         }
                                     </Pie>
                                 </PieChart>

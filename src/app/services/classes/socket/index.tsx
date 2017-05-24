@@ -83,7 +83,6 @@ export default class Socket {
   }
 
   private startPingPong() {
-    console.log(this.pingPong, this.pingPongCounter);
     if (!this.pingPong && this.pingPongCounter <= 3) {
       this.pingPong = setInterval(() => {
         this.send('PING!');

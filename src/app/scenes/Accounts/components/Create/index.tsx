@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Modal, Button, Row, Col, Card, Icon, notification, Form} from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
+import md5 from 'md5';
 import Account from '../../Account';
 import {IAccount} from '../../interfaces/IAccount';
 import IUnique from '../../interfaces/IUnique';
@@ -150,7 +151,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             fname: packet.model.fname,
             lname: packet.model.lname,
             phone: packet.model.phone,
-            pass: packet.model.pass
+            pass: md5(packet.model.pass)
         }).then((result) => {
             // apply changes
 

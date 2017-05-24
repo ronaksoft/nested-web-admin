@@ -45,7 +45,6 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
       })
       .value();
 
-    console.log('activities', activities);
 
     const thisWeekStart = moment().startOf('week');
     const preWeekStart = moment().subtract(1, 'weeks').startOf('week');

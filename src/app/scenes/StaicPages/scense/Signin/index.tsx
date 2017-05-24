@@ -74,7 +74,7 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
         return (
             <Form className='signin' onSubmit={this.handleSubmit.bind(this)} onChange={this.handleChange.bind(this)}>
                 <div style={loginStyle}>
-                    <Card title='Sign in Nested admin panel'>
+                    <Card title='Sign in to Admin Panel'>
                         <Form.Item>
                             {getFieldDecorator('uid', {
                                 rules: [

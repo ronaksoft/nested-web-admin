@@ -28,20 +28,20 @@ import FilterGroup from '../../FilterGroup';
 import View from '../View/index';
 
 interface IListProps {
-    counters : any;
-    filter : FilterGroup;
+    counters: any;
+    filter: FilterGroup;
 }
 
 interface IListState {
-    users : IPerson[];
-    viewAccount : boolean;
-    chosen : IAccount;
+    users: IPerson[];
+    viewAccount: boolean;
+    chosen: IAccount;
 }
 
-class List extends React.Component < IListProps,
-IListState > {
+class List extends React.Component <IListProps,
+    IListState> {
 
-    const dataColumns = {
+    dataColumns = {
         'name': 'Name',
         '_id': 'User ID',
         'access_places': 'Member in Place',
@@ -53,7 +53,7 @@ IListState > {
         'disabled': 'Status'
     };
 
-    const genders = {
+    genders = {
         'o': 'Other',
         'f': 'Female',
         'm': 'Male'
@@ -123,12 +123,12 @@ IListState > {
                     <Icon type='check'/>
                     <a href='#' onClick={() => this.enable(user)}>Activate</a>
                 </Menu.Item>
-}
+                }
                 {!user.disabled && <Menu.Item key='1'>
                     <Icon type='close'/>
                     <a href='#' onClick={() => this.disable(user)}>Deactivate</a>
                 </Menu.Item>
-}
+                }
                 <Menu.Item key='2'>
                     <Icon type='eye-o'/>
                     <a href='#' onClick={() => this.onItemClick(user)}>View</a>
@@ -185,7 +185,7 @@ IListState > {
         });
     }
 
-    constructor(props : IListProps) {
+    constructor(props: IListProps) {
 
         this.allColumns = [
             {
@@ -285,27 +285,27 @@ IListState > {
         this.load(1, this.PAGE_SIZE, FilterGroup.Total);
     }
 
-    componentWillReceiveProps(nextProps : IListProps) {
-      if (_.has(nextProps, 'filter')) {
-        this.load(1, this.PAGE_SIZE, nextProps.filter);
-      }
+    componentWillReceiveProps(nextProps: IListProps) {
+        if (_.has(nextProps, 'filter')) {
+            this.load(1, this.PAGE_SIZE, nextProps.filter);
+        }
     }
 
-    onPageChange(value : Number) {
+    onPageChange(value: Number) {
         this.load(value, this.PAGE_SIZE, this.props.filter);
     }
 
-    handleChange(account : IPerson) {
-      const accounts = _.clone(this.state.accounts);
-      const index = _.findIndex(accounts, { _id: account._id });
-      if (index === -1) {
-          return;
-      }
+    handleChange(account: IPerson) {
+        const accounts = _.clone(this.state.accounts);
+        const index = _.findIndex(accounts, {_id: account._id});
+        if (index === -1) {
+            return;
+        }
 
-      accounts.splice(index, 1, account);
-      this.setState({
-          accounts: accounts
-      });
+        accounts.splice(index, 1, account);
+        this.setState({
+            accounts: accounts
+        });
     }
 
     render() {
@@ -313,9 +313,10 @@ IListState > {
         const optionsPopover = (
             <ul>
                 {_(this.state.dataColumns).orderBy(['index']).map((item) => <li key={item.key}>
-                    <Checkbox onChange={() => this.onColumnCheckChange(item)} checked={item.checked}>{item.title}</Checkbox>
+                    <Checkbox onChange={() => this.onColumnCheckChange(item)}
+                              checked={item.checked}>{item.title}</Checkbox>
                 </li>).value()
-}
+                }
             </ul>
         );
 
@@ -341,28 +342,34 @@ IListState > {
 
         let total = 0;
         switch (this.props.filter) {
-          case FilterGroup.Active:
-            total = this.props.counters.enabled_accounts || 0;
-            break;
-          case FilterGroup.Deactive:
-            total = this.props.counters.disabled_accounts || 0;
-            break;
-          default:
-            total = (this.props.counters.enabled_accounts || 0) + (this.props.counters.disabled_accounts || 0);
-            break;
+            case FilterGroup.Active:
+                total = this.props.counters.enabled_accounts || 0;
+                break;
+            case FilterGroup.Deactive:
+                total = this.props.counters.disabled_accounts || 0;
+                break;
+            default:
+                total = (this.props.counters.enabled_accounts || 0) + (this.props.counters.disabled_accounts || 0);
+                break;
         }
         return (
             <Card>
-                <Table pagination={{
-                    total: total,
-                    current: this.state.currentPage,
-                    onChange: this.onPageChange
-                }} rowKey='_id' rowSelection={rowSelection} columns={columns} dataSource={this.state.accounts} size='middle' className='nst-table' scroll={{
+                <Table
+                    onRowClick={(user) => {
+                        this.onItemClick(user);
+                    }}
+                    pagination={{
+                        total: total,
+                        current: this.state.currentPage,
+                        onChange: this.onPageChange
+                    }} rowKey='_id' rowSelection={rowSelection} columns={columns} dataSource={this.state.accounts}
+                    size='middle' className='nst-table' scroll={{
                     x: 960
                 }} loading={this.state.loading}/>
                 {
-                  this.state.chosen && this.state.chosen._id &&
-                  <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange} onClose={this.onCloseView}/>
+                    this.state.chosen && this.state.chosen._id &&
+                    <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
+                          onClose={this.onCloseView}/>
                 }
             </Card>
         );
