@@ -304,6 +304,7 @@ class List extends React.Component <IListProps,
     }
 
     handleChange(account: IPerson) {
+        this.props.onChange();
         const accounts = _.clone(this.state.accounts);
         const index = _.findIndex(accounts, {_id: account._id});
         if (index === -1) {

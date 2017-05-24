@@ -120,19 +120,26 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         placeApi.placeAddMember({
             account_id: this.currentUser._id,
             place_id: this.props.place._id,
-        }).then(() => {
-            message.success(`You are added as admin in "${this.props.place.name}"`);
-            this.setState({
-                creators: _.concat(this.state.creators, [this.currentUser._id])
-            });
-            this.fetchUsers();
+        }).then((res: any) => {
+            // fixme:: remove error handler
+            if (res.err_code && res.err_code === 1) {
+                message.error(`You must be a member of grand-place first.`);
+            } else if (res.err_code) {
+                message.error(`An error happened!`);
+            } else {
+                message.success(`You are added as admin in "${this.props.place.name}"`);
+                this.setState({
+                    creators: _.concat(this.state.creators, [this.currentUser._id])
+                });
+                this.fetchUsers();
+            }
         }).catch((err: any) => {
+            message.error(`An error happened!`);
             console.log(err);
         });
     }
 
     render() {
-        console.log(this.state);
         const {place} = this.props;
         const iconStyle = {
             width: '16px',

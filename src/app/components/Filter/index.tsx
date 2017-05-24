@@ -39,7 +39,6 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
     }
 
     handleGroupChange(menu: IMenuItem, index: number) {
-        console.log(arguments);
         this.selectedMenuIndex = index;
         this.setState({
             selectedItem: menu,
