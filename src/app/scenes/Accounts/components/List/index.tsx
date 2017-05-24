@@ -10,7 +10,8 @@ import {
     Button,
     notification,
     Pagination,
-    Modal
+    Modal,
+    Badge
 } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
@@ -65,7 +66,7 @@ class List extends React.Component <IListProps,
     // columns Render Handlers
 
     nameRender = (text, user, index) => <UserAvatar avatar name size='32' user={user}/>;
-    idRender = (text, user, index) => <a onClick={() => this.onItemClick(user)}>{text}</a>;
+    idRender = (text, user, index) => text;
 
     placesRender = (text, user, index) => user.access_places
         ? user.access_places.length
@@ -82,9 +83,13 @@ class List extends React.Component <IListProps,
     genderRender = (text, user, index) => {
         return this.genders[user.gender] || '-';
     }
-    disabledRender = (text, user, index) => user.disabled
-        ? 'Inactive'
-        : 'Active';
+    disabledRender = (text, user, index) => {
+        if (user.disabled) {
+            return (<Badge status='error' text='Inactive' />);
+        } else {
+            return (<Badge status='success' text='Active' />);
+        }
+    }
     dobRender = (text, user, index) => {
         const value = moment(user.joined_on, 'YYYY-MM-DD');
         if (value.isValid()) {
