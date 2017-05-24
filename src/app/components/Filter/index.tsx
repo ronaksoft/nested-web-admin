@@ -114,10 +114,10 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
             <Row>
                 <Col>
                     <h2>
-                        <b>{this.state.selectedItem.count} </b>
-                        { this.state.selectedItem.name }
                         <Dropdown overlay={<Menu>{ menus }</Menu>} trigger={['click']}>
                             <a className='ant-dropdown-link' href='#'>
+                                <b>{this.state.selectedItem.count} </b>
+                                { this.state.selectedItem.name }
                                 <Icon type=' nst-ico ic_heavy_arrow_down_solid_24' style={iconStyle}/>
                             </a>
                         </Dropdown>

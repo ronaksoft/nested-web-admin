@@ -6,6 +6,7 @@ import {Row, Col, Popover, Button, Card} from 'antd';
 import SystemApi from '../../api/system/index';
 import Activity from './components/activity/index';
 import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
+import {Link} from 'react-router';
 
 const data = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300},
     {name: 'Group C', value: 300}];
@@ -25,9 +26,9 @@ const card1Title = <h5>Last 7 Days Activity</h5>;
 const card1Extra = <div></div>;
 const card2Title = <h5>Company Chart</h5>;
 const card2Extra = <div></div>;
-const card3Title = <h5>Places</h5>;
+const card3Title = <h5><Link to='/places'>Places</Link></h5>;
 const card3Extra = <div></div>;
-const card4Title = <h5>Accounts</h5>;
+const card4Title = <h5><Link to='/accounts'>Accounts</Link></h5>;
 const card4Extra = <div></div>;
 const card5Title = <h5>Storage & Plan</h5>;
 const card5Extra = <div></div>;
@@ -114,19 +115,19 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                     </Col>
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
-                    <Col span={16}>
+                    <Col span={24}>
                         <Card loading={this.state.loading} title={card1Title} extra={card1Extra}>
                             <Activity />
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    {/*<Col span={8}>
                         <Card loading={this.state.loading} title={card2Title} extra={card2Extra}>
                             Whatever content
                         </Card>
-                    </Col>
+                    </Col>*/}
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
-                    <Col span={8}>
+                    <Col span={12}>
                         <Card loading={this.state.loading} title={card3Title} extra={card3Extra}>
                             <ResponsiveContainer width='100%' height={200}>
                                 <PieChart onMouseEnter={this.onPieEnter}>
@@ -141,7 +142,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                             </ResponsiveContainer>
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    <Col span={12}>
                         <Card loading={this.state.loading} title={card4Title} extra={card4Extra}>
                             <ResponsiveContainer width='100%' height={200}>
                                 <PieChart onMouseEnter={this.onPieEnter}>
@@ -156,11 +157,11 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                             </ResponsiveContainer>
                         </Card>
                     </Col>
-                    <Col span={8}>
+                    {/*<Col span={8}>
                         <Card loading={this.state.loading} title={card5Title} extra={card5Extra}>
                             Whatever content
                         </Card>
-                    </Col>
+                    </Col>*/}
                 </Row>
             </div>
         );

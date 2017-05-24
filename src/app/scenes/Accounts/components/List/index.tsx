@@ -10,7 +10,8 @@ import {
     Button,
     notification,
     Pagination,
-    Modal
+    Modal,
+    Badge
 } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
@@ -66,7 +67,7 @@ class List extends React.Component <IListProps,
     // columns Render Handlers
 
     nameRender = (text, user, index) => <UserAvatar avatar name size='32' user={user}/>;
-    idRender = (text, user, index) => <a onClick={() => this.onItemClick(user)}>{text}</a>;
+    idRender = (text, user, index) => text;
 
     placesRender = (text, user, index) => user.access_places
         ? user.access_places.length
@@ -83,9 +84,13 @@ class List extends React.Component <IListProps,
     genderRender = (text, user, index) => {
         return this.genders[user.gender] || '-';
     }
-    disabledRender = (text, user, index) => user.disabled
-        ? 'Inactive'
-        : 'Active';
+    disabledRender = (text, user, index) => {
+        if (user.disabled) {
+            return (<Badge status='error' text='Inactive' />);
+        } else {
+            return (<Badge status='success' text='Active' />);
+        }
+    }
     dobRender = (text, user, index) => {
         const value = moment(user.joined_on, 'YYYY-MM-DD');
         if (value.isValid()) {
@@ -119,34 +124,34 @@ class List extends React.Component <IListProps,
             notification.warning({message: 'Deactivated', description: `"${user._id}" is disabled now.`});
         });
     }
-    optionsRender = (text, user, index) => {
-        const optionsMenu = (
-            <Menu>
-                {user.disabled && <Menu.Item key='0'>
-                    <Icon type='check'/>
-                    <a href='#' onClick={() => this.enable(user)}>Activate</a>
-                </Menu.Item>
-                }
-                {!user.disabled && <Menu.Item key='1'>
-                    <Icon type='close'/>
-                    <a href='#' onClick={() => this.disable(user)}>Deactivate</a>
-                </Menu.Item>
-                }
-                <Menu.Item key='2'>
-                    <Icon type='eye-o'/>
-                    <a href='#' onClick={() => this.onItemClick(user)}>View</a>
-                </Menu.Item>
-            </Menu>
-        );
-
-        return (
-            <Dropdown overlay={optionsMenu} trigger={['click']}>
-                <a className='ant-dropdown-link' href='#'>
-                    <Icon type='ellipsis'/>
-                </a>
-            </Dropdown>
-        );
-    }
+    // optionsRender = (text, user, index) => {
+    //     const optionsMenu = (
+    //         <Menu>
+    //             {user.disabled && <Menu.Item key='0'>
+    //                 <Icon type='check'/>
+    //                 <a href='#' onClick={() => this.enable(user)}>Activate</a>
+    //             </Menu.Item>
+    //             }
+    //             {!user.disabled && <Menu.Item key='1'>
+    //                 <Icon type='close'/>
+    //                 <a href='#' onClick={() => this.disable(user)}>Deactivate</a>
+    //             </Menu.Item>
+    //             }
+    //             <Menu.Item key='2'>
+    //                 <Icon type='eye-o'/>
+    //                 <a href='#' onClick={() => this.onItemClick(user)}>View</a>
+    //             </Menu.Item>
+    //         </Menu>
+    //     );
+    //
+    //     return (
+    //         <Dropdown overlay={optionsMenu} trigger={['click']}>
+    //             <a className='ant-dropdown-link' href='#'>
+    //                 <Icon type='ellipsis'/>
+    //             </a>
+    //         </Dropdown>
+    //     );
+    // }
 
     onSelectChange = (selectedRowKeys) => {
         this.setState({selectedRowKeys});
@@ -334,7 +339,7 @@ class List extends React.Component <IListProps,
                 title: optionsTitle,
                 dataIndex: 'options',
                 key: 'options',
-                render: this.optionsRender
+                render: () => ''
             }
         ]).value();
 
