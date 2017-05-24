@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Modal, Row, Col, Spin, Button, Form, Input, notification, DatePicker, Upload, Icon, message} from 'antd';
+import {Modal, Row, Col, Spin, Button, Form, Input, notification, DatePicker, Upload, Icon, message, Switch} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import md5 from 'md5';
@@ -51,6 +51,10 @@ class View extends React.Component<IViewProps, IViewState> {
         this.loadUploadToken = this.loadUploadToken.bind(this);
         this.beforeUpload = this.beforeUpload.bind(this);
         this.removePicture = this.removePicture.bind(this);
+        this.onAdminChange = this.onAdminChange.bind(this);
+        this.onActiveChange = this.onActiveChange.bind(this);
+        this.onPrivacyChange = this.onPrivacyChange.bind(this);
+
     }
 
     componentDidMount() {
@@ -261,6 +265,58 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+    onAdminChange(checked: boolean) {
+        let editedAccount = _.clone(this.state.account);
+        _.merge(editedAccount, { admin: checked });
+
+        const action = checked
+            ? this.accountApi.promote({ account_id : editedAccount._id })
+            : this.accountApi.demote({ account_id : editedAccount._id });
+
+        action.then((result) => {
+            this.props.onChange(editedAccount);
+            if (checked) {
+                message.success(`"${editedAccount._id}" can access Nested Administrator.`);
+            } else {
+                message.success(`"${editedAccount._id}" would not be longer able to access Nested Administrator.`);
+            }
+        }, (error) => {
+            message.error('We were not able to update the field!');
+        });
+    }
+
+    onPrivacyChange(props: any) {
+        let editedAccount = _.clone(this.state.account);
+        _.merge(editedAccount.privacy, props);
+
+        this.accountApi.edit(_.merge(props, { account_id: editedAccount._id })).then((result) => {
+            this.props.onChange(editedAccount);
+            message.success('The field has been updated.');
+        }, (error) => {
+            message.error('We were not able to update the field!');
+        });
+    }
+
+    onActiveChange(checked: boolean) {
+        let editedAccount = _.clone(this.state.account);
+        _.merge(editedAccount, { disabled: !checked });
+
+        const action = checked
+            ? this.accountApi.enable({ account_id : editedAccount._id })
+            : this.accountApi.disable({ account_id : editedAccount._id });
+
+        action.then((result) => {
+            this.props.onChange(editedAccount);
+            if (checked) {
+                message.success(`"${editedAccount._id}" is active now.`);
+            } else {
+                message.success(`"${editedAccount._id}" is not active now.`);
+            }
+        }, (error) => {
+            message.error('We were not able to update the field!');
+        });
+    }
+
     render() {
         const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.access, 'C'));
         const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
@@ -428,10 +484,15 @@ class View extends React.Component<IViewProps, IViewState> {
                     </Row>
                     <Row>
                         <Col span={8}>
-                            <label>Status</label>
+                            <label>Active</label>
                         </Col>
                         <Col span={14}>
-                            {this.state.account.disabled ? 'Not Active' : 'Active'}
+                            <Switch
+                                    checkedChildren={<Icon type='check' />}
+                                    unCheckedChildren={<Icon type='cross' />}
+                                    defaultChecked={!this.state.account.disabled}
+                                    onChange={this.onActiveChange}
+                            />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
@@ -502,6 +563,48 @@ class View extends React.Component<IViewProps, IViewState> {
                                         onClick={() => this.editField(EditableFields.email)}></Button>
                             }
                         </Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <label>Edit Profile</label>
+                        </Col>
+                        <Col span={14}>
+                            <Switch
+                                    checkedChildren={<Icon type='check' />}
+                                    unCheckedChildren={<Icon type='cross' />}
+                                    defaultChecked={!this.state.account.privacy.change_profile}
+                                    onChange={(checked) => this.onPrivacyChange({ change_profile: checked })}
+                            />
+                        </Col>
+                        <Col span={2}></Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <label>Change Picture</label>
+                        </Col>
+                        <Col span={14}>
+                            <Switch
+                                    checkedChildren={<Icon type='check' />}
+                                    unCheckedChildren={<Icon type='cross' />}
+                                    defaultChecked={!this.state.account.privacy.change_picture}
+                                    onChange={(checked) => this.onPrivacyChange({ change_picture: checked })}
+                            />
+                        </Col>
+                        <Col span={2}></Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <label>Administrator Account</label>
+                        </Col>
+                        <Col span={14}>
+                            <Switch
+                                    checkedChildren={<Icon type='check' />}
+                                    unCheckedChildren={<Icon type='cross' />}
+                                    defaultChecked={!this.state.account.admin}
+                                    onChange={this.onAdminChange}
+                            />
+                        </Col>
+                        <Col span={2}></Col>
                     </Row>
                     {
                         managerInPlaces.length > 0 &&
