@@ -46,8 +46,8 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
       .value();
 
 
-    const thisWeekStart = moment().startOf('week');
-    const preWeekStart = moment().subtract(1, 'weeks').startOf('week');
+    const thisWeekStart = moment().subtract(6, 'days').startOf('day');
+    const preWeekStart = moment().subtract(13, 'weeks').startOf('day');
 
     const days = _.times(7, (weekDay) => {
       const thisWeekDate = thisWeekStart.clone().add(weekDay, 'days');
