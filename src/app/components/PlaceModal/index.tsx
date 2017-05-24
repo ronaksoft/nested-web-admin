@@ -72,7 +72,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     }
 
     onCloseView = () => {
-        this.setState({viewAccount: false, visible: true});
+        this.setState({chosen: null, viewAccount: false, visible: true});
     }
 
     handleChange(account: IUser) {
@@ -149,7 +149,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         return (
             <div>
                 {
-                    this.state.chosen && this.state.chosen._id &&
+                    this.state.viewAccount &&
                     <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
                           onClose={this.onCloseView}/>
                 }
