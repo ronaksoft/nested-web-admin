@@ -75,8 +75,16 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         count: this.state.counters.locked_places,
         chartColor: '#FF6464',
         bgChartColor: '#FFDFDF',
+      },
+      {
+        key: CPlaceFilterTypes.PERSONAL_PLACES,
+        name: 'Personal Places',
+        count: this.state.counters.personal_places,
+        chartColor: '#FF6464',
+        bgChartColor: '#FFDFDF',
       }
     ];
+    console.log(this.state.counters, filterItems);
 
     return (
       <div>
