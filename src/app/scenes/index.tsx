@@ -32,6 +32,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     componentDidMount() {
+        $('#loading').fadeOut('slow');
         let accountApi = new AccountApi();
         let aaa = AAA.getInstance();
         const credential = aaa.getCredentials();
