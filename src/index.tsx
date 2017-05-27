@@ -4,7 +4,7 @@ import {IStore} from '~react-redux~redux';
 import {Provider} from 'react-redux';
 import App from './app/scenes/index';
 import configureStore from './app/services/store/configureStore';
-import {Router, Route, browserHistory, IndexRoute} from 'react-router';
+import {Router, Route, browserHistory, IndexRoute, Redirect} from 'react-router';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 
@@ -36,10 +36,11 @@ ReactDOM.render(
                     <Route path='/charts' component={Reports}/>
                 </Route>
                 <Route component={StaticPages}>
-                    <Route path='/404' component={NotFoundPage}/>
-                    <Route path='/403' component={ForbiddenPage}/>
+                    <Route path='/404' component={ForbiddenPage}/>
                     <Route path='/signin' component={SignInPage}/>
+                    <Route path='*' component={NotFoundPage} />
                 </Route>
+                <Redirect from='*' to='/404' />
             </Router>
         </Provider>
     </LocaleProvider>,
