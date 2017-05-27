@@ -33,7 +33,7 @@ ReactDOM.render(
                     <Route path='/accounts' component={Accounts}/>
                     <Route path='/places' component={Places}/>
                     <Route path='/config' component={Config}/>
-                    <Route path='/reports' component={Reports}/>
+                    <Route path='/charts' component={Reports}/>
                 </Route>
                 <Route component={StaticPages}>
                     <Route path='/404' component={NotFoundPage}/>

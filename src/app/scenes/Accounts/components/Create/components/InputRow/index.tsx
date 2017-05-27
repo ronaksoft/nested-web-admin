@@ -204,8 +204,8 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     componentDidMount() {
         if (this.state.packet.state !== PacketState.New) {
             this.props.form.validateFields((errors, values) => {
-                const errors = _(errors).map((value, key) => value.errors).flatten().value();
-                if (_.size(errors) > 0) {
+                const fieldErrors = _(errors).map((value, key) => value.errors).flatten().value();
+                if (_.size(fieldErrors) > 0) {
                     this.state.packet.state = PacketState.Invalid;
                 }
             });

@@ -73,7 +73,7 @@ class List extends React.Component <IListProps,
         ? user.access_places.length
         : '-';
     joinedRender = (text, user, index) => {
-        const value = moment(user.joined_on, 'YYYY-MM-DD');
+        const value = moment(user.joined_on);
         if (value.isValid()) {
             return value.format('YYYY[/]MM[/]DD HH:mm A');
         } else {
