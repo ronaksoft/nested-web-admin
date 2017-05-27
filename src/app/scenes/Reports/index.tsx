@@ -120,7 +120,7 @@ IAccountsState > {
     render() {
         return (
             <div>
-                <Row gutter={32}>
+                <Row gutter={32} style={{marginBottom: 32}}>
                     <Col span={12}>
                         <Card title='Posts' extra={null}>
                             <Area activities={this.state.posts} color='#1abc9c' title='Posts'/>
@@ -132,7 +132,7 @@ IAccountsState > {
                         </Card>
                     </Col>
                 </Row>
-                <Row gutter={32}>
+                <Row gutter={32} style={{marginBottom: 32}}>
                     <Col span={12}>
                         <Card title='Comments' extra={null}>
                             <Area activities={this.state.comments} color='#3498db' title='Comments'/>
@@ -144,7 +144,7 @@ IAccountsState > {
                         </Card>
                     </Col>
                 </Row>
-                <Row gutter={32}>
+                <Row gutter={32} style={{marginBottom: 32}}>
                     <Col span={12}>
                         <Card title='Attachments Size' extra={null}>
                             <Area activities={this.state.attachmentSizes} color='#e74c3c' title='Attachments Size' />
@@ -156,7 +156,7 @@ IAccountsState > {
                         </Card>
                     </Col>
                 </Row>
-                <Row gutter={32}>
+                <Row gutter={32} style={{marginBottom: 32}}>
                     <Col span={12}>
                         <Card title='Attachments Count' extra={null}>
                             <Area activities={this.state.attachmentCounts} color='#f1c40f' title='Attachments Count'/>

@@ -50,7 +50,7 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
                         <Link to='/config' activeClassName='active'><Icon type=' nst-ico ic_access_solid_24'/><span>System Limits</span></Link>
                     </Menu.Item>
                     <Menu.Item key='/reports'>
-                        <Link to='/reports' activeClassName='active'><Icon type=' nst-ico ic_access_solid_24'/><span>Reports</span></Link>
+                        <Link to='/reports' activeClassName='active'><Icon type='file-text' /><span>Reports</span></Link>
                     </Menu.Item>
                 </Menu>
             </div>
