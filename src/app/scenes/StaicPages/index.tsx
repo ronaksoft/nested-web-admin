@@ -17,6 +17,10 @@ class StaticePages extends React.Component<IAppProps, IAppState> {
         super(props);
     }
 
+    componentDidMount() {
+        $('#loading').hide();
+    }
+
     render() {
 
         const {children} = this.props;
