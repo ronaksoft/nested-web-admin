@@ -4,6 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Line} from 'recharts';
 import ReportApi from '../../../../api/report/index';
+import ReportType from '../../../../api/report/ReportType';
 
 interface IActivityProps {
 }
@@ -26,9 +27,10 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
     const now = moment.utc().format('YYYY-MM-DD:HH');
     const twoWeekAgo = moment().subtract(14, 'days').startOf('day').utc().format('YYYY-MM-DD:HH');
 
-    this.reportApi.getRequests({
+    this.reportApi.get({
       from: twoWeekAgo,
-      to: now
+      to: now,
+      type: ReportType.AllRequests
     }).then((response) => {
       this.setState({
         activities: response.result
