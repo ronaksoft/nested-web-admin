@@ -142,9 +142,9 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         }
 
         const next = index + 1;
-        // if (packet.state !== PacketState.Valid) {
-        //     return this.createAccount(next);
-        // }
+        if (packet.state !== PacketState.Valid) {
+            return this.createAccount(next);
+        }
 
         return this.accountApi.register({
             uid: packet.model._id,
@@ -187,24 +187,46 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     }
 
     create() {
-        const hasError = _.some(this.state.accounts, {state: PacketState.Invalid});
-        if (hasError) {
-            notification.warning({
-                message: 'Warning',
-                description: 'Some records are not valid! Please fix the problems and try again.',
-                duration: 8
-            });
 
-            return;
-        }
+        let counter = 1;
+        var hasErrorInFields = false;
+        Object.keys(this.rowsKey).forEach(row => {
+            this.rowsKey[row].validateFields((errors: any, value: any) => {
 
-        this.createAccount().then((result) => {
-            notification.info({
-                message: 'Job done!',
-                description: 'Make sure all accounts have been created without any problem.',
-                duration: 8
+                const fieldErrors = _(errors).map((value, key) => value.errors).flatten().value();
+                if (_.size(fieldErrors) > 0) {
+                    hasErrorInFields = true;
+                }
+
+                counter++;
+                if (counter < Object.keys(this.rowsKey).length) {
+                    return;
+                }
+
+                const hasError = _.some(this.state.accounts, {state: PacketState.Invalid});
+                if (hasError || hasErrorInFields) {
+                    notification.warning({
+                        message: 'Warning',
+                        description: 'Some records are not valid! Please fix the problems and try again.',
+                        duration: 8
+                    });
+
+                    return;
+                }
+
+                if (!hasError && !hasErrorInFields) {
+                    this.createAccount().then((result) => {
+                        notification.info({
+                            message: 'Job done!',
+                            description: 'Make sure all accounts have been created without any problem.',
+                            duration: 8
+                        });
+                    });
+                }
+
             });
         });
+
     }
 
     saveRow = (row) => {

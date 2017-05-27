@@ -67,7 +67,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
             let totalCounter: number = 0;
             if (props.selectedFilter === CPlaceFilterTypes.ALL) {
-                totalCounter = counter.grand_places + counter.locked_places + counter.unlocked_places;
+                totalCounter = counter.grand_places + counter.locked_places + counter.unlocked_places + counter.personal_places;
 
             } else {
                 totalCounter = counter[props.selectedFilter];

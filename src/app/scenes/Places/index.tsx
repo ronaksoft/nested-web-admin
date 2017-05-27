@@ -52,7 +52,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
       {
         key: CPlaceFilterTypes.ALL,
         name: 'Total',
-        count: this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places,
+        count: this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places + this.state.counters.personal_places,
         disableChart: true,
       },
       {
@@ -64,14 +64,14 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
       },
       {
         key: CPlaceFilterTypes.UNLOCKED_PLACES,
-        name: 'Unlocked Places',
+        name: 'Common Places',
         count: this.state.counters.unlocked_places,
         chartColor: '#3296FF',
         bgChartColor: '#D9EBFF',
       },
       {
         key: CPlaceFilterTypes.LOCKED_PLACES,
-        name: 'Locked Places',
+        name: 'Private Places',
         count: this.state.counters.locked_places,
         chartColor: '#FF6464',
         bgChartColor: '#FFDFDF',
@@ -80,11 +80,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         key: CPlaceFilterTypes.PERSONAL_PLACES,
         name: 'Personal Places',
         count: this.state.counters.personal_places,
-        chartColor: '#FF6464',
-        bgChartColor: '#FFDFDF',
+        chartColor: '#FFB300',
+        bgChartColor: '#FFECB3',
       }
     ];
-    console.log(this.state.counters, filterItems);
 
     return (
       <div>
