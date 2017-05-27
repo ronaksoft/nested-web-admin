@@ -1,6 +1,7 @@
 interface IReportRequest {
+    type: string;
     from: string;
     to: string;
 }
 
-export default IAccountPlacesRequest;
+export default IReportRequest;

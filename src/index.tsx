@@ -18,6 +18,7 @@ import Dashboard from './app/scenes/Dashboard/index';
 import Accounts from './app/scenes/Accounts/index';
 import Places from './app/scenes/Places/index';
 import Config from './app/scenes/Config/index';
+import Reports from './app/scenes/Reports/index';
 
 
 const store: IStore<any> = configureStore({});
@@ -32,6 +33,7 @@ ReactDOM.render(
                     <Route path='/accounts' component={Accounts}/>
                     <Route path='/places' component={Places}/>
                     <Route path='/config' component={Config}/>
+                    <Route path='/reports' component={Reports}/>
                 </Route>
                 <Route component={StaticPages}>
                     <Route path='/404' component={NotFoundPage}/>
