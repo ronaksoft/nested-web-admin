@@ -49,8 +49,8 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
                     <Menu.Item key='/config'>
                         <Link to='/config' activeClassName='active'><Icon type=' nst-ico ic_access_solid_24'/><span>System Limits</span></Link>
                     </Menu.Item>
-                    <Menu.Item key='/reports'>
-                        <Link to='/reports' activeClassName='active'><Icon type='file-text' /><span>Reports</span></Link>
+                    <Menu.Item key='/charts'>
+                        <Link to='/charts' activeClassName='active'><Icon type='area-chart' />Charts</Link>
                     </Menu.Item>
                 </Menu>
             </div>
