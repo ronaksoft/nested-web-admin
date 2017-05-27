@@ -35,7 +35,7 @@ IAccountsState > {
 
     load() {
         const from = moment().subtract(7, 'days').startOf('day').utc().format('YYYY-MM-DD:HH');
-        const to = moment.utc().format('YYYY-MM-DD:HH');
+        const to = moment().endOf('day').utc().format('YYYY-MM-DD:HH');
         this.reportApi.get({
             from: from,
             to: to,
