@@ -30,7 +30,7 @@ class AddComment extends React.Component<IAddCommentProps, IAddCommentState> {
   render() {
     const activities = _(this.props.activities)
       .groupBy((item) => {
-        return item.date.split(':')[0];
+        return item.date;
       })
       .value();
     let daysInPeriod = 7;

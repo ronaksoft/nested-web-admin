@@ -28,6 +28,7 @@ export default class PlaceApi {
         from: params.from,
         to: params.to,
         key: this.reportTypeMap[params.type],
+        res: 'd'
       }
     });
   }
