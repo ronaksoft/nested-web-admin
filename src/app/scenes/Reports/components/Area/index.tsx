@@ -47,7 +47,7 @@ class AddComment extends React.Component<IAddCommentProps, IAddCommentState> {
         break;
     }
 
-    const start = moment().subtract(daysInPeriod, 'days').startOf('day');
+    const start = moment().subtract(daysInPeriod - 1, 'days').startOf('day');
 
     const days = _.times(daysInPeriod, (dayNumber) => {
       const day = start.clone().add(dayNumber, 'days');
