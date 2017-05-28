@@ -181,7 +181,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             <div>
                 {
                     this.state.viewAccount &&
-                    <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
+                    <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange.bind(this)}
                           onClose={this.onCloseView}/>
                 }
                 {place &&
