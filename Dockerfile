@@ -17,7 +17,7 @@ CMD node /bin/nested-reconfig.js && \
     if  [[ -n "${NST_TLS_KEY_FILE}" && -n "${NST_TLS_CERT_FILE}" ]] ; then \
          if  [[ -f $NST_TLS_CERT_FILE && -f $NST_TLS_KEY_FILE ]]; then \
             echo "Webapp started over SSL" ; \
-            ws -p $NST_ADDR_PORT -s index.html --ssl --cert $NST_TLS_CERT_FILE --key $NST_TLS_KEY_FILE; \
+            ws -p $NST_ADDR_PORT -s index.html --cert $NST_TLS_CERT_FILE --key $NST_TLS_KEY_FILE; \
          else \
             echo "Webapp started without SSL" ; \
             ws -p $NST_ADDR_PORT -s index.html;\
