@@ -52,7 +52,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         let totalCounter: number = counter.grand_places + counter.locked_places + counter.unlocked_places;
 
         this.setState({
-            selectedFilter: this.props.selectedFilter,
+            selectedFilter: CPlaceFilterTypes.ALL,
             pagination: {
                 pageSize: this.pageLimit,
                 current: 1,
