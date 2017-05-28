@@ -1,5 +1,19 @@
 import * as React from 'react';
-import {Modal, Row, Col, Spin, Button, Form, Input, notification, DatePicker, Upload, Icon, message, Switch} from 'antd';
+import {
+    Modal,
+    Row,
+    Col,
+    Spin,
+    Button,
+    Form,
+    Input,
+    notification,
+    DatePicker,
+    Upload,
+    Icon,
+    message,
+    Switch
+} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import md5 from 'md5';
@@ -186,7 +200,9 @@ class View extends React.Component<IViewProps, IViewState> {
                         updateProgress: false,
                         showEdit: false,
                     });
-                    this.props.onChange(editedAccount);
+                    if (this.props.onChange) {
+                        this.props.onChange(editedAccount);
+                    }
                 }, (error) => {
                     this.setState({
                         updateProgress: false
@@ -211,7 +227,9 @@ class View extends React.Component<IViewProps, IViewState> {
             this.setState({
                 account: editedAccount
             });
-            this.props.onChange(editedAccount);
+            if (this.props.onChange) {
+                this.props.onChange(editedAccount);
+            }
         }).catch((error) => {
             notification.error({
                 message: 'Update Error',
@@ -238,7 +256,9 @@ class View extends React.Component<IViewProps, IViewState> {
                 this.setState({
                     account: editedAccount
                 });
-                this.props.onChange(editedAccount);
+                if (this.props.onChange) {
+                    this.props.onChange(editedAccount);
+                }
             }, (error) => {
                 notification.error({
                     message: 'Update Error',
@@ -267,14 +287,16 @@ class View extends React.Component<IViewProps, IViewState> {
 
     onAdminChange(checked: boolean) {
         let editedAccount = _.clone(this.state.account);
-        _.merge(editedAccount, { admin: checked });
+        _.merge(editedAccount, {admin: checked});
 
         const action = checked
-            ? this.accountApi.promote({ account_id : editedAccount._id })
-            : this.accountApi.demote({ account_id : editedAccount._id });
+            ? this.accountApi.promote({account_id: editedAccount._id})
+            : this.accountApi.demote({account_id: editedAccount._id});
 
         action.then((result) => {
-            this.props.onChange(editedAccount);
+            if (this.props.onChange) {
+                this.props.onChange(editedAccount);
+            }
             if (checked) {
                 message.success(`"${editedAccount._id}" can access Nested Administrator.`);
             } else {
@@ -289,8 +311,26 @@ class View extends React.Component<IViewProps, IViewState> {
         let editedAccount = _.clone(this.state.account);
         _.merge(editedAccount.privacy, props);
 
-        this.accountApi.edit(_.merge(props, { account_id: editedAccount._id })).then((result) => {
-            this.props.onChange(editedAccount);
+        this.accountApi.edit(_.merge(props, {account_id: editedAccount._id})).then((result) => {
+            if (this.props.onChange) {
+                this.props.onChange(editedAccount);
+            }
+
+            message.success('The field has been updated.');
+        }, (error) => {
+            message.error('We were not able to update the field!');
+        });
+    }
+
+    onFlagChange(props: any) {
+        let editedAccount = _.clone(this.state.account);
+        _.merge(editedAccount.flags, props);
+
+        this.accountApi.edit(_.merge(props, {account_id: editedAccount._id})).then((result) => {
+            if (this.props.onChange) {
+                this.props.onChange(editedAccount);
+            }
+
             message.success('The field has been updated.');
         }, (error) => {
             message.error('We were not able to update the field!');
@@ -299,14 +339,17 @@ class View extends React.Component<IViewProps, IViewState> {
 
     onActiveChange(checked: boolean) {
         let editedAccount = _.clone(this.state.account);
-        _.merge(editedAccount, { disabled: !checked });
+        _.merge(editedAccount, {disabled: !checked});
 
         const action = checked
-            ? this.accountApi.enable({ account_id : editedAccount._id })
-            : this.accountApi.disable({ account_id : editedAccount._id });
+            ? this.accountApi.enable({account_id: editedAccount._id})
+            : this.accountApi.disable({account_id: editedAccount._id});
 
         action.then((result) => {
-            this.props.onChange(editedAccount);
+            if (this.props.onChange) {
+                this.props.onChange(editedAccount);
+            }
+
             if (checked) {
                 message.success(`"${editedAccount._id}" is active now.`);
             } else {
@@ -488,10 +531,10 @@ class View extends React.Component<IViewProps, IViewState> {
                         </Col>
                         <Col span={14}>
                             <Switch
-                                    checkedChildren={<Icon type='check' />}
-                                    unCheckedChildren={<Icon type='cross' />}
-                                    defaultChecked={!this.state.account.disabled}
-                                    onChange={this.onActiveChange}
+                                checkedChildren={<Icon type='check'/>}
+                                unCheckedChildren={<Icon type='cross'/>}
+                                defaultChecked={!this.state.account.disabled}
+                                onChange={this.onActiveChange}
                             />
                         </Col>
                         <Col span={2}></Col>
@@ -570,38 +613,52 @@ class View extends React.Component<IViewProps, IViewState> {
                         </Col>
                         <Col span={14}>
                             <Switch
-                                    checkedChildren={<Icon type='check' />}
-                                    unCheckedChildren={<Icon type='cross' />}
-                                    defaultChecked={this.state.account.privacy.change_profile}
-                                    onChange={(checked) => this.onPrivacyChange({ change_profile: checked })}
+                                checkedChildren={<Icon type='check'/>}
+                                unCheckedChildren={<Icon type='cross'/>}
+                                defaultChecked={this.state.account.privacy.change_profile}
+                                onChange={(checked) => this.onPrivacyChange({change_profile: checked})}
                             />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
                     <Row>
                         <Col span={8}>
-                            <label>Change Picture</label>
+                            <label>Change Profile Picture</label>
                         </Col>
                         <Col span={14}>
                             <Switch
-                                    checkedChildren={<Icon type='check' />}
-                                    unCheckedChildren={<Icon type='cross' />}
-                                    defaultChecked={this.state.account.privacy.change_picture}
-                                    onChange={(checked) => this.onPrivacyChange({ change_picture: checked })}
+                                checkedChildren={<Icon type='check'/>}
+                                unCheckedChildren={<Icon type='cross'/>}
+                                defaultChecked={this.state.account.privacy.change_picture}
+                                onChange={(checked) => this.onPrivacyChange({change_picture: checked})}
                             />
                         </Col>
                         <Col span={2}></Col>
                     </Row>
                     <Row>
                         <Col span={8}>
-                            <label>Administrator Account</label>
+                            <label>Force Password Change</label>
                         </Col>
                         <Col span={14}>
                             <Switch
-                                    checkedChildren={<Icon type='check' />}
-                                    unCheckedChildren={<Icon type='cross' />}
-                                    defaultChecked={this.state.account.admin}
-                                    onChange={this.onAdminChange}
+                                checkedChildren={<Icon type='check'/>}
+                                unCheckedChildren={<Icon type='cross'/>}
+                                defaultChecked={this.state.account.flags.force_password_change}
+                                onChange={(checked) => this.onFlagChange({force_password: checked})}
+                            />
+                        </Col>
+                        <Col span={2}></Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <label>Is Administrator</label>
+                        </Col>
+                        <Col span={14}>
+                            <Switch
+                                checkedChildren={<Icon type='check'/>}
+                                unCheckedChildren={<Icon type='cross'/>}
+                                defaultChecked={this.state.account.admin}
+                                onChange={this.onAdminChange}
                             />
                         </Col>
                         <Col span={2}></Col>
