@@ -5,16 +5,16 @@ import SocketState from './states';
 
 const defaultConfig: ISocketConfig = {
   server: '',
-  pingPongTime: 50000,
+  pingPongTime: 30000,
 };
 
 export default class Socket {
 
   private config: ISocketConfig;
   private socket: any | null;
-  private pingPong: any = null;
+  private pingPongInterval: any = null;
   private pingPongCounter: number = 0;
-  private reconnectIntervalCanceler;
+  private reconnectTimeout: any = null;
 
   constructor(config: ISocketConfig = defaultConfig) {
     if (config.server === '') {
@@ -30,20 +30,11 @@ export default class Socket {
   }
 
   isReady() {
-      return this.socket.readyState === SocketState.OPEN && this.pingPong;
+    return this.socket.readyState === SocketState.OPEN;
   }
 
   connect() {
-    if (this.socket) {
-      return;
-    }
-    if (this.reconnectIntervalCanceler) {
-      clearInterval(this.reconnectIntervalCanceler);
-    }
-    if (this.pingPong) {
-      clearInterval(this.pingPong);
-    }
-
+    this.cancelReconnect();
     this.socket = new WebSocket(this.config.server);
     this.socket.onopen = this.onOpen.bind(this);
     this.socket.onclose = this.onClose.bind(this);
@@ -51,24 +42,37 @@ export default class Socket {
     this.socket.onerror = this.onError.bind(this);
   }
 
+  close() {
+    if (this.socket.readyState === SocketState.CLOSING) {
+        console.log('The socket is being closed.');
+      } else if (this.socket.readyState === SocketState.CLOSED) {
+        console.log('The socket has already been closed.');
+      } else {
+        this.socket.close(1000, 'The socked has ben closed intentially.');
+        this.stopPingPong();
+      }
+  }
+
   private onOpen() {
     log.info('socket', 'Connection stabilised to ', this.config.server);
-    this.startPingPong();
     setTimeout(() => {
       this.config.onReady();
+      this.startPingPong();
     }, 100);
   }
 
   private onClose() {
     console.log('socket', 'Connection closed!');
-    this.socket = null;
     this.stopPingPong();
     this.reconnect();
   }
 
   private onError(error: any) {
     log.error('socket', 'error', error);
-    this.socket = null;
+    if (this.socket) {
+      this.socket.close();
+    }
+
     this.stopPingPong();
     this.reconnect();
   }
@@ -76,37 +80,43 @@ export default class Socket {
   private onMessage(msg: any) {
     if (this.config.onMessage && msg.data !== 'PONG!') {
       this.config.onMessage(msg.data);
-    } else if (msg.data !== 'PONG!') {
+    } else if (msg.data === 'PONG!') {
       this.pingPongCounter = 0;
     }
   }
 
   private startPingPong() {
-    if (!this.pingPong && this.pingPongCounter <= 3) {
-      this.pingPong = setInterval(() => {
-        this.send('PING!');
-        this.pingPongCounter++;
-      }, this.config.pingPongTime);
-    } else if (this.pingPongCounter > 3) {
-      this.onClose();
-    }
+    this.stopPingPong();
+
+    this.pingPongInterval = setInterval(() => {
+      this.send('PING!');
+      this.pingPongCounter++;
+
+      if (this.pingPongCounter > 3) {
+        this.close();
+        this.reconnect();
+      }
+
+    }, this.config.pingPongTime);
   }
 
   private stopPingPong() {
-    if (this.pingPong) {
-      clearInterval(this.pingPong);
+    if (this.pingPongInterval) {
+      clearInterval(this.pingPongInterval);
     }
-    this.pingPong = null;
   }
 
   private reconnect() {
-    if (this.socket === null) {
-      this.reconnectIntervalCanceler = setInterval(() => {
-        if (this.socket !== null) {
-          clearInterval(this.reconnectIntervalCanceler);
-        }
-        this.connect();
-      }, 5000);
+    if (this.socket.readyState === SocketState.OPEN || this.socket.readyState === SocketState.CONNECTING) {
+      this.socket.close();
+    }
+
+    this.reconnectTimeout = setTimeout(this.connect.bind(this), 5000);
+  }
+
+  private cancelReconnect() {
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
     }
   }
 
