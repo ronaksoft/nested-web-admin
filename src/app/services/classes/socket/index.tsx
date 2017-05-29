@@ -1,6 +1,7 @@
 import log from 'loglevel';
 
 import {ISocketConfig} from './interfaces';
+import SocketState from './states';
 
 const defaultConfig: ISocketConfig = {
   server: '',
@@ -23,15 +24,13 @@ export default class Socket {
   }
 
   send(msg: any) {
-    this.socket.send(msg);
+    if (this.socket && this.socket.readyState === SocketState.OPEN) {
+      this.socket.send(msg);
+    }
   }
 
   isReady() {
-    if (this.pingPong) {
-      return true;
-    } else {
-      return false;
-    }
+      return this.socket.readyState === SocketState.OPEN && this.pingPong;
   }
 
   connect() {
