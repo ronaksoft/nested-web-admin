@@ -78,7 +78,8 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
               </linearGradient>
             </defs>
             <XAxis dataKey='label' tickLine={false} axisLine={false}/>
-            <CartesianGrid strokeDasharray='1 1'/>
+            <YAxis/>
+            <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
             <Tooltip/>
             <Area type='monotone' dataKey='preWeek' name='Last Week' stroke='#FF6464' fill='url(#colorPv)' />
             <Area type='monotone' dataKey='thisWeek' name='This Week' stroke='#00B45A' fill='url(#colorUv)' />
