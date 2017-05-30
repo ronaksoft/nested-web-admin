@@ -2,7 +2,7 @@ import * as React from 'react';
 import {IDispatch} from '~react-redux~redux';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Row, Col, Popover, Button, Card} from 'antd';
+import {Row, Col, Popover, Button, Card, Dropdown, Menu, Icon} from 'antd';
 import SystemApi from '../../api/system/index';
 import Activity from './components/activity/index';
 import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
@@ -21,9 +21,6 @@ export interface IDashboardProps {
 export interface IDashboardState {
 }
 
-
-const card1Title = <h5>Last 7 Days Activity</h5>;
-const card1Extra = <div></div>;
 const card2Title = <h5>Company Chart</h5>;
 const card2Extra = <div></div>;
 const card3Title = <h5><Link to='/places'>Places</Link></h5>;
@@ -70,6 +67,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
             this.setState({
                 place: this.props.place,
                 visible: this.props.visible,
+                activityPeriod: 'week'
             });
         }
         this.SystemApi = new SystemApi();
@@ -116,8 +114,21 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
                     <Col span={24}>
-                        <Card loading={this.state.loading} title={card1Title} extra={card1Extra}>
-                            <Activity />
+                        <Card loading={this.state.loading} title={this.state.activityPeriod === 'week' ? 'Last Week' : 'Last Month'} extra={
+                            <Dropdown overlay={
+                                    <Menu>
+                                        <Menu.Item>
+                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'week' })}>Week</a>
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'month' })}>Month</a>
+                                        </Menu.Item>
+                                    </Menu>
+                                    }>
+                                   <Icon type='setting'/>
+                              </Dropdown>
+                        }>
+                            <Activity period={this.state.activityPeriod}/>
                         </Card>
                     </Col>
                     {/*<Col span={8}>
