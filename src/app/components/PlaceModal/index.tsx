@@ -161,7 +161,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             searchableTxt = 'This place shows in search results.';
         } else {
             searchableIcon = <Icon type=' nst-ico ic_non_search_24' style={iconStyle}/>;
-            searchableTxt = 'This place doesn\'t show in search results.';
+            searchableTxt = 'This place is not shown in search results.';
         }
 
         if (place.privacy.receptive === 'external' && place.policy.add_post === 'everyone') {
@@ -172,7 +172,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             reciveTxt = 'All grand-place members can share post';
         } else if (place.privacy.receptive === 'off' && place.policy.add_post === 'everyone') {
             reciveIcon = <Icon type=' nst-ico ic_manager-and-member_solid_24' style={iconStyle}/>;
-            reciveTxt = 'All place members can share post';
+            reciveTxt = 'All members of the place could share post.';
         } else if (place.privacy.receptive === 'off' && place.policy.add_post === 'creators') {
             reciveIcon = <Icon type=' nst-ico ic_manager_solid_24' style={iconStyle}/>;
             reciveTxt = 'Only managers can share post';
