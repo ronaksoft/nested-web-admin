@@ -146,7 +146,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                                          label={renderCustomizedLabel} fill='#8884d8' innerRadius={40} outerRadius={66}
                                          paddingAngle={0}>
                                         {
-                                            data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
+                                            data.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)
                                         }
                                     </Pie>
                                 </PieChart>
@@ -161,7 +161,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                                          label={renderCustomizedLabel} fill='#FFDFDF' innerRadius={40} outerRadius={66}
                                          paddingAngle={0}>
                                         {
-                                            data.map((entry, index) => <Cell fill={RED_COLORS[index % COLORS.length]}/>)
+                                            data.map((entry, index) => <Cell key={index} fill={RED_COLORS[index % COLORS.length]}/>)
                                         }
                                     </Pie>
                                 </PieChart>
