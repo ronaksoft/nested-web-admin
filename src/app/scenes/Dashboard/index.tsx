@@ -4,7 +4,8 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Row, Col, Popover, Button, Card, Dropdown, Menu, Icon} from 'antd';
 import SystemApi from '../../api/system/index';
-// import Activity from './components/activity/index';
+import ReportType from '../../api/report/ReportType';
+import ChartCard from '../../components/ChartCard/index';
 import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
 import {Link} from 'react-router';
 
@@ -119,25 +120,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
                     <Col span={24}>
-                        <Card loading={this.state.loading} title={this.state.activityPeriod === 'day' ? 'Last 24 hours' : this.state.activityPeriod === 'week' ? 'Last 7 days' : 'Last 30 days'} extra={
-                            <Dropdown overlay={
-                                    <Menu>
-                                        <Menu.Item>
-                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'day' })}>Last 24 hours</a>
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'week' })}>Last 7 days</a>
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'month' })}>Last 30 days</a>
-                                        </Menu.Item>
-                                    </Menu>
-                                    }>
-                                   <Icon type='setting'/>
-                              </Dropdown>
-                        }>
-
-                        </Card>
+                        <ChartCard dataType={ReportType.AllRequests} title='System Activities'/>
                     </Col>
                     {/*<Col span={8}>
                         <Card loading={this.state.loading} title={card2Title} extra={card2Extra}>
