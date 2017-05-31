@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Row, Col, Popover, Button, Card, Dropdown, Menu, Icon} from 'antd';
 import SystemApi from '../../api/system/index';
-import Activity from './components/activity/index';
+// import Activity from './components/activity/index';
 import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
 import {Link} from 'react-router';
 
@@ -136,7 +136,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                                    <Icon type='setting'/>
                               </Dropdown>
                         }>
-                            <Activity period={this.state.activityPeriod}/>
+
                         </Card>
                     </Col>
                     {/*<Col span={8}>

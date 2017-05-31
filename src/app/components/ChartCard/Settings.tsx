@@ -1,4 +1,4 @@
-import IResolutionSetting from './interfaces/IResolutionSetting';
+import IResolutionSetting from './IResolutionSetting';
 import moment from 'moment';
 
 export default class Settings {

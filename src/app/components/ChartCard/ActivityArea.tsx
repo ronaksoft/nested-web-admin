@@ -3,26 +3,30 @@ import {} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Line} from 'recharts';
-import ReportApi from '../../../../api/report/index';
-import ReportType from '../../../../api/report/ReportType';
-import Settings from '../../../../components/ChartCard/Settings';
-import IResolutionSetting from '../../../../components/ChartCard/IResolutionSetting';
+import ReportApi from '../../api/report/index';
+import ReportType from '../../api/report/ReportType';
+import TimePeriod from './TimePeriod';
+import Settings from './Settings';
+import IResolutionSetting from './IResolutionSetting';
 
-interface IActivityProps {
-    period: string;
+interface IActivityAreaProps {
+  color: string;
+  dataType: ReportType;
+  period: TimePeriod;
+  title: string;
 }
 
-interface IActivityState {
+interface IActivityAreaState {
   activities: Array;
 }
 
-class Activity extends React.Component<IActivityProps, IActivityState> {
-  constructor(props: IActivityProps) {
+class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaState> {
+  constructor(props: IActivityAreaProps) {
     super(props);
 
     this.state = {
       activities: [],
-      period: props.period
+      period: this.props.period
     };
   }
 
@@ -62,10 +66,10 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
       );
   }
 
-  private getSettings(period: string): IResolutionSetting {
-    if (period === 'day') {
+  private getSettings(period: TimePeriod): IResolutionSetting {
+    if (period === TimePeriod.Day) {
       return Settings.Day;
-    } else if (period === 'week') {
+  } else if (period === TimePeriod.Week) {
       return Settings.Week;
     } else {
       return Settings.Month;
@@ -84,7 +88,7 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
       }
   }
 
-  private load(period: string) {
+  private load(period: TimePeriod) {
     const settings = this.getSettings(period);
     const end = moment().endOf('day').utc().format('YYYY-MM-DD:HH');
     const start = this.getStartDate(settings.ticksGapDuration * settings.ticksCount * 2);
@@ -92,7 +96,7 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
     this.reportApi.get({
       from: start,
       to: end,
-      type: ReportType.AllRequests,
+      type: this.props.dataType,
       res: settings.resolutionKey
     }).then((response) => {
       this.setState({
@@ -132,6 +136,7 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
 
     return _.sumBy(_.filter(activities, isInDay), 'sum');
   }
+
 }
 
-export default Activity;
+export default ActivityArea;
