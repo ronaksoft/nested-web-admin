@@ -59,7 +59,12 @@ const renderCustomizedLabel = ({cx, cy, midAngle, name, innerRadius, outerRadius
 class DashboardComponent extends React.Component<IDashboardProps, IDashboardState> {
     constructor(props: IDashboardProps) {
         super(props);
-        this.state = {loading: true, data: {}, activeIndex: 0};
+        this.state = {
+            loading: true,
+            data: {},
+            activeIndex: 0,
+            activityPeriod: 'week'
+        };
     };
 
     componentDidMount() {
@@ -114,14 +119,17 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
                     <Col span={24}>
-                        <Card loading={this.state.loading} title={this.state.activityPeriod === 'week' ? 'Last Week' : 'Last Month'} extra={
+                        <Card loading={this.state.loading} title={this.state.activityPeriod === 'day' ? 'Last 24 hours' : this.state.activityPeriod === 'week' ? 'Last 7 days' : 'Last 30 days'} extra={
                             <Dropdown overlay={
                                     <Menu>
                                         <Menu.Item>
-                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'week' })}>Week</a>
+                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'day' })}>Last 24 hours</a>
                                         </Menu.Item>
                                         <Menu.Item>
-                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'month' })}>Month</a>
+                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'week' })}>Last 7 days</a>
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            <a rel='noopener noreferrer' href='#' onClick={() => this.setState({ activityPeriod: 'month' })}>Last 30 days</a>
                                         </Menu.Item>
                                     </Menu>
                                     }>

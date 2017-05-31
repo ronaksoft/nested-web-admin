@@ -5,6 +5,8 @@ import moment from 'moment';
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Line} from 'recharts';
 import ReportApi from '../../../../api/report/index';
 import ReportType from '../../../../api/report/ReportType';
+import Settings from './Settings';
+import IResolutionSetting from './IResolutionSetting';
 
 interface IActivityProps {
     period: string;
@@ -20,7 +22,7 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
 
     this.state = {
       activities: [],
-      period: props.period || 'week'
+      period: props.period
     };
   }
 
@@ -34,40 +36,64 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
   }
 
   render() {
+      const settings = this.getSettings(this.state.period);
+      const days = this.getDays(settings);
+      return (
+            <ResponsiveContainer width='100%' height={300}>
+              <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
+                <defs>
+                  <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
+                    <stop offset='5%' stopColor={settings.latestAreaColor} stopOpacity={0.5}/>
+                    <stop offset='95%' stopColor={settings.latestAreaColor} stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id='colorPv' x1='0' y1='0' x2='0' y2='1'>
+                    <stop offset='5%' stopColor={settings.secondAreaColor} stopOpacity={0.5}/>
+                    <stop offset='95%' stopColor={settings.secondAreaColor} stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey='label' tickLine={false} axisLine={false}/>
+                <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
+                <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
+                <Tooltip formatter={(value) => this.formatValue(value, 3)}/>
+                <Area type='monotone' dataKey='second' name={settings.secondAreaLabel} stroke={settings.secondAreaColor} fill='url(#colorPv)' />
+                <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel} stroke={settings.latestAreaColor} fill='url(#colorUv)' />
+              </AreaChart>
+            </ResponsiveContainer>
+      );
+  }
 
-    const days = this.getDays(this.state.period);
-    return (
-          <ResponsiveContainer width='100%' height={300}>
-            <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
-              <defs>
-                <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
-                  <stop offset='5%' stopColor='#00B45A' stopOpacity={0.5}/>
-                  <stop offset='95%' stopColor='#00B45A' stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id='colorPv' x1='0' y1='0' x2='0' y2='1'>
-                  <stop offset='5%' stopColor='#FF6464' stopOpacity={0.5}/>
-                  <stop offset='95%' stopColor='#FF6464' stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <XAxis dataKey='label' tickLine={false} axisLine={false}/>
-              <YAxis/>
-              <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
-              <Tooltip/>
-              <Area type='monotone' dataKey='second' name={this.state.period === 'week' ? 'Last Week' : 'Last Month'} stroke='#FF6464' fill='url(#colorPv)' />
-              <Area type='monotone' dataKey='latest' name={this.state.period === 'week' ? 'This Week' : 'This Month'} stroke='#00B45A' fill='url(#colorUv)' />
-            </AreaChart>
-          </ResponsiveContainer>
-    );
+  private getSettings(period: string): IResolutionSetting {
+    if (period === 'day') {
+      return Settings.Day;
+    } else if (period === 'week') {
+      return Settings.Week;
+    } else {
+      return Settings.Month;
+    }
+  }
+
+  private formatValue(value: number, precision: number = 0) {
+      if (value < 1000) {
+          return value;
+      } else if (value < 1000000) {
+          return `${_.round(value / 1000, precision)} K`;
+      } else if (value < 1000000000) {
+          return `${_.round(value / 1000000, precision)} M`;
+      } else {
+          return `${_.round(value / 1000000000, precision)} B`;
+      }
   }
 
   private load(period: string) {
+    const settings = this.getSettings(period);
     const end = moment().endOf('day').utc().format('YYYY-MM-DD:HH');
-    const start = this.getStartDate(period);
+    const start = this.getStartDate(settings.ticksGapDuration * settings.ticksCount * 2);
 
     this.reportApi.get({
       from: start,
       to: end,
-      type: ReportType.AllRequests
+      type: ReportType.AllRequests,
+      res: settings.resolutionKey
     }).then((response) => {
       this.setState({
         activities: response.result,
@@ -78,42 +104,33 @@ class Activity extends React.Component<IActivityProps, IActivityState> {
     });
   }
 
-  private getStartDate(period: string) {
-      return moment().subtract(this.getDaysInPeriod(period), 'days').startOf('day').utc().format('YYYY-MM-DD:HH');
+  private getStartDate(duration: any) {
+      return moment().subtract(duration + moment.duration(1, 'd')).utc().format('YYYY-MM-DD:HH');
   }
 
-  private getDaysInPeriod(period: string) {
-    return period === 'week' ? 14
-                             : 60;
-  }
+  private getDays(settings: Settings) {
+    const latestHalfDuration = settings.ticksGapDuration * (settings.ticksCount - 1);
+    const secondHalfDuration = settings.ticksGapDuration * ((settings.ticksCount * 2) - 1);
+    const latestHalfStart = moment().subtract(latestHalfDuration);
+    const secondHalfStart = moment().subtract(secondHalfDuration);
 
-  private getDays(period: string) {
-    const daysInPeriod = this.getDaysInPeriod(period);
+    return _.times(settings.ticksCount, (number) => {
+        const duration = settings.ticksGapDuration * number;
+        const latestHalfDay = latestHalfStart.clone().add(duration);
+        const secondHalfDay = secondHalfStart.clone().add(duration);
 
-    const latestHalfStart = moment().subtract((daysInPeriod / 2) - 1, 'days').startOf('day');
-    const secondHalfStart = moment().subtract(daysInPeriod - 1, 'days').startOf('day');
-
-    return _.times((daysInPeriod / 2), (weekDay) => {
-      const latestHalfDay = latestHalfStart.clone().add(weekDay, 'days');
-      const secondHalfDay = secondHalfStart.clone().add(weekDay, 'days');
-
-      return {
-        label: latestHalfDay.format(this.getDayFormat(period)),
-        latest: this.findSumByDate(this.state.activities, latestHalfDay.format('YYYY-MM-DD')),
-        second: this.findSumByDate(this.state.activities, secondHalfDay.format('YYYY-MM-DD'))
-      };
+        return {
+            label: latestHalfDay.format(settings.ticksDateFormat),
+            latest: this.findSumByDate(this.state.activities, latestHalfDay.utc().format('YYYY-MM-DD:HH')),
+            second: this.findSumByDate(this.state.activities, secondHalfDay.utc().format('YYYY-MM-DD:HH'))
+        };
     });
   }
 
   private findSumByDate(activities: [], day: string) {
-    const isInDay = (activity) => _.startsWith(activity.date, day);
+    const isInDay = (activity) => _.startsWith(day, activity.date);
 
     return _.sumBy(_.filter(activities, isInDay), 'sum');
-  }
-
-  private getDayFormat(period: string) {
-    return period === 'week' ? 'dddd'
-                             : 'D';
   }
 }
 
