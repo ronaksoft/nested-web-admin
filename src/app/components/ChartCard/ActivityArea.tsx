@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {} from 'antd';
+import {Spin} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Line} from 'recharts';
@@ -26,7 +26,8 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
 
     this.state = {
       activities: [],
-      period: this.props.period
+      period: this.props.period,
+      loading: false
     };
   }
 
@@ -46,27 +47,32 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
   render() {
       const settings = this.getSettings(this.state.period);
       const days = this.getDays(settings);
+      const content = (
+        <ResponsiveContainer width='100%' height={300}>
+          <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
+            <defs>
+              <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
+                <stop offset='5%' stopColor={settings.latestAreaColor} stopOpacity={0.5}/>
+                <stop offset='95%' stopColor={settings.latestAreaColor} stopOpacity={0}/>
+              </linearGradient>
+              <linearGradient id='colorPv' x1='0' y1='0' x2='0' y2='1'>
+                <stop offset='5%' stopColor={settings.secondAreaColor} stopOpacity={0.5}/>
+                <stop offset='95%' stopColor={settings.secondAreaColor} stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <XAxis dataKey='label' tickLine={false} axisLine={false} tickFormatter={settings.tickFormatter} minTickGap={1}/>
+            <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
+            <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
+            <Tooltip formatter={(value) => this.formatValue(value, 3)} labelFormatter={settings.tooltipLabelFormatter}/>
+            <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel} stroke={settings.latestAreaColor} fill='url(#colorUv)' />
+            <Area type='monotone' dataKey='second' name={settings.secondAreaLabel} stroke={settings.secondAreaColor} fill='url(#colorPv)' />
+          </AreaChart>
+        </ResponsiveContainer>
+      );
       return (
-            <ResponsiveContainer width='100%' height={300}>
-              <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
-                <defs>
-                  <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
-                    <stop offset='5%' stopColor={settings.latestAreaColor} stopOpacity={0.5}/>
-                    <stop offset='95%' stopColor={settings.latestAreaColor} stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id='colorPv' x1='0' y1='0' x2='0' y2='1'>
-                    <stop offset='5%' stopColor={settings.secondAreaColor} stopOpacity={0.5}/>
-                    <stop offset='95%' stopColor={settings.secondAreaColor} stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey='label' tickLine={false} axisLine={false} tickFormatter={settings.tickFormatter} minTickGap={1}/>
-                <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
-                <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
-                <Tooltip formatter={(value) => this.formatValue(value, 3)} labelFormatter={settings.tooltipLabelFormatter}/>
-                <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel} stroke={settings.latestAreaColor} fill='url(#colorUv)' />
-                <Area type='monotone' dataKey='second' name={settings.secondAreaLabel} stroke={settings.secondAreaColor} fill='url(#colorPv)' />
-              </AreaChart>
-            </ResponsiveContainer>
+          <Spin spinning={this.state.loading} delay={512} >
+                {content}
+          </Spin>
       );
   }
 
@@ -98,6 +104,10 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
     const settings = this.getSettings(period);
     const end = moment.utc().format('YYYY-MM-DD:HH');
     const start = this.getStartDate(settings.ticksGapDuration * settings.ticksCount * 2);
+    this.setState({
+      loading: true,
+      activities: []
+    });
 
     this.reportApi.get({
       from: start,
@@ -106,11 +116,15 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
       res: settings.resolutionKey
     }).then((response) => {
         const parsedActivities = settings.parser(response.result);
-      this.setState({
-        activities: parsedActivities,
-        period: period
-      });
+        this.setState({
+          activities: parsedActivities,
+          period: period,
+          loading: false
+        });
     }).catch((error) => {
+      this.setState({
+        loading: false
+      });
       console.log('report error', error);
     });
   }
