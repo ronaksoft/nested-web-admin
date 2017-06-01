@@ -43,7 +43,7 @@ export default class Settings {
         secondAreaColor: '#FF6464',
         resolutionKey: 'h',
         tickFormatter: (value) => {
-            const date = moment.utc(value, 'YYYY-MM-DD:HH');
+            const date = moment.utc(value, 'YYYY-MM-DD:HH').local();
             return date.hours() === 12
                 ? date.format('h A')
                 : date.format('h');
@@ -51,8 +51,8 @@ export default class Settings {
         ticksCount: 24,
         ticksGapDuration: moment.duration(1, 'h'),
         tooltipLabelFormatter: (value) => {
-            const date = moment.utc(value, 'YYYY-MM-DD:HH');
-            return date.isBefore(moment.utc())
+            const date = moment.utc(value, 'YYYY-MM-DD:HH').local();
+            return date.isBefore(moment())
                 ? date.format('[Yesterday], h:00 A')
                 : date.format('[Today], h:00 A');
         },
@@ -73,13 +73,13 @@ export default class Settings {
         secondAreaColor: '#FF6464',
         resolutionKey: 'd',
         tickFormatter: (value) => {
-            const date = moment.utc(value, 'YYYY-MM-DD:HH');
+            const date = moment.utc(value, 'YYYY-MM-DD:HH').local();
             return date.format('ddd');
         },
         ticksCount: 7,
         ticksGapDuration: moment.duration(1, 'd'),
         tooltipLabelFormatter: (value) => {
-            const date = moment.utc(value, 'YYYY-MM-DD:HH');
+            const date = moment.utc(value, 'YYYY-MM-DD:HH').local();
             return date.format('dddd, DD MMMM');
         },
         parser: (items) => {
@@ -99,7 +99,7 @@ export default class Settings {
         secondAreaColor: '#FF6464',
         resolutionKey: 'd',
         tickFormatter: (value) => {
-            const date = moment.utc(value, 'YYYY-MM-DD:HH');
+            const date = moment.utc(value, 'YYYY-MM-DD:HH').local();
             return date.date() === 1
                 ? date.format('D MMM')
                 : date.format('D');
@@ -107,7 +107,7 @@ export default class Settings {
         ticksCount: 30,
         ticksGapDuration: moment.duration(1, 'd'),
         tooltipLabelFormatter: (value) => {
-            const date = moment.utc(value, 'YYYY-MM-DD:HH');
+            const date = moment.utc(value, 'YYYY-MM-DD:HH').local();
             return date.format('dddd, DD MMMM YYYY');
         },
         parser: (items) => {
