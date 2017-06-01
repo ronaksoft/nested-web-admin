@@ -55,12 +55,12 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
                     <stop offset='95%' stopColor={settings.secondAreaColor} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey='label' tickLine={false} axisLine={false}/>
+                <XAxis dataKey='label' tickLine={false} axisLine={false} tickFormatter={settings.tickFormatter}/>
                 <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
                 <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
-                <Tooltip formatter={(value) => this.formatValue(value, 3)}/>
-                <Area type='monotone' dataKey='second' name={settings.secondAreaLabel} stroke={settings.secondAreaColor} fill='url(#colorPv)' />
+                <Tooltip formatter={(value) => this.formatValue(value, 3)} labelFormatter={settings.tooltipLabelFormatter}/>
                 <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel} stroke={settings.latestAreaColor} fill='url(#colorUv)' />
+                <Area type='monotone' dataKey='second' name={settings.secondAreaLabel} stroke={settings.secondAreaColor} fill='url(#colorPv)' />
               </AreaChart>
             </ResponsiveContainer>
       );
@@ -115,8 +115,8 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
   private getDays(settings: Settings) {
     const latestHalfDuration = settings.ticksGapDuration * (settings.ticksCount - 1);
     const secondHalfDuration = settings.ticksGapDuration * ((settings.ticksCount * 2) - 1);
-    const latestHalfStart = moment().subtract(latestHalfDuration);
-    const secondHalfStart = moment().subtract(secondHalfDuration);
+    const latestHalfStart = moment().utc().subtract(latestHalfDuration);
+    const secondHalfStart = moment().utc().subtract(secondHalfDuration);
 
     return _.times(settings.ticksCount, (number) => {
         const duration = settings.ticksGapDuration * number;
@@ -124,9 +124,9 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
         const secondHalfDay = secondHalfStart.clone().add(duration);
 
         return {
-            label: latestHalfDay.format(settings.ticksDateFormat),
-            latest: this.findSumByDate(this.state.activities, latestHalfDay.utc().format('YYYY-MM-DD:HH')),
-            second: this.findSumByDate(this.state.activities, secondHalfDay.utc().format('YYYY-MM-DD:HH'))
+            label: latestHalfDay.format('YYYY-MM-DD:HH'),
+            latest: this.findSumByDate(this.state.activities, latestHalfDay.format('YYYY-MM-DD:HH')),
+            second: this.findSumByDate(this.state.activities, secondHalfDay.format('YYYY-MM-DD:HH'))
         };
     });
   }
