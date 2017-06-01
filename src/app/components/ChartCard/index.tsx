@@ -34,7 +34,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
       return (
           <Card title={this.props.title} extra={
               <div>
-                <Icon type='reload' onClick={this.reload}/>
+                <a rel='noopener noreferrer' onClick={this.reload}><Icon type='reload' /></a>
                 &nbsp;
                 &nbsp;
                 <Dropdown overlay={
@@ -53,7 +53,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
                             </Menu.Item>
                         </Menu>
                       }>
-                      <Icon type='setting'/>
+                      <a rel='noopener noreferrer'><Icon type='setting'/></a>
                 </Dropdown>
               </div>
               }>
