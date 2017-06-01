@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dropdown, Card, Menu, Icon} from 'antd';
+import {Dropdown, Card, Menu, Icon, Button, ButtonGroup} from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import TimePeriod from './TimePeriod';
@@ -22,31 +22,42 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     this.state = {
         period: TimePeriod.Week
     };
+
+    this.reload = this.reload.bind(this);
+  }
+
+  reload() {
+    this.area.reload();
   }
 
   render() {
       return (
           <Card title={this.props.title} extra={
-              <Dropdown overlay={
-                      <Menu>
-                          <Menu.Item>
-                              <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Hour })}>Last 1 hour</a>
-                          </Menu.Item>
-                          <Menu.Item>
-                              <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Day })}>Last 24 hours</a>
-                          </Menu.Item>
-                          <Menu.Item>
-                              <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Week })}>Last 7 days</a>
-                          </Menu.Item>
-                          <Menu.Item>
-                              <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Month })}>Last 30 days</a>
-                          </Menu.Item>
-                      </Menu>
-                    }>
-                    <Icon type='setting'/>
+              <div>
+                <Icon type='reload' onClick={this.reload}/>
+                &nbsp;
+                &nbsp;
+                <Dropdown overlay={
+                        <Menu>
+                            <Menu.Item>
+                                <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Hour })}>Last 1 hour</a>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Day })}>Last 24 hours</a>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Week })}>Last 7 days</a>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Month })}>Last 30 days</a>
+                            </Menu.Item>
+                        </Menu>
+                      }>
+                      <Icon type='setting'/>
                 </Dropdown>
+              </div>
               }>
-              <ActivityArea dataType={this.props.dataType} color={this.props.color} title={this.props.title} period={this.state.period} />
+              <ActivityArea ref={(area) => { this.area = area; }} dataType={this.props.dataType} color={this.props.color} title={this.props.title} period={this.state.period} />
           </Card>
       );
     }

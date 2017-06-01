@@ -39,6 +39,10 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
       this.load(newProps.period);
   }
 
+  reload() {
+      this.load(this.state.period);
+  }
+
   render() {
       const settings = this.getSettings(this.state.period);
       const days = this.getDays(settings);
