@@ -70,7 +70,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
         </ResponsiveContainer>
       );
       return (
-          <Spin spinning={this.state.loading} delay={512} >
+          <Spin spinning={this.state.loading} >
                 {content}
           </Spin>
       );
@@ -121,7 +121,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
           period: period,
           loading: false
         });
-    }).catch((error) => {
+    }, (error) => {
       this.setState({
         loading: false
       });
