@@ -5,7 +5,7 @@ export default class Settings {
   static Day: IResolutionSetting = {
       latestAreaLabel: 'Value',
       latestAreaColor: '#00B45A',
-      secondAreaLabel: 'Yesterday Value',
+      secondAreaLabel: '24 hours ago',
       secondAreaColor: '#FF6464',
       resolutionKey: 'h',
       tickFormatter: (value) => {
@@ -23,7 +23,7 @@ export default class Settings {
   static Week: IResolutionSetting = {
       latestAreaLabel: 'Value',
       latestAreaColor: '#00B45A',
-      secondAreaLabel: 'Last Week Value',
+      secondAreaLabel: '7 days ago',
       secondAreaColor: '#FF6464',
       resolutionKey: 'd',
       tickFormatter: (value) => {
@@ -41,7 +41,7 @@ export default class Settings {
   static Month: IResolutionSetting = {
       latestAreaLabel: 'Value',
       latestAreaColor: '#00B45A',
-      secondAreaLabel: 'Last Month Value',
+      secondAreaLabel: '30 days ago',
       secondAreaColor: '#FF6464',
       resolutionKey: 'd',
       tickFormatter: (value) => {
