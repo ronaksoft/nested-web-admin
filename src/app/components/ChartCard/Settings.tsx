@@ -15,7 +15,7 @@ export default class Settings {
                 return;
             }
             return date.minutes() === 0
-                ? date.format('hh:mm A')
+                ? date.format('h A')
                 : date.format('mm');
         },
         ticksCount: 60,
