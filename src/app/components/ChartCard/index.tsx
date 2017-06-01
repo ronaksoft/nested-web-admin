@@ -30,6 +30,9 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
               <Dropdown overlay={
                       <Menu>
                           <Menu.Item>
+                              <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Hour })}>Last 1 hour</a>
+                          </Menu.Item>
+                          <Menu.Item>
                               <a rel='noopener noreferrer' onClick={() => this.setState({ period: TimePeriod.Day })}>Last 24 hours</a>
                           </Menu.Item>
                           <Menu.Item>

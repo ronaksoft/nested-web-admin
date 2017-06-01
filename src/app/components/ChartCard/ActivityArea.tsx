@@ -55,7 +55,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
                     <stop offset='95%' stopColor={settings.secondAreaColor} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey='label' tickLine={false} axisLine={false} tickFormatter={settings.tickFormatter}/>
+                <XAxis dataKey='label' tickLine={false} axisLine={false} tickFormatter={settings.tickFormatter} minTickGap={1}/>
                 <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
                 <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
                 <Tooltip formatter={(value) => this.formatValue(value, 3)} labelFormatter={settings.tooltipLabelFormatter}/>
@@ -67,9 +67,11 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
   }
 
   private getSettings(period: TimePeriod): IResolutionSetting {
-    if (period === TimePeriod.Day) {
+    if (period === TimePeriod.Hour) {
+        return Settings.Hour;
+    } else if (period === TimePeriod.Day) {
       return Settings.Day;
-  } else if (period === TimePeriod.Week) {
+    } else if (period === TimePeriod.Week) {
       return Settings.Week;
     } else {
       return Settings.Month;
@@ -90,7 +92,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
 
   private load(period: TimePeriod) {
     const settings = this.getSettings(period);
-    const end = moment().endOf('day').utc().format('YYYY-MM-DD:HH');
+    const end = moment.utc().format('YYYY-MM-DD:HH');
     const start = this.getStartDate(settings.ticksGapDuration * settings.ticksCount * 2);
 
     this.reportApi.get({
@@ -99,8 +101,9 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
       type: this.props.dataType,
       res: settings.resolutionKey
     }).then((response) => {
+        const parsedActivities = settings.parser(response.result);
       this.setState({
-        activities: response.result,
+        activities: parsedActivities,
         period: period
       });
     }).catch((error) => {
@@ -109,7 +112,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
   }
 
   private getStartDate(duration: any) {
-      return moment().subtract(duration + moment.duration(1, 'd')).utc().format('YYYY-MM-DD:HH');
+      return moment.utc().subtract(duration).format('YYYY-MM-DD:HH');
   }
 
   private getDays(settings: Settings) {
@@ -124,9 +127,9 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
         const secondHalfDay = secondHalfStart.clone().add(duration);
 
         return {
-            label: latestHalfDay.format('YYYY-MM-DD:HH'),
-            latest: this.findSumByDate(this.state.activities, latestHalfDay.format('YYYY-MM-DD:HH')),
-            second: this.findSumByDate(this.state.activities, secondHalfDay.format('YYYY-MM-DD:HH'))
+            label: latestHalfDay.format('YYYY-MM-DD:HH:mm'),
+            latest: this.findSumByDate(this.state.activities, latestHalfDay.format('YYYY-MM-DD:HH:mm')),
+            second: this.findSumByDate(this.state.activities, secondHalfDay.format('YYYY-MM-DD:HH:mm'))
         };
     });
   }
@@ -134,7 +137,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
   private findSumByDate(activities: [], day: string) {
     const isInDay = (activity) => _.startsWith(day, activity.date);
 
-    return _.sumBy(_.filter(activities, isInDay), 'sum');
+    return _.sumBy(_.filter(activities, isInDay), 'value');
   }
 
 }
