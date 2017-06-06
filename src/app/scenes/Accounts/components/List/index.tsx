@@ -294,7 +294,7 @@ class List extends React.Component <IListProps,
     }
 
     componentWillReceiveProps(nextProps: IListProps) {
-        if (_.has(nextProps, 'filter')) {
+        if (_.has(nextProps, 'filter') && nextProps.filter !== this.props.filter) {
             this.load(1, this.PAGE_SIZE, nextProps.filter);
         }
     }
