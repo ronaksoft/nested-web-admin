@@ -7,6 +7,7 @@ import AccountApi from '../../api/account/account';
 import PlaceApi from '../../api/place/index';
 import PlaceModal from '../../components/PlaceModal/index';
 import UserModal from '../../scenes/Accounts/components/View/index';
+import IAccount from '../../scenes/Accounts/interfaces';
 import {browserHistory} from 'react-router';
 // import PlaceItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 // import UserItem from '../../scenes/Accounts/components/View/components/PlaceItem';
@@ -36,6 +37,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         };
 
         this.search = _.debounce(this.search.bind(this), 256);
+        this.handleAccountChange = this.handleAccountChange.bind(this);
     }
 
     componentDidMount() {
@@ -121,6 +123,18 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         });
     }
 
+    handleAccountChange(account: IAccount) {
+        this.selectedUser = account;
+        const result = _.cloneDeep(this.state.result);
+        const index = _.findIndex(result[0].items, { _id: account._id });
+        if (index > -1) {
+            result[0].items.splice(index, 1, account);
+            this.setState({
+                result: result
+            });
+        }
+    }
+
     render() {
         let loggedUser = AAA.getInstance().getUser();
         const Group = AutoComplete.OptGroup;
@@ -153,7 +167,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                         }
                         {this.state.showUserModal &&
                         <UserModal visible={this.state.showUserModal} account={this.selectedUser}
-                                   onClose={this.closeUserModal.bind(this) }/>
+                                   onClose={this.closeUserModal.bind(this) } onChange={this.handleAccountChange}/>
                         }
                         <AutoComplete
                             size='large'
