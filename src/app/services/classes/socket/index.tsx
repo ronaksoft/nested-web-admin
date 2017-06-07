@@ -92,7 +92,7 @@ export default class Socket {
       this.send('PING!');
       this.pingPongCounter++;
 
-      if (this.pingPongCounter > 3) {
+      if (this.pingPongCounter > 2) {
         this.close();
         this.reconnect();
       }
