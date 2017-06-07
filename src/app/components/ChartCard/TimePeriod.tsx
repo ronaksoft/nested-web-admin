@@ -1,7 +1,8 @@
 enum TimePeriod {
+    Hour,
     Day,
     Week,
-    Month,
+    Month
 }
 
 export default TimePeriod;

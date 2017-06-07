@@ -609,6 +609,25 @@ class View extends React.Component<IViewProps, IViewState> {
                     </Row>
                     <Row>
                         <Col span={8}>
+                            <label>Searchable</label>
+                        </Col>
+                        <Col span={14}>
+                            <Switch
+                                checkedChildren={<Icon type='check'/>}
+                                unCheckedChildren={<Icon type='cross'/>}
+                                defaultChecked={this.state.account.privacy.searchable}
+                                onChange={(checked) => this.onPrivacyChange({searchable: checked})}
+                            />
+                        </Col>
+                        <Col span={2}></Col>
+                    </Row>
+                    <Row>
+                        <Col span={24}>
+                            <div className='form-devider'></div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
                             <label>Edit Profile</label>
                         </Col>
                         <Col span={14}>

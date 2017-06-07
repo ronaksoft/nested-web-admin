@@ -206,7 +206,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             })(
                                                 <Select
                                                     placeholder={this.state.data.register_mode === 2 ? 'Admin only' : 'Everyone'}
-                                                    style={{width: 88}} onChange={this.handleChange}>
+                                                    style={{width: 128}} onChange={this.handleChange}>
                                                     <Option value={2}>Admin only</Option>
                                                     <Option value={1}>Everyone</Option>
                                                 </Select>
@@ -356,9 +356,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Post Retract Time</label>
-
-
+                                        <label>Max. Post Retract Time (hours)</label>
                                         <FormItem>
                                             {getFieldDecorator('post_retract_time', {
                                                 initialValue: this.state.data.post_retract_time,
@@ -372,7 +370,13 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                     }
                                                 ]
                                             })(
-                                                <Input />
+                                                // <Input />
+                                                <Select style={{ width: 88 }} onChange={this.handleChange}>
+                                                  <Option value={3600000}>1</Option>
+                                                  <Option value={21600000}>6</Option>
+                                                  <Option value={43200000}>12</Option>
+                                                  <Option value={86400000}>24</Option>
+                                                </Select>
                                             )}
                                         </FormItem>
                                     </div>

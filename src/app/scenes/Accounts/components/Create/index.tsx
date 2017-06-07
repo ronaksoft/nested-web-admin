@@ -310,6 +310,9 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         const CSV_ROW_ITEMS_COUNT = 4;
         const MAX_ITEMS_IN_FILE = 100;
         const DELAY_BETWEEN_IMPORT_ITEM = 0;
+        const SKIP_LINE_START = '#';
+        const NEW_LINE = '\n';
+
         if (!(_.isString(text) && text.length > 0)) {
             notification.warning({
                 message: 'Attention',
@@ -319,7 +322,9 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             return;
         }
 
-        const data = CSV.parse(text);
+        const lines = _.split(text, NEW_LINE);
+        const clearedText = _(lines).reject((line) => _.startsWith(line, SKIP_LINE_START)).value().join(NEW_LINE);
+        const data = CSV.parse(clearedText);
 
         if (_.size(data) > MAX_ITEMS_IN_FILE) {
             notification.warning({
