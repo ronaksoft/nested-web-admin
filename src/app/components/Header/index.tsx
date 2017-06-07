@@ -161,7 +161,6 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                             dataSource={suggestedOptions}
                             onSearch={this.search}
                             onSelect={this.handleSelect.bind(this) }
-                            optionLabelProp='_id'
                         >
                             <Input
                                 placeholder='Search here...'

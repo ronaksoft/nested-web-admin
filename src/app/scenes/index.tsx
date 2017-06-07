@@ -50,6 +50,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 _sk: credential.sk,
             }).then((user: IUser) => {
                 if (!user.admin) {
+                    aaa.setIsUnAthenticated();
                     browserHistory.push('/403');
                     return;
                 }
