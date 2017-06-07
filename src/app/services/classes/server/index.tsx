@@ -85,7 +85,7 @@ export default class Server {
         console.log('Start Server instance');
         this.socket = new socket({
             server: CONFIG.WEBSOCKET.URL,
-            pingPongTime: 30000,
+            pingPongTime: 10000,
             onReady: this.startQueue.bind(this),
             onMessage: this.response.bind(this),
         });

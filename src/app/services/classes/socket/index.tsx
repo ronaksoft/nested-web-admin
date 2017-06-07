@@ -6,7 +6,7 @@ import SocketState from './states';
 
 const defaultConfig: ISocketConfig = {
   server: '',
-  pingPongTime: 30000,
+  pingPongTime: 10000,
 };
 
 export default class Socket {
@@ -132,7 +132,7 @@ export default class Socket {
       this.notifyStateChanged(SocketState.CLOSED);
     }
 
-    this.reconnectTimeout = setTimeout(this.connect.bind(this), 4000);
+    this.reconnectTimeout = setTimeout(this.connect.bind(this), 8000);
   }
 
   private cancelReconnect() {
