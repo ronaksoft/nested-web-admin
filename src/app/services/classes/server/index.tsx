@@ -6,6 +6,7 @@ import IResponse from './interfaces/IResponse';
 import ISocketRequest from './interfaces/ISocketRequest';
 import AAA from './../aaa/index';
 import CONFIG from './../../../../app.config';
+import SocketState from '../socket/states';
 
 export default class Server {
     private static instance: Server;
@@ -74,6 +75,10 @@ export default class Server {
     getRequestId(): string {
         this.reqId++;
         return 'REQ' + this.reqId;
+    }
+
+    onConnectionStateChange(callback: (state: SocketState) => void) {
+        this.socket.onStateChanged = callback;
     }
 
     private constructor() {
