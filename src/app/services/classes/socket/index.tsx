@@ -111,7 +111,7 @@ export default class Socket {
       this.socket.close();
     }
 
-    this.reconnectTimeout = setTimeout(this.connect.bind(this), 5000);
+    this.reconnectTimeout = setTimeout(this.connect.bind(this), 4000);
   }
 
   private cancelReconnect() {
