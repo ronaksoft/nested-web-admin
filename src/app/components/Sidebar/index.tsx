@@ -52,6 +52,9 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
                     <Menu.Item key='/charts'>
                         <Link to='/charts' activeClassName='active'><Icon type='area-chart' />Charts</Link>
                     </Menu.Item>
+                    <Menu.Item key='/assistant'>
+                        <Link to='/assistant' activeClassName='active'><Icon type='medicine-box' />Assistant</Link>
+                    </Menu.Item>
                 </Menu>
             </div>
         );
