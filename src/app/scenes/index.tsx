@@ -3,7 +3,7 @@ import {IDispatch} from '~react-redux~redux';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
-
+import log from 'loglevel';
 
 import HeaderComponent from '../components/Header/index';
 import SidebarComponent from '../components/Sidebar/index';
@@ -84,7 +84,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 this.hideDisconnected = message.loading('Reconnecting...', 0);
             }
         });
-
+        log.setLevel(0);
     }
 
     render() {
