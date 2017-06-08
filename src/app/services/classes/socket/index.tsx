@@ -1,11 +1,12 @@
 import log from 'loglevel';
+import _ from 'lodash';
 
 import {ISocketConfig} from './interfaces';
 import SocketState from './states';
 
 const defaultConfig: ISocketConfig = {
   server: '',
-  pingPongTime: 30000,
+  pingPongTime: 10000,
 };
 
 export default class Socket {
@@ -21,6 +22,10 @@ export default class Socket {
       throw 'WebSocket Server isn\'t declared!';
     }
     this.config = config;
+    // we have to define a new state because websocket is dummy
+    // and cannot rely on socket.readyState!
+    this.currentState = null;
+    this.notifyStateChanged = this.notifyStateChanged.bind(this);
   }
 
   send(msg: any) {
@@ -50,6 +55,16 @@ export default class Socket {
       } else {
         this.socket.close(1000, 'The socked has ben closed intentially.');
         this.stopPingPong();
+        this.notifyStateChanged(SocketState.CLOSED);
+      }
+  }
+
+  private notifyStateChanged(newState: SocketState) {
+      if (this.onStateChanged
+          && _.isFunction(this.onStateChanged)
+          && this.currentState !== newState) {
+            this.currentState = newState;
+            this.onStateChanged(this.currentState);
       }
   }
 
@@ -58,6 +73,7 @@ export default class Socket {
     setTimeout(() => {
       this.config.onReady();
       this.startPingPong();
+      this.notifyStateChanged(SocketState.OPEN);
     }, 100);
   }
 
@@ -65,12 +81,14 @@ export default class Socket {
     console.log('socket', 'Connection closed!');
     this.stopPingPong();
     this.reconnect();
+    this.notifyStateChanged(SocketState.CLOSED);
   }
 
   private onError(error: any) {
     log.error('socket', 'error', error);
     if (this.socket) {
       this.socket.close();
+      this.notifyStateChanged(SocketState.CLOSED);
     }
 
     this.stopPingPong();
@@ -83,6 +101,7 @@ export default class Socket {
     } else if (msg.data === 'PONG!') {
       this.pingPongCounter = 0;
     }
+    this.notifyStateChanged(SocketState.OPEN);
   }
 
   private startPingPong() {
@@ -92,7 +111,8 @@ export default class Socket {
       this.send('PING!');
       this.pingPongCounter++;
 
-      if (this.pingPongCounter > 3) {
+      if (this.pingPongCounter > 2) {
+        this.notifyStateChanged(SocketState.CLOSED);
         this.close();
         this.reconnect();
       }
@@ -109,9 +129,10 @@ export default class Socket {
   private reconnect() {
     if (this.socket.readyState === SocketState.OPEN || this.socket.readyState === SocketState.CONNECTING) {
       this.socket.close();
+      this.notifyStateChanged(SocketState.CLOSED);
     }
 
-    this.reconnectTimeout = setTimeout(this.connect.bind(this), 5000);
+    this.reconnectTimeout = setTimeout(this.connect.bind(this), 8000);
   }
 
   private cancelReconnect() {

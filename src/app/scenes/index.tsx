@@ -14,6 +14,10 @@ import {Layout} from 'antd';
 import AccountApi from '../api/account/account';
 import IUser from '../api/account/interfaces/IUser';
 
+import Server from '../services/classes/server/index';
+import {message} from 'antd';
+import SocketState from '../services/classes/socket/states';
+
 const {Header, Footer, Sider, Content} = Layout;
 
 interface IAppProps {
@@ -24,11 +28,12 @@ interface IAppState {
 
 class App extends React.Component<IAppProps, IAppState> {
     state = {
-        isReady: false,
+        isReady: false
     };
 
     constructor(props: any) {
         super(props);
+        this.hideDisconnected = null;
     }
 
     componentDidMount() {
@@ -67,6 +72,18 @@ class App extends React.Component<IAppProps, IAppState> {
                 isReady: true,
             });
         }
+
+        Server.getInstance().onConnectionStateChange((state: SocketState) => {
+            if (state === SocketState.OPEN) {
+                if (this.hideDisconnected) {
+                    this.hideDisconnected();
+                }
+            }
+
+            if (state === SocketState.CLOSED) {
+                this.hideDisconnected = message.loading('Reconnecting...', 0);
+            }
+        });
 
     }
 

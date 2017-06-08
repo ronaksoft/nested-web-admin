@@ -6,6 +6,7 @@ import IResponse from './interfaces/IResponse';
 import ISocketRequest from './interfaces/ISocketRequest';
 import AAA from './../aaa/index';
 import CONFIG from './../../../../app.config';
+import SocketState from '../socket/states';
 
 export default class Server {
     private static instance: Server;
@@ -76,11 +77,15 @@ export default class Server {
         return 'REQ' + this.reqId;
     }
 
+    onConnectionStateChange(callback: (state: SocketState) => void) {
+        this.socket.onStateChanged = callback;
+    }
+
     private constructor() {
         console.log('Start Server instance');
         this.socket = new socket({
             server: CONFIG.WEBSOCKET.URL,
-            pingPongTime: 50000,
+            pingPongTime: 10000,
             onReady: this.startQueue.bind(this),
             onMessage: this.response.bind(this),
         });
