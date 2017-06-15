@@ -38,14 +38,14 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
         }
     }
 
-    handleGroupChange(menu: IMenuItem, index: number) {
-        this.selectedMenuIndex = index;
+    handleGroupChange(menu: any) {
+        this.selectedMenuIndex = parseInt(menu.key, 0);
         this.setState({
-            selectedItem: menu,
+            selectedItem: this.state.menus[this.selectedMenuIndex],
         });
 
         if (typeof this.props.onChange === 'function') {
-            this.props.onChange(menu.key);
+            this.props.onChange(this.state.menus[this.selectedMenuIndex].key);
         }
     }
 
@@ -73,10 +73,10 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
             ];
 
             const COLORS = [menu.chartColor, menu.bgChartColor];
-
+            console.log(this);
             menus.push(
-                <Menu.Item key={menu.key}>
-                    <Row style={{width: 300}} onClick={() => this.handleGroupChange(menu, index)}>
+                <Menu.Item key={index}>
+                    <Row style={{width: 300}}>
                         <Col span={2}>
                             {
                                 this.state.selectedItem.key === menu.key &&
@@ -90,7 +90,7 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
                             </div>
                         </Col>
                         <Col span={4}>
-                            { !menu.disableChart &&
+                            {!menu.disableChart &&
                             <PieChart width={40} height={40}>
                                 <Pie data={data} cx={20} cy={20} innerRadius={12} outerRadius={17} fill='#82ca9d'>
                                     {
@@ -105,7 +105,7 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
             );
 
             // if (index + 1  !== menus.length) {
-            menus.push(<Menu.Divider />);
+            menus.push(<Menu.Divider/>);
             // }
         });
 
@@ -113,10 +113,11 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
             <Row>
                 <Col>
                     <h2>
-                        <Dropdown overlay={<Menu>{ menus }</Menu>} trigger={['click']}>
+                        <Dropdown overlay={<Menu onClick={this.handleGroupChange.bind(this)}>{menus}</Menu>}
+                                  trigger={['click']}>
                             <a className='ant-dropdown-link' href='#'>
                                 <b>{this.state.selectedItem.count} </b>
-                                { this.state.selectedItem.name }
+                                {this.state.selectedItem.name}
                                 <Icon type=' nst-ico ic_heavy_arrow_down_solid_24' style={iconStyle}/>
                             </a>
                         </Dropdown>
