@@ -270,17 +270,45 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                                     <Icon type='plus'/> Add another
                                 </a>
                             </Col>
-                            <Col span={12}>
+                            <Col span={8}>
                                 <input id='upload' type='file' accept='*' onChange={this.readFile} onClick={(event) => {
                                     event.target.value = null;
                                 }} className='hidden'/>
-                                <span>You can also</span>&nbsp;<a onClick={this.handleUpload}>Import from a file</a>
+                                <span>You can also</span>&nbsp;
+                                <a type='primary' onClick={this.handleUpload}>
+                                    Import from a file
+                                </a>&nbsp;
+                            </Col>
+                            <Col span={4}>
+                                <small>
+                                    <a onClick={this.downloadExample}>
+                                        (Download Example)
+                                    </a>
+                                </small>
                             </Col>
                         </Row>
                     </Card>
                 </div>
             </Modal>
         );
+    }
+
+    private downloadExample() {
+        let data = [
+            ['+989123456789', 'username1', 'First Name 1', 'Last Name 1'],
+            ['+989123456788', 'username2', 'First Name 2', 'Last Name 2']
+        ];
+        let csvContent = 'data:text/csv;charset=utf-8,';
+        data.forEach(function (infoArray: Array<string>, index: any) {
+            let dataString = infoArray.join(',');
+            csvContent += index < data.length ? dataString + '\n' : dataString;
+        });
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'create-account-example.csv');
+        document.body.appendChild(link);
+        link.click();
     }
 
     private handleClose() {
