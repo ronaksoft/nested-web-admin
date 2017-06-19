@@ -204,28 +204,31 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 }
 
                 const hasError = _.some(this.state.accounts, {state: PacketState.Invalid});
-                if (hasError || hasErrorInFields) {
-                    notification.warning({
-                        message: 'Warning',
-                        description: 'Some records are not valid! Please fix the problems and try again.',
-                        duration: 8
-                    });
 
-                    return;
+                if (hasError) {
+                    hasErrorInFields = true;
                 }
-
-                if (!hasError && !hasErrorInFields) {
-                    this.createAccount().then((result) => {
-                        notification.info({
-                            message: 'Job done!',
-                            description: 'Make sure all accounts have been created without any problem.',
-                            duration: 8
-                        });
-                    });
-                }
-
             });
         });
+
+
+        if (hasErrorInFields) {
+
+            notification.warning({
+                message: 'Warning',
+                description: 'Some records are not valid! Please fix the problems and try again.',
+                duration: 8
+            });
+
+        } else {
+            this.createAccount().then((result) => {
+                notification.info({
+                    message: 'Job done!',
+                    description: 'Make sure all accounts have been created without any problem.',
+                    duration: 8
+                });
+            });
+        }
 
     }
 
