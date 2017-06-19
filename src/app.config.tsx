@@ -1,6 +1,6 @@
 export default {
     'APP_CLIENT_ID': 'WEBAPP_DEVELOPMENT',
-    'VERSION' : '0.0.1',
+    'VERSION' : '0.0.2',
     'APP_VERSION': 353,
     'DOMAIN': '_DOMAIN_',
     'LOG': {
