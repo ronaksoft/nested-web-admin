@@ -163,7 +163,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
             this.state.result[1].items.length === 0) {
             suggestedOptions.push(
                 <Option key={'no-result-item'} disable={true} value={this.keyword}>
-                    Any Result for "{this.keyword}"!!
+                    No Result for "{this.keyword}"!!
                 </Option>
             );
         }
