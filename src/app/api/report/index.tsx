@@ -18,6 +18,9 @@ export default class PlaceApi {
     this.reportTypeMap[ReportType.Login] = 'session_login';
     this.reportTypeMap[ReportType.SessionRecall] = 'session_recall';
     this.reportTypeMap[ReportType.AllRequests] = 'requests';
+    this.reportTypeMap[ReportType.dataIn] = 'data_in';
+    this.reportTypeMap[ReportType.dataOut] = 'data_out';
+    this.reportTypeMap[ReportType.processTime] = 'process_time';
   }
 
 

@@ -6,7 +6,10 @@ enum ReportType {
   AddComment,
   Login,
   SessionRecall,
-  AllRequests
+  AllRequests,
+  dataIn,
+  dataOut,
+  processTime
 }
 
 export default ReportType;
