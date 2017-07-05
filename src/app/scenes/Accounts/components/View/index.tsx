@@ -455,6 +455,7 @@ class View extends React.Component<IViewProps, IViewState> {
                 </Form>
             );
         });
+
         const accountClone = _.clone(this.state.account);
         const credentials = AAA.getInstance().getCredentials();
         const uploadUrl = `${CONFIG.STORE.URL}/upload/profile_pic/${credentials.sk}/${this.state.token}`;

@@ -5,6 +5,7 @@ import IPlaceListMembersRequest from './interfaces/IPlaceListMembersRequest';
 import IPlaceListMembersResponse from './interfaces/IPlaceListMembersResponse';
 import IAccountPlacesRequest from './interfaces/IAccountPlacesRequest';
 import IPlaceAddMembersRequest from './interfaces/IPlaceAddMembersRequest';
+import IPlaceUpdate from './interfaces/IPlaceUpdate';
 
 export default class PlaceApi {
     private api;
@@ -46,7 +47,13 @@ export default class PlaceApi {
             cmd: 'admin/place_add_member',
             data: params,
         });
+    }
 
+    placeLimitEdit(params: IPlaceUpdate): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/place_update',
+            data: params,
+        });
     }
 
 };
