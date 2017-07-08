@@ -4,7 +4,8 @@ enum EditableFields {
   phone,
   dob,
   email,
-  pass
+  pass,
+  'limits.grand_places'
 }
 
 export default EditableFields;

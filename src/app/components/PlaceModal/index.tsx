@@ -186,7 +186,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             };
 
             _.forEach(changedProps.limits, (val, key) => {
-                limits[`limits.${key}`] = val;
+                limits[`limits.${key}`] = parseInt(val, 0);
             });
 
             console.log(changedProps, limits);
@@ -332,6 +332,9 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                     <Option value={1073741824}>1 GB</Option>
                                     <Option value={2147483648}>2 GB</Option>
                                     <Option value={5368709120}>5 GB</Option>
+                                    <Option value={5368709120 * 2}>10 GB</Option>
+                                    <Option value={5368709120 * 4}>20 GB</Option>
+                                    <Option value={5368709120 * 10}>50 GB</Option>
                                 </Select>
                             )}
                         </Form.Item>
