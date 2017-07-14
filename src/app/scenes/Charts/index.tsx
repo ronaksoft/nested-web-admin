@@ -38,15 +38,11 @@ class Charts extends React.Component <IChartsProps,
                         <ChartCard title='Comments' measure={MeasureType.NUMBER} dataType={ReportType.AddComment}
                                    color='#3498db'/>
                     </Col>
-                    <Col span={12}>
-                        <ChartCard title='Logins' measure={MeasureType.NUMBER} dataType={ReportType.Login}
-                                   color='#9b59b6'/>
-                    </Col>
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
                     <Col span={12}>
-                        <ChartCard title='Attachments Size' measure={MeasureType.FILE_SIZE}
-                                   dataType={ReportType.AttachmentSize} color='#e74c3c'/>
+                        <ChartCard title='Logins' measure={MeasureType.NUMBER} dataType={ReportType.Login}
+                                   color='#9b59b6'/>
                     </Col>
                     <Col span={12}>
                         <ChartCard title='Session Recalls' measure={MeasureType.NUMBER}
@@ -55,12 +51,12 @@ class Charts extends React.Component <IChartsProps,
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
                     <Col span={12}>
-                        <ChartCard title='Attachments Count' measure={MeasureType.NUMBER}
-                                   dataType={ReportType.AttachmentCount} color='#f1c40f'/>
+                        <ChartCard title='Attachments Size' measure={MeasureType.FILE_SIZE}
+                                   dataType={ReportType.AttachmentSize} color='#e74c3c'/>
                     </Col>
                     <Col span={12}>
-                        <ChartCard title='All Requests' measure={MeasureType.NUMBER} dataType={ReportType.AllRequests}
-                                   color='#34495e'/>
+                        <ChartCard title='Attachments Count' measure={MeasureType.NUMBER}
+                                   dataType={ReportType.AttachmentCount} color='#f1c40f'/>
                     </Col>
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
@@ -74,6 +70,10 @@ class Charts extends React.Component <IChartsProps,
                     </Col>
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
+                    <Col span={12}>
+                        <ChartCard title='All Requests' measure={MeasureType.NUMBER} dataType={ReportType.AllRequests}
+                                   color='#34495e'/>
+                    </Col>
                     <Col span={12}>
                         <ChartCard title='Average Response Time' measure={MeasureType.TIME}
                                    dataType={ReportType.processTime} color='#f1c40f'/>
