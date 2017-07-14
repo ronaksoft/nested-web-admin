@@ -17,6 +17,7 @@ export interface IFilterProps {
     menus: Array<IMenuItem>;
     totalCount: number;
     onChange: any;
+    counters: any;
 }
 
 

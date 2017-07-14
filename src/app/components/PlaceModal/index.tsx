@@ -189,7 +189,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 limits[`limits.${key}`] = parseInt(val, 0);
             });
 
-            console.log(changedProps, limits);
 
 
             this.placeApi.placeLimitEdit(limits).then((result) => {

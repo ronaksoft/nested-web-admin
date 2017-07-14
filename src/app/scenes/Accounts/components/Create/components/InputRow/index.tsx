@@ -13,16 +13,20 @@ interface IInputRowProps {
     onChange: Handler;
     index: number;
     refKey: any;
+    status: PacketState;
 }
 
 interface IInputRowState {
     packet: Packet<IAccount>;
+    status: PacketState;
 }
 
 class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     constructor(props: IInputRowProps) {
+        super(props);
         this.state = {
-            packet: props.account
+            packet: props.account,
+            status: props.status
         };
     }
 
@@ -30,6 +34,20 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         this.setState({
             fields: {...this.state.account, ...changedFields},
         });
+    }
+
+    componentWillReceiveProps(newProps: IInputRowProps) {
+        this.state = {
+            packet: newProps.account,
+            status: newProps.status
+        };
+        // setTimeout(() => {
+        //     this.props.onChange({
+        //         key: this.props.refKey,
+        //         modal: this.props.form.getFieldsValue(),
+        //         status: this.props.form.getFieldsError()
+        //     });
+        // }, 200);
     }
 
     checkPhoneAvailable(rule: any, value: string, callback: any) {
@@ -75,19 +93,18 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     render() {
         let self = this;
         const {getFieldDecorator} = this.props.form;
-        const disabled = this.state.packet.state === PacketState.Success || this.state.packet.state === PacketState.Pending;
-        const pending = this.state.packet.state === PacketState.Pending;
-        const success = this.state.packet.state === PacketState.Success;
+        const disabled = this.state.status === PacketState.Success || this.state.status === PacketState.Pending;
+        const pending = this.state.status === PacketState.Pending;
+        const success = this.state.status === PacketState.Success;
         return (
             <Form layout='inline' className='account-row'
                   onChange={() => {
-                      this.props.onChange(
-                          self.props.refKey,
-                          self.props.form.getFieldsValue(),
-                          self.props.form.getFieldsError()
-                      );
-                  }
-                  }>
+                      this.props.onChange({
+                          key: self.props.refKey,
+                          model: self.props.form.getFieldsValue(),
+                          status: null
+                      });
+                  }}>
                 <Form.Item>
                     {getFieldDecorator('phone', {
                         initialValue: this.props.account.phone,
@@ -129,7 +146,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('fname', {
-                        initialValue: this.props.account._fname,
+                        initialValue: this.props.account.fname,
                         rules: [
                             {
                                 required: true,
@@ -145,7 +162,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('lname', {
-                        initialValue: this.props.account._lname,
+                        initialValue: this.props.account.lname,
                         rules: [
                             {
                                 required: true,
@@ -186,7 +203,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                     {
                         !(pending || success) &&
                         <Button shape='circle' type='delete-row' icon='delete' size='large'
-                                onClick={() => this.props.onRemove(this.state.packet, this.props.index)}/>
+                                onClick={() => this.props.onRemove(this.props.refKey)}/>
                     }
                     {
                         pending &&

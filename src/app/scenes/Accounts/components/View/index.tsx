@@ -197,18 +197,19 @@ class View extends React.Component<IViewProps, IViewState> {
             } else {
                 let editedAccount = _.clone(this.state.account);
 
+                let changedLimitProps = null;
                 if (_.has(changedProps, 'limits.grand_places')) {
-                    changedProps = {
+                    changedLimitProps = {
                         limits: {grand_places: parseInt(values.grand_places, 0)},
                     };
                 }
 
                 this.setState({
                     updateProgress: true,
-                    account: _.merge(editedAccount, changedProps)
+                    account: _.merge(editedAccount, changedLimitProps ? changedLimitProps : changedProps)
                 });
 
-                console.log(changedProps);
+
                 this.accountApi.edit(_.merge(changedProps, {account_id: this.state.account._id})).then((result) => {
                     this.setState({
                         updateProgress: false,
