@@ -307,6 +307,21 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+    onAuthorityChange(value: boolean) {
+        let editedAccount = _.clone(this.state.account);
+        _.merge(editedAccount.authority, { label_editor: value });
+
+        this.accountApi.edit({ account_id: editedAccount._id, 'authority.label_editor': value }).then((result) => {
+            if (this.props.onChange) {
+                this.props.onChange(editedAccount);
+            }
+
+            message.success('The field has been updated.');
+        }, (error) => {
+            message.error('We were not able to update the field!');
+        });
+    }
+
     onPrivacyChange(props: any) {
         let editedAccount = _.clone(this.state.account);
         _.merge(editedAccount.privacy, props);
@@ -670,7 +685,7 @@ class View extends React.Component<IViewProps, IViewState> {
                     </Row>
                     <Row>
                         <Col span={8}>
-                            <label>Is Administrator</label>
+                            <label>Administrator</label>
                         </Col>
                         <Col span={14}>
                             <Switch
@@ -678,6 +693,20 @@ class View extends React.Component<IViewProps, IViewState> {
                                 unCheckedChildren={<Icon type='cross'/>}
                                 defaultChecked={this.state.account.admin}
                                 onChange={this.onAdminChange}
+                            />
+                        </Col>
+                        <Col span={2}></Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <label>Label Manager</label>
+                        </Col>
+                        <Col span={14}>
+                            <Switch
+                                checkedChildren={<Icon type='check'/>}
+                                unCheckedChildren={<Icon type='cross'/>}
+                                defaultChecked={this.state.account.authority ? this.state.account.authority.label_editor : false}
+                                onChange={(checked) => this.onAuthorityChange(checked)}
                             />
                         </Col>
                         <Col span={2}></Col>
