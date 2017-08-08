@@ -17,6 +17,7 @@ build:admin:
     - npm install -g gulp
     - npm install -g jspm
     - npm install
+    - jspm install
     - gulp build
     - mkdir -p $BUILD_DIR/admin
     - cp -r ./dist/* $BUILD_DIR/admin
