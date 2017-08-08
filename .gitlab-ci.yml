@@ -15,6 +15,7 @@ build:admin:
     - cp -r . /var/lib/admin
     - cd /var/lib/admin
     - npm install -g gulp
+    - npm install -g jspm
     - npm install
     - gulp build
     - mkdir -p $BUILD_DIR/admin
@@ -33,7 +34,7 @@ deploy:production:
   services:
     - docker:dind
   variables:
-    IMAGE_TAG:  "business"
+    IMAGE_TAG: "business"
   script:
     - export TAG=`git describe --abbrev=0 --tags`
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
