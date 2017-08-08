@@ -42,5 +42,4 @@ deploy:production:
     - docker push $CI_REGISTRY_IMAGE:$TAG
     - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
   dependencies:
-    - build:mobile
-    - build:desktop
+    - build:admin
