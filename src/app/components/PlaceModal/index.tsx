@@ -1,7 +1,9 @@
 import * as React from 'react';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
-import {Modal, Row, Col, Icon, Button, message} from 'antd';
+import {Modal, Row, Col, Icon, Button, message, Form, Input, Select, notification} from 'antd';
+
+let Option = Select.Option;
 import PlaceView from './../placeview/index';
 import Avatar from './../avatar/index';
 import PlaceItem from '../PlaceItem/index';
@@ -11,35 +13,46 @@ import _ from 'lodash';
 import View from '../../scenes/Accounts/components/View/index';
 import IUser from '../../api/account/interfaces/IUser';
 import AAA from '../../services/classes/aaa/index';
-
+import C_PLACE_TYPE from '../../api/consts/CPlaceType';
+import EditableFields from './EditableFields';
+import _ from 'lodash';
 
 interface IProps {
     place?: IPlace;
     visible?: boolean;
     onClose?: any;
+    onChange: (place: IPlace) => {};
 }
 
 interface IStates {
+    editTarget: EditableFields | null;
     visible: boolean;
     place?: IPlace;
     members?: any;
     chosen ?: IUser;
     viewAccount: boolean;
     creators: Array<string>;
+    isGrandPlace: boolean;
+    showEdit: boolean;
+    updateProgress: boolean;
 }
 
 
 export default class PlaceModal extends React.Component<IProps, IStates> {
     currentUser: IUser;
+    placeApi: any;
 
     constructor(props: any) {
         super(props);
         this.state = {
+            updateProgress: false,
+            showEdit: false,
             visible: false,
-            place: null,
+            place: this.props.place,
             members: [],
             viewAccount: false,
             creators: this.props.place.creators,
+            isGrandPlace: true
         };
         this.currentUser = AAA.getInstance().getUser();
     }
@@ -65,6 +78,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     }
 
     componentDidMount() {
+        this.placeApi = new PlaceApi();
         if (this.props.place) {
             this.setState({
                 place: this.props.place,
@@ -139,14 +153,83 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         });
     }
 
+    editField(target: EditableFields) {
+        this.setState({
+            editTarget: target,
+            showEdit: true,
+            uniqueKey: _.uniqueId(),
+            updateProgress: false
+        });
+    }
+
+    applyChanges(form: any) {
+        form.validateFields((error: any, values) => {
+            const errors = _(error).map((value, key) => value.errors).flatten().value();
+            if (_.size(errors) > 0) {
+                return;
+            }
+
+            const changedProps = _.mapValues(values, (value, key) => {
+                return value;
+            });
+
+            let editedPlace = _.clone(this.state.place);
+
+            this.setState({
+                updateProgress: true,
+                place: _.merge(editedPlace, changedProps)
+            });
+
+
+            let limits = {
+                place_id: this.props.place._id,
+            };
+
+            _.forEach(changedProps.limits, (val, key) => {
+                limits[`limits.${key}`] = parseInt(val, 0);
+            });
+
+
+
+            this.placeApi.placeLimitEdit(limits).then((result) => {
+                this.setState({
+                    updateProgress: false,
+                    showEdit: false,
+                });
+                if (this.props.onChange) {
+                    this.props.onChange(editedPlace);
+                }
+            }, (error) => {
+                this.setState({
+                    updateProgress: false
+                });
+                notification.error({
+                    message: 'Update Error',
+                    description: 'We were not able to update the field!'
+                });
+            });
+        });
+    }
+
+    saveForm = (form) => this.form = form;
+
+    /**
+     * convert byte to gig
+     * @param {number} size
+     */
+    convertSize(size: number): number {
+        return size / 1073741824;
+    }
+
     render() {
-        const {place} = this.props;
+        const {place} = this.state;
         const iconStyle = {
             width: '16px',
             height: '16px',
             verticalAlign: 'middle'
         };
         let lockedIcon, lockedTxt, reciveIcon, reciveTxt, searchableIcon, searchableTxt;
+        const placeClone = _.clone(this.state.place);
 
         if (place.privacy.locked === true) {
             lockedIcon = <Icon type=' nst-ico ic_brick_wall_solid_16' style={iconStyle}/>;
@@ -177,11 +260,94 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             reciveIcon = <Icon type=' nst-ico ic_manager_solid_24' style={iconStyle}/>;
             reciveTxt = 'Only managers can share post';
         }
+
+        const EditForm = Form.create({
+            mapPropsToFields: (props: any) => {
+                return {
+                    fname: {
+                        value: props.fname
+                    },
+                    lname: {
+                        value: props.lname
+                    },
+                    phone: {
+                        value: props.phone
+                    },
+                    dob: {
+                        value: props.dob ? moment(props.dob, this.DATE_FORMAT) : null
+                    },
+                    email: {
+                        value: props.email
+                    }
+                };
+            }
+        })((props: any) => {
+            const {getFieldDecorator} = props.form;
+            return (
+                <Form onSubmit={() => this.applyChanges(this.form)}>
+                    {
+                        this.state.editTarget === EditableFields.creators &&
+                        <Form.Item label='Maximum Number of Creators '>
+                            {getFieldDecorator('limits.creators', {
+                                initialValue: this.state.place.limits.creators,
+                                rules: [{required: true, message: 'Maximum number of Creators is required!'}],
+                            })(
+                                <Input placeholder='3'/>
+                            )}
+                        </Form.Item>
+                    }
+                    {
+                        this.state.editTarget === EditableFields.key_holders &&
+                        <Form.Item label='Maximum Number of Key holders'>
+                            {getFieldDecorator('limits.key_holders', {
+                                initialValue: this.state.place.limits.key_holders,
+                                rules: [{required: true, message: 'Maximum number of Key holders is required!'}],
+                            })(
+                                <Input placeholder='250'/>
+                            )}
+                        </Form.Item>
+                    }
+                    {
+                        this.state.editTarget === EditableFields.childs &&
+                        <Form.Item label='Maximum Number of Children'>
+                            {getFieldDecorator('limits.childs', {
+                                initialValue: this.state.place.limits.childs,
+                                rules: [{required: true, message: 'Maximum number of Children is required!'}],
+                            })(
+                                <Input placeholder='10'/>
+                            )}
+                        </Form.Item>
+                    }
+                    {
+                        this.state.editTarget === EditableFields.size &&
+                        <Form.Item label='Place Storage Size'>
+                            {getFieldDecorator('limits.size', {
+                                initialValue: this.state.place.limits.size,
+                                rules: [{required: true, message: 'Place storage size is required!'}],
+                            })(
+                                <Select>
+                                    <Option value={0}>Unlimited</Option>
+                                    <Option value={536870912}>500 MB</Option>
+                                    <Option value={1073741824}>1 GB</Option>
+                                    <Option value={2147483648}>2 GB</Option>
+                                    <Option value={5368709120}>5 GB</Option>
+                                    <Option value={5368709120 * 2}>10 GB</Option>
+                                    <Option value={5368709120 * 4}>20 GB</Option>
+                                    <Option value={5368709120 * 10}>50 GB</Option>
+                                </Select>
+                            )}
+                        </Form.Item>
+                    }
+                </Form>
+            );
+        });
+
         return (
             <div>
                 {
                     this.state.viewAccount &&
-                    <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange.bind(this)}
+                    <View account={this.state.chosen} visible={this.state.viewAccount}
+                          onChange={this.handleChange.bind(this)}
                           onClose={this.onCloseView}/>
                 }
                 {place &&
@@ -189,7 +355,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                        maskClosable={true}
                        width={480}
                        closable={true}
-                       onCancel={this.handleCancel.bind(this) }
+                       onCancel={this.handleCancel.bind(this)}
                        visible={this.state.visible}
                        footer={null}
                        title='Place Info'>
@@ -204,28 +370,82 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             </p>
                         </Col>
                     </Row>
-                    {lockedIcon && <Row type='flex' align='middle'>
+                    {this.state.isGrandPlace &&
+                    <Row>
+                        <Row>
+                            <Col span={14}>
+                                <label>Maximum Creators</label>
+                            </Col>
+                            <Col span={8}>
+                                {place.limits.creators}
+                            </Col>
+                            <Col span={2}>
+                                <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                        onClick={() => this.editField(EditableFields.creators)}></Button>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={14}>
+                                <label>Maximum Keyholders</label>
+                            </Col>
+                            <Col span={8}>
+                                {place.limits.key_holders}
+                            </Col>
+                            <Col span={2}>
+                                <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                        onClick={() => this.editField(EditableFields.key_holders)}></Button>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={14}>
+                                <label>Storage Limit</label>
+                            </Col>
+                            <Col span={8}>
+                                {place.limits.size === 0 && <span>Unlimited</span>}
+                                {place.limits.size > 0 && <span>{this.convertSize(place.limits.size)} GB</span>}
+                            </Col>
+                            <Col span={2}>
+                                <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                        onClick={() => this.editField(EditableFields.size)}></Button>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={14}>
+                                <label>Maximum Children Limit</label>
+                            </Col>
+                            <Col span={8}>
+                                {place.limits.childs}
+                            </Col>
+                            <Col span={2}>
+                                <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                        onClick={() => this.editField(EditableFields.childs)}></Button>
+                            </Col>
+                        </Row>
+                    </Row>
+                    }
+                    {lockedIcon &&
+                    <Row type='flex' align='middle'>
                         <Col span={6}>
-                            { lockedIcon }
+                            {lockedIcon}
                         </Col>
                         <Col span={18}>
-                            { lockedTxt }
+                            {lockedTxt}
                         </Col>
                     </Row>}
-                    { reciveIcon && <Row type='flex' align='middle'>
+                    {reciveIcon && <Row type='flex' align='middle'>
                         <Col span={6}>
-                            { reciveIcon }
+                            {reciveIcon}
                         </Col>
                         <Col span={18}>
-                            { reciveTxt }
+                            {reciveTxt}
                         </Col>
                     </Row>}
                     {searchableIcon && <Row type='flex' align='middle'>
                         <Col span={6}>
-                            { searchableIcon }
+                            {searchableIcon}
                         </Col>
                         <Col span={18}>
-                            { searchableTxt }
+                            {searchableTxt}
                         </Col>
                     </Row>}
                     {!this.isManager(this.currentUser) && place.type !== 'personal' &&
@@ -256,8 +476,26 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         {this.state.members &&
                         this.state.members.map((item) => {
                             return (<UserItem user={item} onClick={() => this.onItemClick(item)}
-                                              manager={this.isManager(item) } key={item._id}/>);
-                        }) }
+                                              manager={this.isManager(item)} key={item._id}/>);
+                        })}
+                    </Row>
+                    <Row>
+                        <Modal
+                            key={this.props.place._id}
+                            title='Edit'
+                            width={360}
+                            visible={this.state.showEdit}
+                            onOk={this.saveEditForm}
+                            onCancel={() => this.setState({showEdit: false})}
+                            footer={[
+                                <Button key='cancel' size='large'
+                                        onClick={() => this.setState({showEdit: false})}>Cancel</Button>,
+                                <Button key='submit' type='primary' size='large' loading={this.state.updateProgress}
+                                        onClick={() => this.applyChanges(this.form)}>Save</Button>,
+                            ]}
+                        >
+                            <EditForm ref={this.saveForm} {...placeClone} />
+                        </Modal>
                     </Row>
                 </Modal>
                 }

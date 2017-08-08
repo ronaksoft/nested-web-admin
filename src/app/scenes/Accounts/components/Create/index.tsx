@@ -3,42 +3,42 @@ import {Modal, Button, Row, Col, Card, Icon, notification, Form} from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
 import md5 from 'md5';
-import Account from '../../Account';
-import {IAccount} from '../../interfaces/IAccount';
-import IUnique from '../../interfaces/IUnique';
+import IAccount from '../../interfaces/IAccount';
 import InputRow from './components/InputRow/index';
 import CSV from '../../CSV';
 import AccountApi from '../../../../api/account/account';
-import Packet from '../../Packet';
+import IPacket from '../../Packet';
 import PacketState from '../../PacketState';
 
 interface ICreateProps {
     visible: Boolean;
-    handleClose: Handler;
+    handleClose: any;
 }
 
 interface ICreateState {
-    accounts: Packet<IAccount>[];
+    accounts: IPacket[];
 }
 
 class Create extends React.Component<ICreateProps, ICreateState> {
-    rows = [];
-    rowsKey = {};
+    accountApi;
+    renderedRows = [];
+    rowsRefs = {};
 
     constructor(props: ICreateProps) {
+        super(props);
         this.state = {accounts: []};
         this.accountApi = new AccountApi();
         this.handleRemove = this.handleRemove.bind(this);
-        this.handleChange = _.debounce(this.handleChange.bind(this), 256);
-        this.add = this.add.bind(this);
-        this.create = this.create.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        // this.add = this.add.bind(this);
+        // this.create = this.create.bind(this);
         this.import = this.import.bind(this);
         this.readFile = this.readFile.bind(this);
         this.handleClose = this.handleClose.bind(this);
-        this.createAccount = this.createAccount.bind(this);
-        this.cleanup = this.cleanup.bind(this);
-        this.initModal = this.initModal.bind(this);
-        this.addItemWithDelay = this.addItemWithDelay.bind(this);
+        // this.createAccount = this.createAccount.bind(this);
+        // this.cleanup = this.cleanup.bind(this);
+        // this.initModal = this.initModal.bind(this);
+        // this.addItemWithDelay = this.addItemWithDelay.bind(this);
     }
 
     componentDidMount() {
@@ -46,57 +46,76 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     }
 
     initModal() {
-        let account = new Packet(new Account());
-        this.rows = [<InputRow ref={this.saveRow}
-                               refKey={account.key}
-                               index={this.rows.length}
-                               key={account.key}
-                               account={account}
-                               onChange={this.handleChange}
-                               onRemove={this.handleRemove}/>];
+        this.renderedRows = [];
+        this.rowsRefs = {};
         this.setState({
-            accounts: [account]
+            accounts: [],
         });
     }
 
-    handleRemove(account: IUnique, index: number) {
-        this.rows[index] = null;
-        this.setState({
-            accounts: _.reject(this.state.accounts, {key: account.key})
+    validatePockets() {
+        let errorInRows: number = 0;
+        this.state.accounts.forEach((row) => {
+
+            if (row.status === PacketState.Success ||
+                row.status === PacketState.Pending
+            ) {
+                return;
+            }
+
+            let inputRowForm = this.rowsRefs[row.key].getForm();
+            const hasError = _.some(inputRowForm.getFieldsError(), (error) => _.isArray(error) && _.size(error) > 0);
+            if (hasError) {
+                errorInRows++;
+                row.status = PacketState.Failure;
+            } else {
+                row.status = PacketState.Valid;
+            }
+
+            this.handleChange({
+                key: row.key,
+                model: row.model,
+                status: row.status
+            });
         });
+
+        this.renderRows();
     }
 
-    handleChange(key: string, model: any, errors: Array) {
-        const packet = _.find(this.state.accounts, {key: key});
-        if (!packet) {
+    handleChange(params: any) {
+        const packetIndex = _.findIndex(this.state.accounts, (pocket) => {
+            return (pocket.key === params.key + '');
+        });
+        const model = params.model;
+        if (!params.model) {
             return;
         }
-
-        const account = new Account(model._id, model.fname, model.lname, model.phone, model.pass);
-        packet.model = account;
-        const hasError = _.some(errors, (error) => _.isArray(error) && _.size(error) > 0);
-        packet.state = hasError ? PacketState.Invalid : PacketState.Valid;
-
-        const packetIndex = _.indexOf(this.state.accounts, {key: key});
         let accounts = this.state.accounts;
-        accounts[packetIndex] = packet;
+        accounts[packetIndex].model = model;
+        accounts[packetIndex].status = params.status;
+
         this.setState({
             accounts: accounts,
         });
+        setTimeout(() => {
+            this.renderRows();
+        }, 200);
+
     }
 
-    add() {
-        let account = new Packet(new Account());
-        this.rows.push(<InputRow ref={this.saveRow}
-                                 refKey={account.key}
-                                 index={this.rows.length}
-                                 key={account.key}
-                                 account={account}
-                                 onChange={this.handleChange}
-                                 onRemove={this.handleRemove}/>);
-        this.setState({
-            accounts: [...this.state.accounts, account],
+    handleRemove(key: string) {
+
+        let accounts = this.state.accounts;
+
+        _.remove(accounts, (pocket: IPacket) => {
+            console.log(pocket.key, key, (pocket.key === key + ''));
+            return pocket.key === key + '';
         });
+
+        this.setState({
+            accounts: accounts,
+        });
+        this.renderRows();
     }
 
     handleUpload(e: Event) {
@@ -110,146 +129,86 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         reader.readAsText(e.target.files[0]);
     }
 
-    changeRowState() {
-        this.rows.forEach((row: any, index) => {
-            if (row === null) {
-                return;
-            }
-            let account = this.state.accounts.find((acc: any) => {
-                return acc.key === row.key;
-            });
-            // fixme :: check state befor render row
-            if (true || account.state !== row.props.account.state) {
-                this.rows[index] = (<InputRow ref={this.saveRow}
-                                              refKey={account.key}
-                                              index={this.rows.length}
-                                              key={account.key}
-                                              account={account}
-                                              onChange={this.handleChange}
-                                              onRemove={this.handleRemove}/>);
-            }
-        });
-    }
-
-    createAccount(index?: number) {
-
-        index = index || 0;
-        const packet = this.state.accounts[index];
-        if (!packet) {
-            return new Promise(res => {
-                res();
-            });
-        }
-
-        const next = index + 1;
-        if (packet.state !== PacketState.Valid) {
-            return this.createAccount(next);
-        }
-
-        return this.accountApi.register({
-            uid: packet.model._id,
-            fname: packet.model.fname,
-            lname: packet.model.lname,
-            phone: packet.model.phone,
-            pass: md5(packet.model.pass)
-        }).then((result) => {
-            // apply changes
-
-            packet.state = PacketState.Success;
-            let accounts = this.state.accounts;
-            accounts[index] = packet;
-            this.setState({
-                accounts: accounts
-            });
-            this.changeRowState();
-            this.forceUpdate();
-
-            // continue for the next
-            return this.createAccount(next);
-        }).catch((error) => {
-            // apply changes
-            if (error.err_code === 3) {
-                packet.state = PacketState.Invalid;
-            }
-            packet.state = PacketState.Failure;
-            let accounts = this.state.accounts;
-            accounts[index] = packet;
-            this.setState({
-                accounts: accounts
-            });
-
-            this.changeRowState();
-            this.forceUpdate();
-
-            // continue for the next
-            return this.createAccount(next);
-        });
-    }
-
-    create() {
-
-        let counter = 1;
-        var hasErrorInFields = false;
-        Object.keys(this.rowsKey).forEach(row => {
-            this.rowsKey[row].validateFields((errors: any, value: any) => {
-
-                const fieldErrors = _(errors).map((value, key) => value.errors).flatten().value();
-                if (_.size(fieldErrors) > 0) {
-                    hasErrorInFields = true;
-                }
-
-                counter++;
-                if (counter < Object.keys(this.rowsKey).length) {
-                    return;
-                }
-
-                const hasError = _.some(this.state.accounts, {state: PacketState.Invalid});
-                if (hasError || hasErrorInFields) {
-                    notification.warning({
-                        message: 'Warning',
-                        description: 'Some records are not valid! Please fix the problems and try again.',
-                        duration: 8
-                    });
-
-                    return;
-                }
-
-                if (!hasError && !hasErrorInFields) {
-                    this.createAccount().then((result) => {
-                        notification.info({
-                            message: 'Job done!',
-                            description: 'Make sure all accounts have been created without any problem.',
-                            duration: 8
-                        });
-                    });
-                }
-
-            });
-        });
-
-    }
-
-    saveRow = (row) => {
+    saveRowsReference(row: any) {
         if (row) {
-            this.rowsKey[row.props.refKey] = row;
+            this.rowsRefs[row.props.refKey] = row;
         }
+    }
+
+    renderRows() {
+        // this.state.accounts.map((pocket, i) => {
+        //     if (
+        //         this.rowsRefs[pocket.key] &&
+        //         pocket.status === this.rowsRefs[pocket.key].props.status &&
+        //         _.isEqual(this.rowsRefs[pocket.key].props, pocket.model)
+        //     ) {
+        //         return;
+        //     } else if (this.rowsRefs[pocket.key]) {
+        //         this.renderedRows[i] = <InputRow
+        //             key={pocket.key}
+        //             onChange={this.handleChange}
+        //             onRemove={this.handleRemove}
+        //             ref={this.saveRowsReference.bind(this)}
+        //             account={pocket.model}
+        //             status={pocket.status}
+        //             refKey={pocket.key}/>;
+        //     } else {
+        //         this.renderedRows.push(
+        //             <InputRow
+        //                 key={pocket.key}
+        //                 onChange={this.handleChange}
+        //                 onRemove={this.handleRemove}
+        //                 ref={this.saveRowsReference.bind(this)}
+        //                 account={pocket.model}
+        //                 status={pocket.status}
+        //                 refKey={pocket.key}/>
+        //         );
+        //     }
+        // });
+        // this.forceUpdate();
+    }
+
+    validRowsCount() {
+        let validRows: number = 0;
+        this.state.accounts.forEach((row) => {
+            if (row.status === PacketState.Valid) {
+                validRows++;
+            }
+        });
+        return validRows;
+    }
+
+    addNewRow() {
+
+        const newRow = {
+            key: _.uniqueId(),
+            status: PacketState.New,
+            model: {
+                pass: '',
+                _id: '',
+                lname: '',
+                fname: '',
+            },
+            messages: [],
+        };
+        let accounts = this.state.accounts;
+        accounts.push(newRow);
+        this.setState({accounts});
     }
 
     render() {
-
+        const validRows = this.validRowsCount();
         return (
             <Modal
                 visible={this.props.visible}
                 title='Create Accounts'
                 width={960}
                 footer={[
-                    <Button type='primary' size='large' onClick={this.create}>Create Accounts
-                        ({this.state.accounts.length})</Button>
+                    <Button type='primary' size='large' onClick={this.create.bind(this)}>Create Accounts</Button>,
                 ]}
                 className='create-accounts'
-                onCancel={this.handleClose}
-                afterClose={this.cleanup}
-            >
+                afterClose={this.initModal.bind(this)}
+                onCancel={this.handleClose}>
                 <div>
                     <Row>
                         <Col span={22}>
@@ -262,53 +221,196 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                             </Row>
                         </Col>
                     </Row>
-                    {this.rows}
+                    {this.state.accounts.map((pocket) => (<InputRow
+                        key={pocket.key}
+                        onChange={this.handleChange}
+                        onRemove={this.handleRemove}
+                        ref={this.saveRowsReference.bind(this)}
+                        account={pocket.model}
+                        status={pocket.status}
+                        refKey={pocket.key}/>))}
                     <Card>
                         <Row type='flex' align='middle'>
                             <Col span={12}>
-                                <a onClick={this.add}>
+                                <a onClick={this.addNewRow.bind(this)}>
                                     <Icon type='plus'/> Add another
                                 </a>
                             </Col>
-                            <Col span={12}>
-                                <input id='upload' type='file' accept='*' onChange={this.readFile} onClick={(event) => {
-                                    event.target.value = null;
-                                }} className='hidden'/>
-                                <span>You can also</span>&nbsp;<a onClick={this.handleUpload}>Import from a file</a>
+                            <Col span={8}>
+                                <input id='upload' type='file' accept='*.csv' onChange={this.readFile}
+                                       onClick={(event) => {
+                                           event.target.value = null;
+                                       }} className='hidden'/>
+                                <span>You can also</span>&nbsp;
+                                <a type='primary' onClick={this.handleUpload}>
+                                    Import from a file
+                                </a>&nbsp;
+                            </Col>
+                            <Col span={4}>
+                                <small>
+                                    <a onClick={this.downloadExample}>
+                                        (Download Example)
+                                    </a>
+                                </small>
                             </Col>
                         </Row>
                     </Card>
+                    <Row>
+                        <Col span={12}>
+                            <b>
+                                <a onClick={this.downloadListCSV.bind(this)} type='warning'>
+                                    For download user creation form as a CSV file click here.
+                                    (Download Form as CSV File)
+                                </a>
+                            </b>
+                        </Col>
+                    </Row>
                 </div>
             </Modal>
         );
+    }
+
+    private create() {
+        this.validatePockets();
+        if (this.validRowsCount() > this.state.accounts.length) {
+            notification.error({
+                message: 'Invalid Data',
+                description: 'Please verify all accounts data is valid.',
+            });
+            return;
+        }
+
+        const accounts = this.state.accounts;
+        let registerUser = (index: any) => {
+            if (this.state.accounts[index].status !== PacketState.Pending) {
+                if (index < this.state.accounts.length - 1) {
+                    registerUser(index + 1);
+                }
+                return;
+            }
+            this.accountApi.register({
+                uid: this.state.accounts[index].model._id,
+                fname: this.state.accounts[index].model.fname,
+                lname: this.state.accounts[index].model.lname,
+                phone: this.state.accounts[index].model.phone,
+                pass: md5(this.state.accounts[index].model.pass)
+            })
+                .then(() => {
+                    const account = this.state.accounts[index];
+                    this.handleChange({
+                        key: account.key,
+                        model: account.model,
+                        status: PacketState.Success
+                    });
+                })
+                .then(() => {
+                    if (this.state.accounts.length === index + 1) {
+                        notification.success({
+                            message: 'Job Done...',
+                            description: 'User creation process finished successfully.',
+                        });
+                    }
+                    if (index < this.state.accounts.length - 1) {
+                        setTimeout(() => {
+                            // registerUser(index + 1);
+                        }, 500);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    const account = this.state.accounts[index];
+                    this.handleChange({
+                        key: account.key,
+                        model: account.model,
+                        status: PacketState.Failure
+                    });
+                });
+        };
+
+
+        setTimeout(() => {
+            accounts.map((account, index) => {
+                if (account.status === PacketState.Valid) {
+                    this.handleChange({
+                        key: account.key,
+                        model: account.model,
+                        status: PacketState.Pending,
+                    });
+                    registerUser(index);
+                }
+            });
+        }, 200);
+
+
+        // setTimeout(() => {
+        //     registerUser(0);
+        // }, 1000);
+
+    }
+
+    private downloadExample() {
+        let data = [
+            ['+989123456789', 'username1', 'First Name 1', 'Last Name 1', 'password1'],
+            ['+989123456788', 'username2', 'First Name 2', 'Last Name 2', 'password2`']
+        ];
+        let csvContent = 'data:text/csv;charset=utf-8,';
+        data.forEach(function (infoArray: Array<string>, index: any) {
+            let dataString = infoArray.join(',');
+            csvContent += index < data.length ? dataString + '\n' : dataString;
+        });
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'create-account-example.csv');
+        document.body.appendChild(link);
+        link.click();
+    }
+
+    private downloadListCSV() {
+        let data = [];
+
+        this.state.accounts.forEach((row) => {
+            data.push([
+                row.model.phone,
+                row.model._id,
+                row.model.fname,
+                row.model.lname,
+                row.model.pass
+            ]);
+        });
+
+        let csvContent = 'data:text/csv;charset=utf-8,';
+        data.forEach(function (infoArray: Array<string>, index: any) {
+            let dataString = infoArray.join(',');
+            csvContent += index < data.length ? dataString + '\n' : dataString;
+        });
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'create-account-example.csv');
+        document.body.appendChild(link);
+        link.click();
     }
 
     private handleClose() {
         this.props.handleClose();
     }
 
-    private cleanup() {
-        this.initModal();
-    }
-
-    private addItemWithDelay(item: Packet, delay: number) {
-        return new Promise(resolve => setTimeout(resolve, delay)).then(() => {
-            this.rows.push(<InputRow ref={this.saveRow}
-                                     index={this.rows.length}
-                                     refKey={item.key}
-                                     key={item.key}
-                                     account={item.model}
-                                     onChange={this.handleChange}
-                                     onRemove={this.handleRemove}/>);
-            this.setState({
-                accounts: [...this.state.accounts, item]
-            });
-        });
-    }
-
     private import(text: string) {
-        const CSV_ROW_ITEMS_COUNT = 4;
-        const MAX_ITEMS_IN_FILE = 100;
+
+        function makeid() {
+            let text = '';
+            let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+            for (let i = 0; i < 6; i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+
+            return text;
+        }
+
+        const CSV_ROW_ITEMS_COUNT = 5;
+        const MAX_ITEMS_IN_FILE = 41;
         const DELAY_BETWEEN_IMPORT_ITEM = 0;
         const SKIP_LINE_START = '#';
         const NEW_LINE = '\n';
@@ -335,27 +437,37 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
             return;
         }
-        this.rows = [];
+
         this.setState({accounts: []});
-        const packets = _(data).filter((row) => row.length === CSV_ROW_ITEMS_COUNT).map((row) => {
-            return new Packet(new Account(row[1], row[2], row[3], row[0]));
-        }).value();
+        this.rowsRefs = {};
+        this.renderedRows = [];
+        const packets = _(data)
+            .filter((row) => (row.length === CSV_ROW_ITEMS_COUNT || row.length === CSV_ROW_ITEMS_COUNT - 1))
+            .map((row) => {
+                const packet: IPacket = {
+                    key: _.uniqueId(),
+                    status: PacketState.Filled,
+                    model: {
+                        phone: row[0],
+                        _id: row[1],
+                        fname: row[2],
+                        lname: row[3],
+                        pass: row[4] ? row[4] : makeid(),
+                    },
+                    messages: []
+                };
+                return packet;
+            }).value();
 
-        let setNext = (index: number) => {
-            index = index || 0;
-            const item = packets[index];
-            if (!item) {
-                return Promise.resolve(index);
-            }
+        this.setState({
+            accounts: packets,
+        });
 
-            return this.addItemWithDelay(item, DELAY_BETWEEN_IMPORT_ITEM).then(() => setNext(index + 1));
-        };
-
-        return setNext(0).then(() => {
-            notification.success({
-                message: 'Import',
-                description: `All ${packets.length} account(s) have been imported successfully.`
-            });
+        this.renderRows();
+        this.validatePockets();
+        notification.success({
+            message: 'Import',
+            description: `All ${packets.length} account(s) have been imported successfully.`
         });
     }
 }

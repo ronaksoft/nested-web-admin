@@ -1,4 +1,3 @@
-import {IDispatch} from '~react-redux~redux';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import Filter from '../../components/Filter/index';
@@ -16,19 +15,25 @@ export interface IAccountsState {
     count: Number;
     filterGroup: FilterGroup;
     Items: IUser[];
-    counters: object;
+    counters: any;
     countersLoaded: boolean;
+    loading: boolean;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
+    accountApi;
+
     constructor(props: IAccountsProps) {
 
         super(props);
 
         this.state = {
+            Items: [],
+            count: 0,
             filterGroup: FilterGroup.Total,
             counters: {},
-            countersLoaded: false
+            countersLoaded: false,
+            loading: false
         };
     }
 
@@ -44,7 +49,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 loading: false,
                 countersLoaded: true
             });
-            notification.error('Error', 'An error has occured while trying to get data!');
+            notification.error({message: 'Error', description: 'An error has occured while trying to get data!'});
         });
     }
 
@@ -87,7 +92,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         return (
 
             <div>
-                <Row className='toolbar' type='flex' align='center'>
+                <Row className={'toolbar'} type={'flex'} align={'middle'}>
                     <Col span={6}>
                         {
                             this.state.countersLoaded &&
@@ -96,7 +101,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         }
                     </Col>
                     <Col span={18}>
-                        <Options />
+                        <Options/>
                     </Col>
                 </Row>
                 <Row>
@@ -117,7 +122,7 @@ function mapStateToProps(state: any) {
     return {};
 }
 
-function mapDispatchToProps(dispatch: IDispatch) {
+function mapDispatchToProps() {
     return {};
 }
 

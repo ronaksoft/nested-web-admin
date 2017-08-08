@@ -158,13 +158,21 @@ class View extends React.Component<IViewProps, IViewState> {
                 return;
             }
 
-            const changedProps = _.mapValues(values, (value, key) => {
+            let changedProps = _.mapValues(values, (value, key) => {
                 if (key === 'dob') {
                     return value.format(this.DATE_FORMAT);
                 }
 
                 return value;
             });
+
+
+            if (_.has(changedProps, 'grand_places')) {
+                changedProps = {
+                    'limits.grand_places': parseInt(values.grand_places, 0),
+                };
+            }
+
             if (_.has(changedProps, 'pass')) {
                 this.accountApi.setPassword({
                     account_id: this.state.account._id,
@@ -189,9 +197,16 @@ class View extends React.Component<IViewProps, IViewState> {
             } else {
                 let editedAccount = _.clone(this.state.account);
 
+                let changedLimitProps = null;
+                if (_.has(changedProps, 'limits.grand_places')) {
+                    changedLimitProps = {
+                        limits: {grand_places: parseInt(values.grand_places, 0)},
+                    };
+                }
+
                 this.setState({
                     updateProgress: true,
-                    account: _.merge(editedAccount, changedProps)
+                    account: _.merge(editedAccount, changedLimitProps ? changedLimitProps : changedProps)
                 });
 
 
@@ -407,6 +422,7 @@ class View extends React.Component<IViewProps, IViewState> {
                         this.state.editTarget === EditableFields.fname &&
                         <Form.Item label='First Name'>
                             {getFieldDecorator('fname', {
+                                initialValue: this.state.account.fname,
                                 rules: [{required: true, message: 'First name is required!'}],
                             })(
                                 <Input placeholder='John'/>
@@ -417,6 +433,7 @@ class View extends React.Component<IViewProps, IViewState> {
                         this.state.editTarget === EditableFields.lname &&
                         <Form.Item label='Last Name'>
                             {getFieldDecorator('lname', {
+                                initialValue: this.state.account.lname,
                                 rules: [{required: true, message: 'Last name is required!'}],
                             })(
                                 <Input placeholder='Doe'/>
@@ -427,6 +444,7 @@ class View extends React.Component<IViewProps, IViewState> {
                         this.state.editTarget === EditableFields.phone &&
                         <Form.Item label='Phone'>
                             {getFieldDecorator('phone', {
+                                initialValue: this.state.account.phone,
                                 rules: [{required: true, message: 'Phone number is required!'}],
                             })(
                                 <Input placeholder='989876543210'/>
@@ -437,6 +455,7 @@ class View extends React.Component<IViewProps, IViewState> {
                         this.state.editTarget === EditableFields.dob &&
                         <Form.Item label='Birthdate'>
                             {getFieldDecorator('dob', {
+                                initialValue: this.state.account.dob,
                                 rules: [],
                             })(
                                 <DatePicker format={this.DATE_FORMAT}/>
@@ -447,6 +466,7 @@ class View extends React.Component<IViewProps, IViewState> {
                         this.state.editTarget === EditableFields.email &&
                         <Form.Item label='Email'>
                             {getFieldDecorator('email', {
+                                initialValue: this.state.account.email,
                                 rules: [],
                             })(
                                 <Input placeholder='example@company.com'/>
@@ -466,10 +486,25 @@ class View extends React.Component<IViewProps, IViewState> {
                             )}
                         </Form.Item>
                     }
+                    {
+                        this.state.editTarget === EditableFields['limits.grand_places'] &&
+                        <Form.Item label='Grand Places Limit'>
+                            {getFieldDecorator('grand_places', {
+                                initialValue: this.state.account.limits.grand_places,
+                                rules: [
+                                    {required: true, message: 'Grand Places Limit is required!'},
+                                    {min: 1, message: 'rand Places Limit is required!'}
+                                ],
+                            })(
+                                <Input placeholder='10' type='number'/>
+                            )}
+                        </Form.Item>
+                    }
 
                 </Form>
             );
         });
+
         const accountClone = _.clone(this.state.account);
         const credentials = AAA.getInstance().getCredentials();
         const uploadUrl = `${CONFIG.STORE.URL}/upload/profile_pic/${credentials.sk}/${this.state.token}`;
@@ -640,6 +675,19 @@ class View extends React.Component<IViewProps, IViewState> {
                         <Col span={24}>
                             <div className='form-devider'></div>
                         </Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <label>Grand Places Limit</label>
+                        </Col>
+                        <Col span={14}>
+                            {this.state.account.limits.grand_places}
+                        </Col>
+                        <Col span={2}>
+                            <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                    onClick={() => this.editField(EditableFields['limits.grand_places'])}></Button>
+                        </Col>
+
                     </Row>
                     <Row>
                         <Col span={8}>

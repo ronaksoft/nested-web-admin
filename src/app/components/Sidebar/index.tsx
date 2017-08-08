@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Menu, Icon} from 'antd';
+import CONFIG from '../../../app.config';
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -22,13 +23,13 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
 
     render() {
         let location = this.props.location.pathname;
-        if ( location === '/') {
+        if (location === '/') {
             location = '/dashboard';
         }
         return (
             <div
                 className='main-menu'>
-                <Link to='/dashboard' activeClassName='active'>
+                <Link to='/dashboard' activeClassName='active center'>
                     <div className='logo'></div>
                 </Link>
                 <Menu
@@ -50,12 +51,17 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
                         <Link to='/config' activeClassName='active'><Icon type=' nst-ico ic_access_solid_24'/><span>System Limits</span></Link>
                     </Menu.Item>
                     <Menu.Item key='/charts'>
-                        <Link to='/charts' activeClassName='active'><Icon type='area-chart' />Charts</Link>
+                        <Link to='/charts' activeClassName='active'><Icon type='area-chart'/>Charts</Link>
                     </Menu.Item>
                     <Menu.Item key='/assistant'>
                         <Link to='/assistant' activeClassName='active'><Icon type='medicine-box' />Assistant</Link>
                     </Menu.Item>
                 </Menu>
+                <small style={{
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 10,
+                }}>v.{CONFIG.VERSION}</small>
             </div>
         );
     }

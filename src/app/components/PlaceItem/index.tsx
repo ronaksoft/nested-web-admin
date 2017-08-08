@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Row, Col, Icon} from 'antd';
-import {IPlace} from '../../api/place/interfaces/IPlace';
+import IPlace from '../../api/place/interfaces/IPlace';
 import PlaceView from '../placeview/index';
 
 function PlaceItem(props: any) {

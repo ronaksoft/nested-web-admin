@@ -12,8 +12,8 @@ import {browserHistory} from 'react-router';
 // import PlaceItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 // import UserItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 
-const Search = Input.Search;
-
+const Group = AutoComplete.OptGroup;
+const Option = AutoComplete.Option;
 
 interface IHeaderProps {
 };
@@ -24,9 +24,10 @@ interface IHeaderState {
 };
 
 class Header extends React.Component<IHeaderProps, IHeaderState> {
-
+    keyword: string = '';
     selectedPlace: any;
     selectedUser: any;
+    loggedUser: any;
 
     constructor(props: any) {
         super(props);
@@ -38,6 +39,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
 
         this.search = _.debounce(this.search.bind(this), 256);
         this.handleAccountChange = this.handleAccountChange.bind(this);
+        this.loggedUser = AAA.getInstance().getUser();
     }
 
     componentDidMount() {
@@ -46,6 +48,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
     }
 
     search(keyword: string) {
+        this.keyword = keyword;
         const getAccountPromise = this.accountApi.getAll({
             limit: 5,
             keyword: keyword
@@ -126,7 +129,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
     handleAccountChange(account: IAccount) {
         this.selectedUser = account;
         const result = _.cloneDeep(this.state.result);
-        const index = _.findIndex(result[0].items, { _id: account._id });
+        const index = _.findIndex(result[0].items, {_id: account._id});
         if (index > -1) {
             result[0].items.splice(index, 1, account);
             this.setState({
@@ -136,11 +139,8 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
     }
 
     render() {
-        let loggedUser = AAA.getInstance().getUser();
-        const Group = AutoComplete.OptGroup;
-        const Option = AutoComplete.Option;
 
-        const suggestedOptions = this.state.result.map((group) => {
+        let suggestedOptions = this.state.result.map((group) => {
                 return (
                     <Group
                         key={group.key}
@@ -157,25 +157,36 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
             }
         );
 
+
+        if (this.state.result.length !== 0 &&
+            this.state.result[0].items.length === 0 &&
+            this.state.result[1].items.length === 0) {
+            suggestedOptions.push(
+                <Option key={'no-result-item'} disable={true} value={this.keyword}>
+                    No Result for "{this.keyword}"!!
+                </Option>
+            );
+        }
+
         return (
             <header className='header'>
                 <Row>
                     <Col span={10}>
                         {this.state.showPlaceModal &&
                         <PlaceModal visible={this.state.showPlaceModal} place={this.selectedPlace}
-                                    onClose={this.closePlaceModal.bind(this) }/>
+                                    onClose={this.closePlaceModal.bind(this)}/>
                         }
                         {this.state.showUserModal &&
                         <UserModal visible={this.state.showUserModal} account={this.selectedUser}
-                                   onClose={this.closeUserModal.bind(this) } onChange={this.handleAccountChange}/>
+                                   onClose={this.closeUserModal.bind(this)} onChange={this.handleAccountChange}/>
                         }
                         <AutoComplete
+                            allowClear={true}
                             size='large'
                             style={{width: '100%'}}
                             dataSource={suggestedOptions}
                             onSearch={this.search}
-                            onSelect={this.handleSelect.bind(this) }
-                            optionLabelProp='_id'
+                            onSelect={this.handleSelect.bind(this)}
                         >
                             <Input
                                 placeholder='Search here...'
@@ -201,7 +212,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                                         shape='circle'></Button>
                                 <Button type='toolkit-user' shape='circle' className='oddcondi'>
 
-                                    <UserAvatar size={24} user={loggedUser} avatar/>
+                                    <UserAvatar size={24} user={this.loggedUser} avatar/>
                                 </Button>
                             </Col>
                         </Row>
