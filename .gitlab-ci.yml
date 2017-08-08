@@ -5,20 +5,17 @@ stages:
 variables:
   BUILD_DIR: $CI_PROJECT_DIR/build
 
-image: node
-
 build:admin:
   stage: build
+  image: theotherjim/node-gulp-jspm
   only:
       - master
   script:
     - cp -r . /var/lib/admin
     - cd /var/lib/admin
-    - npm install -g gulp
-    - npm install -g jspm
     - npm install
     - jspm install
-    - gulp build
+    - ./node_modules/.bin/gulp build
     - mkdir -p $BUILD_DIR/admin
     - cp -r ./dist/* $BUILD_DIR/admin
 
