@@ -35,7 +35,7 @@ export default class Socket {
     send(msg : any) {
         if (this.socket && this.socket.readyState === SocketState.OPEN) {
             this.socket.send(msg);
-            log.debug(`SOCKET | >>>`, msg);
+            // log.debug(`SOCKET | >>>`, msg);
         }
     }
 
@@ -102,7 +102,7 @@ export default class Socket {
     }
 
     private onMessage(msg : any) {
-        log.debug(`SOCKET | <<<`, msg.data);
+        // log.debug(`SOCKET | <<<`, msg.data);
         if (this.config.onMessage && msg.data !== PONG_MESSAGE) {
             this.config.onMessage(msg.data);
         } else if (msg.data === PONG_MESSAGE) {
