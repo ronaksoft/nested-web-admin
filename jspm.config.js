@@ -154,6 +154,7 @@ SystemJS.config({
     'react': 'npm:react@15.5.4',
     'react-dom': 'npm:react-dom@15.5.4',
     'react-inlinesvg': 'npm:react-inlinesvg@0.6.0',
+    'react-platform-js': 'npm:react-platform-js@0.0.1',
     'react-redux': 'npm:react-redux@5.0.4',
     'react-router': 'npm:react-router@3.0.5',
     'react-transition-group': 'npm:react-transition-group@1.1.3',
@@ -1126,6 +1127,11 @@ SystemJS.config({
     'npm:string_decoder@1.0.1': {
       'map': {
         'safe-buffer': 'npm:safe-buffer@5.0.1'
+      }
+    },
+    'npm:react-platform-js@0.0.1': {
+      'map': {
+        'ua-parser-js': 'npm:ua-parser-js@0.7.14'
       }
     }
   }

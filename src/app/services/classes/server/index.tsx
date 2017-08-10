@@ -1,4 +1,3 @@
-import log from 'loglevel';
 import socket from './../socket/index';
 import CErrors from './consts/CErrors';
 import IRequest from './interfaces/IRequest';
@@ -7,8 +6,7 @@ import ISocketRequest from './interfaces/ISocketRequest';
 import AAA from './../aaa/index';
 import CONFIG from './../../../../app.config';
 import SocketState from '../socket/states';
-import Cookies from 'cookies-js';
-
+import Client from './../client/index';
 export default class Server {
     private static instance: Server;
     private socket: any = null;
@@ -92,7 +90,7 @@ export default class Server {
         });
         this.queue = [];
         this.socket.connect();
-        this.cid = this.getClientId();
+        this.cid = Client.getCid();
     }
 
     private response(res: string): void {
@@ -129,16 +127,5 @@ export default class Server {
                 this.sendRequest(request);
             }
         });
-    }
-
-    private getClientId(): string {
-        let cid = null;
-        cid = Cookies.get('cid');
-        if (!cid) {
-            cid = ['Web', 'desktop', platform.name, platform.os].join('_');
-        }
-        Cookies.set('cid', cid);
-
-        return cid;
     }
 }

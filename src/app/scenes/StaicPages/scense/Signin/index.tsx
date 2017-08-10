@@ -8,6 +8,8 @@ import {browserHistory} from 'react-router';
 
 import {Layout, Card, Form, InputNumber, Button, Input, message} from 'antd';
 
+import Client from './../../../../services/classes/client/index';
+
 const FormItem = Form.Item;
 
 interface ISignInProps {
@@ -50,13 +52,22 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
     }
 
     login = (data) => {
-        data.pass = md5(data.pass);
-        this.accountApi.login(data)
-            .then((data) => {
+        const did = Client.getDid();
+        const dt = Client.getDt();
+
+        this.accountApi.login({
+            uid: data.uid,
+            pass: md5(data.pass),
+            _did: did,
+            _dt: dt,
+            _do: 'android',
+        }).then((data) => {
             if (data.account && data.account.admin) {
                 AAA.getInstance().setCredentials(data);
                 // fixme : data or data.account ?
                 AAA.getInstance().setUser(data.account);
+                Client.setDid(did);
+                Client.setDt(dt);
                 browserHistory.push('/dashboard');
             } else {
                 message.warning('You are not administrator');
