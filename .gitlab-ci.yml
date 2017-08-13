@@ -9,7 +9,7 @@ build:admin:
   stage: build
   image: theotherjim/node-gulp-jspm
   only:
-      - master
+    - master
   script:
     - cp -r . /var/lib/admin
     - cd /var/lib/admin
