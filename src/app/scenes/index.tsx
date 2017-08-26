@@ -17,6 +17,7 @@ import IUser from '../api/account/interfaces/IUser';
 import Server from '../services/classes/server/index';
 import {message} from 'antd';
 import SocketState from '../services/classes/socket/states';
+import Client from '../services/classes/client/index';
 
 const {Header, Footer, Sider, Content} = Layout;
 
@@ -50,19 +51,26 @@ class App extends React.Component<IAppProps, IAppState> {
         }
 
         if (!user) {
+            const did = Client.getDid();
+            const dt = Client.getDt();
             accountApi.sessionRecall({
                 _ss: credential.ss,
                 _sk: credential.sk,
+                _did: did,
+                _do: 'android',
+                _dt: dt,
             }).then((user: IUser) => {
-                if (!user.admin) {
+                if (user && user.admin) {
+                    aaa.setUser(user);
+                    this.setState({
+                        isReady: true,
+                    });
+                    Client.setDid(did);
+                    Client.setDt(dt);
+                } else {
                     aaa.setIsUnAthenticated();
                     browserHistory.push('/403');
-                    return;
                 }
-                aaa.setUser(user);
-                this.setState({
-                    isReady: true,
-                });
             }).catch((err) => {
                 aaa.setIsUnAthenticated();
                 browserHistory.push('/signin');

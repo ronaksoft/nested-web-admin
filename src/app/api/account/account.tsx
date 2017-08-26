@@ -13,6 +13,7 @@ import ISetPictureRequest from './interfaces/ISetPictureRequest';
 import IRemovePictureRequest from './interfaces/IRemovePictureRequest';
 import ISetPasswordRequest from './interfaces/ISetPasswordRequest';
 import IGetListRequest from './interfaces/IGetListRequest';
+import ISessionRegisterRequest from './interfaces/ISessionRegisterRequest';
 
 export default class AccountApi {
     private api;
@@ -56,7 +57,7 @@ export default class AccountApi {
     }
 
 
-    login(data: any) : Promise<any> {
+    login(data: ISessionRegisterRequest) : Promise<any> {
       return this.api.server.request({
         cmd: 'session/register',
         data: data,
