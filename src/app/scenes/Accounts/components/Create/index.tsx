@@ -410,7 +410,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         }
 
         const CSV_ROW_ITEMS_COUNT = 5;
-        const MAX_ITEMS_IN_FILE = 41;
+        const MAX_ITEMS_IN_FILE = 100;
         const DELAY_BETWEEN_IMPORT_ITEM = 0;
         const SKIP_LINE_START = '#';
         const NEW_LINE = '\n';
