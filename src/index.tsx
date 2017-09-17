@@ -4,10 +4,9 @@ import {IStore} from '~react-redux~redux';
 import {Provider} from 'react-redux';
 import App from './app/scenes/index';
 import configureStore from './app/services/store/configureStore';
-import {Router, Route, browserHistory, IndexRoute, Redirect} from 'react-router';
+import {Router, Route, browserHistory, IndexRoute, Redirect, hashHistory} from 'react-router';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
-
 
 // import Components
 import StaticPages from './app/scenes/StaicPages/index';
@@ -27,7 +26,7 @@ const store: IStore<any> = configureStore({});
 ReactDOM.render(
     <LocaleProvider locale={enUS}>
         <Provider store={store}>
-            <Router history={browserHistory}>
+            <Router history={hashHistory}>
                 <Route path='/' component={App}>
                     <IndexRoute component={Dashboard}/>
                     <Route path='/dashboard' component={Dashboard}/>

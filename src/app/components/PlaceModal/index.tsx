@@ -9,7 +9,6 @@ import Avatar from './../avatar/index';
 import PlaceItem from '../PlaceItem/index';
 import UserItem from '../UserItem/index';
 import AccountApi from '../../api/account/account';
-import _ from 'lodash';
 import View from '../../scenes/Accounts/components/View/index';
 import IUser from '../../api/account/interfaces/IUser';
 import AAA from '../../services/classes/aaa/index';

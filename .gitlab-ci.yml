@@ -5,18 +5,17 @@ stages:
 variables:
   BUILD_DIR: $CI_PROJECT_DIR/build
 
-image: node
-
 build:admin:
   stage: build
+  image: theotherjim/node-gulp-jspm
   only:
-      - master
+    - master
   script:
     - cp -r . /var/lib/admin
     - cd /var/lib/admin
-    - npm install -g gulp
     - npm install
-    - gulp build
+    - jspm install
+    - ./node_modules/.bin/gulp build
     - mkdir -p $BUILD_DIR/admin
     - cp -r ./dist/* $BUILD_DIR/admin
 
@@ -33,7 +32,7 @@ deploy:production:
   services:
     - docker:dind
   variables:
-    IMAGE_TAG:  "business"
+    IMAGE_TAG: "business"
   script:
     - export TAG=`git describe --abbrev=0 --tags`
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
@@ -42,5 +41,4 @@ deploy:production:
     - docker push $CI_REGISTRY_IMAGE:$TAG
     - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
   dependencies:
-    - build:mobile
-    - build:desktop
+    - build:admin
