@@ -289,7 +289,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         <Form.Item label='Maximum Number of Creators '>
                             {getFieldDecorator('limits.creators', {
                                 initialValue: this.state.place.limits.creators,
-                                rules: [{required: true, message: 'Maximum number of Creators is required!'}],
+                                rules: [{required: true, message: 'Maximum number of Managers is required!'}],
                             })(
                                 <Input placeholder='3'/>
                             )}
@@ -297,10 +297,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     }
                     {
                         this.state.editTarget === EditableFields.key_holders &&
-                        <Form.Item label='Maximum Number of Key holders'>
+                        <Form.Item label='Maximum Number of Members'>
                             {getFieldDecorator('limits.key_holders', {
                                 initialValue: this.state.place.limits.key_holders,
-                                rules: [{required: true, message: 'Maximum number of Key holders is required!'}],
+                                rules: [{required: true, message: 'Maximum number of Members is required!'}],
                             })(
                                 <Input placeholder='250'/>
                             )}
@@ -373,7 +373,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     <Row>
                         <Row>
                             <Col span={14}>
-                                <label>Maximum Creators</label>
+                                <label>Maximum Managers</label>
                             </Col>
                             <Col span={8}>
                                 {place.limits.creators}

@@ -242,7 +242,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Creators</label>
+                                        <label>Max. Place Managers</label>
 
                                         <FormItem>
                                             {getFieldDecorator('place_max_creators', {
