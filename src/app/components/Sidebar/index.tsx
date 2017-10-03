@@ -35,8 +35,7 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
                 <Menu
                     defaultSelectedKeys={[location]}
                     defaultOpenKeys={[location]}
-                    mode='inline'
-                >
+                    mode='inline'>
                     <Menu.Item key='/dashboard'>
                         <Link to='/dashboard' activeClassName='active'><Icon
                             type=' nst-ico ic_dashboard_solid_24'/><span>Dashboard</span></Link>

@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import md5 from 'md5';
 import AAA from './../../../../services/classes/aaa/index';
 import AccountApi from './../../../../api/account/account';
-import {browserHistory} from 'react-router';
+import {hashHistory} from 'react-router';
 
 import {Layout, Card, Form, InputNumber, Button, Input, message} from 'antd';
 
@@ -68,7 +68,7 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
                 AAA.getInstance().setUser(data.account);
                 Client.setDid(did);
                 Client.setDt(dt);
-                browserHistory.push('/dashboard');
+                hashHistory.push('/dashboard');
             } else {
                 message.warning('You are not administrator');
             }

@@ -8,7 +8,7 @@ import PlaceApi from '../../api/place/index';
 import PlaceModal from '../../components/PlaceModal/index';
 import UserModal from '../../scenes/Accounts/components/View/index';
 import IAccount from '../../scenes/Accounts/interfaces';
-import {browserHistory} from 'react-router';
+import {hashHistory} from 'react-router';
 // import PlaceItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 // import UserItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 
@@ -90,7 +90,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         accountApi.signout()
             .then(() => {
                 aaa.setIsUnAthenticated();
-                browserHistory.push('/signin');
+                hashHistory.push('/signin');
             });
     }
 

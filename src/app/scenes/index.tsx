@@ -2,7 +2,7 @@ import * as React from 'react';
 import {IDispatch} from '~react-redux~redux';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {browserHistory} from 'react-router';
+import {hashHistory} from 'react-router';
 import log from 'loglevel';
 
 import HeaderComponent from '../components/Header/index';
@@ -46,7 +46,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
         if (!credential.sk || !credential.ss) {
             aaa.setIsUnAthenticated();
-            browserHistory.push('/signin');
+            hashHistory.push('/signin');
             return;
         }
 
@@ -69,11 +69,11 @@ class App extends React.Component<IAppProps, IAppState> {
                     Client.setDt(dt);
                 } else {
                     aaa.setIsUnAthenticated();
-                    browserHistory.push('/403');
+                    hashHistory.push('/403');
                 }
             }).catch((err) => {
                 aaa.setIsUnAthenticated();
-                browserHistory.push('/signin');
+                hashHistory.push('/signin');
             });
         } else {
             this.setState({
