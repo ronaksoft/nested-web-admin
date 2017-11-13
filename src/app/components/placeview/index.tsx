@@ -39,7 +39,7 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
       id
     } = this.props;
     let placeAvatar;
-    if (size === 64) { placeAvatar = true; };
+    if (size === 64) { placeAvatar = true; }
     size = size.toString(10) + 'px';
 
     const ImageHolder = {

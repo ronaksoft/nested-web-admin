@@ -66,7 +66,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
             activeIndex: 0,
             activityPeriod: 'week'
         };
-    };
+    }
 
     componentDidMount() {
         if (this.props.place) {

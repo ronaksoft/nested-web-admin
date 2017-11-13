@@ -16,6 +16,6 @@ interface IUser {
     registered: string;
     admin : boolean;
     counters : IAccountCounters;
-};
+}
 
 export default IUser;

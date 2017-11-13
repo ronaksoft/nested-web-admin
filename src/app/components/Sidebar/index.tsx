@@ -9,10 +9,11 @@ import {browserHistory, Link, withRouter} from 'react-router';
 import './style/style.less';
 
 interface IHeaderProps {
-};
+    location : any;
+}
 
 interface IHeaderState {
-};
+}
 
 class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
 

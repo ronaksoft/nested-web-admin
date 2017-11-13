@@ -71,7 +71,7 @@ class List extends React.Component <IListProps,
 
     placesRender = (text, user, index) => user.access_places
         ? user.access_places.length
-        : '-';
+        : '-'
     joinedRender = (text, user, index) => {
         const value = moment(user.joined_on);
         if (value.isValid()) {

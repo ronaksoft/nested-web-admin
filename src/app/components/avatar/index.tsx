@@ -173,7 +173,7 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
         // iTODO Initails
         let abbr, finalColor;
         if ( nameOfUser ) {
-          abbr = nameOfUser.split(' ').slice(0, 2).map(function(item : any){return item[0]; }).join('');
+          abbr = nameOfUser.split(' ').slice(0, 2).map(function(item : any) {return item[0]; }).join('');
         } else {
           abbr = 'U';
         }
