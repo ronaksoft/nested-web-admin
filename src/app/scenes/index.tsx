@@ -102,7 +102,7 @@ class App extends React.Component<IAppProps, IAppState> {
             <div>
                 {this.state.isReady &&
                 <Layout>
-                    <Sider width='226'>
+                    <Sider width='80'>
                         <SidebarComponent/>
                     </Sider>
                     <Layout className='container'>
