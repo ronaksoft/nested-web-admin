@@ -1,0 +1,104 @@
+
+.toolbar {
+    white-space: nowrap;
+    height: 40px;
+    width: ~"calc(100% - 16px)";
+    background: @color-light-breeze;
+    color: @color-breeze;
+    border-radius: 8px;
+    font-weight: 300;
+    margin: 0 8px;
+    padding: 0 4px; 
+    align-items: center;
+    .ant-col-6 {
+        display: flex;
+        flex: 1;
+        width: auto;
+        align-items: center;
+        .ant-row {
+            width: 100%;
+        }
+        h1, h2 {
+            font-weight: 300;
+            font-size: 2em;
+            a {
+                color: black;
+            }
+        }
+        .ant-col-12 {
+            display: flex;
+            width: auto;
+            flex: none;
+            margin: 0 8px;
+        }
+    }
+    .ant-col-18 {
+        display: flex;
+        flex: none;
+        width: auto;
+        align-items: center;
+    }
+    .ant-dropdown-trigger .anticon-down,
+    .ant-dropdown-link .anticon-down {
+        font-size: 24px;
+        color: black
+    }
+    h2 {
+        padding: 0 8px;
+        .ant-dropdown-link.ant-dropdown-trigger {
+            font-size: 12px;
+            text-align: right;
+            color: @color-solid-72;
+            span {
+                margin-right: 4px;
+                display: inline-flex;
+                transform: translateY(-3px)
+            }
+            i {
+                opacity: .72;
+            }
+        }
+    }
+    .filter-search {
+        display: flex;
+        position: relative;
+        height: 32px;
+        input {
+          background-color: transparent;
+          height: 32px;
+          border: 1px solid @color-breeze;
+          border-radius: 6px;
+          font-size: 12px;
+          color: @color-solid;
+          width: 200px;
+          padding-left: 30px;
+          transition: width @animation-duration-base,background-color @animation-duration-base;
+        }
+        input + i {
+          opacity: .4;
+          transition: opacity @animation-duration-base;
+        }
+        input::-webkit-input-placeholder {
+          color: @color-solid-64;
+        }
+        input::-moz-placeholder {
+          color: @color-solid-64;
+        }
+        input:hover ,
+        input:focus {
+          width: 320px;
+          background-color: #fff;
+          box-shadow: none;
+        }
+        input:hover + i,
+        input:focus + i{
+          opacity: .24;
+        }
+        svg {
+          left: 8px;
+          top: 8px;
+          position: absolute;
+          fill: @color-solid!important;
+        }
+      }
+}

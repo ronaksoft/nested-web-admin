@@ -1,4 +1,6 @@
 @import "./variables.less";
+@import "../app/components/Filter/filter.less";
+@import "../app/scenes/Places/places.less";
 
 a {
     color: @primary-color-rev;
@@ -10,6 +12,11 @@ body {
 
 ._df {
     display: flex
+}
+
+.filler {
+    display: flex;
+    flex: 1;
 }
 
 ._jcc {
@@ -32,8 +39,8 @@ body {
 }
 .container {
   padding: 0 24px;
-  padding: 0 24px;
-  margin-left: 226px;
+  margin-left: 80px;
+  max-width: 1920px;
 }
 
 .ant-layout-header {
@@ -224,45 +231,6 @@ select {
     height: 40px;
 }
 
-.toolbar {
-    white-space: nowrap;
-    height: 80px;
-    color: black;
-    font-weight: 300;
-    .ant-col-6 {
-        display: flex;
-        flex: 1;
-        width: auto;
-        align-items: center;
-        .ant-row {
-            width: 100%;
-        }
-        h1, h2 {
-            font-weight: 300;
-            font-size: 2em;
-            a {
-                color: black;
-            }
-        }
-        .ant-col-12 {
-            display: flex;
-            width: auto;
-            flex: none;
-            margin: 0 8px;
-        }
-    }
-    .ant-col-18 {
-        display: flex;
-        flex: none;
-        width: auto;
-        align-items: center;
-    }
-    .ant-dropdown-trigger .anticon-down,
-    .ant-dropdown-link .anticon-down {
-        font-size: 24px;
-        color: black
-    }
-}
 
 .ant-btn-toolkit {
     color: rgba(0, 0, 0, .32);

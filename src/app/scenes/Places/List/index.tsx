@@ -242,7 +242,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     render() {
         let column = this.getColumns();
         return (
-            <Card>
+            <div className='places-list'>
                 {this.state.visibelPlaceModal &&
                 <PlaceModal visible={this.state.visibelPlaceModal} place={this.selectedPlace}
                             onClose={this.closePlaceModal.bind(this)}/>
@@ -258,7 +258,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     size='middle'
                     scroll={{x: 960}}
                 />
-            </Card>
+            </div>
         );
     }
 

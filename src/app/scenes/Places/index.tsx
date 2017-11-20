@@ -1,14 +1,15 @@
 import {IDispatch} from '~react-redux~redux';
 import * as React from 'react';
 import {connect} from 'react-redux';
+import {IcoN} from '../../components/icon/index';
 
 import Filter from './../../components/Filter/index';
-import {Row, Col, Icon} from 'antd';
+import {Row, Col, Icon, Input} from 'antd';
 import PlaceList from './List/index';
 import SystemApi from '../../api/system/index';
 import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
-
+// import './places.less';
 
 export interface IAccountsProps {
 }
@@ -17,6 +18,7 @@ export interface IAccountsState {
     counters: IGetSystemCountersResponse;
     loadCounters: boolean;
     selectedFilter: string;
+    searchKeywork: string;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
@@ -24,6 +26,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         super(props);
         this.state = {
             selectedFilter: CPlaceFilterTypes.GRAND_PLACES,
+            searchKeywork: '',
             counters: {},
             loadCounters: false,
         };
@@ -46,12 +49,19 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
 
+    searchKeyDown(e: any) {
+        this.setState({
+            searchKeywork: e.target.value || '',
+        });
+    }
+
     render() {
 
         const filterItems = [
             {
                 key: CPlaceFilterTypes.ALL,
-                name: 'Total',
+                name: 'Relation View',
+                icon: 'placesRelation16',
                 count: this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places + this.state.counters.personal_places,
                 disableChart: true,
             },
@@ -59,42 +69,48 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 key: CPlaceFilterTypes.GRAND_PLACES,
                 name: 'Grand Places',
                 count: this.state.counters.grand_places,
-                chartColor: '#00B45A',
-                bgChartColor: '#CBEFDD',
+                disableChart: true,
             },
             {
                 key: CPlaceFilterTypes.UNLOCKED_PLACES,
                 name: 'Common Places',
                 count: this.state.counters.unlocked_places,
-                chartColor: '#3296FF',
-                bgChartColor: '#D9EBFF',
+                disableChart: true,
             },
             {
                 key: CPlaceFilterTypes.LOCKED_PLACES,
                 name: 'Private Places',
                 count: this.state.counters.locked_places,
-                chartColor: '#FF6464',
-                bgChartColor: '#FFDFDF',
+                disableChart: true,
             },
             {
                 key: CPlaceFilterTypes.PERSONAL_PLACES,
                 name: 'Personal Places',
                 count: this.state.counters.personal_places,
-                chartColor: '#FFB300',
-                bgChartColor: '#FFECB3',
+                disableChart: true,
             }
         ];
 
         return (
-            <div>
-                <Row className='toolbar' type='flex' align='center'>
-                    <Col span={6}>
-                        {this.state.loadCounters &&
-                        <Filter totalCount={filterItems[0].count} menus={filterItems}
-                                onChange={this.changeFilter.bind(this)}/>
-                        }
-                    </Col>
-                    <Col span={18}></Col>
+            <div className='places'>
+                <Row className='toolbar' type='flex'>
+                    <div className='filter-search'>
+                        <Input className='filter-search' value={this.state.searchKeywork} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
+                        { this.state.searchKeywork.length === 0 && <IcoN size={16} name={'search16'}/>}
+                        { this.state.searchKeywork.length > 0 && <IcoN size={16} name={'xcross16'}/>}
+                        {/* <IcoN size={24} name={'dashbooard24'}/> */}
+                        {/* <svg class="_16svg" ng-click="ctlFiles.searchFunc()" ng-show="ctlFiles.keyword.length === 0">
+                        <use xlink:href="/assets/icons/nst-icn16.svg#search"></use>
+                        </svg>
+                        <svg class="_16svg" ng-click="ctlFiles.keyword = ''" ng-show="ctlFiles.keyword.length > 0">
+                        <use xlink:href="/assets/icons/nst-icn16.svg#xcross"></use>
+                        </svg> */}
+                    </div>
+                    <div className='filler'></div>
+                    {this.state.loadCounters &&
+                    <Filter totalCount={filterItems[0].count} menus={filterItems}
+                            onChange={this.changeFilter.bind(this)}/>
+                    }
                 </Row>
                 <Row>
                     <Col span={24}>

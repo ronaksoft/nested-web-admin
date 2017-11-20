@@ -1,10 +1,13 @@
 import * as React from 'react';
 import {Menu, Dropdown, Icon, Row, Col} from 'antd';
 import {PieChart, Pie, Legend, Tooltip, Cell} from 'recharts';
+import {IcoN} from '../icon/index';
+// import './filter.less';
 
 export interface IMenuItem {
     key: string;
     name: string;
+    icon: string;
     count: number;
     chartColor: string;
     bgChartColor: string;
@@ -20,11 +23,10 @@ export interface IFilterProps {
     counters: any;
 }
 
-
 export interface IFilterState {
     selectedItem ?: IMenuItem;
+    menus: Array<IMenuItem>;
 }
-
 class Filter extends React.Component<IFilterProps, IFilterState> {
     selectedMenuIndex: number;
 
@@ -68,40 +70,18 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
 
         const menus = [];
         this.state.menus.forEach((menu: IMenuItem, index: number) => {
-            const data = [
-                {name: menu.name, value: menu.count},
-                {name: 'total', value: this.props.totalCount - menu.count}
-            ];
 
-            const COLORS = [menu.chartColor, menu.bgChartColor];
-            console.log(this);
+            // console.log(this);
             menus.push(
                 <Menu.Item key={index}>
-                    <Row style={{width: 300}}>
-                        <Col span={2}>
-                            {
-                                this.state.selectedItem.key === menu.key &&
-                                <Icon type='check'/>
-                            }
-                        </Col>
-                        <Col span={18}>
-                            <div>
-                                <p>{menu.name}</p>
-                                <span>{menu.count}</span>
-                            </div>
-                        </Col>
-                        <Col span={4}>
-                            {!menu.disableChart &&
-                            <PieChart width={40} height={40}>
-                                <Pie data={data} cx={20} cy={20} innerRadius={12} outerRadius={17} fill='#82ca9d'>
-                                    {
-                                        data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
-                                    }
-                                </Pie>
-                            </PieChart>
-                            }
-                        </Col>
-                    </Row>
+                    <div>
+                        <IcoN size={16} name={menu.icon}/>
+                        <p>{menu.name}</p>
+                        {
+                            this.state.selectedItem.key === menu.key &&
+                            <Icon type='check'/>
+                        }
+                    </div>
                 </Menu.Item>
             );
 
@@ -111,20 +91,15 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
         });
 
         return (
-            <Row>
-                <Col>
-                    <h2>
-                        <Dropdown overlay={<Menu onClick={this.handleGroupChange.bind(this)}>{menus}</Menu>}
-                                  trigger={['click']}>
-                            <a className='ant-dropdown-link' href='#'>
-                                <b>{this.state.selectedItem.count} </b>
-                                {this.state.selectedItem.name}
-                                <Icon type=' nst-ico ic_heavy_arrow_down_solid_24' style={iconStyle}/>
-                            </a>
-                        </Dropdown>
-                    </h2>
-                </Col>
-            </Row>
+            <h2>
+                <Dropdown overlay={<Menu onClick={this.handleGroupChange.bind(this)}>{menus}</Menu>}
+                    trigger={['click']}>
+                    <a className='ant-dropdown-link' href='#'>
+                        <span>{this.state.selectedItem.name}</span>
+                        <IcoN size={16} name='sort16'/>
+                    </a>
+                </Dropdown>
+            </h2>
         );
     }
 }
