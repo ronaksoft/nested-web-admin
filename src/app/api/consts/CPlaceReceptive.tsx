@@ -1,5 +1,6 @@
 enum C_PLACE_RECEPTIVE {
     external,
+    off,
     internal
 }
 

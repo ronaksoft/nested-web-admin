@@ -13,6 +13,7 @@ import IGetSystemCountersResponse from '../../../api/system/interfaces/IGetSyste
 import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
 import {IcoN} from '../../../components/icon/index';
 import Arrow from '../../../components/Arrow/index';
+import PlacePolicy from '../../../components/PlacePolicy/index';
 
 
 interface IListProps {
@@ -204,6 +205,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         return (<div><Icon type='user' title={'Members'}/>{count}</div>);
     }
 
+    renderPoliciesCell(text: string, record: IPlace, index: any) {
+        return <PlacePolicy place={record} text={false} search={true} type={true} receptive={true} />;
+    }
+
     renderSubPlaceCounterCell(text: string, record: IPlace, index: any) {
         const count = record.counters.childs;
         return (<div>{count}</div>);
@@ -233,6 +238,9 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     break;
                 case 'placeType':
                     renderer = this.renderPlaceTypeCell;
+                    break;
+                case 'placePolicy':
+                    renderer = this.renderPoliciesCell;
                     break;
             }
 

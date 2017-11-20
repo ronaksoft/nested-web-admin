@@ -1,5 +1,5 @@
 /**
- * @file component/Icons/index.tsx
+ * @file component/Avatar/index.tsx
  * @author robzizo < me@robzizo.ir >
  * @description Represents the Arrow component for easy rotation
  *              Documented by:          robzizo
@@ -27,7 +27,6 @@ export default class Arrow extends React.Component<IArrowProps, IArrowStats> {
 
   constructor(props: any) {
     super(props);
-    console.log(this.props.rotate);
     this.state = {
       rotate : 0,
     };
@@ -52,7 +51,7 @@ export default class Arrow extends React.Component<IArrowProps, IArrowStats> {
     };
 
     return (
-      <div style={styles}>
+      <div className='arrow' style={styles}>
         <IcoN size={16} name='arrow16'/>
       </div>
     );

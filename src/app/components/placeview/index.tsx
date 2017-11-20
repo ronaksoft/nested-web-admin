@@ -49,7 +49,8 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
       justifyContent: 'center',
       position: 'relative',
       flex: 'none',
-      borderRadius : borderRadius
+      borderRadius : borderRadius,
+      alignSelf: 'center',
     };
 
     const innerStyle = {
@@ -63,7 +64,7 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
       borderRadius : borderRadius,
       margin: '0!important',
       width: size,
-      height: size
+      height: size,
     };
 
     const textStyle = {

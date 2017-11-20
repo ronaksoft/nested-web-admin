@@ -36,7 +36,7 @@ export const columnsList: Array<IPlaceListColumn> = [
         key: 'policies',
         index: 5,
         title: 'Policies',
-        renderer: 'subPlaceCounter',
+        renderer: 'placePolicy',
     },
     {
         key: 'options',
