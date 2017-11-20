@@ -27,15 +27,21 @@ export const columnsList: Array<IPlaceListColumn> = [
         icon: 'member'
     },
     {
-        key: 'sub-places',
+        key: 'type',
         index: 4,
-        title: 'Sub-places',
+        title: 'Place Type',
+        renderer: 'placeType'
+    },
+    {
+        key: 'policies',
+        index: 5,
+        title: 'Policies',
         renderer: 'subPlaceCounter',
     },
     {
-        key: 'type',
-        index: 5,
-        title: 'Place Type',
-        renderer: 'placeType'
+        key: 'options',
+        index: 6,
+        title: '',
+        renderer: 'subPlaceCounter',
     }
 ];

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import {Table, Row, Col, Card, Icon, TableColumnConfig} from 'antd';
+import {Table, Row, Col, Card, Icon, TableColumnConfig, Checkbox} from 'antd';
 import PlaceApi from '../../../api/place/index';
 import IPlace from '../../../api/place/interfaces/IPlace';
 import {columnsList, IPlaceListColumn} from './columsList';
@@ -11,6 +11,8 @@ import PlaceView from '../../../components/placeview/index';
 import PlaceModal from '../../../components/PlaceModal/index';
 import IGetSystemCountersResponse from '../../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
+import {IcoN} from '../../../components/icon/index';
+import Arrow from '../../../components/Arrow/index';
 
 
 interface IListProps {
@@ -159,7 +161,15 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     renderPlaceCell(text: string, record: IPlace, index: any) {
-        return <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>;
+        return (
+            <Row type='flex' align='middle'>
+                <Checkbox onChange={() => this.onCheckboxChange(item)}
+                    checked={false}/>
+                {/* <div className='place-indent'></div> */}
+                <Arrow rotate='180'/>
+                <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
+            </Row>
+        );
     }
 
     renderUsersCell(text: string, record: IPlace, index: any) {
@@ -206,7 +216,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     getColumns() {
         let columns: Array<TableColumnConfig> = [];
         columnsList.forEach((column: IPlaceListColumn) => {
-
             let renderer: (text: string, record: IPlace, index: any) => {};
 
             switch (column.renderer) {
