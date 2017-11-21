@@ -57,52 +57,52 @@ export default class SelectLevel extends React.Component<IArrowProps, IArrowStat
 
     return (
       <div>
-        <div className="">
+        <div className=''>
           <div>
             <IcoN size={24} name={'manager24'}/>
           </div>
-          <hr className="margin"/>
+          <hr className='margin'/>
           <hr/>
-          <hr className="margin" />
+          <hr className='margin' />
           <div>
             <IcoN size={24} name={'manager-member'}/>
           </div>
-          <hr className="margin"/>
+          <hr className='margin'/>
           <hr/>
-          <hr className="margin" />
+          <hr className='margin' />
           <div>
             <IcoN size={24} name={'manager-member'}/>
           </div>
-          <hr className="margin"/>
+          <hr className='margin'/>
           <hr/>
-          <hr className="margin" />
+          <hr className='margin' />
           <div>
             <IcoN size={24} name={'manager-member'}/>
           </div>
-          <hr className="margin"/>
+          <hr className='margin'/>
           <hr/>
-          <hr className="margin" />
+          <hr className='margin' />
           <div>
             <IcoN size={24} name={'manager-member'}/>
           </div>
-          <div className="active-border" />
-          <div className="receive-arrow" />
+          <div className='active-border' />
+          <div className='receive-arrow' />
         </div>
-        <div className="_fw receive-option-detail">
-          <h4 className="_fw _tac" ng-if="level == NST_PLACE_POLICY_OPTION.MANAGERS"><translate>{'{'}{'{'}placeName{'}'}{'}'} Managers</translate></h4>
-          <h4 className="_fw _tac" ng-if="level == NST_PLACE_POLICY_OPTION.MEMBERS"><translate>{'{'}{'{'}placeName{'}'}{'}'} Managers and Members</translate></h4>
-          <h4 className="_fw _tac" ng-if="level == NST_PLACE_POLICY_OPTION.TEAMMATES"><translate>{'{'}{'{'}grandPlaceName{'}'}{'}'} Members</translate></h4>
-          <h4 className="_fw _tac" ng-if="level == NST_PLACE_POLICY_OPTION.EVERYONE"><translate>Everyone</translate></h4>
-          <div className="_difh _fw _aic" ng-if="level == NST_PLACE_POLICY_OPTION.TEAMMATES || level == NST_PLACE_POLICY_OPTION.EVERYONE">
-            <p className="_df _fw"><translate>Show in their search results?</translate></p>
-            <div className="_df _fn">
-              <div className="place-switch">
-                <input type="checkbox" name="checkbox_id" id="Searchable" data-ng-model="searchable" ng-change="searchableChanged(searchable);" />
-                <label htmlFor="Searchable">
+        <div className='_fw receive-option-detail'>
+          <h4 className='_fw _tac' ng-if='level == NST_PLACE_POLICY_OPTION.MANAGERS'><translate> Managers</translate></h4>
+          <h4 className='_fw _tac' ng-if='level == NST_PLACE_POLICY_OPTION.MEMBERS'><translate> Managers and Members</translate></h4>
+          <h4 className='_fw _tac' ng-if='level == NST_PLACE_POLICY_OPTION.TEAMMATES'><translate> Members</translate></h4>
+          <h4 className='_fw _tac' ng-if='level == NST_PLACE_POLICY_OPTION.EVERYONE'><translate>Everyone</translate></h4>
+          <div className='_difh _fw _aic' ng-if='level == NST_PLACE_POLICY_OPTION.TEAMMATES || level == NST_PLACE_POLICY_OPTION.EVERYONE'>
+            <p className='_df _fw'><translate>Show in their search results?</translate></p>
+            <div className='_df _fn'>
+              <div className='place-switch'>
+                <input type='checkbox' name='checkbox_id' id='Searchable' data-ng-model='searchable' ng-change='searchableChanged(searchable);' />
+                <label htmlFor='Searchable'>
                   <b><translate>Yes</translate></b>
-                  <div className="circle" switch-drag="Searchhable" />
+                  <div className='circle' switch-drag='Searchhable' />
                 </label>
-                <label htmlFor="Searchable">
+                <label htmlFor='Searchable'>
                   <b><translate>No</translate></b>
                 </label>
               </div>
