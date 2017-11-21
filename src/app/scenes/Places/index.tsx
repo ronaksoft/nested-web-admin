@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {IcoN} from '../../components/icon/index';
 
 import Filter from './../../components/Filter/index';
-import {Row, Col, Icon, Input, Tabs} from 'antd';
+import {Row, Col, Icon, Input, Tabs, Button} from 'antd';
 import PlaceList from './List/index';
 import SystemApi from '../../api/system/index';
 import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
@@ -103,6 +103,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         <TabPane tab={<span><IcoN size={24} name={'dudesWire24'}/>Shared Places</span>} key='0'/>
                         <TabPane tab={<span><IcoN size={24} name={'dudeWire24'}/>Individual Places</span>} key='1'/>
                     </Tabs>
+                    <Button type=' butn butn-green secondary'>Create Grand Place</Button>
                 </Row>
                 <div className='places-inner'>
                     <Row className='toolbar' type='flex'>
