@@ -1,0 +1,33 @@
+.nst-input {
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid @color-breeze;
+    border-radius: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    color: @color-solid;
+    &:hover {
+        border: 1px solid @color-solid;
+        box-shadow: none;
+    }
+    &:focus {
+        border: 2px solid @color-solid;
+        box-shadow: none;
+    }
+    &.error {
+        border-color: @color-force;
+        color: @color-force;
+    }
+}
+.nst-input:-moz-placeholder {
+    color: @color-solid-64;
+}
+.nst-input::-moz-placeholder {
+    color: @color-solid-64;
+}
+.nst-input::-webkit-input-placeholder {
+    color: @color-solid-64;
+}
+.nst-input:-ms-input-placeholder {
+    color: @color-solid-64;
+}

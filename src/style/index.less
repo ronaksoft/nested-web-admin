@@ -1,5 +1,6 @@
 @import "./variables.less";
 @import "./buttons.less";
+@import "./inputs.less";
 @import "../app/components/Filter/filter.less";
 @import "../app/scenes/Places/places.less";
 
@@ -411,6 +412,109 @@ select {
         }
         &.place-row {
           margin-bottom: 0
+        }
+    }
+    label {
+        color: rgba(0, 0, 0, .64);
+    }
+    .nst-ico {
+        width: 16px;
+        height: 16px;
+        padding: 0;
+    }
+    .devide-row {
+        background-color: #F7FAF8;
+        height: 32px;
+        padding: 8px 32px;
+        margin-bottom: 0
+    }
+    .remove-margin {
+        margin: 0;
+        padding: 0;
+    }
+    .place-row {
+        height: 64px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        p {
+            font-size: 14px;
+            i {
+              margin-right: 4px;
+            }
+        }
+        span {
+            font-size: 12px;
+        }
+        aside {
+            font-size: 12px;
+            text-align: right;
+            color: rgba(0, 0, 0, .48)
+        }
+    }
+}
+.create-place-modal {
+    padding: 0;
+    top: 0;
+    border-radius: 0;
+    color: @color-solid;
+    .ant-modal-content {
+        border-radius: 0;
+        min-height: 100vh;
+    }
+    .ant-modal-header {
+        padding: 24px 24px 0;
+        height: 72px;
+        border: none;
+        .ant-modal-title {
+            opacity: .72;
+            font-size: 20px;
+            line-height: 27px;
+        }
+    }
+    .UserAvatar--inner {
+      justify-content: center
+    }
+    .ant-modal-body {
+        padding: 16px;
+    }
+    .place-info {
+        background: rgba(50, 61, 71, 0.02);
+        border: 1px solid rgba(50, 61, 71, 0.08);
+        box-sizing: border-box;
+        border-radius: 4px;
+        margin-right: 16px;
+        padding: 24px 16px;
+        width: ~'calc(66.66666667% - 16px)';
+        .place-picture {
+            width: 100%;
+            flex-direction: column;
+            padding-bottom: 8px;
+            img {
+                width: 64px;
+                border: 1px solid rgba(50, 61, 71, 0.08);
+                box-sizing: border-box;
+                border-radius: 4px;
+                height: 64px;
+                margin-bottom: 6px;
+            }
+        }
+        .input-row {
+            padding-top: 24px;
+            label {
+                font-size: 13px;
+                display: flex;
+                font-weight: bold;
+                margin-bottom: 6px;
+                color: @color-solid;
+                opacity: .8;
+                line-height: 18px;
+            }
+            p {
+                font-size: 13px;
+                opacity: .8;
+                color: @color-solid;
+                padding: 0 6px;
+                margin-top: 10px;
+            }
         }
     }
     label {

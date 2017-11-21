@@ -9,6 +9,8 @@ import PlaceList from './List/index';
 import SystemApi from '../../api/system/index';
 import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
+import CreatePlaceModal from '../../components/CreatePlaceModal/index';
+
 // import './places.less';
 const TabPane = Tabs.TabPane;
 
@@ -18,6 +20,7 @@ export interface IAccountsProps {
 export interface IAccountsState {
     counters: IGetSystemCountersResponse;
     loadCounters: boolean;
+    visibelCreatePlaceModal: boolean;
     selectedFilter: string;
     searchKeywork: string;
 }
@@ -30,6 +33,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             searchKeywork: '',
             counters: {},
             loadCounters: false,
+            visibelCreatePlaceModal: false,
         };
     }
 
@@ -47,6 +51,18 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     changeFilter(key: string) {
         this.setState({
             selectedFilter: key,
+        });
+    }
+
+    showCreatePlaceModal() {
+        this.setState({
+            visibelCreatePlaceModal: true,
+        });
+    }
+
+    closeCreatePlaceModal() {
+        this.setState({
+            visibelCreatePlaceModal: false,
         });
     }
 
@@ -98,12 +114,16 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
         return (
             <div className='places'>
+                {this.state.visibelCreatePlaceModal &&
+                <CreatePlaceModal place='' visible={this.state.visibelCreatePlaceModal}
+                            onClose={this.closeCreatePlaceModal.bind(this)}/>
+                }
                 <Row className='places-tab' type='flex'>
                     <Tabs defaultActiveKey='0' onChange={this.tabChangeHandler.bind(this)}>
                         <TabPane tab={<span><IcoN size={24} name={'dudesWire24'}/>Shared Places</span>} key='0'/>
                         <TabPane tab={<span><IcoN size={24} name={'dudeWire24'}/>Individual Places</span>} key='1'/>
                     </Tabs>
-                    <Button type=' butn butn-green secondary'>Create Grand Place</Button>
+                    <Button type=' butn butn-green secondary' onClick={this.showCreatePlaceModal.bind(this)}>Create Grand Place</Button>
                 </Row>
                 <div className='places-inner'>
                     <Row className='toolbar' type='flex'>

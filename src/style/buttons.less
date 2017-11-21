@@ -15,6 +15,7 @@
     align-items: center;
     min-width: 80px;
     padding: 0 16px;
+    border-color: #DDDFE0;
     a,span {
       color: #ffffff;
       white-space: nowrap;
@@ -35,9 +36,30 @@
         color: #ACB0B4;
       }
     }
-    &.secondary:disabled {
-      box-shadow: none;
+    &.secondary {
+      border-color: #232629;
       background-color: #ffffff!important;
+      a,span {
+        color: #323D47;
+      }
+      &:hover {
+        border-color: #323D47;
+        box-shadow: 0px 3px 8px rgba(35, 38, 41, 0.32);
+        a,span {
+          color: #232629;
+        }
+      }
+      &:focus {
+        border-color: #323D47;
+        box-shadow: 0px 1px 2px rgba(35, 38, 41, 0.32);
+        a,span {
+          color: #232629;
+        }
+      }
+      &:disabled {
+        box-shadow: none;
+        background-color: #ffffff!important;
+      }
     }
   }
   
