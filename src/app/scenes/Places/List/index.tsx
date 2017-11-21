@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import {Table, Row, Col, Card, Icon, TableColumnConfig, Checkbox} from 'antd';
+import {Table, Row, Col, Card, Icon, TableColumnConfig, Checkbox, Dropdown, Menu} from 'antd';
 import PlaceApi from '../../../api/place/index';
 import IPlace from '../../../api/place/interfaces/IPlace';
 import {columnsList, IPlaceListColumn} from './columsList';
@@ -15,7 +15,13 @@ import {IcoN} from '../../../components/icon/index';
 import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
 
-
+export interface IPlaceOptionsItem {
+    key: string;
+    name: string;
+    icon: string;
+    style ?: string;
+    class ?: string;
+}
 interface IListProps {
     counters: IGetSystemCountersResponse;
     selectedFilter: CPlaceFilterTypes;
@@ -161,6 +167,13 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         }
     }
 
+    handleGroupChange(menu: any) {
+
+        if (typeof menu.onClick === 'function') {
+            menu.onClick();
+        }
+    }
+
     renderPlaceCell(text: string, record: IPlace, index: any) {
         return (
             <Row type='flex' align='middle'>
@@ -186,12 +199,12 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 }
                 if (this.getUser(userId)) {
                     const user = this.getUser(userId);
-                    users.push(<UserAvatar avatar key={userId} user={user} size={20}/>);
+                    users.push(<UserAvatar avatar key={userId} user={user} size={16}/>);
                 }
             });
         }
         return (
-            <Row type='flex' gutter={4} justify='start'>
+            <Row className='managers' type='flex' gutter={4} justify='start'>
                 {users}
                 {moreUserCounter > 0 &&
                 <span>+{moreUserCounter}</span>
@@ -202,20 +215,54 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
     renderMemberCounterCell(text: string, record: IPlace, index: any) {
         const count = record.counters.creators + record.counters.key_holders;
-        return (<div><Icon type='user' title={'Members'}/>{count}</div>);
+        return (<div className='membersCounter'><IcoN size={16} name={'dudesWire16'}/>{count}</div>);
     }
 
     renderPoliciesCell(text: string, record: IPlace, index: any) {
-        return <PlacePolicy place={record} text={false} search={true} type={true} receptive={true} />;
+        return <div className='placePolicies'><PlacePolicy place={record} text={false} search={true} receptive={true} /></div>;
+    }
+
+    renderOptionsCell(text: string, record: IPlace, index: any) {
+        var items = [
+            {
+                key: CPlaceFilterTypes.ALL,
+                name: 'Relation View',
+                icon: 'placesRelation16',
+                onClick : () => {
+                    console.log('onclick item');
+                },
+            }
+        ];
+        items.map((menu: IPlaceOptionsItem, index: number) => {
+
+            return (<div>
+                        <Menu.Item key={index}>
+                            <div>
+                                <IcoN size={16} name={menu.icon}/>
+                                <p>{menu.name}</p>
+                            </div>
+                        </Menu.Item>
+                        <Menu.Divider/>
+                    </div>);
+        });
+        return (
+            <Row className='moreOptions' type='flex' justify='end'>
+                <Dropdown overlay={<Menu>
+                    {items}
+                    </Menu>}
+                    trigger={['click']}>
+                    <IcoN size={24} name={'more24'}/>
+                </Dropdown>
+            </Row>);
     }
 
     renderSubPlaceCounterCell(text: string, record: IPlace, index: any) {
         const count = record.counters.childs;
-        return (<div>{count}</div>);
+        return (<Row type='flex' justify='center'>{count}</Row>);
     }
 
     renderPlaceTypeCell(text: string, record: IPlace, index: any) {
-        return text;
+        return <Row className='placeType' type='flex' align='middle'><PlacePolicy place={record} text={true} type={true} /></Row>;
     }
 
     getColumns() {
@@ -242,16 +289,20 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 case 'placePolicy':
                     renderer = this.renderPoliciesCell;
                     break;
+                case 'options':
+                    renderer = this.renderOptionsCell;
+                    break;
             }
-
-            columns.push(
-                {
-                    title: column.title,
-                    dataIndex: column.key,
-                    key: column.key,
-                    render: renderer
-                }
-            );
+            var col = {
+                title: column.title,
+                dataIndex: column.key,
+                key: column.key,
+                render: renderer
+            };
+            if (column.width) {
+                col.width = column.width;
+            }
+            columns.push(col);
         });
         return columns;
     }

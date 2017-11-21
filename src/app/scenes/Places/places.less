@@ -3,15 +3,22 @@
     background-color: #ffffff;
 }
 .places-list {
-    thead tr{
+    thead.ant-table-thead tr{
         height: 64px;
-        th {
+        > th:not(.ant-table-selection-column){
             border-bottom: 1px solid @color-light-breeze;
             background-color: transparent;
             color: @color-solid-4;
+            padding: 0 16px;
             &:first-of-type {
                 padding: 0 32px!important;
             }
+        }
+    }
+    tbody.ant-table-tbody {
+        td {
+            height: 64px;
+            padding: 0 16px;
         }
     }
     .PlaveView {
@@ -26,5 +33,45 @@
     }
     .ant-checkbox-wrapper:not(:last-child) {
         margin: 0 12px;
+    }
+    .placePolicies {
+        i {
+            opacity: .4;
+            margin: 0 2px;
+            &:hover {
+                opacity: 1
+            }
+        }
+    }
+    .moreOptions {
+        i {
+            opacity: .4;
+            &:hover {
+                opacity: 1
+            }
+        }
+    }
+    .membersCounter {
+        opacity: .62;
+        color: @color-solid;
+        font-size: 13px;
+        i {
+            transform: translateY(3px);
+            margin: 0 4px;
+        }
+    }
+    .managers {
+        font-size: 13px;
+        .UserAvatar {
+            margin: 0 2px;
+        }
+    }
+    .placeType {
+        color: @color-solid;
+        opacity: .72;
+        i {
+            margin-right: 5px;
+            transform: translateY(3px)
+        }
     }
 }

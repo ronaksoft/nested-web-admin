@@ -96,6 +96,9 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
 
     let imageClass;
     switch (size) {
+    case 16:
+        imageClass = 'ImageHolder-avatar-16';
+        break;
     case 20:
         imageClass = 'ImageHolder-avatar-20';
         break;

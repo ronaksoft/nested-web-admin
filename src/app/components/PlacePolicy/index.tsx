@@ -71,17 +71,18 @@ export default class PlacePolicy extends React.Component<IPlacePolicyProps, any>
   }
 
   receptive(place: IPlace) {
+
     var icon, text;
-    if (place.privacy.receptive === C_PLACE_RECEPTIVE.external && place.policy.add_post === C_PLACE_POLICE.everyone) {
+    if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.external] && place.policy.add_post === C_PLACE_POLICE[C_PLACE_POLICE.everyone]) {
       icon = <IcoN size={16} name={'earth16'}/>;
       text = 'Everyone can share post.';
-    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE.internal && place.policy.add_post === C_PLACE_POLICE.everyone) {
+    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.internal] && place.policy.add_post === C_PLACE_POLICE[C_PLACE_POLICE.everyone]) {
       icon = <IcoN size={16} name={'team16'}/>;
       text = 'All grand-place members can share post';
-    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE.off && place.policy.add_post === C_PLACE_POLICE.everyone) {
+    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICE[C_PLACE_POLICE.everyone]) {
       icon = <IcoN size={16} name={'manager-member16'}/>;
       text = 'All members of the place could share post.';
-    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE.off && place.policy.add_post === C_PLACE_POLICE.everyone) {
+    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICE[C_PLACE_POLICE.everyone]) {
       icon = <IcoN size={16} name={'manager16'}/>;
       text = 'Only managers can share post';
     }
@@ -105,9 +106,9 @@ export default class PlacePolicy extends React.Component<IPlacePolicyProps, any>
     const place = this.props.place;
     return (
       <div className='policies'>
+        {this.receptive(place)}
         {this.type(place)}
         {this.search(place)}
-        {this.receptive(place)}
       </div>
     );
   }
