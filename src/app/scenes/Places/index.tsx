@@ -4,12 +4,13 @@ import {connect} from 'react-redux';
 import {IcoN} from '../../components/icon/index';
 
 import Filter from './../../components/Filter/index';
-import {Row, Col, Icon, Input} from 'antd';
+import {Row, Col, Icon, Input, Tabs} from 'antd';
 import PlaceList from './List/index';
 import SystemApi from '../../api/system/index';
 import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 // import './places.less';
+const TabPane = Tabs.TabPane;
 
 export interface IAccountsProps {
 }
@@ -47,6 +48,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.setState({
             selectedFilter: key,
         });
+    }
+
+    tabChangeHandler() {
+        console.log(arguments);
     }
 
     searchKeyDown(e: any) {
@@ -93,32 +98,40 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
         return (
             <div className='places'>
-                <Row className='toolbar' type='flex'>
-                    <div className='filter-search'>
-                        <Input className='filter-search' value={this.state.searchKeywork} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
-                        { this.state.searchKeywork.length === 0 && <IcoN size={16} name={'search16'}/>}
-                        { this.state.searchKeywork.length > 0 && <IcoN size={16} name={'xcross16'}/>}
-                        {/* <IcoN size={24} name={'dashbooard24'}/> */}
-                        {/* <svg class="_16svg" ng-click="ctlFiles.searchFunc()" ng-show="ctlFiles.keyword.length === 0">
-                        <use xlink:href="/assets/icons/nst-icn16.svg#search"></use>
-                        </svg>
-                        <svg class="_16svg" ng-click="ctlFiles.keyword = ''" ng-show="ctlFiles.keyword.length > 0">
-                        <use xlink:href="/assets/icons/nst-icn16.svg#xcross"></use>
-                        </svg> */}
-                    </div>
-                    <div className='filler'></div>
-                    {this.state.loadCounters &&
-                    <Filter totalCount={filterItems[0].count} menus={filterItems}
-                            onChange={this.changeFilter.bind(this)}/>
-                    }
+                <Row className='places-tab' type='flex'>
+                    <Tabs defaultActiveKey='0' onChange={this.tabChangeHandler.bind(this)}>
+                        <TabPane tab={<span><IcoN size={24} name={'dudesWire24'}/>Shared Places</span>} key='0'/>
+                        <TabPane tab={<span><IcoN size={24} name={'dudeWire24'}/>Individual Places</span>} key='1'/>
+                    </Tabs>
                 </Row>
-                <Row>
-                    <Col span={24}>
+                <div className='places-inner'>
+                    <Row className='toolbar' type='flex'>
+                        <div className='filter-search'>
+                            <Input className='filter-search' value={this.state.searchKeywork} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
+                            { this.state.searchKeywork.length === 0 && <IcoN size={16} name={'search16'}/>}
+                            { this.state.searchKeywork.length > 0 && <IcoN size={16} name={'xcross16'}/>}
+                            {/* <IcoN size={24} name={'dashbooard24'}/> */}
+                            {/* <svg class="_16svg" ng-click="ctlFiles.searchFunc()" ng-show="ctlFiles.keyword.length === 0">
+                            <use xlink:href="/assets/icons/nst-icn16.svg#search"></use>
+                            </svg>
+                            <svg class="_16svg" ng-click="ctlFiles.keyword = ''" ng-show="ctlFiles.keyword.length > 0">
+                            <use xlink:href="/assets/icons/nst-icn16.svg#xcross"></use>
+                            </svg> */}
+                        </div>
+                        <div className='filler'></div>
                         {this.state.loadCounters &&
-                        <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter}/>
+                        <Filter totalCount={filterItems[0].count} menus={filterItems}
+                                onChange={this.changeFilter.bind(this)}/>
                         }
-                    </Col>
-                </Row>
+                    </Row>
+                    <Row>
+                        <Col span={24}>
+                            {this.state.loadCounters &&
+                            <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter}/>
+                            }
+                        </Col>
+                    </Row>
+                </div>
             </div>
         );
     }
