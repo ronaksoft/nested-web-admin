@@ -34,5 +34,5 @@ function build() {
     .pipe(htmlFilter)
     .pipe(htmlmin())
     .pipe(htmlFilter.restore)
-    .pipe(gulp.dest(conf.path.dist('/admin/')));
+    .pipe(gulp.dest(conf.path.dist()));
 }
