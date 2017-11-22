@@ -1,6 +1,7 @@
 @import "./variables.less";
 @import "./buttons.less";
 @import "./inputs.less";
+@import "../app/components/SelectLevel/SelectLevel.less";
 @import "../app/components/Filter/filter.less";
 @import "../app/scenes/Places/places.less";
 
@@ -451,11 +452,15 @@ select {
         }
     }
 }
-.create-place-modal {
+.ant-modal.create-place-modal {
     padding: 0;
-    top: 0;
+    top: 32px;
     border-radius: 0;
+    box-shadow: 0px 32px 64px #232629;
+    border-radius: 6px;
     color: @color-solid;
+    margin-bottom: 64px;
+    overflow: hidden;
     .ant-modal-content {
         border-radius: 0;
         min-height: 100vh;
@@ -520,41 +525,25 @@ select {
     label {
         color: rgba(0, 0, 0, .64);
     }
-    .nst-ico {
-        width: 16px;
-        height: 16px;
-        padding: 0;
-    }
-    .devide-row {
-        background-color: #F7FAF8;
-        height: 32px;
-        padding: 8px 32px;
-        margin-bottom: 0
-    }
-    .remove-margin {
-        margin: 0;
-        padding: 0;
-    }
-    .place-row {
-        height: 64px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-        p {
-            font-size: 14px;
-            i {
-              margin-right: 4px;
-            }
-        }
-        span {
-            font-size: 12px;
-        }
-        aside {
-            font-size: 12px;
-            text-align: right;
-            color: rgba(0, 0, 0, .48)
-        }
+    .ant-modal-footer {
+        height: 72px;
+        display: flex;
+        padding: 16px;
+        justify-content: flex-end;
+        border: none;
     }
 }
-
+div.ant-modal-mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: #323D47;
+    height: 100%;
+    z-index: 1000;
+    filter: alpha(opacity=94);
+}
 .place-modal {
 
     .ant-col-6 {

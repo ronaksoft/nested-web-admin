@@ -1,3 +1,4 @@
+import { link } from 'fs';
 import * as React from 'react';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
@@ -14,12 +15,13 @@ import IUser from '../../api/account/interfaces/IUser';
 import AAA from '../../services/classes/aaa/index';
 import C_PLACE_TYPE from '../../api/consts/CPlaceType';
 import EditableFields from './EditableFields';
+import SelectLevel from '../SelectLevel/index';
 import _ from 'lodash';
 
 interface IProps {
     place?: IPlace;
     visible?: boolean;
-    onClose?: any;
+    onClose?: () => {};
     onChange?: (place: IPlace) => {};
 }
 
@@ -55,10 +57,59 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     }
 
     handleCancel() {
-        console.log('a');
+        this.props.onClose();
+        this.setState({
+            visible: false,
+        });
     }
 
     render() {
+        const sharePostItems = [
+            {
+              index: 0,
+              label: 'manager',
+              description: 'Managers Only',
+              searchProperty: false,
+            },
+            {
+              index: 1,
+              label: 'managerMember',
+              description: 'This Place Managers & Members',
+              searchProperty: false,
+            },
+            {
+              index: 2,
+              label: 'team',
+              description: 'All Grand Place Members',
+              searchProperty: true,
+            },
+            {
+              index: 3,
+              label: 'building',
+              description: 'All Company Members',
+              searchProperty: true,
+            },
+            {
+              index: 4,
+              label: 'atsign',
+              description: 'All Company Members + Everyone via Email:',
+              searchProperty: true,
+            }
+        ];
+        const createPlaceItems = [
+            {
+              index: 0,
+              label: 'manager',
+              description: 'Managers Only',
+              searchProperty: false,
+            },
+            {
+              index: 1,
+              label: 'managerMember',
+              description: 'This Place Managers & Members',
+              searchProperty: false,
+            }
+        ];
         const props = {
             name: 'file',
             action: '//jsonplaceholder.typicode.com/posts/',
@@ -76,14 +127,22 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
               }
             },
         };
+
+        const modalFooter = (
+            <div className='modal-foot'>
+                <Button type=' butn'>Discard</Button>
+                <Button type=' butn butn-green'>Create Place</Button>
+            </div>
+        );
+
         return (
             <Modal className='create-place-modal'
                 maskClosable={true}
                 width={800}
                 closable={true}
                 onCancel={this.handleCancel.bind(this)}
-                visible={this.state.visible}
-                footer={null}
+                visible={true}
+                footer={modalFooter}
                 title='Create a Private Place'>
                 <Row>
                     <Col className='place-info' span={16}>
@@ -108,9 +167,37 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                             <label htmlFor='description'>Description</label>
                             <Input id='description' size='large' className='nst-input'/>
                         </Row>
-                        <Row className='select-level'>
+                        <Row className='input-row select-level'>
                             <label>Who can share posts with this Place?</label>
-                            <SelectLevel levels={5} onChange=''/>
+                            <SelectLevel level={0} items={sharePostItems}/>
+                        </Row>
+                        <Row className='input-row select-level'>
+                            <label>Who can create sub-places in this Place?</label>
+                            <SelectLevel level={0} items={createPlaceItems}/>
+                        </Row>
+                        <Row className='input-row select-level'>
+                            <label>Who can add member to this Place?</label>
+                            <SelectLevel level={0} items={createPlaceItems}/>
+                        </Row>
+                        <Row className='input-row' gutter={24}>
+                            <Col span={12}>
+                                <label htmlFor='limitManager'>Max. Managers</label>
+                                <Input id='limitManager' size='large' className='nst-input'/>
+                            </Col>
+                            <Col span={12}>
+                                <label htmlFor='limitMember'>Max. Managers</label>
+                                <Input id='limitMember' size='large' className='nst-input'/>
+                            </Col>
+                        </Row>
+                        <Row className='input-row' gutter={24}>
+                            <Col span={12}>
+                                <label htmlFor='limitSubPlaces'>Max. Sub-Places</label>
+                                <Input id='limitSubPlaces' size='large' className='nst-input'/>
+                            </Col>
+                            <Col span={12}>
+                                <label htmlFor='limitStorage'>Max. Storage</label>
+                                <Input id='limitStorage' size='large' className='nst-input'/>
+                            </Col>
                         </Row>
                     </Col>
                     <Col className='place-members' span={8}>

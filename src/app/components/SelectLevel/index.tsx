@@ -7,16 +7,28 @@
  *              Reviewed by:            -
  *              Date of review:         -
  */
-import * as console from 'console';
 import * as React from 'react';
 import {IcoN} from '../icon/index';
+import {Row, Switch} from 'antd';
+import ISelectLevel from './ISelectLevel';
 
-interface IArrowProps {
-  rotate?: string;
-  size?: number;
+const NST_PLACE_POLICY_OPTION = {
+  MANAGERS: 0,
+  MEMBERS: 1,
+  TEAMMATES: 2,
+  EVERYONE: 3,
+};
+
+interface ISelectLevelProps {
+  items: Array<ISelectLevel>;
+  onChangeLevel?: (level: number) => void;
+  onChangeSearch?: (level: boolean) => void;
+  level?: number;
 }
-interface IArrowStats {
-  rotate: number;
+interface ISelectLevelStats {
+  level: number;
+  searchable: boolean;
+  items: Array<ISelectLevel>;
 }
 
 /**
@@ -24,23 +36,40 @@ interface IArrowStats {
  * @class Arrow
  * @extends {React.Component<IOptionsMenuProps, any>}
  */
-export default class SelectLevel extends React.Component<IArrowProps, IArrowStats> {
+export default class SelectLevel extends React.Component<ISelectLevelProps, ISelectLevelStats> {
 
   constructor(props: any) {
     super(props);
     this.state = {
-      rotate : 0,
+      level : 0,
+      searchable: false,
+      items: [{
+        index: 0,
+        label: 'manager',
+        description: '',
+        searchProperty: false,
+      }],
     };
   }
 
-  componentWillReceiveProps() {
+  componentDidMount() {
     this.setState({
-      rotate : parseInt(this.props.rotate, 10),
+      items: this.props.items,
     });
   }
 
-  switchLevel() {
-    console.log('aaa');
+  switchLevel(index: number) {
+    this.props.onChangeLevel(index);
+    this.setState({
+      level : index,
+    });
+  }
+
+  searchableChange() {
+    this.props.onChangeSearch(!this.state.searchable);
+    this.setState({
+      searchable : !this.state.searchable,
+    });
   }
 
   /**
@@ -50,64 +79,36 @@ export default class SelectLevel extends React.Component<IArrowProps, IArrowStat
    * @memberof Arrow
    */
   public render() {
-    const styles = {
-      transformOrigin: 'center center',
-      transform: `rotateZ(${this.state.rotate}deg)`,
-    };
 
     return (
-      <div>
-        <div className=''>
-          <div>
-            <IcoN size={24} name={'manager24'}/>
-          </div>
-          <hr className='margin'/>
-          <hr/>
-          <hr className='margin' />
-          <div>
-            <IcoN size={24} name={'manager-member'}/>
-          </div>
-          <hr className='margin'/>
-          <hr/>
-          <hr className='margin' />
-          <div>
-            <IcoN size={24} name={'manager-member'}/>
-          </div>
-          <hr className='margin'/>
-          <hr/>
-          <hr className='margin' />
-          <div>
-            <IcoN size={24} name={'manager-member'}/>
-          </div>
-          <hr className='margin'/>
-          <hr/>
-          <hr className='margin' />
-          <div>
-            <IcoN size={24} name={'manager-member'}/>
-          </div>
+      <div className='selectLevelContainer'>
+        <Row type='flex' align='middle' className={['selectLevelSlider', 'l' + this.state.level].join(' ')}>
+          {this.state.items.map((item: ISelectLevel, index: number) =>  (
+              <li key={index} onClick={this.switchLevel.bind(this, item.index)}>
+                <hr className='margin'/>
+                <Row type='flex' justify='center' align='center'
+                     className={['levelIcon', this.state.level >= item.index ? 'active' : ''].join(' ')}>
+                  <IcoN size={24} name={item.label + '24'}/>
+                </Row>
+                <hr className='margin'/>
+              </li>
+          ))}
           <div className='active-border' />
           <div className='receive-arrow' />
-        </div>
-        <div className='_fw receive-option-detail'>
-          <h4 className='_fw _tac' ng-if='level == NST_PLACE_POLICY_OPTION.MANAGERS'><translate> Managers</translate></h4>
-          <h4 className='_fw _tac' ng-if='level == NST_PLACE_POLICY_OPTION.MEMBERS'><translate> Managers and Members</translate></h4>
-          <h4 className='_fw _tac' ng-if='level == NST_PLACE_POLICY_OPTION.TEAMMATES'><translate> Members</translate></h4>
-          <h4 className='_fw _tac' ng-if='level == NST_PLACE_POLICY_OPTION.EVERYONE'><translate>Everyone</translate></h4>
-          <div className='_difh _fw _aic' ng-if='level == NST_PLACE_POLICY_OPTION.TEAMMATES || level == NST_PLACE_POLICY_OPTION.EVERYONE'>
-            <p className='_df _fw'><translate>Show in their search results?</translate></p>
-            <div className='_df _fn'>
-              <div className='place-switch'>
-                <input type='checkbox' name='checkbox_id' id='Searchable' data-ng-model='searchable' ng-change='searchableChanged(searchable);' />
-                <label htmlFor='Searchable'>
-                  <b><translate>Yes</translate></b>
-                  <div className='circle' switch-drag='Searchhable' />
-                </label>
-                <label htmlFor='Searchable'>
-                  <b><translate>No</translate></b>
-                </label>
-              </div>
+        </Row>
+        <div className='selectLevelDetail'>
+          <h4>{this.state.items[this.state.level].description}</h4>
+          {this.state.items[this.state.level].searchProperty && (
+            <div className='searchContainer'>
+              <Row type='flex' align='middle'>
+                <label>Show in their search results?</label>
+                <div className='_df _fn'>
+                  <Switch defaultChecked={this.state.searchable} onChange={this.searchableChange.bind(this)} />
+                </div>
+              </Row>
+              <p>Non-member accounts can find easly this place just by writing a part of name or id when composing a post.</p>
             </div>
-          </div>
+          )}
         </div>
       </div>
     );
