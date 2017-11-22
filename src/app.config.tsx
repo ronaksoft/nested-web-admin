@@ -12,17 +12,17 @@ export default {
     },
     'SIGN_OUT_TARGET': 'https://nested.me',
     'WEBSOCKET': {
-        'URL': 'wss://webapp.ronaksoftware.com:81',
+        'URL': '_WS_CYRUS_CYRUS_URL_CONF_',
         'TIMEOUT': 60000,
         'REQUEST_MAX_RETRY_TIMES': 16
     },
     'STORE': {
-        'URL': 'https://webapp.ronaksoftware.com:83',
+        'URL': '_XERXES_URL_CONF_',
         'TOKEN_EXPMS': 3550000
     },
     'REGISTER': {
         'AJAX': {
-            'URL': 'https://webapp.ronaksoftware.com:81'
+            'URL': '_HTTP_CYRUS_URL_CONF_'
         }
     },
     'GRAND_PLACE_REGEX': /^[a-zA-Z][a-zA-Z0-9-]{3,30}[a-zA-Z0-9]$/,
