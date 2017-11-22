@@ -148,7 +148,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 <Row>
                     <Col className='place-info' span={16}>
                         <Row className='place-picture' type='flex' align='middle'>
-                            <img src=''/>
+                            <img src='/style/images/ph_place.png'/>
                             <Upload {...props}>
                                 <Button type=' butn secondary'>
                                     Upload a Photo
