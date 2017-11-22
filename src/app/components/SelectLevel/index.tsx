@@ -81,12 +81,23 @@ export default class SelectLevel extends React.Component<ISelectLevelProps, ISel
    * @memberof Arrow
    */
   public render() {
-
+    const liStyle = {
+      width: 100 / this.state.items.length + '%'
+    };
+    const ulStyle = {
+      maxWidth: 96 * this.state.items.length + 'px'
+    };
+    const borderStyle = {
+      width: 100 * (this.state.level + 1) /  this.state.items.length + '%'
+    };
+    const arrowStyle = {
+      left: 100 * (2 * (this.state.level + 1) - 1) / (2 * this.state.items.length) + '%'
+    };
     return (
       <div className='selectLevelContainer'>
-        <Row type='flex' align='middle' className={['selectLevelSlider', 'l' + this.state.level].join(' ')}>
+        <Row type='flex' align='middle' className={['selectLevelSlider', 'l' + this.state.level].join(' ')} style={ulStyle}>
           {this.state.items.map((item: ISelectLevel, index: number) =>  (
-              <li key={index} onClick={this.switchLevel.bind(this, item.index)}>
+              <li key={index} onClick={this.switchLevel.bind(this, item.index)} style={liStyle}>
                 <hr className='margin'/>
                 <Row type='flex' justify='center' align='center'
                      className={['levelIcon', this.state.level >= item.index ? 'active' : ''].join(' ')}>
@@ -95,8 +106,8 @@ export default class SelectLevel extends React.Component<ISelectLevelProps, ISel
                 <hr className='margin'/>
               </li>
           ))}
-          <div className='active-border' />
-          <div className='receive-arrow' />
+          <div className='active-border' style={borderStyle}/>
+          <div className='receive-arrow' style={arrowStyle} />
         </Row>
         <div className='selectLevelDetail'>
           <h4>{this.state.items[this.state.level].description}</h4>

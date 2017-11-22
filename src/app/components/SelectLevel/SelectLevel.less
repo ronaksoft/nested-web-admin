@@ -10,12 +10,13 @@
     height: 48px;
     position: relative;
     width: 100%;
+    align-self: center;
     margin-top: 2px;
     li {
         height: 24px;
         display: flex;
-        width: 20%;
         align-items: center;
+        max-width: 96px;
     }
     .levelIcon {
         width: 40px;
@@ -68,36 +69,21 @@
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
     }
     &.l0 {
-      .active-border {
-        width: 20%;
-      }
       li:first-of-type {
         .levelIcon {
             opacity: 1;
         }
       } 
-      .receive-arrow {
-        left: 10%;
-      }
     }
     &.l1 {
-      .active-border {
-        width: 40%;
-      }
       li:first-of-type ,
       li:nth-child(2) {
         .levelIcon {
             opacity: 1;
         }
       }
-      .receive-arrow {
-        left: 30%;
-      }
     }
     &.l2 {
-      .active-border {
-        width: 60%;
-      }
       li:first-of-type ,
       li:nth-child(2) ,
       li:nth-child(3) {
@@ -105,14 +91,8 @@
             opacity: 1;
         }
       }
-      .receive-arrow {
-        left: 50%;
-      }
     }
     &.l3 {
-      .active-border {
-        width: 80%;
-      }
       li:first-of-type ,
       li:nth-child(2) ,
       li:nth-child(3) ,
@@ -121,14 +101,8 @@
             opacity: 1;
         }
       }
-      .receive-arrow {
-        left: 70%;
-      }
     }
     &.l4 {
-      .active-border {
-        width: 100%;
-      }
       li:first-of-type ,
       li:nth-child(2) ,
       li:nth-child(3) ,
@@ -137,9 +111,6 @@
         .levelIcon {
             opacity: 1;
         }
-      }
-      .receive-arrow {
-        left: 90%;
       }
     }
     .receive-arrow {
