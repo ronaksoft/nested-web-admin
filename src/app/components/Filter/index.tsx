@@ -74,14 +74,14 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
             // console.log(this);
             menus.push(
                 <Menu.Item key={index}>
-                    <div>
+                    <Row type='flex' align='middle' className='filterPopover'>
                         <IcoN size={16} name={menu.icon}/>
                         <p>{menu.name}</p>
                         {
                             this.state.selectedItem.key === menu.key &&
                             <Icon type='check'/>
                         }
-                    </div>
+                    </Row>
                 </Menu.Item>
             );
 

@@ -297,8 +297,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 title: column.title,
                 dataIndex: column.key,
                 key: column.key,
-                render: renderer,
-                width: 222,
+                render: renderer
             };
             if (column.width) {
                 col.width = column.width;

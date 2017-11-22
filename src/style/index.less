@@ -266,10 +266,23 @@ select {
         background-color: transparent;
     }
 }
-
+.ant-dropdown-menu.ant-dropdown-menu-vertical {
+    padding: 8px 0;
+    hr {
+        margin: 8px 0;
+    }
+    .ant-dropdown-menu-item-divider {
+        display: none;
+    }
+}
 .ant-dropdown-menu-item {
+    border: none;
     i {
-        margin-right: 8px;
+        margin-right: 12px;
+    }
+    i.anticon {
+        margin-right: 0;
+        margin-left: 12px;
     }
     a {
         display: inline-block
@@ -668,6 +681,16 @@ div.ant-modal-mask {
     }
 }
 
+.filterPopover {
+    width: 224px;
+    height: 26px;
+    p {
+        font-weight: bold;
+        display: flex;
+        flex: 1;
+        font-size: 14px;
+    }
+}
 // Sign in
 
 .signin {
