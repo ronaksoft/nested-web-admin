@@ -17,6 +17,7 @@ import C_PLACE_TYPE from '../../api/consts/CPlaceType';
 import EditableFields from './EditableFields';
 import SelectLevel from '../SelectLevel/index';
 import _ from 'lodash';
+import {IcoN} from '../icon/index';
 
 interface IProps {
     place?: IPlace;
@@ -130,7 +131,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
         const modalFooter = (
             <div className='modal-foot'>
-                <Button type=' butn'>Discard</Button>
+                <Button type=' butn butn-white'>Discard</Button>
                 <Button type=' butn butn-green'>Create Place</Button>
             </div>
         );
@@ -201,7 +202,13 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                     </Col>
                     <Col className='place-members' span={8}>
-                        s
+                        <h3>Members</h3>
+                        <ul>
+                            <li className='addMemberItem'>
+                                <IcoN size={16} name={'cross16'}/>
+                                Add member...
+                            </li>
+                        </ul>
                     </Col>
                 </Row>
             </Modal>

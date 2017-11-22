@@ -59,7 +59,9 @@ export default class SelectLevel extends React.Component<ISelectLevelProps, ISel
   }
 
   switchLevel(index: number) {
-    this.props.onChangeLevel(index);
+    if (this.props.onChangeLevel) {
+      this.props.onChangeLevel(index);
+    }
     this.setState({
       level : index,
     });

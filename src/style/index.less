@@ -532,6 +532,30 @@ select {
         justify-content: flex-end;
         border: none;
     }
+    .place-members {
+        h3 {
+            color: @color-solid-64;
+            line-height: 42px;
+            padding: 0 12px;
+            font-size: 14px;
+        }
+        li {
+            height: 42px;
+            display: flex;
+            align-items: center;
+        }
+        .addMemberItem {
+            opacity: .4;
+            cursor: pointer;
+            &:hover {
+                opacity: 1;
+            }
+            i {
+                margin: 0 16px;
+            }
+        }
+
+    }
 }
 div.ant-modal-mask {
     position: fixed;
