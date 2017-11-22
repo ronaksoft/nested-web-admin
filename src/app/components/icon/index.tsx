@@ -9,7 +9,7 @@
  *              Date of review:         -
  */
 import * as React from 'react';
-import './icons.css';
+import './icons.less';
 import Icons from './nst-icons';
 
 interface IOptionsMenuProps {
