@@ -105,6 +105,21 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                           status: null
                       });
                   }}>
+                <Form.Item className='row-controls'>
+                    {
+                        !(pending || success) &&
+                        <Button shape='circle' type='delete-row' icon='delete' size='large'
+                                onClick={() => this.props.onRemove(this.props.refKey)}/>
+                    }
+                    {
+                        pending &&
+                        <Icon type='loading'/>
+                    }
+                    {
+                        success &&
+                        <Icon type='check-circle-o' className='account-success-icon'/>
+                    }
+                </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('phone', {
                         initialValue: this.props.account.phone,
@@ -121,28 +136,6 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                             disabled={disabled}
                         />
                     )}
-                </Form.Item>
-                <Form.Item>
-                    {getFieldDecorator('_id', {
-                        initialValue: this.props.account._id,
-                        rules: [
-                            {
-                                required: true,
-                                message: 'User ID is required!'
-                            },
-                            {
-                                min: 5,
-                                message: 'The user ID is too short!'
-                            },
-                            _.debounce(this.checkUsernameAvailable, 1000)
-                        ]
-                    })(
-                        <Input
-                            placeholder='john-doe'
-                            disabled={disabled}
-                        />
-                    )}
-
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('fname', {
@@ -178,6 +171,28 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
 
                 </Form.Item>
                 <Form.Item>
+                    {getFieldDecorator('_id', {
+                        initialValue: this.props.account._id,
+                        rules: [
+                            {
+                                required: true,
+                                message: 'User ID is required!'
+                            },
+                            {
+                                min: 5,
+                                message: 'The user ID is too short!'
+                            },
+                            _.debounce(this.checkUsernameAvailable, 1000)
+                        ]
+                    })(
+                        <Input
+                            placeholder='john-doe'
+                            disabled={disabled}
+                        />
+                    )}
+
+                </Form.Item>
+                <Form.Item>
                     {getFieldDecorator('pass', {
                         initialValue: this.props.account.pass,
                         rules: [
@@ -198,21 +213,6 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                         />
                     )}
 
-                </Form.Item>
-                <Form.Item>
-                    {
-                        !(pending || success) &&
-                        <Button shape='circle' type='delete-row' icon='delete' size='large'
-                                onClick={() => this.props.onRemove(this.props.refKey)}/>
-                    }
-                    {
-                        pending &&
-                        <Icon type='loading'/>
-                    }
-                    {
-                        success &&
-                        <Icon type='check-circle-o' className='account-success-icon'/>
-                    }
                 </Form.Item>
             </Form>
         );

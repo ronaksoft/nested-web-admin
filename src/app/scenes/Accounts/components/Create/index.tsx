@@ -210,16 +210,12 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 afterClose={this.initModal.bind(this)}
                 onCancel={this.handleClose}>
                 <div>
-                    <Row>
-                        <Col span={22}>
-                            <Row>
-                                <Col span={5}><b>Phone Number</b><span>(with country code)</span></Col>
-                                <Col span={5}><b>Username</b></Col>
-                                <Col span={5}><b>First Name</b></Col>
-                                <Col span={5}><b>Last Name</b></Col>
-                                <Col span={4}><b>Password</b></Col>
-                            </Row>
-                        </Col>
+                    <Row className='create-account-head'>
+                        <Col span={4}><b>Phone Number</b></Col>
+                        <Col span={4}><b>First Name</b></Col>
+                        <Col span={4}><b>Last Name</b></Col>
+                        <Col span={4}><b>Username</b></Col>
+                        <Col span={8}><b>First Login Password</b></Col>
                     </Row>
                     {this.state.accounts.map((pocket) => (<InputRow
                         key={pocket.key}
@@ -231,40 +227,32 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                         refKey={pocket.key}/>))}
                     <Card>
                         <Row type='flex' align='middle'>
-                            <Col span={12}>
+                            <Col span={6}>
                                 <a onClick={this.addNewRow.bind(this)}>
                                     <Icon type='plus'/> Add another
                                 </a>
                             </Col>
-                            <Col span={8}>
+                            <Col span={6}>
                                 <input id='upload' type='file' accept='*.csv' onChange={this.readFile}
                                        onClick={(event) => {
                                            event.target.value = null;
                                        }} className='hidden'/>
-                                <span>You can also</span>&nbsp;
                                 <a type='primary' onClick={this.handleUpload}>
                                     Import from a file
-                                </a>&nbsp;
+                                </a>
                             </Col>
-                            <Col span={4}>
-                                <small>
-                                    <a onClick={this.downloadExample}>
-                                        (Download Example)
-                                    </a>
-                                </small>
+                            <Col span={6}>
+                                <a onClick={this.downloadListCSV.bind(this)} type='warning'>
+                                    Download template.
+                                </a>
+                            </Col>
+                            <Col span={6}>
+                                <a onClick={this.downloadExample}>
+                                    Template example
+                                </a>
                             </Col>
                         </Row>
                     </Card>
-                    <Row>
-                        <Col span={12}>
-                            <b>
-                                <a onClick={this.downloadListCSV.bind(this)} type='warning'>
-                                    For download user creation form as a CSV file click here.
-                                    (Download Form as CSV File)
-                                </a>
-                            </b>
-                        </Col>
-                    </Row>
                 </div>
             </Modal>
         );

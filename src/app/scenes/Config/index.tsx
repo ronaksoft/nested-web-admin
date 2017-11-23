@@ -401,7 +401,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                 ]
                                             })(
                                                 // <Input />
-                                                <Select style={{ width: 88 }} onChange={this.handleChange}>
+                                                <Select style={{ width: 128 }} onChange={this.handleChange}>
                                                   <Option value={3600000}>1</Option>
                                                   <Option value={21600000}>6</Option>
                                                   <Option value={43200000}>12</Option>
