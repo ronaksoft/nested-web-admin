@@ -323,7 +323,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     columns={column}
                     loading={this.state.loading}
                     dataSource={this.state.places}
-                    size='middle'
+                    size='middle nst-table'
+                    className='nst-table'
                     scroll={{x: 960}}
                 />
             </div>

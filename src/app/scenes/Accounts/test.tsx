@@ -100,7 +100,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         ];
         return (
             <div className='accounts'>
-                <Row type='flex' className='scene-head'>
+                <Row type='flex'>
                     <h2>Accounts</h2>
                 </Row>
                 <div className='white-block-container'>

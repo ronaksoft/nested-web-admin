@@ -1,5 +1,6 @@
 @import "./variables.less";
 @import "./buttons.less";
+@import "./tables.less";
 @import "./inputs.less";
 @import "../app/components/SelectLevel/SelectLevel.less";
 @import "../app/components/Filter/filter.less";
@@ -296,7 +297,7 @@ select {
     }
 }
 
-.ant-pagination.mini {
+.ant-pagination {
     .ant-pagination-item,
     .ant-pagination-next, .ant-pagination-prev   {
         width: 24px;
@@ -304,6 +305,7 @@ select {
         line-height: 24px;
         color: @color-solid;
         height: 24px;
+        border: none;
     }
     .ant-pagination-item-active {
         color: #fff;
@@ -315,7 +317,7 @@ select {
     }
     .ant-pagination-prev a:after, .ant-pagination-next a:after {
         font-size: 18px;
-        line-height: 0;
+        line-height: 20px;
         font-weight: bold;
     }
 }
@@ -671,6 +673,19 @@ div.ant-modal-mask {
     }
 }
 
+.scene-head {
+    margin-bottom: 24px;
+    height: 56px;
+    h2 {
+        font-weight: bold;
+        line-height: normal;
+        border-bottom: 1px solid @color-light-breeze;
+        font-size: 18px;
+        line-height: 56px;
+        width: 100%;
+        color: @color-solid;
+    }
+}
 // contact
 .account-modal {
 

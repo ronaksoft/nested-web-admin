@@ -46,7 +46,7 @@ class List extends React.Component <IListProps,
     dataColumns = {
         'name': 'Name',
         '_id': 'User ID',
-        'access_places': 'Member in Place',
+        'access_places': 'Member in',
         'joined_on': 'Joined Date',
         'phone': 'Phone',
         'gender': 'Gender',
@@ -194,6 +194,7 @@ class List extends React.Component <IListProps,
     }
 
     constructor(props: IListProps) {
+        super(props);
 
         this.allColumns = [
             {
@@ -215,10 +216,10 @@ class List extends React.Component <IListProps,
                 render: this.placesRender,
                 index: 2
             }, {
-                title: this.dataColumns.joined_on,
-                dataIndex: 'joined_on',
-                key: 'joined_on',
-                render: this.joinedRender,
+                title: this.dataColumns.searchable,
+                dataIndex: 'searchable',
+                key: 'searchable',
+                render: this.searchableRender,
                 index: 3
             }, {
                 title: this.dataColumns.phone,
@@ -227,29 +228,29 @@ class List extends React.Component <IListProps,
                 render: this.phoneRender,
                 index: 4
             }, {
-                title: this.dataColumns.gender,
-                dataIndex: 'gender',
-                key: 'gender',
-                render: this.genderRender,
+                title: this.dataColumns.joined_on,
+                dataIndex: 'joined_on',
+                key: 'joined_on',
+                render: this.joinedRender,
                 index: 5
-            }, {
-                title: this.dataColumns.dob,
-                dataIndex: 'dob',
-                key: 'dob',
-                render: this.dobRender,
-                index: 6
             }, {
                 title: this.dataColumns.disabled,
                 dataIndex: 'disabled',
                 key: 'disabled',
                 render: this.disabledRender,
+                index: 6
+            }, {
+                title: this.dataColumns.gender,
+                dataIndex: 'gender',
+                key: 'gender',
+                render: this.genderRender,
                 index: 7
             }, {
-                title: this.dataColumns.searchable,
-                dataIndex: 'searchable',
-                key: 'searchable',
-                render: this.searchableRender,
-                index: 7
+                title: this.dataColumns.dob,
+                dataIndex: 'dob',
+                key: 'dob',
+                render: this.dobRender,
+                index: 8
             }
         ];
 
@@ -362,7 +363,7 @@ class List extends React.Component <IListProps,
                 break;
         }
         return (
-            <Card>
+            <div>
                 <Table
                     onRowClick={(user) => {
                         this.onItemClick(user);
@@ -372,7 +373,7 @@ class List extends React.Component <IListProps,
                         current: this.state.currentPage,
                         onChange: this.onPageChange
                     }} rowKey='_id' columns={columns} dataSource={this.state.accounts}
-                    size='middle' className='nst-table' scroll={{
+                    size='middle nst-table' scroll={{
                     x: 960
                 }} loading={this.state.loading}/>
                 {
@@ -380,7 +381,7 @@ class List extends React.Component <IListProps,
                     <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
                           onClose={this.onCloseView}/>
                 }
-            </Card>
+            </div>
         );
     }
 

@@ -147,8 +147,8 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         return (
             <div className='places'>
                 {this.state.visibelCreatePlaceModal &&
-                <CreatePlaceModal place='' visible={this.state.visibelCreatePlaceModal}
-                            onClose={this.closeCreatePlaceModal.bind(this)}/>
+                    <CreatePlaceModal place='' visible={this.state.visibelCreatePlaceModal}
+                        onClose={this.closeCreatePlaceModal.bind(this)}/>
                 }
                 <Row className='places-tab' type='flex'>
                     <Tabs defaultActiveKey='0' onChange={this.tabChangeHandler.bind(this)}>
@@ -157,7 +157,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                     </Tabs>
                     <Button type=' butn butn-green secondary' onClick={this.showCreatePlaceModal.bind(this)}>Create Grand Place</Button>
                 </Row>
-                <div className='places-inner'>
+                <div className='white-block-container'>
                     <Row className='toolbar' type='flex'>
                         <div className='filter-search'>
                             <Input className='filter-search' value={this.state.searchKeywork} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
