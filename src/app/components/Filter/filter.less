@@ -3,13 +3,20 @@
     white-space: nowrap;
     height: 40px;
     width: ~"calc(100% - 16px)";
-    background: @color-light-breeze;
     color: @color-breeze;
     border-radius: 8px;
     font-weight: 300;
     margin: 0 8px;
-    padding: 0 4px; 
+    padding: 0 4px;
     align-items: center;
+    &:not(.transparent){
+        background: @color-light-breeze;
+    }
+    &.transparent {
+        h2 {
+            color: @color-solid;
+        }
+    }
     .ant-col-6 {
         display: flex;
         flex: 1;

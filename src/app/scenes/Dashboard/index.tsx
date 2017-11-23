@@ -112,13 +112,11 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
 
     render() {
         return (
-            <div>
-                <Row className='toolbar' type='flex' align='center'>
-                    <Col span={6}>
-                        <h1>Dashboard</h1>
-                    </Col>
+            <div className='dashboard'>
+                <Row type='flex' className='scene-head'>
+                    <h2>Company Name Dashboard</h2>
                 </Row>
-                <Row gutter={24} className='dashboardRow'>
+                <Row className='dashboardRow'>
                     <Col span={24}>
                         <ChartCard dataType={ReportType.AllRequests} title='System Activities'/>
                     </Col>
@@ -134,8 +132,8 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                             <ResponsiveContainer width='100%' height={200}>
                                 <PieChart onMouseEnter={this.onPieEnter}>
                                     <Pie data={this.state.data.places} activeIndex={this.state.activeIndex}
-                                         label={renderCustomizedLabel} fill='#8884d8' innerRadius={40} outerRadius={66}
-                                         paddingAngle={0}>
+                                        label={renderCustomizedLabel} fill='#8884d8' innerRadius={40} outerRadius={66}
+                                        paddingAngle={0}>
                                         {
                                             data.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)
                                         }
@@ -149,8 +147,8 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                             <ResponsiveContainer width='100%' height={200}>
                                 <PieChart onMouseEnter={this.onPieEnter}>
                                     <Pie data={this.state.data.accounts} activeIndex={this.state.activeIndex}
-                                         label={renderCustomizedLabel} fill='#FFDFDF' innerRadius={40} outerRadius={66}
-                                         paddingAngle={0}>
+                                        label={renderCustomizedLabel} fill='#FFDFDF' innerRadius={40} outerRadius={66}
+                                        paddingAngle={0}>
                                         {
                                             data.map((entry, index) => <Cell key={index} fill={RED_COLORS[index % COLORS.length]}/>)
                                         }
