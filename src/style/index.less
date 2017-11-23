@@ -33,6 +33,7 @@ body {
 }
 .ant-layout-content {
   margin-bottom: 64px;
+  overflow: visible;
 }
 .ant-layout-sider {
     position: fixed;
@@ -150,7 +151,7 @@ select {
         label {
             width: 100%;
             display: flex;
-            color: #323D47;
+            color: @color-solid;
             font-size: 14px;
             margin-bottom: 24px;
         }
@@ -177,7 +178,7 @@ select {
         }
     }
     p {
-        color: #323D47;
+        color: @color-solid;
         opacity: .4;
         font-size: 13px;
         margin-bottom: 16px;
@@ -292,6 +293,30 @@ select {
 .ant-dropdown-menu-item-selected {
     svg, path {
         fill: @primary-color;
+    }
+}
+
+.ant-pagination.mini {
+    .ant-pagination-item,
+    .ant-pagination-next, .ant-pagination-prev   {
+        width: 24px;
+        margin: 0 2px;
+        line-height: 24px;
+        color: @color-solid;
+        height: 24px;
+    }
+    .ant-pagination-item-active {
+        color: #fff;
+        border-radius: 4px;
+        background-color: @color-solid;
+    }
+    .ant-pagination-next, .ant-pagination-prev {
+        width: 24px;
+    }
+    .ant-pagination-prev a:after, .ant-pagination-next a:after {
+        font-size: 18px;
+        line-height: 0;
+        font-weight: bold;
     }
 }
 
@@ -582,7 +607,7 @@ div.ant-modal-mask {
     right: 0;
     left: 0;
     bottom: 0;
-    background: #323D47;
+    background: @color-solid;
     height: 100%;
     z-index: 1000;
     filter: alpha(opacity=94);
