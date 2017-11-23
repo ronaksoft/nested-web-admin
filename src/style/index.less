@@ -130,6 +130,13 @@ select {
     .ant-card-head {
         border: none;
         padding: 0 16px;
+        height: 64px;
+        .ant-card-head-title {
+            line-height: 64px;
+            font-size: 16px;
+            font-weight: bold;
+            color: @color-solid-8
+        }
     }
     .ant-card-body {
         padding: 0
@@ -140,6 +147,7 @@ select {
             border-bottom: 1px solid rgba(50, 61, 71, 0.08);
             padding-right: 16px;
             margin-bottom: 16px;
+            padding-bottom: 24px;
             &:last-of-type {
                 border: none
             }
@@ -153,8 +161,11 @@ select {
             width: 100%;
             display: flex;
             color: @color-solid;
-            font-size: 14px;
-            margin-bottom: 24px;
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+        .ant-form-item {
+            margin: 0;
         }
         select {
             width: 192px;
@@ -163,7 +174,7 @@ select {
             height: 32px;
         }
         input {
-            width: 88px;
+            width: 128px;
             flex: none;
             margin-bottom: 8px;
             height: 32px;
@@ -179,8 +190,7 @@ select {
         }
     }
     p {
-        color: @color-solid;
-        opacity: .4;
+        color: @color-solid-64;
         font-size: 13px;
         margin-bottom: 16px;
     }
