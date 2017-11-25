@@ -201,9 +201,12 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             if (children.length > 0) {
                 stack.push(_.merge(item, {
                     children: children,
+                    child: true,
                 }));
             } else {
-                stack.push(item);
+                stack.push(_.merge(item, {
+                    child: true,
+                }));
             }
 
             return stack;
@@ -216,6 +219,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         }).map((place) => {
             return _.merge(place, {
                 children: this.getChildren(place, places, 1),
+                child: true,
             });
         }).value();
     }
@@ -265,8 +269,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             <Row type='flex' align='middle'>
                 <Checkbox onChange={() => this.onCheckboxChange(item)}
                     checked={false}/>
-                {/* <div className='place-indent'></div> */}
-                <Arrow rotate={record.children === undefined ? '180' : '0'} onClick={loadChildren.bind(this)} />
+                {record.child === true && <div className='place-indent'></div>}
+                {record.child !== true && <Arrow rotate={record.children === undefined ? '180' : '0'} child={record.child} onClick={loadChildren.bind(this)} />}
                 <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
             </Row>
         );
