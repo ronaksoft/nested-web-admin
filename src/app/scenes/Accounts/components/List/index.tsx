@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
     Icon,
+    Row,
     Table,
     Dropdown,
     Card,
@@ -27,6 +28,7 @@ import IPromoteRequest from '../../../../api/account/interfaces/IPromoteRequest'
 import IDemoteRequest from '../../../../api/account/interfaces/IDemoteRequest';
 import FilterGroup from '../../FilterGroup';
 import View from '../View/index';
+import {IcoN} from '../../../../components/icon/index';
 
 interface IListProps {
     counters: any;
@@ -66,7 +68,15 @@ class List extends React.Component <IListProps,
 
     // columns Render Handlers
 
-    nameRender = (text, user, index) => <UserAvatar avatar name size='32' user={user}/>;
+    nameRender = (text, user, index) => {
+        return (
+            <Row type='flex' align='middle'>
+                <Checkbox onChange={() => this.onCheckboxChange(item)}
+                    checked={false}/>
+                    <UserAvatar avatar name size='24' user={user}/>
+            </Row>
+        );
+    }
     idRender = (text, user, index) => text;
 
     placesRender = (text, user, index) => user.access_places
@@ -74,11 +84,13 @@ class List extends React.Component <IListProps,
         : '-'
     joinedRender = (text, user, index) => {
         const value = moment(user.joined_on);
+        let date = '-';
+        let time = '-';
         if (value.isValid()) {
-            return value.format('YYYY[/]MM[/]DD HH:mm A');
-        } else {
-            return '-';
+            date = value.format('YYYY[/]MM[/]DD');
+            time = value.format('HH:mm A');
         }
+        return (<div className='date'>{date} <span>{time}</span></div>);
     }
     phoneRender = (text, user, index) => text;
     genderRender = (text, user, index) => {
@@ -86,9 +98,13 @@ class List extends React.Component <IListProps,
     }
     disabledRender = (text, user, index) => {
         if (user.disabled) {
-            return (<Badge status='error' text='Inactive' />);
+            return (<div className='deactive'>
+                <IcoN size={16} name={'circle16'}/>Deactive
+            </div>);
         } else {
-            return (<Badge status='success' text='Active' />);
+            return (<div className='active'>
+                <IcoN size={16} name={'circle16'}/>Active
+            </div>);
         }
     }
     dobRender = (text, user, index) => {
@@ -208,51 +224,59 @@ class List extends React.Component <IListProps,
                 dataIndex: '_id',
                 key: '_id',
                 render: this.idRender,
-                index: 1
+                index: 1,
+                width: 152,
             }, {
                 title: this.dataColumns.access_places,
                 dataIndex: 'access_places',
                 key: 'access_places',
                 render: this.placesRender,
-                index: 2
+                index: 2,
+                width: 92,
             }, {
                 title: this.dataColumns.searchable,
                 dataIndex: 'searchable',
                 key: 'searchable',
                 render: this.searchableRender,
-                index: 3
+                index: 3,
+                width: 94,
             }, {
                 title: this.dataColumns.phone,
                 dataIndex: 'phone',
                 key: 'phone',
                 render: this.phoneRender,
-                index: 4
+                index: 4,
+                width: 136,
             }, {
                 title: this.dataColumns.joined_on,
                 dataIndex: 'joined_on',
                 key: 'joined_on',
                 render: this.joinedRender,
-                index: 5
+                index: 5,
+                width: 152,
             }, {
                 title: this.dataColumns.disabled,
                 dataIndex: 'disabled',
                 key: 'disabled',
                 render: this.disabledRender,
-                index: 6
-            }, {
-                title: this.dataColumns.gender,
-                dataIndex: 'gender',
-                key: 'gender',
-                render: this.genderRender,
-                index: 7
-            }, {
-                title: this.dataColumns.dob,
-                dataIndex: 'dob',
-                key: 'dob',
-                render: this.dobRender,
-                index: 8
+                index: 6,
+                width: 116,
             }
         ];
+
+        // {
+        //     title: this.dataColumns.gender,
+        //     dataIndex: 'gender',
+        //     key: 'gender',
+        //     render: this.genderRender,
+        //     index: 7
+        // }, {
+        //     title: this.dataColumns.dob,
+        //     dataIndex: 'dob',
+        //     key: 'dob',
+        //     render: this.dobRender,
+        //     index: 8
+        // }
 
         const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
         const storedColumnsList = storedColumns
@@ -260,8 +284,7 @@ class List extends React.Component <IListProps,
             : [];
         const tableColumns = storedColumnsList.length > 0
             ? storedColumnsList
-            : _(this.allColumns).take(5).map('key').value();
-
+            : _(this.allColumns).take(7).map('key').value();
         this.state = {
             users: [],
             columns: tableColumns,
@@ -336,14 +359,7 @@ class List extends React.Component <IListProps,
             </Popover>
         );
 
-        const columns = _(this.allColumns).filter((column) => _.includes(this.state.columns, column.key)).orderBy(['index']).concat([
-            {
-                title: optionsTitle,
-                dataIndex: 'options',
-                key: 'options',
-                render: () => ''
-            }
-        ]).value();
+        const columns = _(this.allColumns).filter((column) => _.includes(this.state.columns, column.key)).orderBy(['index']).value();
 
         const rowSelection = {
             selectedRowKeys: this.state.selectedRowKeys,
@@ -372,7 +388,10 @@ class List extends React.Component <IListProps,
                         total: total,
                         current: this.state.currentPage,
                         onChange: this.onPageChange
-                    }} rowKey='_id' columns={columns} dataSource={this.state.accounts}
+                    }}
+                    rowKey='_id'
+                    columns={columns}
+                    dataSource={this.state.accounts}
                     size='middle nst-table' scroll={{
                     x: 960
                 }} loading={this.state.loading}/>

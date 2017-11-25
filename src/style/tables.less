@@ -12,14 +12,41 @@
         }
     }
     tbody.ant-table-tbody {
+        color: @color-solid-72;
         td {
             height: 64px;
             padding: 0 16px;
+            &:first-of-type {
+                padding: 0;
+                .ant-checkbox-wrapper:not(:last-child) {
+                    margin: 0 12px;
+                }
+            }
+            &:last-of-type {
+                padding-right: 24px;
+            }
         }
         tr:last-of-type {
             > td {
                 border: none;
             }
+        }
+        .date {
+            span {
+                opacity: .5
+            }
+        }
+        .active {
+            i {
+                margin-right: 7px;
+            }
+            fill: @primary-color;
+        }
+        .deactive {
+            i {
+                margin-right: 7px;
+            }
+            fill: @color-light-breeze;
         }
     }
 }

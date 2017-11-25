@@ -100,8 +100,9 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         ];
         return (
             <div className='accounts'>
-                <Row type='flex' className='scene-head'>
+                <Row type='flex' align='middle' className='scene-head'>
                     <h2>Accounts</h2>
+                    <Options/>
                 </Row>
                 <div className='white-block-container'>
                     <Row className='toolbar' type='flex'>
@@ -115,9 +116,6 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         <Filter totalCount={total} menus={filterItems}
                                 onChange={this.setGroup} counters={this.state.counters}/>
                         }
-                        <Col span={18}>
-                            <Options/>
-                        </Col>
                     </Row>
                     <Row>
                         <Col span={24}>
