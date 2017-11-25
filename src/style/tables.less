@@ -2,7 +2,7 @@
     thead.ant-table-thead tr{
         height: 64px;
         > th:not(.ant-table-selection-column){
-            border-bottom: 1px solid @color-light-breeze;
+            // border-bottom: 1px solid @color-light-breeze;
             background-color: transparent;
             color: @color-solid-4;
             padding: 0 16px;
@@ -43,29 +43,42 @@
         // }
         tr {
             position: relative;
+            &.ant-table-row-level-0 {
+                > td {
+                    border-bottom: none;
+                    border-top: 1px solid #efeff0;
+                }
+            }
+            &.ant-table-row-level-0 ~ &.ant-table-row-level-1{
+                background-color: red;
+                > td:after {
+                    display: none!important;
+                }
+            }
         }
-        @iterations: 1;
+        @iterations: 0;
         .iteration-helper-class (@i) when (@i < 8) {
             .ant-table-row-level-@{i} {
-                // width: ~"@{i}%";
                 position: relative;
                 > td:first-of-type {
                     position: relative;
                     border-bottom: none;
+                    transform: translateY(-1px);
                     &:after {
                         content: '';
                         height: 1px;
                         position: absolute;
-                        bottom: 0;
+                        bottom: -1px;
                         right: 0;
-                        background-color: #e9e9e9;
-                        left: @i * 32 + 50px;
+                        background-color: #efeff0;
+                        left: @i * 32 + 104px;
                     }
                 }
+                
             }
             .iteration-helper-class(@i + 1);
         }
-        .iteration-helper-class (@iterations);
+        .iteration-helper-class(@iterations);
         .ant-table-row {
             display: table-row!important;
         }
