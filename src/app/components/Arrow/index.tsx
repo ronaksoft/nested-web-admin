@@ -13,6 +13,7 @@ import {IcoN} from '../icon/index';
 interface IArrowProps {
   rotate?: string;
   size?: number;
+  onClick?: () => any;
 }
 interface IArrowStats {
   rotate: number;
@@ -50,8 +51,25 @@ export default class Arrow extends React.Component<IArrowProps, IArrowStats> {
       transform: `rotateZ(${this.state.rotate}deg)`,
     };
 
+    const click = (event: any) => {
+        event.stopPropagation();
+        let open = false;
+        if (this.state.rotate === 0) {
+            this.setState({
+                rotate: 180
+            });
+            open = false;
+        } else {
+            this.setState({
+                rotate: 0
+            });
+            open = true;
+        }
+        this.props.onClick(open);
+    };
+
     return (
-      <div className='arrow' style={styles}>
+      <div className='arrow' style={styles} onClick={click}>
         <IcoN size={16} name='arrow16'/>
       </div>
     );

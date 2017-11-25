@@ -15,6 +15,8 @@ import {IcoN} from '../../../components/icon/index';
 import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
 
+let cachedTrees = [];
+
 export interface IPlaceOptionsItem {
     key: string;
     name: string;
@@ -130,8 +132,13 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         });
 
         let placeApi = new PlaceApi();
+        // placeApi.placeList({
+        //     filter: this.state.selectedFilter === CPlaceFilterTypes.ALL ? CPlaceFilterTypes.ALL : this.state.selectedFilter,
+        //     limit: this.pageLimit,
+        //     skip: (this.state.pagination.current - 1) * this.pageLimit,
+        // }).then(this.setPlaces.bind(this));
         placeApi.placeList({
-            filter: this.state.selectedFilter === CPlaceFilterTypes.ALL ? CPlaceFilterTypes.ALL : this.state.selectedFilter,
+            filter: 'grand_places',
             limit: this.pageLimit,
             skip: (this.state.pagination.current - 1) * this.pageLimit,
         }).then(this.setPlaces.bind(this));
@@ -174,13 +181,92 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         }
     }
 
+    isChild(parentId: string, place: IPlace) {
+        return place && place._id && place._id.indexOf(parentId + '.') === 0;
+    }
+
+    getChildren(place: IPlace, places: IPlace[], depth: number) {
+        return _.chain(places).sortBy(['id']).reduce((stack, item) => {
+            if (!this.isChild(place._id, item)) {
+                return stack;
+            }
+
+            let previous = _.last(stack);
+
+            if (previous && this.isChild(previous._id, item)) {
+                return stack;
+            }
+
+            let children = this.getChildren(item, places, depth + 1);
+            if (children.length > 0) {
+                stack.push(_.merge(item, {
+                    children: children,
+                }));
+            } else {
+                stack.push(item);
+            }
+
+            return stack;
+        }, []).value();
+    }
+
+    createTree(places: IPlace[]) {
+        return _.chain(places).filter((place) => {
+            return place._id && place._id.indexOf('.') === -1;
+        }).map((place) => {
+            return _.merge(place, {
+                children: this.getChildren(place, places, 1),
+            });
+        }).value();
+    }
+
     renderPlaceCell(text: string, record: IPlace, index: any) {
+        const loadChildren = (expand: any) => {
+            const index = _.findIndex(this.state.places, {
+                _id: record._id
+            });
+            let places = this.state.places;
+            if (!cachedTrees.hasOwnProperty(record._id)) {
+                this.setState({
+                    loading: true
+                });
+                if (expand) {
+                    const placeApi = new PlaceApi();
+                    placeApi.placeList({
+                        grand_parent_id: record._id
+                    }).then((data) => {
+                        let tempTree = this.createTree(data);
+                        places[index] = _.merge(tempTree[0], {
+                            expanded: true,
+                        });
+                        cachedTrees[record._id] = tempTree[0];
+                        this.setState({
+                            places: places,
+                            loading: false,
+                        });
+                    });
+                }
+            } else {
+                if (!places[index].children) {
+                    places[index].children = cachedTrees[record._id];
+                } else {
+                    try {
+                        delete places[index].children;
+                    } catch (e) {
+                        console.log('can\'t delete property');
+                    }
+                }
+                this.setState({
+                    places: places,
+                });
+            }
+        };
         return (
             <Row type='flex' align='middle'>
                 <Checkbox onChange={() => this.onCheckboxChange(item)}
                     checked={false}/>
                 {/* <div className='place-indent'></div> */}
-                <Arrow rotate='180'/>
+                <Arrow rotate={record.children === undefined ? '180' : '0'} onClick={loadChildren.bind(this)} />
                 <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
             </Row>
         );
@@ -272,7 +358,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
             switch (column.renderer) {
                 case 'place':
-                    renderer = this.renderPlaceCell;
+                    renderer = this.renderPlaceCell.bind(this);
                     break;
                 case 'users':
                     renderer = this.renderUsersCell.bind(this);
