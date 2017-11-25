@@ -7,7 +7,7 @@
 @import "../app/scenes/Places/places.less";
 
 a {
-    color: @primary-color-rev;
+    color: @primary-color;
 }
 
 body {
@@ -211,21 +211,32 @@ select {
         margin-bottom: 16px;
         position: relative;
         .row-controls {
-            left: 0;
-            top: 0;
-            position: absolute
+            left: -30px;
+            top: 5px;
+            position: absolute;
+            .remove-butn {
+                fill: @color-force;
+            }
         }
         .ant-input {
-            height: 36px;
+            height: 40px;
         }
         .acc-btn {
             display: flex;
             justify-content: center;
         }
+        .ant-form-item:last-of-type {
+            input {
+                width: 177px;
+            }
+        }
     }
     .ant-modal-body {
         padding: 8px 44px;
-        background-color: rgba(50, 61, 71, .04)
+        // background-color: rgba(50, 61, 71, .04)
+    }
+    .ant-modal-footer {
+        border-top: 1px solid transparent;
     }
     .ant-card {
         height: 48px;
@@ -233,9 +244,14 @@ select {
         margin-bottom: 24px;
         background-color: rgba(0, 180, 90, .08);
         border: 1px solid rgba(0, 180, 90, .16);
+        font-size: 13px;
         .ant-row-flex-middle {
             height: 100%;
             padding: 0 16px
+        }
+        span {
+            font-size: 12px;
+            margin-left:24px;
         }
     }
     .ant-btn-primary {
@@ -249,6 +265,28 @@ select {
         margin: 16px 0 6px;
         font-size: 13px;
         color: @color-solid-8;
+        .ant-col-5 {
+            max-width: 161px;
+            margin-right: 10px;
+        }
+    }
+    .ant-modal-footer {
+        i {
+            opacity: .72;
+        }
+        > div {
+            display: flex;
+            align-items: center;
+        }
+        label {
+            text-align: left;
+            line-height: 40px;
+            display: flex;
+            margin-left: 14px;
+            font-size: 14px;
+            color: @color-solid;
+            margin-right: 8px;
+        }
     }
 }
 

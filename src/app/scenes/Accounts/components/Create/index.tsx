@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Modal, Button, Row, Col, Card, Icon, notification, Form} from 'antd';
+import {Modal, Button, Row, Col, Card, Icon, notification, Form, Switch} from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
 import md5 from 'md5';
@@ -9,6 +9,7 @@ import CSV from '../../CSV';
 import AccountApi from '../../../../api/account/account';
 import IPacket from '../../Packet';
 import PacketState from '../../PacketState';
+import {IcoN} from '../../../../components/icon/index';
 
 interface ICreateProps {
     visible: Boolean;
@@ -17,6 +18,7 @@ interface ICreateProps {
 
 interface ICreateState {
     accounts: IPacket[];
+    sendSms: boolean;
 }
 
 class Create extends React.Component<ICreateProps, ICreateState> {
@@ -26,7 +28,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
     constructor(props: ICreateProps) {
         super(props);
-        this.state = {accounts: []};
+        this.state = {accounts: [], sendSms: true};
         this.accountApi = new AccountApi();
         this.handleRemove = this.handleRemove.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -196,26 +198,45 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         this.setState({accounts});
     }
 
+    switchSms() {
+        this.setState({
+            sendSms: !this.state.sendSms,
+        });
+    }
+
     render() {
         const validRows = this.validRowsCount();
+        const modalFooter = (
+            <div>
+                <IcoN size={16} name={'gear16'}/>
+                <label>
+                    Send a login link to Phone Numbers via SMS ?
+                </label>
+                <Switch defaultChecked={this.state.sendSms} onChange={this.switchSms.bind(this)}/>
+                <div className='filler'></div>
+                <Button type=' butn butn-white' size='large'>Discard</Button>
+                <Button disabled={this.state.accounts.length === 0}
+                    type=' butn butn-green' size='large' onClick={this.create.bind(this)}>
+                        Create {this.state.accounts.length} Accounts
+                </Button>
+            </div>
+        );
         return (
             <Modal
                 visible={this.props.visible}
                 title='Create Accounts'
                 width={960}
-                footer={[
-                    <Button type='primary' size='large' onClick={this.create.bind(this)}>Create Accounts</Button>,
-                ]}
+                footer={modalFooter}
                 className='create-accounts'
                 afterClose={this.initModal.bind(this)}
                 onCancel={this.handleClose}>
                 <div>
                     <Row className='create-account-head'>
-                        <Col span={4}><b>Phone Number</b></Col>
-                        <Col span={4}><b>First Name</b></Col>
-                        <Col span={4}><b>Last Name</b></Col>
-                        <Col span={4}><b>Username</b></Col>
-                        <Col span={8}><b>First Login Password</b></Col>
+                        <Col span={5}><b>Phone Number</b></Col>
+                        <Col span={5}><b>First Name</b></Col>
+                        <Col span={5}><b>Last Name</b></Col>
+                        <Col span={5}><b>Username</b></Col>
+                        <Col span={4}><b>First Login Password</b></Col>
                     </Row>
                     {this.state.accounts.map((pocket) => (<InputRow
                         key={pocket.key}
@@ -227,30 +248,28 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                         refKey={pocket.key}/>))}
                     <Card>
                         <Row type='flex' align='middle'>
-                            <Col span={6}>
-                                <a onClick={this.addNewRow.bind(this)}>
-                                    <Icon type='plus'/> Add another
-                                </a>
-                            </Col>
-                            <Col span={6}>
-                                <input id='upload' type='file' accept='*.csv' onChange={this.readFile}
-                                       onClick={(event) => {
-                                           event.target.value = null;
-                                       }} className='hidden'/>
-                                <a type='primary' onClick={this.handleUpload}>
-                                    Import from a file
-                                </a>
-                            </Col>
-                            <Col span={6}>
+                            <a onClick={this.addNewRow.bind(this)}>
+                                <Icon type='plus'/><b>Add more fields...</b>
+                            </a>
+                            <div className='filler'></div>
+                            <input id='upload' type='file' accept='*.csv' onChange={this.readFile}
+                                    onClick={(event) => {
+                                        event.target.value = null;
+                                    }} className='hidden'/>
+                            <a type='primary' onClick={this.handleUpload}>
+                                <b>Import from a file</b>
+                            </a>
+                            <span>
+                                for download template &nbsp;
                                 <a onClick={this.downloadListCSV.bind(this)} type='warning'>
-                                    Download template.
+                                    click here.
                                 </a>
-                            </Col>
-                            <Col span={6}>
+                            </span>
+                            {/* <Col span={6}>
                                 <a onClick={this.downloadExample}>
                                     Template example
                                 </a>
-                            </Col>
+                            </Col> */}
                         </Row>
                     </Card>
                 </div>

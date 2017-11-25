@@ -6,6 +6,7 @@ import PacketState from '../../../../PacketState';
 import AccountApi from '../../../../../../api/account/account';
 import Packet from '../../../../Packet';
 import CONFIG from '../../../../../../../app.config';
+import {IcoN} from '../../../../../../components/icon/index';
 
 interface IInputRowProps {
     account: Packet<IAccount>;
@@ -19,15 +20,19 @@ interface IInputRowProps {
 interface IInputRowState {
     packet: Packet<IAccount>;
     status: PacketState;
+    manualPassword: boolean;
 }
 
 class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     constructor(props: IInputRowProps) {
+        console.log('constructor');
         super(props);
         this.state = {
             packet: props.account,
-            status: props.status
+            status: props.status,
+            manualPassword: false,
         };
+        this.insertManualPassword = this.insertManualPassword.bind(this);
     }
 
     handleFormChange = (changedFields) => {
@@ -39,7 +44,8 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     componentWillReceiveProps(newProps: IInputRowProps) {
         this.state = {
             packet: newProps.account,
-            status: newProps.status
+            status: newProps.status,
+            manualPassword: this.state.manualPassword,
         };
         // setTimeout(() => {
         //     this.props.onChange({
@@ -90,12 +96,20 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
 
     saveForm = (form) => this.form = form;
 
+    insertManualPassword () {
+        this.setState({
+            manualPassword: true,
+        });
+    }
+
     render() {
         let self = this;
         const {getFieldDecorator} = this.props.form;
         const disabled = this.state.status === PacketState.Success || this.state.status === PacketState.Pending;
         const pending = this.state.status === PacketState.Pending;
         const success = this.state.status === PacketState.Success;
+        const manualPassword = this.state.manualPassword;
+        console.log('manualPassword', manualPassword);
         return (
             <Form layout='inline' className='account-row'
                   onChange={() => {
@@ -108,8 +122,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                 <Form.Item className='row-controls'>
                     {
                         !(pending || success) &&
-                        <Button shape='circle' type='delete-row' icon='delete' size='large'
-                                onClick={() => this.props.onRemove(this.props.refKey)}/>
+                        <div className='remove-butn' onClick={() => this.props.onRemove(this.props.refKey)}><IcoN size={16} name={'bin16'}/></div>
                     }
                     {
                         pending &&
@@ -122,7 +135,8 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('phone', {
-                        initialValue: this.props.account.phone,
+                        initialValue: this.props.account.phone || '+98',
+                        validateFirst: false,
                         rules: [
                             {
                                 required: true,
@@ -207,10 +221,15 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                             }
                         ]
                     })(
-                        <Input
-                            placeholder='Password'
-                            disabled={disabled}
-                        />
+                        <div>
+                            {!manualPassword &&
+                                <Button type=' form-input-button' onClick={this.insertManualPassword}>- same as username -</Button>
+                            }
+                            {manualPassword && (<Input
+                                placeholder='Password'
+                                disabled={disabled}
+                            />)}
+                        </div>
                     )}
 
                 </Form.Item>
