@@ -56,6 +56,15 @@
     .place-indent {
         width: 32px;
     }
+    
+    @iterations: 1;
+    .iteration-helper-class (@i) when (@i < 8) {
+        .place-indent-@{i} {
+            width: @i * 32 + 0px;
+        }
+        .iteration-helper-class(@i + 1);
+    }
+    .iteration-helper-class (@iterations);
     .arrow {
         margin-right: 8px;
     }

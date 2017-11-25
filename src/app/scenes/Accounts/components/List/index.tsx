@@ -79,9 +79,17 @@ class List extends React.Component <IListProps,
     }
     idRender = (text, user, index) => text;
 
-    placesRender = (text, user, index) => user.access_places
-        ? user.access_places.length
-        : '-'
+    placesRender = (text, user, index) => {
+        return (
+            <div className='user-member-place'>
+                {user.access_places && <IcoN size={16} name={'placesRelation16'}/>}
+                {user.access_places
+                ? user.access_places.length
+                : '-'}
+            </div>
+        );
+    }
+
     joinedRender = (text, user, index) => {
         const value = moment(user.joined_on);
         let date = '-';
@@ -92,7 +100,7 @@ class List extends React.Component <IListProps,
         }
         return (<div className='date'>{date} <span>{time}</span></div>);
     }
-    phoneRender = (text, user, index) => text;
+    phoneRender = (text, user, index) => text ? '+' + text : '';
     genderRender = (text, user, index) => {
         return this.genders[user.gender] || '-';
     }
@@ -118,8 +126,8 @@ class List extends React.Component <IListProps,
     searchableRender = (text, user, index) => {
         if (user.privacy && _.has(user.privacy, 'searchable')) {
             return user.privacy.searchable
-                ? 'Yes'
-                : 'No';
+                ? <div className='search-cell'><IcoN size={16} name={'search16'}/></div>
+                : <div className='search-cell'><IcoN size={16} name={'nonsearch6'}/></div>;
         }
 
         return '-';

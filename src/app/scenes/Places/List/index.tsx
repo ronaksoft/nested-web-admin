@@ -265,11 +265,12 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 });
             }
         };
+        console.log(record);
         return (
             <Row type='flex' align='middle'>
                 <Checkbox onChange={() => this.onCheckboxChange(item)}
                     checked={false}/>
-                {record.child === true && <div className='place-indent'></div>}
+                {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
                 {record.child !== true && <Arrow rotate={record.children === undefined ? '180' : '0'} child={record.child} onClick={loadChildren.bind(this)} />}
                 <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
             </Row>
