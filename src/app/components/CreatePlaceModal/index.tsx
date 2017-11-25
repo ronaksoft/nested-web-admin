@@ -29,6 +29,7 @@ interface IProps {
 interface IStates {
     visible: boolean;
     place?: IPlace;
+    policyList: any;
 }
 
 
@@ -39,6 +40,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         this.state = {
             visible: false,
             place: this.props.place,
+            policyList: this.getPolicyItem(''),
         };
         this.currentUser = AAA.getInstance().getUser();
     }
@@ -64,39 +66,54 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         });
     }
 
-    render() {
+    getPolicyItem (placeId: string) {
         const sharePostItems = [
             {
-              index: 0,
-              label: 'manager',
-              description: 'Managers Only',
-              searchProperty: false,
+                index: 0,
+                label: 'manager',
+                description: 'Managers Only',
+                searchProperty: false,
             },
             {
-              index: 1,
-              label: 'managerMember',
-              description: 'This Place Managers & Members',
-              searchProperty: false,
+                index: 1,
+                label: 'managerMember',
+                description: 'This Place Managers & Members',
+                searchProperty: false,
             },
             {
-              index: 2,
-              label: 'team',
-              description: 'All Grand Place Members',
-              searchProperty: true,
+                index: 2,
+                label: 'team',
+                description: 'All Grand Place Members',
+                searchProperty: true,
             },
             {
-              index: 3,
-              label: 'building',
-              description: 'All Company Members',
-              searchProperty: true,
+                index: 3,
+                label: 'building',
+                description: 'All Company Members',
+                searchProperty: true,
             },
             {
-              index: 4,
-              label: 'atsign',
-              description: 'All Company Members + Everyone via Email:',
-              searchProperty: true,
+                index: 4,
+                label: 'atsign',
+                description: `All Company Members + Everyone via Email: <br> <a href="mailto:${placeId}">${placeId}</a>`,
+                searchProperty: true,
+                searchText: 'Searchable for Company Accounts',
             }
         ];
+        return sharePostItems;
+    }
+
+    updatePlaceId(id: string) {
+        let place = this.this.state.place;
+        place._id = id;
+        this.setState({
+            place: place,
+        });
+        this.getPolicyItem(id);
+    }
+
+    render() {
+        const sharePostItems = this.getPolicyItem('');
         const createPlaceItems = [
             {
               index: 0,
@@ -161,7 +178,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                         <Row className='input-row'>
                             <label htmlFor='placeId'>Place ID</label>
-                            <Input id='placeId' size='large' className='nst-input'/>
+                            <Input id='placeId' size='large' className='nst-input' onChange={this.updatePlaceId.bind(this)}/>
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change this afterwards, so choose wisely!</p>
                         </Row>
                         <Row className='input-row'>
