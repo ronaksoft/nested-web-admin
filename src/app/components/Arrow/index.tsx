@@ -11,12 +11,13 @@ import * as React from 'react';
 import {IcoN} from '../icon/index';
 
 interface IArrowProps {
-  rotate?: string;
-  size?: number;
-  onClick?: () => any;
+    rotate?: string;
+    size?: number;
+    onClick?: () => any;
 }
+
 interface IArrowStats {
-  rotate: number;
+    rotate: number;
 }
 
 /**
@@ -26,53 +27,53 @@ interface IArrowStats {
  */
 export default class Arrow extends React.Component<IArrowProps, IArrowStats> {
 
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      rotate : 0,
-    };
-  }
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            rotate: 0,
+        };
+    }
 
-  componentWillReceiveProps() {
-    this.setState({
-      rotate : parseInt(this.props.rotate, 10),
-    });
-  }
+    componentWillReceiveProps(newProps: any) {
+        this.setState({
+            rotate: parseInt(newProps.rotate, 10),
+        });
+    }
 
-  /**
-   * @function render
-   * @description Renders the component
-   * @returns {ReactElement} markup
-   * @memberof Arrow
-   */
-  public render() {
-    const styles = {
-      transformOrigin: 'center center',
-      transform: `rotateZ(${this.state.rotate}deg)`,
-    };
+    /**
+     * @function render
+     * @description Renders the component
+     * @returns {ReactElement} markup
+     * @memberof Arrow
+     */
+    public render() {
+        const styles = {
+            transformOrigin: 'center center',
+            transform: `rotateZ(${this.state.rotate}deg)`,
+        };
 
-    const click = (event: any) => {
-        event.stopPropagation();
-        let open = false;
-        if (this.state.rotate === 0) {
-            this.setState({
-                rotate: 180
-            });
-            open = false;
-        } else {
-            this.setState({
-                rotate: 0
-            });
-            open = true;
-        }
-        this.props.onClick(open);
-    };
+        const click = (event: any) => {
+            event.stopPropagation();
+            let open = false;
+            if (this.state.rotate === 0) {
+                this.setState({
+                    rotate: 180
+                });
+                open = false;
+            } else {
+                this.setState({
+                    rotate: 0
+                });
+                open = true;
+            }
+            this.props.onClick(open);
+        };
 
-    return (
-      <div className='arrow' style={styles} onClick={click}>
-        <IcoN size={16} name='arrow16'/>
-      </div>
-    );
-  }
+        return (
+            <div className='arrow' style={styles} onClick={click}>
+                <IcoN size={16} name='arrow16'/>
+            </div>
+        );
+    }
 }
 

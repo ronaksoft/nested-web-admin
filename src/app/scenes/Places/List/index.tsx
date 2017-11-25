@@ -243,7 +243,9 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                         places[index] = _.merge(tempTree[0], {
                             expanded: true,
                         });
-                        cachedTrees[record._id] = tempTree[0];
+                        places[index].expanded = true;
+                        places[index].children = tempTree[0].children;
+                        cachedTrees[record._id] = tempTree[0].children;
                         this.setState({
                             places: places,
                             loading: false,
@@ -265,10 +267,12 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 });
             }
         };
-        console.log(record);
+        const checkboxChanged = () => {
+            this.onCheckboxChange(record);
+        };
         return (
             <Row type='flex' align='middle'>
-                <Checkbox onChange={() => this.onCheckboxChange(item)}
+                <Checkbox onChange={checkboxChanged.bind(this)}
                     checked={false}/>
                 {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
                 {record.child !== true && <Arrow rotate={record.children === undefined ? '180' : '0'} child={record.child} onClick={loadChildren.bind(this)} />}
