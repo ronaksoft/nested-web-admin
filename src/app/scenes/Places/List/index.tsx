@@ -219,7 +219,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         }).map((place) => {
             return _.merge(place, {
                 children: this.getChildren(place, places, 1),
-                child: true,
+                child: false,
             });
         }).value();
     }
