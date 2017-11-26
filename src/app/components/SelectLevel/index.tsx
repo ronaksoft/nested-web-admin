@@ -8,28 +8,23 @@
  *              Date of review:         -
  */
 import * as React from 'react';
+import _ from 'lodash';
 import {IcoN} from '../icon/index';
 import {Row, Switch} from 'antd';
 import ISelectLevel from './ISelectLevel';
 
-const NST_PLACE_POLICY_OPTION = {
-    MANAGERS: 0,
-    MEMBERS: 1,
-    TEAMMATES: 2,
-    EVERYONE: 3,
-};
-
 interface ISelectLevelProps {
     items: Array<ISelectLevel>;
-    onChangeLevel?: (level: number) => void;
+    onChangeLevel?: (level: string) => void;
     onChangeSearch?: (level: boolean) => void;
-    level?: number;
+    index?: string;
 }
 
 interface ISelectLevelStats {
     level: number;
+    index: string;
     searchable: boolean;
-    items: Array<ISelectLevel>;
+    items: any;
 }
 
 /**
@@ -43,9 +38,11 @@ export default class SelectLevel extends React.Component<ISelectLevelProps, ISel
         super(props);
         this.state = {
             level: 0,
+            index: '',
             searchable: false,
             items: [{
-                index: 0,
+                level: 0,
+                index: '',
                 label: 'manager',
                 description: '',
                 searchProperty: false,
@@ -53,18 +50,52 @@ export default class SelectLevel extends React.Component<ISelectLevelProps, ISel
         };
     }
 
-    componentDidMount() {
+    transformItems(items: any) {
+        let list: ISelectLevel[] = [];
+        let level = 0;
+        _.forEach(items, (item) => {
+            list.push(_.merge(item, {
+                level: level++,
+            }));
+        });
+        return list;
+    }
+
+    componentWillReceiveProps(newProps: any) {
+        const items = this.transformItems(newProps.items);
+        let level = 0;
+        if (this.state.level !== 0) {
+            level = this.state.level;
+        }
         this.setState({
-            items: this.props.items,
+            items: items,
+            level: level
         });
     }
 
-    switchLevel(index: number) {
-        if (this.props.onChangeLevel) {
-            this.props.onChangeLevel(index);
+    componentDidMount() {
+        const items = this.transformItems(this.props.items);
+        let level = 0;
+        if (this.props.index !== undefined) {
+            level = _.findIndex(items, {
+                index: this.props.index,
+            });
+            if (level < 0) {
+                level = 0;
+            }
         }
         this.setState({
-            level: index,
+            items: items,
+            level: level,
+        });
+    }
+
+    switchLevel(level: number) {
+        if (this.props.onChangeLevel) {
+            this.props.onChangeLevel(this.state.items[level].index);
+        }
+        this.setState({
+            level: level,
         });
     }
 
@@ -102,10 +133,10 @@ export default class SelectLevel extends React.Component<ISelectLevelProps, ISel
                 <Row type='flex' align='middle' className={['selectLevelSlider', 'l' + this.state.level].join(' ')}
                      style={ulStyle}>
                     {this.state.items.map((item: ISelectLevel, index: number) => (
-                        <li key={index} onClick={this.switchLevel.bind(this, item.index)} style={liStyle}>
+                        <li key={index} onClick={this.switchLevel.bind(this, item.level)} style={liStyle}>
                             <hr className='margin'/>
                             <Row type='flex' justify='center' align='center'
-                                 className={['levelIcon', this.state.level >= item.index ? 'active' : ''].join(' ')}>
+                                 className={['levelIcon', this.state.level >= item.level ? 'active' : ''].join(' ')}>
                                 <IcoN size={24} name={item.label + '24'}/>
                             </Row>
                             <hr className='margin'/>
@@ -125,7 +156,7 @@ export default class SelectLevel extends React.Component<ISelectLevelProps, ISel
                                             onChange={this.searchableChange.bind(this)}/>
                                 </div>
                             </Row>
-                            <p>Non-member accounts can find easly this place just by writing a part of name or id when
+                            <p>Non-member accounts can find easily this place just by writing a part of name or id when
                                 composing a post.</p>
                         </div>
                     )}

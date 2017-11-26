@@ -1,8 +1,11 @@
-enum C_PLACE_POLICE {
+enum C_PLACE_POLICY {
     creators,
     key_holders,
     everyone,
-    noone,
+    members,
+    company,
+    email,
+    none,
 }
 
-export default C_PLACE_POLICE;
+export default C_PLACE_POLICY;

@@ -1,5 +1,6 @@
 interface ISelectLevel {
-    index: number;
+    index: string;
+    level: number;
     label: string;
     description: string;
     searchProperty: boolean;

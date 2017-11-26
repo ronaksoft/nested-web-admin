@@ -1,5 +1,6 @@
 import { link } from 'fs';
 import * as React from 'react';
+import _ from 'lodash';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
 import {Modal, Row, Col, Icon, Button, message, Form, Input, Select, notification, Upload} from 'antd';
@@ -13,7 +14,10 @@ import AccountApi from '../../api/account/account';
 import View from '../../scenes/Accounts/components/View/index';
 import IUser from '../../api/account/interfaces/IUser';
 import AAA from '../../services/classes/aaa/index';
+import CONFIG from './../../../app.config';
 import C_PLACE_TYPE from '../../api/consts/CPlaceType';
+import C_PLACE_POLICY from '../../api/consts/CPlacePolicy';
+import C_PLACE_POST_POLICY from '../../api/consts/CPlacePostPolicy';
 import EditableFields from './EditableFields';
 import SelectLevel from '../SelectLevel/index';
 import _ from 'lodash';
@@ -28,8 +32,7 @@ interface IProps {
 
 interface IStates {
     visible: boolean;
-    place?: IPlace;
-    policyList: any;
+    place: IPlace;
 }
 
 
@@ -39,9 +42,29 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         super(props);
         this.state = {
             visible: false,
-            place: this.props.place,
-            policyList: this.getPolicyItem(''),
         };
+        if (this.props.place) {
+            this.state.place = this.props.place;
+        } else {
+            this.state.place = {
+                _id: '',
+                created_on: null,
+                creators: [],
+                description: '',
+                grand_parent_id: '',
+                groups: null,
+                limits: null,
+                name: null,
+                picture: null,
+                policy: {
+                    add_post: 'manager',
+                },
+                privacy: null,
+                type: null,
+                unlocked_childs: null,
+                members: [],
+            };
+        }
         this.currentUser = AAA.getInstance().getUser();
     }
 
@@ -66,34 +89,38 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         });
     }
 
-    getPolicyItem (placeId: string) {
+    getPolicyItem () {
+        let placeId = this.state ? this.state.place._id : '';
+        if (placeId !== '') {
+            placeId = placeId + '@' + CONFIG.DOMAIN;
+        }
         const sharePostItems = [
             {
-                index: 0,
+                index: C_PLACE_POST_POLICY.MANAGER,
                 label: 'manager',
                 description: 'Managers Only',
                 searchProperty: false,
             },
             {
-                index: 1,
+                index: C_PLACE_POST_POLICY.MANGER_MEMBER,
                 label: 'managerMember',
                 description: 'This Place Managers & Members',
                 searchProperty: false,
             },
             {
-                index: 2,
+                index: C_PLACE_POST_POLICY.TEAM,
                 label: 'team',
                 description: 'All Grand Place Members',
                 searchProperty: true,
             },
             {
-                index: 3,
+                index: C_PLACE_POST_POLICY.COMPANY,
                 label: 'building',
                 description: 'All Company Members',
                 searchProperty: true,
             },
             {
-                index: 4,
+                index: C_PLACE_POST_POLICY.EMAIL,
                 label: 'atsign',
                 description: `All Company Members + Everyone via Email: <br> <a href="mailto:${placeId}">${placeId}</a>`,
                 searchProperty: true,
@@ -103,17 +130,37 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         return sharePostItems;
     }
 
-    updatePlaceId(id: string) {
-        let place = this.this.state.place;
-        place._id = id;
+    updateModel(params: any) {
+        const place: IPlace = this.state.place;
+        _.forEach(params, (val, index) => {
+            place[index] = val;
+        });
         this.setState({
             place: place,
         });
-        this.getPolicyItem(id);
+    }
+
+    updatePlaceId(event: any) {
+        this.updateModel({
+            _id: event.currentTarget.value,
+        });
+    }
+
+    updatePlaceName(event: any) {
+        this.updateModel({
+            name: event.currentTarget.value,
+        });
+    }
+
+    updatePlacePostPolicy(index: any) {
+        console.log(index);
+        // this.updateModel({
+        //     name: event.currentTarget.value,
+        // });
     }
 
     render() {
-        const sharePostItems = this.getPolicyItem('');
+        const sharePostItems = this.getPolicyItem();
         const createPlaceItems = [
             {
               index: 0,
@@ -174,11 +221,11 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                         <Row className='input-row'>
                             <label htmlFor='name'>Name</label>
-                            <Input id='name' size='large' className='nst-input'/>
+                            <Input id='name' size='large' className='nst-input' value={this.state.place.name} onChange={this.updatePlaceName.bind(this)}/>
                         </Row>
                         <Row className='input-row'>
                             <label htmlFor='placeId'>Place ID</label>
-                            <Input id='placeId' size='large' className='nst-input' onChange={this.updatePlaceId.bind(this)}/>
+                            <Input id='placeId' size='large' className='nst-input' value={this.state.place._id} onChange={this.updatePlaceId.bind(this)}/>
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change this afterwards, so choose wisely!</p>
                         </Row>
                         <Row className='input-row'>
@@ -187,7 +234,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                         <Row className='input-row select-level'>
                             <label>Who can share posts with this Place?</label>
-                            <SelectLevel level={0} items={sharePostItems}/>
+                            <SelectLevel index={this.state.place.policy.add_post} items={sharePostItems} onChangeLevel={this.updatePlacePostPolicy.bind(this)}/>
                         </Row>
                         <Row className='input-row select-level'>
                             <label>Who can create sub-places in this Place?</label>

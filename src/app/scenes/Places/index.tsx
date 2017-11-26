@@ -147,7 +147,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         return (
             <div className='places'>
                 {this.state.visibelCreatePlaceModal &&
-                    <CreatePlaceModal place='' visible={this.state.visibelCreatePlaceModal}
+                    <CreatePlaceModal visible={this.state.visibelCreatePlaceModal}
                         onClose={this.closeCreatePlaceModal.bind(this)}/>
                 }
                 <Row className='places-tab' type='flex'>

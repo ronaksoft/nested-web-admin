@@ -12,7 +12,7 @@ import {Icon} from 'antd';
 import {IcoN} from '../icon/index';
 import IPlace from './../../api/place/interfaces/IPlace';
 import C_PLACE_RECEPTIVE  from '../../api/consts/CPlaceReceptive';
-import C_PLACE_POLICE  from '../../api/consts/CPlacePolicy';
+import C_PLACE_POLICY  from '../../api/consts/CPlacePolicy';
 interface IPlacePolicyProps {
   place: IPlace;
   search?: boolean;
@@ -73,16 +73,16 @@ export default class PlacePolicy extends React.Component<IPlacePolicyProps, any>
   receptive(place: IPlace) {
 
     var icon, text;
-    if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.external] && place.policy.add_post === C_PLACE_POLICE[C_PLACE_POLICE.everyone]) {
+    if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.external] && place.policy.add_post === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
       icon = <IcoN size={16} name={'earth16'}/>;
       text = 'Everyone can share post.';
-    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.internal] && place.policy.add_post === C_PLACE_POLICE[C_PLACE_POLICE.everyone]) {
+    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.internal] && place.policy.add_post === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
       icon = <IcoN size={16} name={'team16'}/>;
       text = 'All grand-place members can share post';
-    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICE[C_PLACE_POLICE.everyone]) {
+    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
       icon = <IcoN size={16} name={'managerMember16'}/>;
       text = 'All members of the place could share post.';
-    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICE[C_PLACE_POLICE.everyone]) {
+    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
       icon = <IcoN size={16} name={'manager16'}/>;
       text = 'Only managers can share post';
     }
