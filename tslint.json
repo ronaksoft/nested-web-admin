@@ -68,7 +68,7 @@
       ["indexSignature", "space"]
     ],
     "variable-name": false,
-    "whitespace": [true,
+    "whitespace": [false,
       "check-branch",
       "check-decl",
       "check-operator",

@@ -3,6 +3,7 @@
 @import "./tables.less";
 @import "./introduction.less";
 @import "./inputs.less";
+@import "./loading.less";
 @import "../app/components/SelectLevel/SelectLevel.less";
 @import "../app/components/Filter/filter.less";
 @import "../app/scenes/Places/places.less";
@@ -612,25 +613,6 @@ select {
                 margin-bottom: 6px;
             }
         }
-        .input-row {
-            padding-top: 24px;
-            label {
-                font-size: 13px;
-                display: flex;
-                font-weight: bold;
-                margin-bottom: 6px;
-                color: @color-solid;
-                opacity: .8;
-                line-height: 18px;
-            }
-            p {
-                font-size: 13px;
-                opacity: .8;
-                color: @color-solid;
-                padding: 0 6px;
-                margin-top: 10px;
-            }
-        }
     }
     label {
         color: rgba(0, 0, 0, .64);
@@ -828,30 +810,6 @@ div.ant-modal-mask {
         width: 100%;
     }
 }
-
-
-// .ant-menu-item-selected {
-//     .ic_dashboard_solid_24,
-//     .ic_dashboard_solid_24:hover,
-//     .ic_dashboard_solid_24:focus {
-//         background-image: url('../style/images/ic_dashboard_solid_24.png');
-//     }
-//     .ic_places_solid_24,
-//     .ic_places_solid_24:hover,
-//     .ic_places_solid_24:focus {
-//         background-image: url('../style/images/ic_places_sensewire_24.png');
-//     }
-//     .ic_account_solid_24,
-//     .ic_account_solid_24:hover,
-//     .ic_account_solid_24:focus {
-//         background-image: url('../style/images/ic_account_sensewire_24.png');
-//     }
-//     .ic_access_solid_24,
-//     .ic_access_solid_24:hover,
-//     .ic_access_solid_24:focus {
-//         background-image: url('../style/images/ic_access_sensewire_24.png');
-//     }
-// }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2)      and (min-width: 320px), only screen and (   min--moz-device-pixel-ratio: 2)      and (min-width: 320px), only screen and (     -o-min-device-pixel-ratio: 2/1)    and (min-width: 320px), only screen and (        min-device-pixel-ratio: 2)      and (min-width: 320px), only screen and (                min-resolution: 192dpi) and (min-width: 320px), only screen and (                min-resolution: 2dppx)  and (min-width: 320px) {
     .ic_absolout_place_solid_24,
