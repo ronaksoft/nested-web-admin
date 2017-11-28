@@ -16,6 +16,7 @@ import NotFoundPage from './app/scenes/StaicPages/scense/404/index';
 import ForbiddenPage from './app/scenes/StaicPages/scense/403/index';
 import SignInPage from './app/scenes/StaicPages/scense/Signin/index';
 import Introduction from './app/scenes/Introduction/index';
+import Start from './app/scenes/Start/index';
 import Dashboard from './app/scenes/Dashboard/index';
 import Accounts from './app/scenes/Accounts/index';
 import Places from './app/scenes/Places/index';
@@ -41,6 +42,7 @@ ReactDOM.render(
                 </Route>
                 <Route component={BoxPages}>
                     <Route path='/intro' component={Introduction}/>
+                    <Route path='/start' component={Start}/>
                 </Route>
                 <Route component={StaticPages}>
                     <Route path='/404' component={ForbiddenPage}/>
