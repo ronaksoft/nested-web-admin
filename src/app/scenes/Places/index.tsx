@@ -20,7 +20,7 @@ export interface IAccountsProps {
 export interface IAccountsState {
     counters: IGetSystemCountersResponse;
     loadCounters: boolean;
-    visibelCreatePlaceModal: boolean;
+    visibleCreatePlaceModal: boolean;
     selectedFilter: string;
     searchKeywork: string;
 }
@@ -33,7 +33,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             searchKeywork: '',
             counters: {},
             loadCounters: false,
-            visibelCreatePlaceModal: false,
+            visibleCreatePlaceModal: false,
         };
     }
 
@@ -56,13 +56,13 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     showCreatePlaceModal() {
         this.setState({
-            visibelCreatePlaceModal: true,
+            visibleCreatePlaceModal: true,
         });
     }
 
     closeCreatePlaceModal() {
         this.setState({
-            visibelCreatePlaceModal: false,
+            visibleCreatePlaceModal: false,
         });
     }
 
@@ -146,8 +146,8 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
         return (
             <div className='places'>
-                {this.state.visibelCreatePlaceModal &&
-                    <CreatePlaceModal visible={this.state.visibelCreatePlaceModal}
+                {this.state.visibleCreatePlaceModal &&
+                    <CreatePlaceModal visible={this.state.visibleCreatePlaceModal}
                         onClose={this.closeCreatePlaceModal.bind(this)}/>
                 }
                 <Row className='places-tab' type='flex'>

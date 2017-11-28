@@ -45,9 +45,9 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 description: '',
                 picture: '',
                 pictureData: '',
-                addPostPolicy: '',
-                addPlacePolicy: '',
-                addMemberPolicy: '',
+                addPostPolicy: C_PLACE_POST_POLICY.MANAGER,
+                addPlacePolicy: C_PLACE_POST_POLICY.MANAGER,
+                addMemberPolicy: C_PLACE_POST_POLICY.MANAGER,
                 managerLimit: 10,
                 memberLimit: 10,
                 subPlaceLimit: 10,
@@ -186,7 +186,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     }
 
     extractNumber(text: any) {
-        return text.replace(/[^0-9]/g,'');
+        return parseInt(text.replace(/[^0-9]/g,''), 0);
     }
 
     updatePlaceId(event: any) {
@@ -246,6 +246,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     pictureChange(info: any) {
         if (info.file.status === 'done') {
             this.updateModel({
+                picture: info.file.response.data[0].universal_id,
                 pictureData: info.file.response.data[0].thumbs,
             });
         } else if (info.file.status === 'error') {
@@ -263,6 +264,14 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         }
     }
 
+    discard() {
+        this.props.onClose(true);
+    }
+
+    create() {
+        console.log(this.state.model);
+    }
+
     render() {
         const sharePostItems = this.getPostPolicyItem();
         const createPlaceItems = this.getPolicyItem();
@@ -271,8 +280,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
         const modalFooter = (
             <div className='modal-foot'>
-                <Button type=' butn butn-white'>Discard</Button>
-                <Button type=' butn butn-green'>Create Place</Button>
+                <Button type=' butn butn-white' onClick={this.discard.bind(this)}>Discard</Button>
+                <Button type=' butn butn-green' onClick={this.create.bind(this)}>Create Place</Button>
             </div>
         );
 
