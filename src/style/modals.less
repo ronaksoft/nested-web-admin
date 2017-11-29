@@ -17,7 +17,7 @@
         padding: 16px;
         border: none;
     }
-    ul {
+    ul.suggests {
         padding: 16px 0;
         max-height: 256px;
         overflow: auto;
@@ -43,5 +43,22 @@
         margin: 0 24px 0 8px;
         color: @primary-color;
         font-size: 13px;
+    }
+    .selecteds {
+        display: flex;
+        flex-wrap: wrap;
+        li {
+            height: 32px;
+            background-color: @color-solid;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 0 6px 0 4px;
+            span {
+                color: white!important;
+                font-size: 13px!important;
+                padding-left: 4px!important;
+            }
+        }
     }
 }
