@@ -490,11 +490,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                         <Row className='input-row'>
                             <label htmlFor='placeId'>Place ID</label>
-                            <Input id='placeId' size='large' className='nst-input' value={model.id}
+                            <Input id='placeId' size='large' className={['nst-input', !this.state.idValid ? 'error' : ''].join(' ')} value={model.id}
                                    onChange={this.updatePlaceId.bind(this)}/>
-                            {!this.state.idValid &&
-                            <span>error</span>
-                            }
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change
                                 this afterwards, so choose wisely!</p>
                         </Row>
