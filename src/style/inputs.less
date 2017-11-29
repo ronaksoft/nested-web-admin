@@ -19,6 +19,25 @@ input.nst-input {
         color: @color-force;
     }
 }
+input.no-style {
+    padding: 0;
+    border: none;
+    border-bottom: 1px solid @color-breeze; 
+    &:hover {
+        border: none;
+        border-bottom: 1px solid @color-breeze; 
+        box-shadow: none;
+    }
+    &:focus {
+        border: none;
+        border-bottom: 1px solid @color-breeze; 
+        box-shadow: none;
+    }
+    &.error {
+        border-color: @color-force;
+        color: @color-force;
+    }
+}
 .nst-input:-moz-placeholder {
     color: @color-solid-64;
 }

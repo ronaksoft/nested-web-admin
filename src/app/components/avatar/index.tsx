@@ -46,14 +46,14 @@ const svgAtts = {
 };
 
 export interface IAvatarProps {
-    borderRadius : string;
-    user : IUser;
-    size : any;
-    style: string;
-    className: string;
-    avatar : boolean;
-    name : boolean;
-    id : boolean;
+    borderRadius?: string;
+    user: IUser;
+    size?: any;
+    style?: string;
+    className?: string;
+    avatar?: boolean;
+    name?: boolean;
+    id?: boolean;
 }
 
 export interface IAvatarStates {}
@@ -95,25 +95,27 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     } = this.props;
 
     let imageClass;
-    switch (size) {
-    case 16:
+    if (size) {
+      switch (size) {
+        case 16:
         imageClass = 'ImageHolder-avatar-16';
         break;
-    case 20:
+        case 20:
         imageClass = 'ImageHolder-avatar-20';
         break;
-    case 24:
+        case 24:
         imageClass = 'ImageHolder-avatar-24';
         break;
-    case 64:
+        case 64:
         imageClass = 'ImageHolder-avatar-64';
         break;
-    default:
+        default:
         imageClass = 'ImageHolder-avatar';
-}
-
-    size = size.toString(10) + 'px';
-
+      }
+      size = size.toString(10) + 'px';
+    } else {
+      size = '0';
+    }
 
     const imageStyle = {
       display: 'flex',
@@ -238,9 +240,11 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     return (
       <div aria-label={name} className={classes.join(' ')} style={style}>
         <div className='UserAvatar--inner' style={innerStyle}>
-          <div className={imageClass} style={ImageHolder}>
-            {avatar && imgDOM}
-          </div>
+          {avatar &&
+            (<div className={imageClass} style={ImageHolder}>
+             {imgDOM}
+            </div>)
+          }
           {name && nameDOM}
           {id && idDOM}
         </div>

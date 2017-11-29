@@ -67,8 +67,8 @@ class Introduction extends React.Component<IIntroductionProps, IIntroductionStat
                                 You’ve most powerfull places for communication.
                             </p>
                         )}
-                        {this.state.page === 1 && <Button size='large' type=' butn butn-green full-with'>Create Accounts</Button>}
-                        {this.state.page === 2 && <Button size='large' type=' butn butn-green full-with'>Create First Grand Place</Button>}
+                        {this.state.page === 1 && <Button size='large' type=' butn butn-green full-width'>Create Accounts</Button>}
+                        {this.state.page === 2 && <Button size='large' type=' butn butn-green full-width'>Create First Grand Place</Button>}
                     </div>
                 </div>
                 <div className='boxPage-note' onClick={this.nextPage.bind(this)}>

@@ -22,7 +22,7 @@ IActivityState > {
                 <p>
                     Setup is completed. Now is time to understand some nested features.
                 </p>
-                <Button onClick={this.props.onComplete} type=' butn butn-green full-with'>Start</Button>
+                <Button onClick={this.props.onComplete} type=' butn butn-green full-width'>Start</Button>
             </div>
         );
     }

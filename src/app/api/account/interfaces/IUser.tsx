@@ -11,6 +11,7 @@ interface IUser {
     dob: string;
     email: string;
     fname: string;
+    lname: string;
     gender: IGender;
     phone: string;
     registered: string;
