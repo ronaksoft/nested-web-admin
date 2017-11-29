@@ -13,6 +13,7 @@ import AAA from '../../services/classes/aaa/index';
 import CONFIG from './../../../app.config';
 import C_PLACE_POST_POLICY from '../../api/consts/CPlacePostPolicy';
 import SelectLevel from '../SelectLevel/index';
+import AddMemberModal from '../AddMember/index';
 import _ from 'lodash';
 import {IcoN} from '../icon/index';
 
@@ -25,6 +26,7 @@ interface IProps {
 
 interface IStates {
     visible: boolean;
+    visibleAddMemberModal: boolean;
     place: IPlace;
     model: any;
     token: string;
@@ -39,6 +41,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         super(props);
         this.state = {
             visible: false,
+            visibleAddMemberModal: false,
             model: {
                 id: '',
                 name: '',
@@ -263,6 +266,17 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         }
     }
 
+    toggleAddMemberModal() {
+        this.setState({
+            visibleAddMemberModal: !this.state.visibleAddMemberModal
+        });
+    }
+
+    addMembers(members: Array<any>) {
+        // todo update model
+        console.log(members);
+    }
+
     render() {
         const sharePostItems = this.getPostPolicyItem();
         const createPlaceItems = this.getPolicyItem();
@@ -358,13 +372,15 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                     <Col className='place-members' span={8}>
                         <h3>Members</h3>
                         <ul>
-                            <li className='addMemberItem'>
+                            <li className='addMemberItem' onClick={this.toggleAddMemberModal.bind(this)}>
                                 <IcoN size={16} name={'cross16'}/>
                                 Add member...
                             </li>
                         </ul>
                     </Col>
                 </Row>
+                <AddMemberModal members={this.state.model.members} addMembers={this.addMembers.bind(this)}
+                    onClose={this.toggleAddMemberModal.bind(this)} visible={this.state.visibleAddMemberModal}/>
             </Modal>
         );
     }
