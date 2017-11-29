@@ -215,7 +215,7 @@ IStates > {
                 visible={this.state.visible}
                 footer={modalFooter}
                 title='Add Member'>
-                <Row className='input-area'>
+                <Row className='input-area' type='flex'>
                     {this.getSelecteds()}
                     <Input
                         id='name'
