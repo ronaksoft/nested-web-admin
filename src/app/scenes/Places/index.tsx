@@ -23,17 +23,19 @@ export interface IAccountsState {
     visibleCreatePlaceModal: boolean;
     selectedFilter: string;
     searchKeywork: string;
+    selectedTab: string;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     constructor(props: IAccountsProps) {
         super(props);
         this.state = {
-            selectedFilter: CPlaceFilterTypes.GRAND_PLACES,
+            selectedFilter: CPlaceFilterTypes.ALL,
             searchKeywork: '',
             counters: {},
             loadCounters: false,
             visibleCreatePlaceModal: false,
+            selectedTab: CPlaceFilterTypes.TAB_SHARED,
         };
     }
 
@@ -66,8 +68,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
 
-    tabChangeHandler() {
-        console.log(arguments);
+    tabChangeHandler(data: any) {
+        this.setState({
+            selectedTab: data[0],
+        });
     }
 
     searchKeyDown(e: any) {
@@ -151,9 +155,9 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         onClose={this.closeCreatePlaceModal.bind(this)}/>
                 }
                 <Row className='places-tab' type='flex'>
-                    <Tabs defaultActiveKey='0' onChange={this.tabChangeHandler.bind(this)}>
-                        <TabPane tab={<span><IcoN size={24} name={'dudesWire24'}/>Shared Places</span>} key='0'/>
-                        <TabPane tab={<span><IcoN size={24} name={'dudeWire24'}/>Individual Places</span>} key='1'/>
+                    <Tabs defaultActiveKey={this.state.selectedTab} onChange={this.tabChangeHandler.bind(this)}>
+                        <TabPane tab={<span><IcoN size={24} name={'dudesWire24'}/>Shared Places</span>} key={CPlaceFilterTypes.TAB_SHARED}/>
+                        <TabPane tab={<span><IcoN size={24} name={'dudeWire24'}/>Individual Places</span>} key={CPlaceFilterTypes.TAB_INDIVIDUAL}/>
                     </Tabs>
                     <Button type=' butn butn-green secondary' onClick={this.showCreatePlaceModal.bind(this)}>Create Grand Place</Button>
                 </Row>
@@ -180,7 +184,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                     <Row>
                         <Col span={24}>
                             {this.state.loadCounters &&
-                            <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter}/>
+                            <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter} selectedTab={this.state.selectedTab}/>
                             }
                         </Col>
                     </Row>

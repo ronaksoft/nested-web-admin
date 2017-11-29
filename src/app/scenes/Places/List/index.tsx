@@ -24,18 +24,22 @@ export interface IPlaceOptionsItem {
     style ?: string;
     class ?: string;
 }
+
 interface IListProps {
     counters: IGetSystemCountersResponse;
-    selectedFilter: CPlaceFilterTypes;
+    selectedFilter: string;
+    selectedTab: string;
 }
 
 interface IListState {
     places: Array<IPlace>;
     loading: boolean;
     pagination: {};
-    selectedFilter: CPlaceFilterTypes;
+    selectedFilter: string;
     visibelPlaceModal?: boolean;
     selectedPlace?: IPlace;
+    selectedTab: string;
+    viewMode: string;
 }
 
 export default class PlaceList extends React.Component<IListProps, IListState> {
@@ -52,7 +56,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             loading: false,
             selectedFilter: CPlaceFilterTypes.ALL,
             counters: props.counters,
-            pagination: {}
+            pagination: {},
+            viewMode: 'relation',
         };
     }
 
@@ -74,7 +79,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
     componentWillReceiveProps(props: IListProps) {
         const counter = props.counters;
-        if (props.selectedFilter !== this.state.selectedFilter) {
+        if (props.selectedFilter !== this.state.selectedFilter || props.selectedTab !== this.state.selectedTab) {
 
             let totalCounter: number = 0;
             if (props.selectedFilter === CPlaceFilterTypes.ALL) {
@@ -84,19 +89,18 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 totalCounter = counter[props.selectedFilter];
             }
 
-
             this.setState({
                 selectedFilter: props.selectedFilter,
+                selectedTab: props.selectedTab,
                 counters: props.counters,
                 pagination: {
                     pageSize: this.pageLimit,
                     current: 1,
                     total: totalCounter,
                 }
-            });
-            setTimeout(() => {
+            },  () => {
                 this.fetchPlaces();
-            }, 100);
+            });
         }
     }
 
@@ -131,6 +135,25 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             loading: true
         });
 
+        let filter = 'grand_places';
+
+        if (this.state.selectedTab === CPlaceFilterTypes.TAB_SHARED) {
+            filter = 'grand_places';
+        } else if (this.state.selectedTab === CPlaceFilterTypes.TAB_INDIVIDUAL) {
+            filter = 'personal_places';
+        }
+
+        if (this.state.selectedFilter !== CPlaceFilterTypes.ALL) {
+            filter = this.state.selectedFilter;
+            this.setState({
+                viewMode: 'absolute',
+            });
+        } else {
+            this.setState({
+                viewMode: 'relation',
+            });
+        }
+
         let placeApi = new PlaceApi();
         // placeApi.placeList({
         //     filter: this.state.selectedFilter === CPlaceFilterTypes.ALL ? CPlaceFilterTypes.ALL : this.state.selectedFilter,
@@ -138,7 +161,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         //     skip: (this.state.pagination.current - 1) * this.pageLimit,
         // }).then(this.setPlaces.bind(this));
         placeApi.placeList({
-            filter: 'grand_places',
+            filter: filter,
             limit: this.pageLimit,
             skip: (this.state.pagination.current - 1) * this.pageLimit,
         }).then(this.setPlaces.bind(this));
@@ -273,9 +296,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         return (
             <Row type='flex' align='middle'>
                 <Checkbox onChange={checkboxChanged.bind(this)}
-                    checked={false}/>
+                          checked={false}/>
                 {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
-                <div className='arrow-holder'>{record.child !== true && <Arrow rotate={record.children === undefined ? '180' : '0'} child={record.child} onClick={loadChildren.bind(this)} />}</div>
+                <div className='arrow-holder'>{(record.child !== true && this.state.viewMode === 'relation') &&
+                <Arrow rotate={record.children === undefined ? '180' : '0'} child={record.child}
+                       onClick={loadChildren.bind(this)}/>}</div>
                 <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
             </Row>
         );
@@ -314,7 +339,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     renderPoliciesCell(text: string, record: IPlace, index: any) {
-        return <div className='placePolicies'><PlacePolicy place={record} text={false} search={true} receptive={true} /></div>;
+        return <div className='placePolicies'><PlacePolicy place={record} text={false} search={true} receptive={true}/>
+        </div>;
     }
 
     renderOptionsCell(text: string, record: IPlace, index: any) {
@@ -323,7 +349,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 key: CPlaceFilterTypes.ALL,
                 name: 'Relation View',
                 icon: 'placesRelation16',
-                onClick : () => {
+                onClick: () => {
                     console.log('onclick item');
                 },
             }
@@ -331,21 +357,21 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         items.map((menu: IPlaceOptionsItem, index: number) => {
 
             return (<div>
-                        <Menu.Item key={index}>
-                            <div>
-                                <IcoN size={16} name={menu.icon}/>
-                                <p>{menu.name}</p>
-                            </div>
-                        </Menu.Item>
-                        <Menu.Divider/>
-                    </div>);
+                <Menu.Item key={index}>
+                    <div>
+                        <IcoN size={16} name={menu.icon}/>
+                        <p>{menu.name}</p>
+                    </div>
+                </Menu.Item>
+                <Menu.Divider/>
+            </div>);
         });
         return (
             <Row className='moreOptions' type='flex' justify='end'>
                 <Dropdown overlay={<Menu>
                     {items}
-                    </Menu>}
-                    trigger={['click']}>
+                </Menu>}
+                          trigger={['click']}>
                     <IcoN size={24} name={'more24'}/>
                 </Dropdown>
             </Row>);
@@ -357,7 +383,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     renderPlaceTypeCell(text: string, record: IPlace, index: any) {
-        return <Row className='placeType' type='flex' align='middle'><PlacePolicy place={record} text={true} type={true} /></Row>;
+        return <Row className='placeType' type='flex' align='middle'><PlacePolicy place={record} text={true}
+                                                                                  type={true}/></Row>;
     }
 
     getColumns() {
@@ -412,9 +439,9 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 }
                 <Table
                     pagination={this.state.pagination}
-                    onChange={this.handleTableChange.bind(this) }
+                    onChange={this.handleTableChange.bind(this)}
                     rowKey='_id'
-                    onRowClick={this.showPlaceModal.bind(this) }
+                    onRowClick={this.showPlaceModal.bind(this)}
                     columns={column}
                     loading={this.state.loading}
                     dataSource={this.state.places}

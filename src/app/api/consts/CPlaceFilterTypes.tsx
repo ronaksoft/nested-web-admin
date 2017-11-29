@@ -11,6 +11,8 @@ const CPlaceFilterTypes = {
   WITHOUT_MEMBERS: 'without_members',
   SEARCHABLE: 'searchable',
   NON_SEARCHABLE: 'non_searchable',
+  TAB_SHARED: 's',
+  TAB_INDIVIDUAL: 'i',
 };
 
 export default CPlaceFilterTypes;
