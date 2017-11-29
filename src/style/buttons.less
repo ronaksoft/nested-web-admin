@@ -128,6 +128,59 @@
     }
 }
 
+/**
+    *********************************
+    *        red btn              *
+    *********************************
+  */
+
+.butn-red {
+    background-color: @force-color;
+    border-color: @force-wire-color;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(230, 0, 38, 0.32);
+    &:hover {
+        border-color: @force-color;
+        background-color: @force-color;
+        color: #fff;
+        box-shadow: 0 4px 8px rgba(230, 0, 38, 0.32);
+        a,
+        span {
+            color: #fff;
+        }
+    }
+    &:focus {
+        background-color: @force-wire-color;
+        border-color: @force-wire-color;
+        box-shadow: 0 1px 2px rgba(230, 0, 38, 0.32);
+    }
+    &.secondary {
+        background-color: #fff!important;
+        color: @force-wire-color;
+        border-color: @force-wire-color;
+        a,
+        span {
+            color: @force-wire-color;
+        }
+        &:hover {
+            border-color: @force-color;
+            box-shadow: 0px 3px 8px rgba(230, 0, 38, 0.32);
+            a,
+            span {
+                color: @force-wire-color;
+            }
+        }
+        &:focus {
+            border-color: @force-wire-color;
+            box-shadow: 0 1px 2px rgba(230, 0, 38, 0.32);
+            a,
+            span {
+                color: @force-wire-color;
+            }
+        }
+    }
+}
+
 
 /**
     *********************************

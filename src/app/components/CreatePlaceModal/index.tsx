@@ -412,6 +412,12 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         );
     }
 
+    removePhoto(e: any) {
+        // todo remove photo from model
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
     render() {
         const sharePostItems = this.getPostPolicyItem();
         const createPlaceItems = this.getPolicyItem();
@@ -466,6 +472,9 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                                 <Button type=' butn secondary'>
                                     Upload a Photo
                                 </Button>
+                                {model.pictureData && (<Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
+                                    Remove Photo
+                                </Button>)}
                             </Upload>
                         </Row>
                         <Row className='input-row'>
