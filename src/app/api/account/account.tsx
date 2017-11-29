@@ -14,6 +14,7 @@ import IRemovePictureRequest from './interfaces/IRemovePictureRequest';
 import ISetPasswordRequest from './interfaces/ISetPasswordRequest';
 import IGetListRequest from './interfaces/IGetListRequest';
 import ISessionRegisterRequest from './interfaces/ISessionRegisterRequest';
+import C_USER_SEARCH_AREA from '../consts/CUserSearchArea';
 
 export default class AccountApi {
     private api;
@@ -203,6 +204,19 @@ export default class AccountApi {
                 return false;
             } else {
                 return true;
+            }
+        });
+    }
+
+    search(keyword: string, limit: number, area: string): Promise<any> {
+        if (area === undefined) {
+            area = C_USER_SEARCH_AREA.ACCOUNTS;
+        }
+        return this.api.server.request({
+            cmd: 'search/accounts' + area,
+            data: {
+                keyword: keyword,
+                limit: limit,
             }
         });
     }

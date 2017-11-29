@@ -293,9 +293,13 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         });
     }
 
-    addMembers(members: Array<any>) {
-        // todo update model
-        console.log(members);
+    addMembers(members: any) {
+        let currentMembers = this.state.model.members;
+        const list = _.differenceBy(members, currentMembers, '_id');
+        currentMembers = currentMembers.concat(list);
+        this.updateModel({
+            members: currentMembers,
+        });
     }
 
     generateId(name: string) {
@@ -330,62 +334,44 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     }
 
     discard() {
-        this
-            .props
-            .onClose(true);
+        this.props.onClose(true);
     }
 
     create() {
         const model = this.state.model;
-        let params: IPlaceCreateRequest;
-        params.place_id = model.id;
-        params.place_name = model.name;
-        params.place_description = model.description;
+        let params: IPlaceCreateRequest = {
+            place_id: model.id,
+            place_name: model.name,
+            place_description: model.description,
+            picture: model.pictureData,
+            policy: {
+                add_post: model.addPostPolicy,
+                add_place: model.addPlacePolicy,
+                add_member: model.addMemberPolicy,
+            },
+            privacy: {
+                locked: true,
+                search: true,
+                receptive: 'off',
+            },
+        };
+        let members = _.map(this.state.model.members, (user) => {
+            return user._id;
+        }).join(',');
+
+        this.placeApi.placeCreate(params).then((data) => {
+            console.log('created', data);
+            this.placeApi.placeAddMember({
+                place_id: data.place_id,
+                member_id: members
+            }).then((memberData) => {
+                console.log(memberData);
+            });
+        });
     }
 
     getMembersItems() {
-        var x = [
-            {
-                admin: true,
-                counters: {
-                    client_keys: 3,
-                    incorrect_attempts: 0,
-                    logins: 289,
-                    total_notifications: 470,
-                    unread_notifications: 5
-                },
-                disabled: false,
-                dob: '1996-05-12',
-                email: 'ehsan@nested.me',
-                flags: {
-                    force_password_change: false
-                },
-                fname: 'Ehsan',
-                gender: 'm',
-                joined_on: 1493369284776,
-                limits: {
-                    client_keys: 10,
-                    grand_places: 3
-                },
-                lname: 'Noureddin Moosa',
-                phone: '989121228718',
-                picture: {
-                    org: 'IMG5A082F36F0704400015BD9DA5A082F36F0704400015BD9DB',
-                    pre: 'THU5A082F36F0704400015BD9E05A082F36F0704400015BD9E1',
-                    x128: 'THU5A082F36F0704400015BD9E35A082F36F0704400015BD9E4',
-                    x32: 'THU5A082F36F0704400015BD9DD5A082F36F0704400015BD9DE',
-                    x64: 'THU5A082F36F0704400015BD9E65A082F36F0704400015BD9E7'
-                },
-                privacy: {
-                    change_picture: true,
-                    change_profile: true,
-                    searchable: true
-                },
-                searchable: true,
-                _id: 'ehsan'
-            }
-        ];
-        var list = x.map((u: any) => {
+        var list = this.state.model.members.map((u: any) => {
             return (
                 <li key={u._id}>
                     <Row type='flex' align='middle'>
@@ -583,12 +569,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 </Row>
                 <AddMemberModal
                     members={this.state.model.members}
-                    addMembers={this
-                        .addMembers
-                        .bind(this)}
-                    onClose={this
-                        .toggleAddMemberModal
-                        .bind(this)}
+                    addMembers={this.addMembers.bind(this)}
+                    onClose={this.toggleAddMemberModal.bind(this)}
                     visible={this.state.visibleAddMemberModal}/>
             </Modal>
         );
