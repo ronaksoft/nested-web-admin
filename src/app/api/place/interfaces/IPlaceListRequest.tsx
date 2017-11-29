@@ -4,6 +4,7 @@ interface IPlaceListRequest {
     limit?: number;
     filter?: string;
     grand_parent_id?: string;
+    sort?: string;
 }
 
 export default IPlaceListRequest;

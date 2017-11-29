@@ -10,7 +10,7 @@ export default class SystemApi {
     }
 
     getSystemCounters() : Promise < any > {
-        return this.api.server.request({cmd: 'admin/get_system_counters', data: {}}).then((res : IGetSystemCountersResponse) => {
+        return this.api.server.request({cmd: 'system/get_system_counters', data: {}}).then((res : IGetSystemCountersResponse) => {
             return res;
         }).catch((err) => {
             console.log(err);
@@ -18,7 +18,7 @@ export default class SystemApi {
     }
 
     getConstants() : Promise < any > {
-        return this.api.server.request({cmd: 'admin/get_int_constants', data: {}}).then((res : IGetConstantsResponse) => {
+        return this.api.server.request({cmd: 'system/get_int_constants', data: {}}).then((res : IGetConstantsResponse) => {
             return res;
         }).catch((err) => {
             console.log(err);
@@ -32,7 +32,7 @@ export default class SystemApi {
             requestDate[key] = parseInt(req[key], 10);
         });
 
-        return this.api.server.request({cmd: 'admin/set_int_constants', data: requestDate}).then((res) => {
+        return this.api.server.request({cmd: 'system/set_int_constants', data: requestDate}).then((res) => {
             console.log(res);
             return res;
         }).catch((err) => {

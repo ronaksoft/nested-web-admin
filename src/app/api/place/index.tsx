@@ -6,6 +6,7 @@ import IPlaceListMembersResponse from './interfaces/IPlaceListMembersResponse';
 import IAccountPlacesRequest from './interfaces/IAccountPlacesRequest';
 import IPlaceAddMembersRequest from './interfaces/IPlaceAddMembersRequest';
 import IPlaceUpdate from './interfaces/IPlaceUpdate';
+import IPlaceCreateRequest from './interfaces/IPlaceCreateRequest';
 
 export default class PlaceApi {
     private api;
@@ -52,6 +53,22 @@ export default class PlaceApi {
     placeLimitEdit(params: IPlaceUpdate): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/place_update',
+            data: params,
+        });
+    }
+
+    isIdAvailable(id: string): Promise<any> {
+        return this.api.server.request({
+            cmd: 'place/available',
+            data: {
+                place_id: id,
+            },
+        });
+    }
+
+    placeCreate(params: IPlaceCreateRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/create_grand_place',
             data: params,
         });
     }

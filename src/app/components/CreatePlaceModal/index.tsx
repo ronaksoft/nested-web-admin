@@ -16,6 +16,7 @@ import SelectLevel from '../SelectLevel/index';
 import AddMemberModal from '../AddMember/index';
 import _ from 'lodash';
 import {IcoN} from '../icon/index';
+import IPlaceCreateRequest from '../../api/place/interfaces/IPlaceCreateRequest';
 
 interface IProps {
     place?: IPlace;
@@ -30,15 +31,22 @@ interface IStates {
     place: IPlace;
     model: any;
     token: string;
+    idValid: boolean;
+    formValid: boolean;
+    showError: boolean;
 }
 
 
 export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     currentUser: IUser;
     accountApi: any;
-
+    placeApi: any;
+    placeIdRegex: any;
+    checkId: any;
     constructor(props: any) {
         super(props);
+        this.placeIdRegex = new RegExp('^[A-Za-z][A-Za-z0-9-]*$');
+        this.checkId = _.debounce(this.checkIdAvailability, 512);
         this.state = {
             visible: false,
             visibleAddMemberModal: false,
@@ -56,7 +64,10 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 subPlaceLimit: 10,
                 storageLimit: 10,
                 members: [],
-            }
+            },
+            idValid: false,
+            formValid: false,
+            showError: false,
         };
         if (this.props.place) {
             this.state.place = this.props.place;
@@ -92,6 +103,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
     componentDidMount() {
         this.accountApi = new AccountApi();
+        this.placeApi = new PlaceApi();
         if (this.props.place) {
             this.setState({
                 visible: this.props.visible,
@@ -193,14 +205,25 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     }
 
     updatePlaceId(event: any) {
+        const id = event.currentTarget.value;
+        this.checkId(id);
         this.updateModel({
-            id: event.currentTarget.value,
+            id: id,
         });
     }
 
     updatePlaceName(event: any) {
+        const name = event.currentTarget.value;
+        const id = this.generateId(name);
         this.updateModel({
-            name: event.currentTarget.value,
+            name: name,
+            id: id,
+        });
+    }
+
+    updatePlaceDescription(event: any) {
+        this.updateModel({
+            description: event.currentTarget.value,
         });
     }
 
@@ -278,12 +301,47 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         console.log(members);
     }
 
+    generateId(name: string) {
+        let camelCaseName = _.camelCase(name);
+        // only accepts en numbers and alphabets
+        if (this.placeIdRegex.test(camelCaseName)) {
+            return _.kebabCase(name.substr(0, 36));
+        } else {
+            return '';
+        }
+    }
+
+    checkIdAvailability(id: string) {
+        id = id.toLowerCase();
+        if (this.placeIdRegex.test(id)) {
+            this.placeApi.isIdAvailable(id).then((data) => {
+                if (data.err_code) {
+                    this.setState({
+                        idValid: false,
+                    });
+                } else {
+                    this.setState({
+                        idValid: true,
+                    });
+                }
+            }).catch(() => {
+                this.setState({
+                    idValid: false,
+                });
+            });
+        }
+    }
+
     discard() {
         this.props.onClose(true);
     }
 
     create() {
-        console.log(this.state.model);
+        const model = this.state.model;
+        let params: IPlaceCreateRequest;
+        params.place_id = model.id;
+        params.place_name = model.name;
+        params.place_description = model.description;
     }
 
     render() {
@@ -335,12 +393,16 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                             <label htmlFor='placeId'>Place ID</label>
                             <Input id='placeId' size='large' className='nst-input' value={model.id}
                                    onChange={this.updatePlaceId.bind(this)}/>
+                            {!this.state.idValid &&
+                                <span>error</span>
+                            }
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change
                                 this afterwards, so choose wisely!</p>
                         </Row>
                         <Row className='input-row'>
                             <label htmlFor='description'>Description</label>
-                            <Input id='description' size='large' className='nst-input'/>
+                            <Input id='description' size='large' className='nst-input' value={model.description}
+                                   onChange={this.updatePlaceDescription.bind(this)}/>
                         </Row>
                         <Row className='input-row select-level'>
                             <label>Who can share posts with this Place?</label>
