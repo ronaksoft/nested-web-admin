@@ -16,7 +16,7 @@ export interface IAccountsState {
     count: Number;
     filterGroup: FilterGroup;
     Items: IUser[];
-    Selecteds: Array< IUser >;
+    selecteds: Array< IUser >;
     counters: any;
     countersLoaded: boolean;
     loading: boolean;
@@ -32,7 +32,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
         this.state = {
             Items: [],
-            Selecteds: [],
+            selecteds: [],
             count: 0,
             searchKeywork: '',
             filterGroup: FilterGroup.Total,
@@ -76,20 +76,20 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     setGroup = (group: FilterGroup) => this.setState({filterGroup: group});
 
     togglseSelect (user: IUser) {
-        var ind = this.state.Selecteds.indexOf(user);
+        var ind = this.state.selecteds.indexOf(user);
         if (ind > -1) {
-            var filteredArray = this.state.Selecteds.slice(0);
+            var filteredArray = this.state.selecteds.slice(0);
             filteredArray.splice(ind, 1);
-            this.setState({Selecteds: filteredArray});
+            this.setState({selecteds: filteredArray});
         } else {
             this.setState({
-                Selecteds: [...this.state.Selecteds, user]
+                selecteds: [...this.state.selecteds, user]
             });
         }
     }
 
     render() {
-
+        const isSelected = this.state.selecteds.length > 0;
         const total = (this.state.counters.enabled_accounts || 0) + (this.state.counters.disabled_accounts || 0);
         const filterItems = [
             {
@@ -131,14 +131,52 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                     <Options/>
                 </Row>
                 <div className='white-block-container'>
-                    <Row className='toolbar' type='flex'>
-                        <div className='filter-search'>
+                    <Row className={['toolbar', isSelected ? 'selcted-mode' : ''].join(' ')} type='flex'>
+                        {!isSelected && (<div className='filter-search'>
                             <Input className='filter-search' value={this.state.searchKeywork} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
                             { this.state.searchKeywork.length === 0 && <IcoN size={16} name={'search16'}/>}
                             { this.state.searchKeywork.length > 0 && <IcoN size={16} name={'xcross16'}/>}
-                        </div>
+                        </div>)}
+                        {isSelected && (
+                            <div className='default-mode-butn'>
+                                <IcoN size={16} name={'xcross16'}/>
+                            </div>
+                        )}
+                        {isSelected && (
+                            <span> Accounts Selected</span>
+                        )}
                         <div className='filler'></div>
-                        {this.state.countersLoaded &&
+                        {isSelected && (
+                            <span>
+                                <IcoN size={16} name={'search16'}/>
+                                Active/ Deactive
+                            </span>
+                        )}
+                        {isSelected && (
+                            <span>
+                                <IcoN size={16} name={'search16'}/>
+                               Add to Place
+                            </span>
+                        )}
+                        {isSelected && (
+                            <span>
+                                <IcoN size={16} name={'search16'}/>
+                               Reset Password
+                            </span>
+                        )}
+                        {isSelected && (
+                            <span>
+                                <IcoN size={16} name={'search16'}/>
+                              Searchable Off
+                            </span>
+                        )}
+                        {isSelected && (
+                            <span>
+                                <IcoN size={16} name={'search16'}/>
+                             Lable Manager
+                            </span>
+                        )}
+                        {(this.state.countersLoaded && !isSelected) &&
                         <Filter totalCount={total} menus={filterItems}
                                 onChange={this.setGroup} counters={this.state.counters}/>
                         }

@@ -17,6 +17,24 @@
             color: @color-solid;
         }
     }
+    &.unread-mode ,
+    &.selcted-mode  {
+      span ,
+      > * > span {
+        color: #fff
+      }
+      svg {
+        fill: #fff
+      }
+    }
+    &.unread-mode  {
+      background-color: #0079F2;
+      border: 1px solid #0079F2;
+    }
+    &.selcted-mode {
+      background-color:  @color-solid;
+      border: 1px solid  @color-solid;
+    }
     .ant-col-6 {
         display: flex;
         flex: 1;
@@ -49,6 +67,15 @@
     .ant-dropdown-link .anticon-down {
         font-size: 24px;
         color: black
+    }
+    .default-mode-butn {
+        margin-left: 4px;
+        fill: #fff;
+        opacity: .4;
+        display: flex;
+        &:hover {
+          opacity: 1;
+        }
     }
     h2 {
         padding: 0 8px;
@@ -108,5 +135,5 @@
           position: absolute;
           fill: @color-solid!important;
         }
-      }
+    }
 }
