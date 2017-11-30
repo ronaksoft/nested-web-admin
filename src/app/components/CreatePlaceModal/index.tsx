@@ -47,6 +47,7 @@ interface IStates {
     idValid: boolean;
     formValid: boolean;
     showError: boolean;
+    uploadPercent: number;
 }
 
 
@@ -63,6 +64,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         this.checkId = _.debounce(this.checkIdAvailability, 512);
         this.state = {
             visible: false,
+            uploadPercent: 0,
             visibleAddMemberModal: false,
             model: {
                 id: '',
@@ -87,25 +89,25 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             this.state.place = this.props.place;
         }
         /*else {
-                   this.state.place = {
-                       _id: '',
-                       created_on: null,
-                       creators: [],
-                       description: '',
-                       grand_parent_id: '',
-                       groups: null,
-                       limits: null,
-                       name: null,
-                       picture: null,
-                       policy: {
-                           add_post: 'manager',
-                       },
-                       privacy: null,
-                       type: null,
-                       unlocked_childs: null,
-                       members: [],
-                   };
-               }*/
+            this.state.place = {
+                _id: '',
+                created_on: null,
+                creators: [],
+                description: '',
+                grand_parent_id: '',
+                groups: null,
+                limits: null,
+                name: null,
+                picture: null,
+                policy: {
+                    add_post: 'manager',
+                },
+                privacy: null,
+                type: null,
+                unlocked_childs: null,
+                members: [],
+            };
+        }*/
         this.currentUser = AAA
             .getInstance()
             .getUser();
@@ -270,6 +272,11 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     }
 
     pictureChange(info: any) {
+        if (info.event && info.event.percent) {
+            this.setState({
+                uploadPercent: parseInt(info.event.percent.toFixed(2)),
+            });
+        }
         if (info.file.status === 'done') {
             this.updateModel({
                 picture: info.file.response.data[0].universal_id,
@@ -281,6 +288,9 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     }
 
     beforeUpload() {
+        this.setState({
+            uploadPercent: 0
+        });
         if (!this.state.token) {
             notification.error({message: 'Error', description: 'We are not able to upload the picture.'});
             return false;
@@ -402,6 +412,10 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         // todo remove photo from model
         e.preventDefault();
         e.stopPropagation();
+        this.updateModel({
+            picture: '',
+            pictureData: ''
+        });
     }
 
     render() {
@@ -461,6 +475,9 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                                 {model.pictureData && (<Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
                                     Remove Photo
                                 </Button>)}
+                                {(this.state.uploadPercent < 100 && this.state.uploadPercent > 0) &&
+                                    <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/>
+                                }
                             </Upload>
                         </Row>
                         <Row className='input-row'>
