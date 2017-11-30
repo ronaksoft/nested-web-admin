@@ -16,6 +16,7 @@ export interface IAccountsState {
     count: Number;
     filterGroup: FilterGroup;
     Items: IUser[];
+    Selecteds: Array< IUser >;
     counters: any;
     countersLoaded: boolean;
     loading: boolean;
@@ -31,6 +32,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
         this.state = {
             Items: [],
+            Selecteds: [],
             count: 0,
             searchKeywork: '',
             filterGroup: FilterGroup.Total,
@@ -72,6 +74,19 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     }
 
     setGroup = (group: FilterGroup) => this.setState({filterGroup: group});
+
+    togglseSelect (user: IUser) {
+        var ind = this.state.Selecteds.indexOf(user);
+        if (ind > -1) {
+            var filteredArray = this.state.Selecteds.slice(0);
+            filteredArray.splice(ind, 1);
+            this.setState({Selecteds: filteredArray});
+        } else {
+            this.setState({
+                Selecteds: [...this.state.Selecteds, user]
+            });
+        }
+    }
 
     render() {
 
@@ -133,7 +148,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             {
                                 this.state.countersLoaded &&
                                 <List counters={this.state.counters} filter={this.state.filterGroup}
-                                    onChange={this.onChange.bind(this)}/>
+                                    onChange={this.onChange.bind(this)} togglseSelected={this.togglseSelect.bind(this)}/>
                             }
                         </Col>
                     </Row>

@@ -29,11 +29,13 @@ import IDemoteRequest from '../../../../api/account/interfaces/IDemoteRequest';
 import FilterGroup from '../../FilterGroup';
 import View from '../View/index';
 import {IcoN} from '../../../../components/icon/index';
+import IUser from '../../../../api/account/interfaces/IUser';
 
 interface IListProps {
     counters: any;
     filter: FilterGroup;
     onChange: any;
+    togglseSelected: (user:IUser) => {};
 }
 
 interface IListState {
@@ -66,13 +68,22 @@ class List extends React.Component <IListProps,
     COLUMNS_STORAGE_KEY = 'ronak.nested.admin.accounts.columns';
     PAGE_SIZE = 10;
 
-    // columns Render Handlers
+    checkboxClick  = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 
+    onCheckboxChange  = (user) => {
+        user.isChecked = !user.isChecked;
+        this.props.togglseSelected(user);
+    }
+
+    // columns Render Handlers
     nameRender = (text, user, index) => {
         return (
-            <Row type='flex' align='middle'>
-                <Checkbox onChange={() => this.onCheckboxChange(item)}
-                    checked={false}/>
+            <Row type='flex' align='middle' onClick={this.checkboxClick.bind(this)}>
+                <Checkbox onChange={() => this.onCheckboxChange(user)}
+                    checked={user.isChecked}/>
                     <UserAvatar avatar name size='24' user={user}/>
             </Row>
         );
