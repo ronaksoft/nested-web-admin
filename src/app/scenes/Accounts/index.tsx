@@ -80,22 +80,33 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             {
                 key: FilterGroup.Total,
                 name: 'Total',
-                count: total,
+                icon: 'team16',
                 disableChart: true,
             },
             {
                 key: FilterGroup.Active,
-                name: 'Active Accounts',
-                count: this.state.counters.enabled_accounts,
-                chartColor: '#00B45A',
-                bgChartColor: '#CBEFDD',
+                name: 'Active',
+                icon: 'circle16',
             },
             {
                 key: FilterGroup.Deactive,
-                name: 'Deactive Accounts',
-                count: this.state.counters.disabled_accounts,
-                chartColor: '#3296FF',
-                bgChartColor: '#D9EBFF',
+                name: 'Inactive',
+                icon: 'circleWire16',
+            },
+            {
+                key: FilterGroup.Searchable,
+                name: 'Searchable',
+                icon: 'search16',
+            },
+            {
+                key: FilterGroup.NonSearchable,
+                name: 'Non-Searchable',
+                icon: 'nonsearch16',
+            },
+            {
+                key: FilterGroup.NotVerifiedPhone,
+                name: 'Not Verified Phones',
+                icon: 'devicePhone16',
             }
         ];
         return (

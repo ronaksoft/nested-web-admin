@@ -71,7 +71,6 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
         const menus = [];
         this.state.menus.forEach((menu: IMenuItem, index: number) => {
 
-            // console.log(this);
             menus.push(
                 <Menu.Item key={index}>
                     <Row type='flex' align='middle' className='filterPopover'>
@@ -86,7 +85,7 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
             );
 
             // if (index + 1  !== menus.length) {
-            menus.push(<Menu.Divider/>);
+            // menus.push(<Menu.Divider/>);
             // }
         });
 

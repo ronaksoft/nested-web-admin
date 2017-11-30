@@ -424,6 +424,9 @@ class List extends React.Component <IListProps,
             case FilterGroup.Deactive:
                 filterValue = 'users_disabled';
                 break;
+            case FilterGroup.Searchable:
+            case FilterGroup.NonSearchable:
+            case FilterGroup.NotVerifiedPhone:
             default:
                 filterValue = 'users';
                 break;
