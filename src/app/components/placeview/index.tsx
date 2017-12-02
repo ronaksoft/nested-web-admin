@@ -1,6 +1,6 @@
 import * as React from 'react';
 import IPlace from './../../api/place/interfaces/IPlace';
-import CONFIG from '../../../app.config';
+import CONFIG from '/src/app/config';
 import AAA from './../../services/classes/aaa/index';
 const settings = {
   textColor: '#ffffff',
@@ -99,10 +99,10 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
 
     if (avatar) {
       if ( placeAvatar ) {
-        let src = place.picture.x64 ? `${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x64}` : './../../../style/images/absents_place.svg';
+        let src = place.picture.x64 ? `${CONFIG().STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x64}` : './../../../style/images/absents_place.svg';
         imgDOM = <img className='PlaceView--img' style={imageStyle} src={src}  alt={place.name} />;
       } else {
-        let src = place.picture.x32 ? `${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x32}` : './../../../style/images/absents_place.svg';
+        let src = place.picture.x32 ? `${CONFIG().STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${place.picture.x32}` : './../../../style/images/absents_place.svg';
         imgDOM = <img className='PlaceView--img' style={imageStyle} src={src}  alt={place.name} />;
       }
 

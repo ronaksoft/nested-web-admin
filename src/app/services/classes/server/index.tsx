@@ -4,7 +4,7 @@ import IRequest from './interfaces/IRequest';
 import IResponse from './interfaces/IResponse';
 import ISocketRequest from './interfaces/ISocketRequest';
 import AAA from './../aaa/index';
-import CONFIG from './../../../../app.config';
+import CONFIG from '/src/app/config';
 import SocketState from '../socket/states';
 import Client from './../client/index';
 export default class Server {
@@ -34,7 +34,7 @@ export default class Server {
 
         let socketRequest: ISocketRequest = {
             ...req,
-            _cver: CONFIG.APP_VERSION,
+            _cver: CONFIG().APP_VERSION,
             _cid: this.cid
         };
 
@@ -80,10 +80,10 @@ export default class Server {
         this.socket.onStateChanged = callback;
     }
 
-    private constructor() {
+    public constructor() {
         console.log('Start Server instance');
         this.socket = new socket({
-            server: CONFIG.WEBSOCKET.URL,
+            server: CONFIG().WEBSOCKET.URL,
             pingPongTime: 10000,
             onReady: this.startQueue.bind(this),
             onMessage: this.response.bind(this),

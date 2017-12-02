@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import CONFIG from '../../../app.config';
+import CONFIG from '/src/app/config';
 import AAA from './../../services/classes/aaa/index';
 
 export interface IAvatarProps {
@@ -24,7 +24,7 @@ class PlaceAvatar extends React.Component<IAvatarProps, IAvatarStates> {
             if (_.isString(avatar)) {
                 return 'data:image/svg+xml;base64,' + avatar;
             } else if (avatar.x64) {
-                return `${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${avatar.x64}`;
+                return `${CONFIG().STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${avatar.x64}`;
             }
         } else {
             return `/style/images/ph_place.png`;

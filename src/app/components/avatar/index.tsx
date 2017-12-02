@@ -1,6 +1,6 @@
 import * as React from 'react';
 import IUser from './../../api/account/interfaces/IUser';
-import CONFIG from '../../../app.config';
+import CONFIG from '/src/app/config';
 import AAA from './../../services/classes/aaa/index';
 const settings = {
   textColor: '#ffffff',
@@ -173,7 +173,7 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
 
     if (avatar) {
       if (pictureId) {
-        imgDOM = <img className='UserAvatar--img' style={imageStyle} src={`${CONFIG.STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${pictureId}`}  alt={user.name} />;
+        imgDOM = <img className='UserAvatar--img' style={imageStyle} src={`${CONFIG().STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${pictureId}`}  alt={user.name} />;
       } else {
         // iTODO Initails
         let abbr, finalColor;

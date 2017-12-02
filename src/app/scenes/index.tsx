@@ -14,7 +14,7 @@ import {Layout} from 'antd';
 import AccountApi from '../api/account/account';
 import IUser from '../api/account/interfaces/IUser';
 
-import Server from '../services/classes/server/index';
+import Api from './../api/index';
 import {message} from 'antd';
 import SocketState from '../services/classes/socket/states';
 import Client from '../services/classes/client/index';
@@ -32,9 +32,12 @@ class App extends React.Component<IAppProps, IAppState> {
         isReady: false
     };
 
+    api: Api;
+
     constructor(props: any) {
         super(props);
         this.hideDisconnected = null;
+        this.api = Api.getInstance();
     }
 
     componentDidMount() {
@@ -81,7 +84,7 @@ class App extends React.Component<IAppProps, IAppState> {
             });
         }
 
-        Server.getInstance().onConnectionStateChange((state: SocketState) => {
+        this.api.getServer().onConnectionStateChange((state: SocketState) => {
             if (state === SocketState.OPEN) {
                 if (this.hideDisconnected) {
                     this.hideDisconnected();

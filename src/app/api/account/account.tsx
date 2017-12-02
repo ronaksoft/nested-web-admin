@@ -1,4 +1,6 @@
 import Api from './../index';
+import Server from './../../services/classes/server/index';
+import RequestBundle from './../requestBundle/index';
 import ISessionRecallRequest from './interfaces/ISessionRecallRequest';
 import ISessionRecallResponse from './interfaces/ISessionRecallResponse';
 import IAccountGetRequest from './interfaces/IAccountGetRequest';
@@ -18,31 +20,78 @@ import C_USER_SEARCH_AREA from '../consts/CUserSearchArea';
 
 export default class AccountApi {
     private api;
+    private requestBundle: RequestBundle;
 
     constructor() {
+        this.requestBundle = RequestBundle.getInstance();
         this.api = Api.getInstance();
     }
 
     sessionRecall(sessionRecallParams: ISessionRecallRequest): Promise<any> {
-        return this.api.server.request({
-            cmd: 'session/recall',
-            data: sessionRecallParams,
-            withoutQueue: true,
-        }).then((res: ISessionRecallResponse) => {
-            return res.account;
-        });
+        if (localStorage.getItem('nested.server.domain')) {
+            return this.api.reconfigEndPoints(localStorage.getItem('nested.server.domain'))
+                .then(() => {
+                    return this.api.server.request({
+                        cmd: 'session/recall',
+                        data: sessionRecallParams,
+                        withoutQueue: true,
+                    }).then((res: ISessionRecallResponse) => {
+                        return res.account;
+                    });
+                });
+        } else {
+            return this.api.server.request({
+                cmd: 'session/recall',
+                data: sessionRecallParams,
+                withoutQueue: true,
+            }).then((res: ISessionRecallResponse) => {
+                return res.account;
+            });
+        }
     }
 
 
-    accountGet(accountGetRequest: IAccountGetRequest): Promise<any> {
-        return this.api.server.request({
-            cmd: 'account/get',
-            data: accountGetRequest,
-        }).then((res: IUser) => {
-            return res;
-        }).catch((err) => {
-            console.log(err);
-        });
+    // accountGet(accountGetRequest: IAccountGetRequest): Promise<any> {
+    //     return this.api.server.request({
+    //         cmd: 'account/get',
+    //         data: accountGetRequest,
+    //     }).then((res: IUser) => {
+    //         return res;
+    //     }).catch((err) => {
+    //         console.log(err);
+    //     });
+    // }
+
+    /**
+     * @func get
+     * @desc Retrieves the current user account data
+     * @param {IAccountGetRequest} data
+     * @returns {Promise<any>}
+     * @memberof AccountApi
+     */
+    accountGet(data: IAccountGetRequest): Promise<any> {
+        // return this.api.request({
+        //   cmd: 'account/get',
+        //   data,
+        // });
+        // console.log(this.requestBundle);
+        return this.requestBundle.observeRequest('account', data.account_id, false, '_id', 'accounts', this.getManyPrivate);
+    }
+
+    /**
+     * @func get
+     * @desc Retrieves the current user account data
+     * @param {string} ids
+     * @memberof AccountApi
+     */
+    getManyPrivate(ids: string) {
+        const data: IAccountGetRequest = {
+            account_id: ids,
+        };
+        return {
+            cmd: 'account/get_many',
+            data: data,
+        };
     }
 
 
@@ -58,26 +107,29 @@ export default class AccountApi {
     }
 
 
-    login(data: ISessionRegisterRequest) : Promise<any> {
-      return this.api.server.request({
-        cmd: 'session/register',
-        data: data,
-      }).then((res: any) => {
-        return res;
-      }).catch((err) => {
-        console.log(err);
-      });
+    login(data: ISessionRegisterRequest): Promise<any> {
+        if (this.api.server === null) {
+            this.api.server = new Server();
+        }
+        return this.api.server.request({
+            cmd: 'session/register',
+            data: data,
+        }).then((res: any) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
 
-    signout() : Promise<any> {
-      return this.api.server.request({
-        cmd: 'session/close'
-      }).then((res: any) => {
-        return res;
-      }).catch((err) => {
-        console.log(err);
-      });
+    signout(): Promise<any> {
+        return this.api.server.request({
+            cmd: 'session/close'
+        }).then((res: any) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
     getMembers(params: IGetMembersRequest): Promise<any> {
