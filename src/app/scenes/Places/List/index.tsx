@@ -29,6 +29,8 @@ interface IListProps {
     counters: IGetSystemCountersResponse;
     selectedFilter: string;
     selectedTab: string;
+    notifyChildrenUnselect: boolean;
+    toggleSelected: (user: IPlace) => {};
 }
 
 interface IListState {
@@ -100,6 +102,15 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 }
             },  () => {
                 this.fetchPlaces();
+            });
+        }
+        if(props.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
+            var PlacesClone: IPlace[] = _.clone(this.state.places);
+            PlacesClone.forEach((user: IPlace) => {
+               user.isChecked = false;
+            });
+            this.setState({
+                places: PlacesClone
             });
         }
     }
@@ -290,17 +301,16 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 });
             }
         };
-        const checkboxChanged = () => {
-            this.onCheckboxChange(record);
-        };
         return (
             <Row type='flex' align='middle'>
-                <Checkbox onChange={checkboxChanged.bind(this)}
-                          checked={false}/>
-                {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
-                <div className='arrow-holder'>{(record.child !== true && this.state.viewMode === 'relation') &&
-                <Arrow rotate={record.children === undefined ? '180' : '0'} child={record.child}
-                       onClick={loadChildren.bind(this)}/>}</div>
+                <Row type='flex' align='middle' onClick={this.preventer.bind(this)}>
+                    <Checkbox onChange={() => this.onCheckboxChange(record)}
+                            checked={record.isChecked}/>
+                    {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
+                    <div className='arrow-holder'>{(record.child !== true && this.state.viewMode === 'relation') &&
+                    <Arrow rotate={record.children === undefined ? '0' : '180'} child={record.child}
+                        onClick={loadChildren.bind(this)}/>}</div>
+                </Row>
                 <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
             </Row>
         );
@@ -370,11 +380,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             <Row className='moreOptions' type='flex' justify='end'>
                 <Dropdown overlay={<Menu>
                     {items}
-                </Menu>}
-                          trigger={['click']}>
+                </Menu>} trigger={['click']}>
                     <IcoN size={24} name={'more24'}/>
                 </Dropdown>
-            </Row>);
+            </Row>
+        );
     }
 
     renderSubPlaceCounterCell(text: string, record: IPlace, index: any) {
@@ -427,6 +437,16 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             columns.push(col);
         });
         return columns;
+    }
+
+    preventer = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    onCheckboxChange  = (place: IPlace) => {
+        place.isChecked = !place.isChecked;
+        this.props.toggleSelected(place);
     }
 
     render() {

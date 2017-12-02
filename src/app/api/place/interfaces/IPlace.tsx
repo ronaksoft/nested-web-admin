@@ -19,6 +19,7 @@ interface IPlace {
     privacy: IPlacePrivacy;
     type: C_PLACE_TYPE;
     unlocked_childs: Array<any>;
+    isChecked?: boolean;
 }
 
 export default IPlace;

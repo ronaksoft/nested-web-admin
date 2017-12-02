@@ -154,7 +154,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     }
 
     render() {
-        const isSelected = this.state.selectedItems.length > 0;
+        const isSelected = this.state.selectedItems.length;
         const total = (this.state.counters.enabled_accounts || 0) + (this.state.counters.disabled_accounts || 0);
         const activeItems = [];
         const searchItems = [];
@@ -232,7 +232,11 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                     <Options/>
                 </Row>
                 <div className='white-block-container'>
-                    <Row className={['toolbar', isSelected ? 'selcted-mode' : ''].join(' ')} type='flex'>
+                    <Row className={[
+                                    'toolbar',
+                                    isSelected ? 'selcted-mode' : '',
+                                    this.state.filterGroup !== filterItems[0].key ? 'filter-mode' : ''
+                        ].join(' ')} type='flex'>
                         {!isSelected && (<div className='filter-search'>
                             <Input className='filter-search' value={this.state.searchKeyword} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
                             { this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
@@ -244,7 +248,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             </div>
                         )}
                         {isSelected && (
-                            <span className='bar-item'><b>Accounts Selected</b></span>
+                            <span className='bar-item'><b>{isSelected} Accounts Selected</b></span>
                         )}
                         <div className='filler'></div>
                         {/* <span className='bar-item'>

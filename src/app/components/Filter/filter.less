@@ -17,17 +17,17 @@
             color: @color-solid;
         }
     }
-    &.unread-mode ,
-    &.selcted-mode  {
-      span ,
-      > * > span {
+    &.filter-mode,
+    &.selcted-mode {
+      .bar-item,
+      h2 .ant-dropdown-link.ant-dropdown-trigger span {
         color: #fff
       }
-      svg {
+      svg{
         fill: #fff
       }
     }
-    &.unread-mode  {
+    &.filter-mode {
       background-color: #0079F2;
       border: 1px solid #0079F2;
     }

@@ -10,7 +10,7 @@ export default class SystemApi {
     }
 
     getSystemCounters() : Promise < any > {
-        return this.api.server.request({cmd: 'system/get_system_counters', data: {}}).then((res : IGetSystemCountersResponse) => {
+        return this.api.server.request({cmd: 'system/get_counters', data: {}}).then((res : IGetSystemCountersResponse) => {
             return res;
         }).catch((err) => {
             console.log(err);
