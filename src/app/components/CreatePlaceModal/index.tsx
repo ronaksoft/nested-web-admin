@@ -22,7 +22,7 @@ import PlaceAvatar from './../PlaceAvatar/index';
 import AccountApi from '../../api/account/account';
 import IUser from '../../api/account/interfaces/IUser';
 import AAA from '../../services/classes/aaa/index';
-import CONFIG from './../../../app.config';
+import CONFIG from '/src/app/config';
 import C_PLACE_POST_POLICY from '../../api/consts/CPlacePostPolicy';
 import SelectLevel from '../SelectLevel/index';
 import AddMemberModal from '../AddMember/index';
@@ -149,7 +149,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             ? this.state.model.id
             : '';
         if (placeId !== '') {
-            placeId = placeId + '@' + CONFIG.DOMAIN;
+            placeId = placeId + '@' + CONFIG().DOMAIN;
         }
         const sharePostItems = [
             {
@@ -424,7 +424,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         const credentials = AAA
             .getInstance()
             .getCredentials();
-        const uploadUrl = `${CONFIG.STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
+        const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
 
         const modalFooter = (
             <div className='modal-foot'>

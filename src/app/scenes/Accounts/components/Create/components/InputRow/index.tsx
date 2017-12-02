@@ -5,7 +5,7 @@ import IAccount from '../../../../interfaces/IAccount';
 import PacketState from '../../../../PacketState';
 import AccountApi from '../../../../../../api/account/account';
 import Packet from '../../../../Packet';
-import CONFIG from '../../../../../../../app.config';
+import CONFIG from '/src/app/config';
 import {IcoN} from '../../../../../../components/icon/index';
 
 interface IInputRowProps {
@@ -74,7 +74,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
 
     checkUsernameAvailable(rule: any, value: string, callback: any) {
 
-        if (!CONFIG.GRAND_PLACE_REGEX.test(value)) {
+        if (!CONFIG().GRAND_PLACE_REGEX.test(value)) {
             callback(new Error('Is Not Valid!'));
             return;
         }

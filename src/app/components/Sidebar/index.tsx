@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Menu, Icon} from 'antd';
-import CONFIG from '../../../app.config';
+import CONFIG from '/src/app/config';
 
 import {IcoN} from '../icon/index';
 const SubMenu = Menu.SubMenu;
@@ -79,7 +79,7 @@ IHeaderState > {
                     position: 'fixed',
                     bottom: 0,
                     left: 10
-                }}>v.{CONFIG.VERSION}</small>
+                }}>v.{CONFIG().VERSION}</small>
             </div>
         );
     }
