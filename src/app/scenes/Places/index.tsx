@@ -207,7 +207,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             <span className='bar-item'><b> {isSelected} Places Selected</b></span>
                         )}
                         <div className='filler'></div>
-                        {isSelected && (
+                        {/* {isSelected && (
                             <BarMenu menus={[{
                                 key: 'delete',
                                 name: 'Delete',
@@ -218,7 +218,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                                 key: 'addMember',
                                 name: 'Add Member',
                                 icon: 'member16'}]} onChange={this.addMember}/>
-                        )}
+                        )} */}
                         {!isSelected &&
                         <Filter totalCount={filterItems[0].count} menus={filterItems}
                                 onChange={this.changeFilter.bind(this)}/>
