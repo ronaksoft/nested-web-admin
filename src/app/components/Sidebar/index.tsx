@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Menu, Icon} from 'antd';
-import CONFIG from '/src/app/config';
+import CONFIG from 'src/app/config';
 
 import {IcoN} from '../icon/index';
 const SubMenu = Menu.SubMenu;

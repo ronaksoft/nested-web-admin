@@ -1,7 +1,8 @@
 import Api from './../index';
 import moment from 'moment';
-import CONFIG from '/src/app/config';
+import CONFIG from 'src/app/config';
 import AAA from './../../services/classes/aaa/index';
+import _ from 'lodash';
 
 export default class FileApi {
   private api;

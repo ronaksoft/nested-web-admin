@@ -23,7 +23,7 @@ import PlaceApi from '../../../../api/place/index';
 import AccountApi from '../../../../api/account/account';
 import UserAvatar from '../../../../components/avatar/index';
 import EditableFields from './EditableFields';
-import CONFIG from '/src/app/config';
+import CONFIG from 'src/app/config';
 import AAA from './../../../../services/classes/aaa/index';
 import PlaceModal from '../../../../components/PlaceModal/index';
 import IPlace from '../../../../api/place/interfaces/IPlace';
