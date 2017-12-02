@@ -8,6 +8,7 @@ import {IcoN} from '../../components/icon/index';
 import AccountApi from '../../api/account/account';
 import FilterGroup from './FilterGroup';
 import IUser from '../../api/account/interfaces/IUser';
+import IPerson from '../../api/account/interfaces/IPerson';
 
 export interface IAccountsProps {
 }
@@ -16,10 +17,11 @@ export interface IAccountsState {
     count: Number;
     filterGroup: FilterGroup;
     Items: IUser[];
-    selectedItems: Array< IUser >;
+    selectedItems: Array< IPerson >;
     counters: any;
     countersLoaded: boolean;
     loading: boolean;
+    notifyChildrenUnselect: boolean;
     searchKeyword: string;
 }
 
@@ -38,7 +40,8 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             filterGroup: FilterGroup.Total,
             counters: {},
             countersLoaded: false,
-            loading: false
+            loading: false,
+            notifyChildrenUnselect: false
         };
     }
 
@@ -75,7 +78,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     setGroup = (group: FilterGroup) => this.setState({filterGroup: group});
 
-    togglseSelect (user: IUser) {
+    toggleSelect (user: IPerson) {
         var ind = this.state.selectedItems.indexOf(user);
         if (ind > -1) {
             var filteredArray = this.state.selectedItems.slice(0);
@@ -86,6 +89,13 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 selectedItems: [...this.state.selectedItems, user]
             });
         }
+    }
+
+    unselectAll () {
+        this.setState({
+            selectedItems: [],
+            notifyChildrenUnselect: !this.state.notifyChildrenUnselect
+        });
     }
 
     render() {
@@ -138,7 +148,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             { this.state.searchKeyword.length > 0 && <IcoN size={16} name={'xcross16'}/>}
                         </div>)}
                         {isSelected && (
-                            <div className='default-mode-butn'>
+                            <div className='default-mode-butn _cp' onClick={this.unselectAll.bind(this)}>
                                 <IcoN size={16} name={'xcross16'}/>
                             </div>
                         )}
@@ -196,7 +206,8 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             {
                                 this.state.countersLoaded &&
                                 <List counters={this.state.counters} filter={this.state.filterGroup}
-                                    onChange={this.onChange.bind(this)} togglseSelected={this.togglseSelect.bind(this)}/>
+                                      notifyChildrenUnselect={this.state.notifyChildrenUnselect}
+                                      onChange={this.onChange.bind(this)} toggleSelected={this.toggleSelect.bind(this)}/>
                             }
                         </Col>
                     </Row>

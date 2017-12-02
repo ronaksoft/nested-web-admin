@@ -33,13 +33,15 @@ import IUser from '../../../../api/account/interfaces/IUser';
 
 interface IListProps {
     counters: any;
+    notifyChildrenUnselect: boolean;
     filter: FilterGroup;
     onChange: any;
-    togglseSelected: (user:IUser) => {};
+    toggleSelected: (user:IPerson) => {};
 }
 
 interface IListState {
     users: IPerson[];
+    accounts: IPerson[];
     viewAccount: boolean;
     chosen: IAccount;
 }
@@ -73,13 +75,13 @@ class List extends React.Component <IListProps,
         event.stopPropagation();
     }
 
-    onCheckboxChange  = (user) => {
+    onCheckboxChange  = (user: IPerson) => {
         user.isChecked = !user.isChecked;
-        this.props.togglseSelected(user);
+        this.props.toggleSelected(user);
     }
 
     // columns Render Handlers
-    nameRender = (text, user, index) => {
+    nameRender = (text, user: IPerson, index) => {
         return (
             <Row type='flex' align='middle' onClick={this.checkboxClick.bind(this)}>
                 <Checkbox onChange={() => this.onCheckboxChange(user)}
@@ -111,11 +113,11 @@ class List extends React.Component <IListProps,
         }
         return (<div className='date'>{date} <span>{time}</span></div>);
     }
-    phoneRender = (text, user, index) => text ? '+' + text : '';
-    genderRender = (text, user, index) => {
+    phoneRender = (text, user: IPerson, index) => text ? '+' + text : '';
+    genderRender = (text, user: IPerson, index) => {
         return this.genders[user.gender] || '-';
     }
-    disabledRender = (text, user, index) => {
+    disabledRender = (text, user: IPerson, index) => {
         if (user.disabled) {
             return (<div className='deactive'>
                 <IcoN size={16} name={'circle16'}/>Deactive
@@ -126,7 +128,7 @@ class List extends React.Component <IListProps,
             </div>);
         }
     }
-    dobRender = (text, user, index) => {
+    dobRender = (text, user: IPerson, index) => {
         const value = moment(user.joined_on);
         if (value.isValid()) {
             return value.format('YYYY[/]MM[/]DD');
@@ -134,16 +136,16 @@ class List extends React.Component <IListProps,
             return '-';
         }
     }
-    searchableRender = (text, user, index) => {
-        if (user.privacy && _.has(user.privacy, 'searchable')) {
-            return user.privacy.searchable
+    searchableRender = (text, user: IPerson, index) => {
+        if (user && _.has(user, 'searchable')) {
+            return user.searchable
                 ? <div className='search-cell'><IcoN size={16} name={'search16'}/></div>
                 : <div className='search-cell'><IcoN size={16} name={'nonsearch6'}/></div>;
         }
 
         return '-';
     }
-    enable = (user) => {
+    enable = (user: IPerson) => {
         this.accountApi.enable({account_id: user._id}).then((result) => {
             this.props.onChange();
             user.disabled = false;
@@ -151,7 +153,7 @@ class List extends React.Component <IListProps,
             notification.success({message: 'Activated', description: `"${user._id}" is enabled now.`});
         });
     }
-    disable = (user) => {
+    disable = (user: IPerson) => {
         this.accountApi.disable({account_id: user._id}).then((result) => {
             this.props.onChange();
             user.disabled = true;
@@ -210,6 +212,7 @@ class List extends React.Component <IListProps,
             this.removeColumn(item.key);
         }
     }
+
 
     insertColumn = (key) => {
         if (_.some(this.allColumns, {key: key})) {
@@ -339,6 +342,16 @@ class List extends React.Component <IListProps,
     componentWillReceiveProps(nextProps: IListProps) {
         if (_.has(nextProps, 'filter') && nextProps.filter !== this.props.filter) {
             this.load(1, this.PAGE_SIZE, nextProps.filter);
+        }
+        if(nextProps.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
+            var accountsClone: IPerson[] = _.clone(this.state.accounts);
+            accountsClone.forEach((user: IPerson) => {
+               user.isChecked = false;
+            });
+            console.log(this.state.accounts, accountsClone);
+            this.setState({
+                accounts: accountsClone
+            });
         }
     }
 
