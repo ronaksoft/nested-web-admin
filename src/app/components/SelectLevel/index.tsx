@@ -18,11 +18,13 @@ interface ISelectLevelProps {
     onChangeLevel?: (level: string) => void;
     onChangeSearch?: (level: boolean) => void;
     index?: string;
+    searchable?: boolean;
 }
 
 interface ISelectLevelStats {
     level: number;
     index: string;
+    search: boolean;
     searchable: boolean;
     items: any;
 }
@@ -67,10 +69,16 @@ export default class SelectLevel extends React.Component<ISelectLevelProps, ISel
         if (this.state.level !== 0) {
             level = this.state.level;
         }
-        this.setState({
+        let states = {
             items: items,
             level: level
-        });
+        };
+        if (newProps.searchable !== undefined) {
+            states = _.merge(states, {
+                searchable: newProps.searchable,
+            });
+        }
+        this.setState(states);
     }
 
     componentDidMount() {
