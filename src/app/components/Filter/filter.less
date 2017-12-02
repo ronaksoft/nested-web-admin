@@ -71,7 +71,7 @@
     .default-mode-butn {
         margin-left: 4px;
         fill: #fff;
-        opacity: .4;
+        opacity: .72;
         display: flex;
         &:hover {
           opacity: 1;
@@ -92,6 +92,37 @@
             i {
                 opacity: .72;
             }
+        }
+    }
+    .devider {
+        height: 24px;
+        width: 1px;
+        background-color: #000;
+        opacity: .16;
+        display: flex;
+        flex: none;
+        margin: 0 8px;
+    }
+    .bar-item {
+        display: flex;
+        height: 32px;
+        align-items: center;
+        cursor: pointer;
+        box-sizing: border-box;
+        min-width: 42px;
+        justify-content: center;
+        padding: 0 8px;
+        line-height: 32px;
+        font-size: 12px;
+        margin: 0 4px;
+        .bar-icon {
+            line-height: 24px;
+            position: relative;
+            z-index: 54;
+            height: 16px;
+            width: 16px;
+            opacity: .72;
+            margin-left: 4px;
         }
     }
     .filter-search {

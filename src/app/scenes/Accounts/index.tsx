@@ -16,11 +16,11 @@ export interface IAccountsState {
     count: Number;
     filterGroup: FilterGroup;
     Items: IUser[];
-    selecteds: Array< IUser >;
+    selectedItems: Array< IUser >;
     counters: any;
     countersLoaded: boolean;
     loading: boolean;
-    searchKeywork: string;
+    searchKeyword: string;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
@@ -32,9 +32,9 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
         this.state = {
             Items: [],
-            selecteds: [],
+            selectedItems: [],
             count: 0,
-            searchKeywork: '',
+            searchKeyword: '',
             filterGroup: FilterGroup.Total,
             counters: {},
             countersLoaded: false,
@@ -65,7 +65,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     searchKeyDown(e: any) {
         this.setState({
-            searchKeywork: e.target.value || '',
+            searchKeyword: e.target.value || '',
         });
     }
 
@@ -76,20 +76,20 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     setGroup = (group: FilterGroup) => this.setState({filterGroup: group});
 
     togglseSelect (user: IUser) {
-        var ind = this.state.selecteds.indexOf(user);
+        var ind = this.state.selectedItems.indexOf(user);
         if (ind > -1) {
-            var filteredArray = this.state.selecteds.slice(0);
+            var filteredArray = this.state.selectedItems.slice(0);
             filteredArray.splice(ind, 1);
-            this.setState({selecteds: filteredArray});
+            this.setState({selectedItems: filteredArray});
         } else {
             this.setState({
-                selecteds: [...this.state.selecteds, user]
+                selectedItems: [...this.state.selectedItems, user]
             });
         }
     }
 
     render() {
-        const isSelected = this.state.selecteds.length > 0;
+        const isSelected = this.state.selectedItems.length > 0;
         const total = (this.state.counters.enabled_accounts || 0) + (this.state.counters.disabled_accounts || 0);
         const filterItems = [
             {
@@ -133,9 +133,9 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 <div className='white-block-container'>
                     <Row className={['toolbar', isSelected ? 'selcted-mode' : ''].join(' ')} type='flex'>
                         {!isSelected && (<div className='filter-search'>
-                            <Input className='filter-search' value={this.state.searchKeywork} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
-                            { this.state.searchKeywork.length === 0 && <IcoN size={16} name={'search16'}/>}
-                            { this.state.searchKeywork.length > 0 && <IcoN size={16} name={'xcross16'}/>}
+                            <Input className='filter-search' value={this.state.searchKeyword} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
+                            { this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
+                            { this.state.searchKeyword.length > 0 && <IcoN size={16} name={'xcross16'}/>}
                         </div>)}
                         {isSelected && (
                             <div className='default-mode-butn'>
@@ -143,37 +143,47 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             </div>
                         )}
                         {isSelected && (
-                            <span> Accounts Selected</span>
+                            <span className='bar-item'><b>Accounts Selected</b></span>
                         )}
                         <div className='filler'></div>
                         {isSelected && (
-                            <span>
-                                <IcoN size={16} name={'search16'}/>
+                            <span className='bar-item'>
                                 Active/ Deactive
+                                <div className='bar-icon'>
+                                    <IcoN size={16} name={'arrow16'}/>
+                                </div>
                             </span>
                         )}
                         {isSelected && (
-                            <span>
-                                <IcoN size={16} name={'search16'}/>
-                               Add to Place
+                            <span className='bar-item'>
+                                Add to Place
+                                <div className='bar-icon'>
+                                    <IcoN size={16} name={'enter16'}/>
+                                </div>
                             </span>
                         )}
                         {isSelected && (
-                            <span>
-                                <IcoN size={16} name={'search16'}/>
-                               Reset Password
+                            <span className='bar-item'>
+                                Reset Password
+                                <div className='bar-icon'>
+                                    <IcoN size={16} name={'lock16'}/>
+                                </div>
                             </span>
                         )}
                         {isSelected && (
-                            <span>
-                                <IcoN size={16} name={'search16'}/>
-                              Searchable Off
+                            <span className='bar-item'>
+                                Searchable Off
+                                <div className='bar-icon'>
+                                    <IcoN size={16} name={'arrow16'}/>
+                                </div>
                             </span>
                         )}
                         {isSelected && (
-                            <span>
-                                <IcoN size={16} name={'search16'}/>
-                             Lable Manager
+                            <span className='bar-item'>
+                                Label Manager
+                                <div className='bar-icon'>
+                                    <IcoN size={16} name={'tag16'}/>
+                                </div>
                             </span>
                         )}
                         {(this.state.countersLoaded && !isSelected) &&
