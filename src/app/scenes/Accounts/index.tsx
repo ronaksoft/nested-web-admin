@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import Filter from '../../components/Filter/index';
+import BarMenu from '../../components/Filter/BarMenu';
 import Options from './components/Options/index';
 import List from './components/List/index';
 import {Row, Col, notification, Input} from 'antd';
@@ -8,7 +9,14 @@ import {IcoN} from '../../components/icon/index';
 import AccountApi from '../../api/account/account';
 import FilterGroup from './FilterGroup';
 import IUser from '../../api/account/interfaces/IUser';
-import IPerson from '../../api/account/interfaces/IPerson';
+import IPerson from './interfaces/IPerson';
+
+export interface ICounters {
+    enabled_accounts: number;
+    disabled_accounts: number;
+    searchable_accounts: number;
+    nonsearchable_accounts: number;
+}
 
 export interface IAccountsProps {
 }
@@ -19,6 +27,7 @@ export interface IAccountsState {
     Items: IUser[];
     selectedItems: Array< IPerson >;
     counters: any;
+    selectedCounters: ICounters;
     countersLoaded: boolean;
     loading: boolean;
     notifyChildrenUnselect: boolean;
@@ -41,7 +50,13 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             counters: {},
             countersLoaded: false,
             loading: false,
-            notifyChildrenUnselect: false
+            notifyChildrenUnselect: false,
+            selectedCounters: {
+                enabled_accounts: 0,
+                disabled_accounts: 0,
+                searchable_accounts: 0,
+                nonsearchable_accounts: 0
+            }
         };
     }
 
@@ -76,17 +91,51 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.load();
     }
 
-    setGroup = (group: FilterGroup) => this.setState({filterGroup: group});
+    setFilterGroup = (group: FilterGroup) => this.setState({filterGroup: group});
+
+    setActiveDeactive = (data) => {
+        console.log(data);
+    }
+
+    setSearchable = (data) => {
+        console.log(data);
+    }
+
+    addToPlace = (data) => {
+        console.log(data);
+    }
+
+    resetPassword = (data) => {
+        console.log(data);
+    }
+
+    setLabelManager = (data) => {
+        console.log(data);
+    }
 
     toggleSelect (user: IPerson) {
         var ind = this.state.selectedItems.indexOf(user);
         if (ind > -1) {
             var filteredArray = this.state.selectedItems.slice(0);
             filteredArray.splice(ind, 1);
-            this.setState({selectedItems: filteredArray});
+            this.setState({
+                selectedItems: filteredArray,
+                selectedCounters: {
+                    enabled_accounts: user.disabled ? this.state.selectedCounters.enabled_accounts : --this.state.selectedCounters.enabled_accounts,
+                    disabled_accounts: user.disabled ? --this.state.selectedCounters.disabled_accounts : this.state.selectedCounters.disabled_accounts,
+                    searchable_accounts: user.searchable ? --this.state.selectedCounters.searchable_accounts : this.state.selectedCounters.searchable_accounts,
+                    nonsearchable_accounts: user.searchable ? this.state.selectedCounters.nonsearchable_accounts : --this.state.selectedCounters.nonsearchable_accounts
+                }
+            });
         } else {
             this.setState({
-                selectedItems: [...this.state.selectedItems, user]
+                selectedItems: [...this.state.selectedItems, user],
+                selectedCounters: {
+                    enabled_accounts: user.disabled ? this.state.selectedCounters.enabled_accounts : ++this.state.selectedCounters.enabled_accounts,
+                    disabled_accounts: user.disabled ? ++this.state.selectedCounters.disabled_accounts : this.state.selectedCounters.disabled_accounts,
+                    searchable_accounts: user.searchable ? ++this.state.selectedCounters.searchable_accounts : this.state.selectedCounters.searchable_accounts,
+                    nonsearchable_accounts: user.searchable ? this.state.selectedCounters.nonsearchable_accounts : ++this.state.selectedCounters.nonsearchable_accounts
+                }
             });
         }
     }
@@ -94,6 +143,12 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     unselectAll () {
         this.setState({
             selectedItems: [],
+            selectedCounters: {
+                enabled_accounts: 0,
+                disabled_accounts: 0,
+                searchable_accounts: 0,
+                nonsearchable_accounts: 0
+            },
             notifyChildrenUnselect: !this.state.notifyChildrenUnselect
         });
     }
@@ -101,6 +156,8 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     render() {
         const isSelected = this.state.selectedItems.length > 0;
         const total = (this.state.counters.enabled_accounts || 0) + (this.state.counters.disabled_accounts || 0);
+        const activeItems = [];
+        const searchItems = [];
         const filterItems = [
             {
                 key: FilterGroup.Total,
@@ -134,6 +191,40 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 icon: 'devicePhone16',
             }
         ];
+        if(this.state.selectedCounters.disabled_accounts) {
+            activeItems.push({
+                key: 'active',
+                name: 'Active',
+                icon: 'circle16',
+                count: this.state.selectedCounters.disabled_accounts
+            });
+        }
+        if(this.state.selectedCounters.enabled_accounts) {
+            activeItems.push({
+                key: 'deactive',
+                name: 'Dective',
+                icon: 'circleWire16',
+                count: this.state.selectedCounters.enabled_accounts
+            });
+        }
+
+        if(this.state.selectedCounters.nonsearchable_accounts) {
+            searchItems.push({
+                key: 'searchable',
+                name: 'Searchable',
+                icon: 'search16',
+                count: this.state.selectedCounters.nonsearchable_accounts
+            });
+        }
+        if(this.state.selectedCounters.searchable_accounts) {
+            searchItems.push({
+                key: 'nonsearchable',
+                name: 'Non-Searchable',
+                icon: 'nonsearch16',
+                count: this.state.selectedCounters.searchable_accounts
+            });
+        }
+
         return (
             <div className='accounts'>
                 <Row type='flex' align='middle' className='scene-head'>
@@ -156,49 +247,39 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             <span className='bar-item'><b>Accounts Selected</b></span>
                         )}
                         <div className='filler'></div>
+                        {/* <span className='bar-item'>
+                            Active/ Deactive
+                            <div className='bar-icon'>
+                                <IcoN size={16} name={'arrow16'}/>
+                            </div>
+                        </span> */}
                         {isSelected && (
-                            <span className='bar-item'>
-                                Active/ Deactive
-                                <div className='bar-icon'>
-                                    <IcoN size={16} name={'arrow16'}/>
-                                </div>
-                            </span>
+                            <BarMenu menus={activeItems} onChange={this.setActiveDeactive}/>
                         )}
                         {isSelected && (
-                            <span className='bar-item'>
-                                Add to Place
-                                <div className='bar-icon'>
-                                    <IcoN size={16} name={'enter16'}/>
-                                </div>
-                            </span>
+                            <BarMenu menus={[{
+                                key: 'addToPlace',
+                                name: 'Add to Place',
+                                icon: 'enter16'}]} onChange={this.addToPlace}/>
                         )}
                         {isSelected && (
-                            <span className='bar-item'>
-                                Reset Password
-                                <div className='bar-icon'>
-                                    <IcoN size={16} name={'lock16'}/>
-                                </div>
-                            </span>
+                            <BarMenu menus={[{
+                                key: 'resetPassword',
+                                name: 'Reset Password',
+                                icon: 'lock16'}]} onChange={this.resetPassword}/>
                         )}
                         {isSelected && (
-                            <span className='bar-item'>
-                                Searchable Off
-                                <div className='bar-icon'>
-                                    <IcoN size={16} name={'arrow16'}/>
-                                </div>
-                            </span>
+                            <BarMenu menus={searchItems} onChange={this.setSearchable}/>
                         )}
                         {isSelected && (
-                            <span className='bar-item'>
-                                Label Manager
-                                <div className='bar-icon'>
-                                    <IcoN size={16} name={'tag16'}/>
-                                </div>
-                            </span>
+                            <BarMenu menus={[{
+                                key: 'labelManager',
+                                name: 'Label Manager',
+                                icon: 'tag16'}]} onChange={this.setLabelManager}/>
                         )}
                         {(this.state.countersLoaded && !isSelected) &&
                         <Filter totalCount={total} menus={filterItems}
-                                onChange={this.setGroup} counters={this.state.counters}/>
+                                onChange={this.setFilterGroup}/>
                         }
                     </Row>
                     <Row>

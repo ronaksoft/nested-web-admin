@@ -8,9 +8,9 @@ export interface IMenuItem {
     key: string;
     name: string;
     icon: string;
-    count: number;
-    chartColor: string;
-    bgChartColor: string;
+    count?: number;
+    chartColor?: string;
+    bgChartColor?: string;
     style ?: string;
     class ?: string;
     disableChart ?: boolean;
@@ -18,9 +18,7 @@ export interface IMenuItem {
 
 export interface IFilterProps {
     menus: Array<IMenuItem>;
-    totalCount: number;
     onChange: any;
-    counters?: any;
     label?: string;
     labelIcon?: string;
 }
@@ -29,7 +27,7 @@ export interface IFilterState {
     selectedItem ?: IMenuItem;
     menus: Array<IMenuItem>;
 }
-class Filter extends React.Component<IFilterProps, IFilterState> {
+class BarMenu extends React.Component<IFilterProps, IFilterState> {
     selectedMenuIndex: number;
 
     constructor(props: IFilterProps) {
@@ -63,46 +61,42 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
 
 
     render() {
-
-        const iconStyle = {
-            width: '24px',
-            height: '24px',
-            verticalAlign: 'middle'
-        };
-
-        const menus = [];
-        this.state.menus.forEach((menu: IMenuItem, index: number) => {
-
-            menus.push(
-                <Menu.Item key={index}>
-                    <Row type='flex' align='middle' className='filterPopover'>
-                        <IcoN size={16} name={menu.icon}/>
-                        <p>{menu.name}</p>
-                        {
-                            this.state.selectedItem.key === menu.key &&
-                            <Icon type='check'/>
-                        }
-                    </Row>
-                </Menu.Item>
-            );
-
-            // if (index + 1  !== menus.length) {
-            // menus.push(<Menu.Divider/>);
-            // }
-        });
-
-        return (
-            <h2>
+        if(this.state.menus.length > 1) {
+            const menus = [];
+            this.state.menus.forEach((menu: IMenuItem, index: number) => {
+                menus.push(
+                    <Menu.Item key={index}>
+                        <Row type='flex' align='middle' className='filterPopover'>
+                            <IcoN size={16} name={menu.icon}/>
+                            <p>{menu.name}</p>
+                            <span>{menu.count}</span>
+                        </Row>
+                    </Menu.Item>
+                );
+            });
+            let label = this.state.menus.map( menu => menu.name).join(' / ');
+            return (
                 <Dropdown overlay={<Menu onClick={this.handleGroupChange.bind(this)}>{menus}</Menu>}
                     trigger={['click']}>
-                    <a className='ant-dropdown-link' href='#'>
-                        <span>{this.state.selectedItem.name}</span>
-                        <IcoN size={16} name='sort16'/>
-                    </a>
+                    <span className='bar-item'>
+                        {label}
+                        <div className='bar-icon'>
+                            <IcoN size={16} name='arrow16'/>
+                        </div>
+                    </span>
                 </Dropdown>
-            </h2>
-        );
+            );
+        } else {
+            return (
+                <span className='bar-item' onClick={this.handleGroupChange.bind(this)}>
+                    {this.state.menus[0].name}
+                    <div className='bar-icon'>
+                        <IcoN size={16} name={this.state.menus[0].icon}/>
+                    </div>
+                </span>
+            );
+        }
     }
 }
 
-export default Filter;
+export default BarMenu;
