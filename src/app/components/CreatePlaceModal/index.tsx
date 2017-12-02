@@ -446,24 +446,24 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
         this.placeApi.placeCreate(params).then((data) => {
             console.log('created', data);
-            this.placeApi.placeAddMember({
-                place_id: data.place_id,
-                member_id: members
-            }).then((memberData) => {
-                console.log(memberData);
-            });
-            this.placeApi.placeLimitEdit({
-                place_id: data.place_id,
-                limits: {
-                    key_holders: model.managerLimit,
-                    creators: model.memberLimit,
-                    size: model.storageLimit,
-                    childs: model.subPlaceLimit,
-                }
-            }).then((memberData) => {
-                console.log(memberData);
-            }).catch(() => {
-                console.log('error');
+            Promise.all([
+                this.placeApi.placeAddMember({
+                    place_id: data._id,
+                    member_id: members
+                }),
+                this.placeApi.placeLimitEdit({
+                    place_id: data._id,
+                    limits: {
+                        key_holders: model.managerLimit,
+                        creators: model.memberLimit,
+                        size: model.storageLimit,
+                        childs: model.subPlaceLimit,
+                    }
+                }),
+            ]).then((data) => {
+                console.log(data);
+                this.props.onClose(true);
+                message.success('Place successfully created!');
             });
         });
     }
@@ -583,7 +583,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         <Row className='input-row'>
                             <label htmlFor='placeId'>Place ID</label>
                             <Input id='placeId' size='large'
-                                   className={['nst-input', !this.state.idValid && this.state.showError ? 'error' : ''].join(' ')}
+                                   className={['nst-input', !this.state.idValid ? 'error' : ''].join(' ')}
                                    value={model.id}
                                    onChange={this.updatePlaceId.bind(this)}/>
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change
