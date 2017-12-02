@@ -36,6 +36,7 @@ interface IListProps {
     notifyChildrenUnselect: boolean;
     filter: FilterGroup;
     onChange: any;
+    updatedAccounts: number;
     toggleSelected: (user:IPerson) => {};
 }
 
@@ -343,12 +344,14 @@ class List extends React.Component <IListProps,
         if (_.has(nextProps, 'filter') && nextProps.filter !== this.props.filter) {
             this.load(1, this.PAGE_SIZE, nextProps.filter);
         }
+        if (nextProps.updatedAccounts !== this.props.updatedAccounts) {
+            this.load(1, this.PAGE_SIZE, nextProps.filter);
+        }
         if(nextProps.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
             var accountsClone: IPerson[] = _.clone(this.state.accounts);
             accountsClone.forEach((user: IPerson) => {
                user.isChecked = false;
             });
-            console.log(this.state.accounts, accountsClone);
             this.setState({
                 accounts: accountsClone
             });

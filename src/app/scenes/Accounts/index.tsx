@@ -4,12 +4,13 @@ import Filter from '../../components/Filter/index';
 import BarMenu from '../../components/Filter/BarMenu';
 import Options from './components/Options/index';
 import List from './components/List/index';
-import {Row, Col, notification, Input} from 'antd';
+import {Row, Col, notification, Input, message} from 'antd';
 import {IcoN} from '../../components/icon/index';
 import AccountApi from '../../api/account/account';
 import FilterGroup from './FilterGroup';
 import IUser from '../../api/account/interfaces/IUser';
 import IPerson from './interfaces/IPerson';
+import _ from 'lodash';
 
 export interface ICounters {
     enabled_accounts: number;
@@ -22,6 +23,7 @@ export interface IAccountsProps {
 }
 
 export interface IAccountsState {
+    updates: number;
     count: Number;
     filterGroup: FilterGroup;
     Items: IUser[];
@@ -36,7 +38,7 @@ export interface IAccountsState {
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     accountApi;
-
+    updateData = _.debounce(this.updateDataMain, 512);
     constructor(props: IAccountsProps) {
 
         super(props);
@@ -44,6 +46,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.state = {
             Items: [],
             selectedItems: [],
+            updates: 0,
             count: 0,
             searchKeyword: '',
             filterGroup: FilterGroup.Total,
@@ -91,26 +94,95 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.load();
     }
 
+    updateDataMain() {
+        this.setState({
+            updates: this.state.updates + 1,
+        });
+    }
+
     setFilterGroup = (group: FilterGroup) => this.setState({filterGroup: group});
 
-    setActiveDeactive = (data) => {
-        console.log(data);
+    setActiveDeactive = (key: string) => {
+        const checked = key === 'active';
+        this.state.selectedItems.forEach( acc => {
+
+            const action = checked
+                ? this.accountApi.enable({account_id: acc._id})
+                : this.accountApi.disable({account_id: acc._id});
+
+            action.then((result) => {
+
+                if (checked) {
+                    message.success(`"${acc._id}" is active now.`);
+                } else {
+                    message.success(`"${acc._id}" is not active now.`);
+                }
+                this.updateData();
+            }, (error) => {
+                message.error(`We were not able to active/deactive "${acc._id}"!`);
+            });
+        });
+        this.unselectAll();
     }
 
-    setSearchable = (data) => {
-        console.log(data);
+    setSearchable = (key: string) => {
+        const checked = key === 'searchable';
+        this.state.selectedItems.forEach( acc => {
+            const action = this.accountApi.edit({
+                account_id: acc._id,
+                searchable: checked
+            });
+
+            action.then((result) => {
+
+                if (checked) {
+                    message.success(`"${acc._id}" is searchable now.`);
+                } else {
+                    message.success(`"${acc._id}" is not searchable now.`);
+                }
+                this.updateData();
+            }, (error) => {
+                message.error(`We were not able to searchable/non-searchable "${acc._id}"!`);
+            });
+        });
+        this.unselectAll();
     }
 
-    addToPlace = (data) => {
-        console.log(data);
+    // addToPlace = (data) => {
+    //     console.log(data);
+    // }
+
+    resetPassword = (key: string) => {
+        const checked = key === 'searchable';
+        this.state.selectedItems.forEach( acc => {
+            const action = this.accountApi.edit({
+                account_id: acc._id,
+                force_password: true
+            });
+
+            action.then((result) => {
+                message.success(`"${acc._id}" is forced to change his/her password.`);
+            }, (error) => {
+                message.error(`We were not able to force "${acc._id}" to change password!`);
+            });
+        });
+        this.unselectAll();
     }
 
-    resetPassword = (data) => {
-        console.log(data);
-    }
+    setLabelManager = (key: string) => {
+        this.state.selectedItems.forEach( acc => {
+            const action = this.accountApi.edit({
+                account_id: acc._id,
+                'authority.label_editor': true
+            });
 
-    setLabelManager = (data) => {
-        console.log(data);
+            action.then((result) => {
+                message.success(`"${acc._id}" is label manager now.`);
+            }, (error) => {
+                message.error(`We were not able to set "${acc._id}" as label manager!`);
+            });
+        });
+        this.unselectAll();
     }
 
     toggleSelect (user: IPerson) {
@@ -251,21 +323,15 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             <span className='bar-item'><b>{isSelected} Accounts Selected</b></span>
                         )}
                         <div className='filler'></div>
-                        {/* <span className='bar-item'>
-                            Active/ Deactive
-                            <div className='bar-icon'>
-                                <IcoN size={16} name={'arrow16'}/>
-                            </div>
-                        </span> */}
                         {isSelected && (
                             <BarMenu menus={activeItems} onChange={this.setActiveDeactive}/>
                         )}
-                        {isSelected && (
+                        {/* {isSelected && (
                             <BarMenu menus={[{
                                 key: 'addToPlace',
                                 name: 'Add to Place',
                                 icon: 'enter16'}]} onChange={this.addToPlace}/>
-                        )}
+                        )} */}
                         {isSelected && (
                             <BarMenu menus={[{
                                 key: 'resetPassword',
@@ -291,7 +357,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             {
                                 this.state.countersLoaded &&
                                 <List counters={this.state.counters} filter={this.state.filterGroup}
-                                      notifyChildrenUnselect={this.state.notifyChildrenUnselect}
+                                      notifyChildrenUnselect={this.state.notifyChildrenUnselect} updatedAccounts={this.state.updates}
                                       onChange={this.onChange.bind(this)} toggleSelected={this.toggleSelect.bind(this)}/>
                             }
                         </Col>

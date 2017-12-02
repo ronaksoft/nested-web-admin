@@ -41,14 +41,25 @@ class BarMenu extends React.Component<IFilterProps, IFilterState> {
         }
     }
 
-    handleGroupChange(menu: any) {
-        this.selectedMenuIndex = parseInt(menu.key, 0);
-        this.setState({
-            selectedItem: this.state.menus[this.selectedMenuIndex],
-        });
+    handleGroupChange(menu: IMenuItem) {
+        if(!menu.key) {
+            menu = this.state.menus[0];
+            this.setState({
+                selectedItem: menu,
+            });
 
-        if (typeof this.props.onChange === 'function') {
-            this.props.onChange(this.state.menus[this.selectedMenuIndex].key);
+            if (typeof this.props.onChange === 'function') {
+                this.props.onChange(menu.key);
+            }
+        } else {
+            this.selectedMenuIndex = parseInt(menu.key, 0);
+            this.setState({
+                selectedItem: this.state.menus[this.selectedMenuIndex],
+            });
+
+            if (typeof this.props.onChange === 'function') {
+                this.props.onChange(this.state.menus[this.selectedMenuIndex].key);
+            }
         }
     }
 

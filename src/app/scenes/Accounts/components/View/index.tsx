@@ -355,7 +355,7 @@ class View extends React.Component<IViewProps, IViewState> {
     onFlagChange(props: any) {
         let editedAccount = _.clone(this.state.account);
         _.merge(editedAccount.flags, props);
-
+        console.log(_.merge(props, {account_id: editedAccount._id}));
         this.accountApi.edit(_.merge(props, {account_id: editedAccount._id})).then((result) => {
             if (this.props.onChange) {
                 this.props.onChange(editedAccount);
