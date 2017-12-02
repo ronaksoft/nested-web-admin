@@ -5,6 +5,7 @@ import md5 from 'md5';
 import AAA from './../../../../services/classes/aaa/index';
 import AccountApi from './../../../../api/account/account';
 import {hashHistory} from 'react-router';
+import Api from './../../../../api/index';
 
 import {Layout, Card, Form, InputNumber, Button, Input, message} from 'antd';
 
@@ -17,13 +18,15 @@ interface ISignInProps {
 
 interface ISignInState {
 }
+
 const loginStyle = {
-    width : '100%',
-    height : '100%',
+    width: '100%',
+    height: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
 };
+
 class SignIn extends React.Component<ISignInProps, ISignInState> {
 
     constructor(props: any) {
@@ -38,10 +41,10 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-        if (!err) {
-            const model = this.props.form.getFieldsValue();
-            this.login(model);
-        }
+            if (!err) {
+                const model = this.props.form.getFieldsValue();
+                this.beforeLogin(model);
+            }
         });
     }
 
@@ -49,6 +52,24 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
         this.setState({
             disableBtn: false
         });
+    }
+
+    beforeLogin(data: any) {
+        if (data.uid.indexOf('@') > -1) {
+            const usernameSplits = data.uid.split('@');
+            const api = Api.getInstance();
+            data.uid = usernameSplits[0];
+            api.reconfigEndPoints(usernameSplits[1])
+                .then(() => {
+                    this.login(data);
+                });/*
+                .catch((r) => {
+                    console.log(r);
+                    message.warning(`Something wen't wrong`);
+                });*/
+        } else {
+            this.login(data);
+        }
     }
 
     login = (data) => {
@@ -72,10 +93,10 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
             } else {
                 message.warning('You are not administrator');
             }
-            }).catch((error) => {
+        }).catch((error) => {
             console.log(error);
             message.error('Not approved');
-            });
+        });
     }
 
     saveForm = (form) => this.form = form;
@@ -89,28 +110,29 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
                         <Form.Item>
                             {getFieldDecorator('uid', {
                                 rules: [
-                                {
-                                    required: true,
-                                    message: 'Required'
-                                }
+                                    {
+                                        required: true,
+                                        message: 'Required'
+                                    }
                                 ]
                             })(
-                                <Input placeholder='Username' />
+                                <Input placeholder='Username'/>
                             )}
                         </Form.Item>
                         <Form.Item>
                             {getFieldDecorator('pass', {
                                 rules: [
-                                {
-                                    required: true,
-                                    message: 'Required'
-                                }
+                                    {
+                                        required: true,
+                                        message: 'Required'
+                                    }
                                 ]
                             })(
-                                <Input placeholder='password' type='password' />
+                                <Input placeholder='password' type='password'/>
                             )}
                         </Form.Item>
-                        <Button disabled={this.state.disableBtn} type='primary' size='large' htmlType='submit' onClick={this.handleSubmit}>Sign in</Button>
+                        <Button disabled={this.state.disableBtn} type='primary' size='large' htmlType='submit'
+                                onClick={this.handleSubmit}>Sign in</Button>
                     </Card>
                 </div>
             </Form>
@@ -119,16 +141,16 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
 }
 
 function mapStateToProps(state: any) {
-  return {};
+    return {};
 }
 
 function mapDispatchToProps(dispatch: IDispatch) {
-  return {};
+    return {};
 }
 
 const WrappedTimeRelatedForm = Form.create()(connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(SignIn));
 
 export default WrappedTimeRelatedForm;

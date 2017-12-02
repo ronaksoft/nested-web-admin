@@ -42,9 +42,7 @@ export default class Options extends React.Component<IOptionsProps, IOptionsStat
     return (
       <div>
         <Button.Group size='large'>
-          <Button type='default' onClick={this.openCreate}>
-            <Icon type='plus' />
-          </Button>
+          <Button type=' butn butn-green secondary' onClick={this.openCreate}>Create Accounts</Button>
           {/*<Button type='default'>*/}
             {/*<Icon type='setting' />*/}
           {/*</Button>*/}

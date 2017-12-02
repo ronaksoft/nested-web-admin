@@ -73,6 +73,6 @@ export default class AAA {
         let nss = Cookies.get('nss');
         let nsk = Cookies.get('nsk');
         return (nss && nsk);
-    };
+    }
 
 }

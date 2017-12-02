@@ -1,0 +1,75 @@
+input.nst-input {
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid @color-breeze;
+    border-radius: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    color: @color-solid;
+    &:hover {
+        border: 1px solid @color-solid;
+        box-shadow: none;
+    }
+    &:focus {
+        border: 2px solid @color-solid;
+        box-shadow: none;
+    }
+    &.error {
+        border-color: @color-force;
+        color: @color-force;
+    }
+}
+input.no-style {
+    padding: 0;
+    border: none;
+    &:hover {
+        border: none;
+        box-shadow: none;
+    }
+    &:focus {
+        border: none;
+        box-shadow: none;
+    }
+    &.error {
+        border-color: @color-force;
+        color: @color-force;
+    }
+}
+.nst-input:-moz-placeholder {
+    color: @color-solid-64;
+}
+.nst-input::-moz-placeholder {
+    color: @color-solid-64;
+}
+.nst-input::-webkit-input-placeholder {
+    color: @color-solid-64;
+}
+.nst-input:-ms-input-placeholder {
+    color: @color-solid-64;
+}
+
+
+.input-row {
+    padding-top: 24px;
+    label {
+        font-size: 13px;
+        display: flex;
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: @color-solid;
+        opacity: .8;
+        line-height: 18px;
+    }
+    p {
+        font-size: 13px;
+        opacity: .8;
+        color: @color-solid;
+        padding: 0 6px;
+        margin-top: 10px;
+    }
+}
+
+
+.input-area {
+    border-bottom: 1px solid @color-breeze; 
+}

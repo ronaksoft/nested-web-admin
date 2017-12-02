@@ -1,15 +1,36 @@
 @import "./variables.less";
+@import "./buttons.less";
+@import "./tables.less";
+@import "./introduction.less";
+@import "./inputs.less";
+@import "./loading.less";
+@import "./modals.less";
+@import "./fonts.less";
+@import "../app/components/SelectLevel/SelectLevel.less";
+@import "../app/components/Filter/filter.less";
+@import "../app/scenes/Places/places.less";
 
 a {
-    color: @primary-color-rev;
+    color: @primary-color;
 }
 
 body {
     min-width: 1024px;
+    fill: @color-solid;
+    font-family: 'YekanBakh', 'OpenSans';
 }
 
 ._df {
     display: flex
+}
+
+._cp {
+    cursor: pointer
+}
+
+.filler {
+    display: flex;
+    flex: 1;
 }
 
 ._jcc {
@@ -23,6 +44,7 @@ body {
 }
 .ant-layout-content {
   margin-bottom: 64px;
+  overflow: visible;
 }
 .ant-layout-sider {
     position: fixed;
@@ -32,8 +54,8 @@ body {
 }
 .container {
   padding: 0 24px;
-  padding: 0 24px;
-  margin-left: 226px;
+  margin-left: 80px;
+  max-width: 1920px;
 }
 
 .ant-layout-header {
@@ -118,6 +140,13 @@ select {
     .ant-card-head {
         border: none;
         padding: 0 16px;
+        height: 64px;
+        .ant-card-head-title {
+            line-height: 64px;
+            font-size: 16px;
+            font-weight: bold;
+            color: @color-solid-8
+        }
     }
     .ant-card-body {
         padding: 0
@@ -128,6 +157,7 @@ select {
             border-bottom: 1px solid rgba(50, 61, 71, 0.08);
             padding-right: 16px;
             margin-bottom: 16px;
+            padding-bottom: 24px;
             &:last-of-type {
                 border: none
             }
@@ -140,9 +170,12 @@ select {
         label {
             width: 100%;
             display: flex;
-            color: #323D47;
-            font-size: 14px;
-            margin-bottom: 24px;
+            color: @color-solid;
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+        .ant-form-item {
+            margin: 0;
         }
         select {
             width: 192px;
@@ -151,7 +184,7 @@ select {
             height: 32px;
         }
         input {
-            width: 88px;
+            width: 128px;
             flex: none;
             margin-bottom: 8px;
             height: 32px;
@@ -167,8 +200,7 @@ select {
         }
     }
     p {
-        color: #323D47;
-        opacity: .4;
+        color: @color-solid-64;
         font-size: 13px;
         margin-bottom: 16px;
     }
@@ -187,24 +219,53 @@ select {
 .create-accounts {
     .account-row {
         margin-bottom: 16px;
+        position: relative;
+        .row-controls {
+            left: -30px;
+            top: 5px;
+            position: absolute;
+            .remove-butn {
+                fill: @color-force;
+            }
+        }
         .ant-input {
-            height: 36px;
+            height: 40px;
         }
         .acc-btn {
             display: flex;
             justify-content: center;
         }
+        .ant-form-item:last-of-type {
+            input {
+                width: 177px;
+            }
+        }
+        .ant-row.ant-form-item {
+            width: 30%;
+            max-width: 161px;
+        }
     }
     .ant-modal-body {
-        background-color: rgba(50, 61, 71, .04)
+        padding: 8px 44px;
+        // background-color: rgba(50, 61, 71, .04)
+    }
+    .ant-modal-footer {
+        border-top: 1px solid transparent;
     }
     .ant-card {
         height: 48px;
+        margin-top: 20px;
+        margin-bottom: 24px;
         background-color: rgba(0, 180, 90, .08);
         border: 1px solid rgba(0, 180, 90, .16);
+        font-size: 13px;
         .ant-row-flex-middle {
             height: 100%;
             padding: 0 16px
+        }
+        span {
+            font-size: 12px;
+            margin-left:24px;
         }
     }
     .ant-btn-primary {
@@ -213,6 +274,33 @@ select {
     .ant-card-body {
         padding: 0;
         height: 48px;
+    }
+    .create-account-head {
+        margin: 16px 0 6px;
+        font-size: 13px;
+        color: @color-solid-8;
+        .ant-col-5 {
+            max-width: 161px;
+            margin-right: 10px;
+        }
+    }
+    .ant-modal-footer {
+        i {
+            opacity: .72;
+        }
+        > div {
+            display: flex;
+            align-items: center;
+        }
+        label {
+            text-align: left;
+            line-height: 40px;
+            display: flex;
+            margin-left: 14px;
+            font-size: 14px;
+            color: @color-solid;
+            margin-right: 8px;
+        }
     }
 }
 
@@ -224,45 +312,6 @@ select {
     height: 40px;
 }
 
-.toolbar {
-    white-space: nowrap;
-    height: 80px;
-    color: black;
-    font-weight: 300;
-    .ant-col-6 {
-        display: flex;
-        flex: 1;
-        width: auto;
-        align-items: center;
-        .ant-row {
-            width: 100%;
-        }
-        h1, h2 {
-            font-weight: 300;
-            font-size: 2em;
-            a {
-                color: black;
-            }
-        }
-        .ant-col-12 {
-            display: flex;
-            width: auto;
-            flex: none;
-            margin: 0 8px;
-        }
-    }
-    .ant-col-18 {
-        display: flex;
-        flex: none;
-        width: auto;
-        align-items: center;
-    }
-    .ant-dropdown-trigger .anticon-down,
-    .ant-dropdown-link .anticon-down {
-        font-size: 24px;
-        color: black
-    }
-}
 
 .ant-btn-toolkit {
     color: rgba(0, 0, 0, .32);
@@ -295,13 +344,57 @@ select {
         background-color: transparent;
     }
 }
-
+.ant-dropdown-menu.ant-dropdown-menu-vertical {
+    padding: 8px 0;
+    hr {
+        margin: 8px 0;
+    }
+    .ant-dropdown-menu-item-divider {
+        display: none;
+    }
+}
 .ant-dropdown-menu-item {
+    border: none;
+    padding: 7px 12px;
     i {
-        margin-right: 8px;
+        margin-right: 12px;
+    }
+    i.anticon {
+        margin-right: 0;
+        margin-left: 12px;
     }
     a {
         display: inline-block
+    }
+}
+.ant-dropdown-menu-item-selected {
+    svg, path {
+        fill: @primary-color;
+    }
+}
+
+.ant-pagination {
+    .ant-pagination-item,
+    .ant-pagination-next, .ant-pagination-prev   {
+        width: 24px;
+        margin: 0 2px;
+        line-height: 24px;
+        color: @color-solid;
+        height: 24px;
+        border: none;
+    }
+    .ant-pagination-item-active {
+        color: #fff;
+        border-radius: 4px;
+        background-color: @color-solid;
+    }
+    .ant-pagination-next, .ant-pagination-prev {
+        width: 24px;
+    }
+    .ant-pagination-prev a:after, .ant-pagination-next a:after {
+        font-size: 18px;
+        line-height: 20px;
+        font-weight: bold;
     }
 }
 
@@ -346,8 +439,8 @@ select {
     left: 0;
     position: absolute;
     top: 0;
-    width: 32px;
-    height: 32px;
+    width: 100%;
+    height: 100%;
     border-radius: 100%;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
     pointer-events: none;
@@ -397,78 +490,31 @@ select {
     top: 50%;
     transform: translateY(-50%);
 }
-
-.nst-modal {
-    padding: 0;
+.ImageHolder-avatar-16:after {
+    left: 0;
+    position: absolute;
     top: 0;
-    border-radius: 0;
-    color: black;
-    .ant-modal-content {
-        border-radius: 0;
-        min-height: 100vh;
-    }
-    .ant-modal-header {
-        padding: 16px;
-        .ant-modal-title {
-            font-size: 18px;
-        }
-    }
-    .UserAvatar--inner {
-      justify-content: center
-    }
-    .ant-modal-body {
-        padding: 32px 0;
-    }
-    .ant-row,
-    .ant-row-flex {
-        padding: 0 32px;
-        margin-bottom: 24px;
-        min-height: 21px;
-        &.user-row {
-          margin-bottom: 0
-        }
-        &.place-row {
-          margin-bottom: 0
-        }
-    }
-    label {
-        color: rgba(0, 0, 0, .64);
-    }
-    .nst-ico {
-        width: 16px;
-        height: 16px;
-        padding: 0;
-    }
-    .devide-row {
-        background-color: #F7FAF8;
-        height: 32px;
-        padding: 8px 32px;
-        margin-bottom: 0
-    }
-    .remove-margin {
-        margin: 0;
-        padding: 0;
-    }
-    .place-row {
-        height: 64px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-        p {
-            font-size: 14px;
-            i {
-              margin-right: 4px;
-            }
-        }
-        span {
-            font-size: 12px;
-        }
-        aside {
-            font-size: 12px;
-            text-align: right;
-            color: rgba(0, 0, 0, .48)
-        }
-    }
+    width: 16px;
+    height: 16px;
+    border-radius: 100%;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+    pointer-events: none;
+    content: "";
+    top: 50%;
+    transform: translateY(-50%);
 }
 
+div.ant-modal-mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: @color-solid;
+    height: 100%;
+    z-index: 1000;
+    filter: alpha(opacity=94);
+}
 .place-modal {
 
     .ant-col-6 {
@@ -528,11 +574,35 @@ select {
     }
 }
 
+.scene-head {
+    margin-bottom: 24px;
+    height: 56px;
+    border-bottom: 1px solid @color-light-breeze;
+    h2 {
+        font-weight: bold;
+        line-height: normal;
+        font-size: 18px;
+        line-height: 56px;
+        flex: 1;
+        color: @color-solid;
+    }
+}
 // contact
 .account-modal {
 
 }
 
+.system-config {
+    .scene-head {
+        border-bottom: 1px solid @color-light-breeze;
+        h2 {
+            display: flex;
+            width: auto;
+            flex: 1;
+            border: none;
+        }
+    }
+}
 .change-photo {
     color: @primary-color;
     vertical-align: middle;
@@ -558,14 +628,27 @@ select {
   }
 }
 .main-menu {
+    position: relative;
     .logo {
-        height: 72px;
+        height: 88px;
+        position: absolute;
+        width: 100%;
         background-image: url('style/images/nested-logo-256.png');
         background-repeat: no-repeat;
-        background-position: 13% center;
+        background-position: center center;
     }
 }
 
+.filterPopover {
+    width: 224px;
+    height: 26px;
+    p {
+        font-weight: bold;
+        display: flex;
+        flex: 1;
+        font-size: 14px;
+    }
+}
 // Sign in
 
 .signin {
@@ -580,362 +663,6 @@ select {
     }
     .ant-btn-primary {
         width: 100%;
-    }
-}
-
-// Icons
-
-.nst-ico {
-    color: transparent;
-    background-position: center center;
-    background-size: cover;
-    transform-origin: center;
-    transition: none;
-    box-sizing: border-box;
-    background-repeat: no-repeat;
-    &:hover,
-    &:focus {
-        color: transparent;
-        background-color: transparent;
-        box-sizing: border-box;
-        border: none;
-        background-position: center center;
-        background-size: cover;
-    }
-}
-
-.ic_absolout_place_solid_24,
-.ic_absolout_place_solid_24:hover,
-.ic_absolout_place_solid_24:focus {
-    background-image: url('style/images/ic_absolout_place_solid_24.png');
-}
-
-.ic_access_sensewire_24,
-.ic_access_sensewire_24:hover,
-.ic_access_sensewire_24:focus {
-    background-image: url('style/images/ic_access_sensewire_24.png');
-}
-
-.ic_access_solid_24,
-.ic_access_solid_24:hover,
-.ic_access_solid_24:focus {
-    background-image: url('style/images/ic_access_solid_24.png');
-}
-
-.ic_account_sensewire_24,
-.ic_account_sensewire_24:hover,
-.ic_account_sensewire_24:focus {
-    background-image: url('style/images/ic_account_sensewire_24.png');
-}
-
-.ic_account_solid_24,
-.ic_account_solid_24:hover,
-.ic_account_solid_24:focus {
-    background-image: url('style/images/ic_account_solid_24.png');
-}
-
-.ic_admins_log_solid_24,
-.ic_admins_log_solid_24:hover,
-.ic_admins_log_solid_24:focus {
-    background-image: url('style/images/ic_admins_log_solid_24.png');
-}
-
-.ic_bell_solid_24,
-.ic_bell_solid_24:hover,
-.ic_bell_solid_24:focus {
-    background-image: url('style/images/ic_bell_solid_24.png');
-}
-
-.ic_bin_force_16,
-.ic_bin_force_16:hover,
-.ic_bin_force_16:focus {
-    background-image: url('style/images/ic_bin_force_16.png');
-}
-
-.ic_brick_wall_solid_16,
-.ic_brick_wall_solid_16:hover,
-.ic_brick_wall_solid_16:focus {
-    background-image: url('style/images/ic_brick_wall_solid_16.png');
-}
-
-.ic_brick_wall_solid_24,
-.ic_brick_wall_solid_24:hover,
-.ic_brick_wall_solid_24:focus {
-    background-image: url('style/images/ic_brick_wall_solid_24.png');
-}
-
-.ic_check_senesewire_24,
-.ic_check_senesewire_24:hover,
-.ic_check_senesewire_24:focus {
-    background-image: url('style/images/ic_check_senesewire_24.png');
-}
-
-.ic_crown_shine_24,
-.ic_crown_shine_24:hover,
-.ic_crown_shine_24:focus {
-    background-image: url('style/images/ic_crown_shine_24.png');
-}
-
-.ic_dashboard_sensewire_24,
-.ic_dashboard_sensewire_24:hover,
-.ic_dashboard_sensewire_24:focus {
-    background-image: url('style/images/ic_dashboard_sensewire_24.png');
-}
-
-.ic_dashboard_solid_24,
-.ic_dashboard_solid_24:hover,
-.ic_dashboard_solid_24:focus {
-    background-image: url('style/images/ic_dashboard_solid_24.png');
-}
-
-.ic_earth_solid_16,
-.ic_earth_solid_16:hover,
-.ic_earth_solid_16:focus {
-    background-image: url('style/images/ic_earth_solid_16.png');
-}
-
-.ic_earth_solid_24,
-.ic_earth_solid_24:hover,
-.ic_earth_solid_24:focus {
-    background-image: url('style/images/ic_earth_solid_24.png');
-}
-
-.ic_gear_sensewire_24,
-.ic_gear_sensewire_24:hover,
-.ic_gear_sensewire_24:focus {
-    background-image: url('style/images/ic_gear_sensewire_24.png');
-}
-
-.ic_gear_solid_-1,
-.ic_gear_solid_-1:hover,
-.ic_gear_solid_-1:focus {
-    background-image: url('style/images/ic_gear_solid_-1.png');
-}
-
-.ic_gear_solid_24,
-.ic_gear_solid_24:hover,
-.ic_gear_solid_24:focus {
-    background-image: url('style/images/ic_gear_solid_24.png');
-}
-
-.ic_grandplace_solid_-1,
-.ic_grandplace_solid_-1:hover,
-.ic_grandplace_solid_-1:focus {
-    background-image: url('style/images/ic_grandplace_solid_-1.png');
-}
-
-.ic_grandplace_solid_16,
-.ic_grandplace_solid_16:hover,
-.ic_grandplace_solid_16:focus {
-    background-image: url('style/images/ic_grandplace_solid_16.png');
-}
-
-.ic_heavy_arrow_down_solid_16,
-.ic_heavy_arrow_down_solid_16:hover,
-.ic_heavy_arrow_down_solid_16:focus {
-    background-image: url('style/images/ic_heavy_arrow_down_solid_16.png');
-}
-
-.ic_heavy_arrow_down_solid_24,
-.ic_heavy_arrow_down_solid_24:hover,
-.ic_heavy_arrow_down_solid_24:focus {
-    background-image: url('style/images/ic_heavy_arrow_down_solid_24.png');
-}
-
-.ic_manager-and-member_solid_24,
-.ic_manager-and-member_solid_24:hover,
-.ic_manager-and-member_solid_24:focus {
-    background-image: url('style/images/ic_manager-and-member_solid_24.png');
-}
-
-.ic_lock_solid_24,
-.ic_lock_solid_24:hover,
-.ic_lock_solid_24:focus {
-    background-image: url('style/images/ic_lock_solid_24.png');
-}
-
-.ic_logout_solid_24,
-.ic_logout_solid_24:hover,
-.ic_logout_solid_24:focus {
-    background-image: url('style/images/ic_logout_solid_24.png');
-}
-
-.ic_magnify_solid_24,
-.ic_magnify_solid_24:hover,
-.ic_magnify_solid_24:focus {
-    background-image: url('style/images/ic_magnify_solid_24.png');
-}
-
-.ic_manager_and_member_solid_16,
-.ic_manager_and_member_solid_16:hover,
-.ic_manager_and_member_solid_16:focus {
-    background-image: url('style/images/ic_manager_and_member_solid_16.png');
-}
-
-.ic_manager_solid_16,
-.ic_manager_solid_16:hover,
-.ic_manager_solid_16:focus {
-    background-image: url('style/images/ic_manager_solid_16.png');
-}
-
-.ic_manager_solid_24,
-.ic_manager_solid_24:hover,
-.ic_manager_solid_24:focus {
-    background-image: url('style/images/ic_manager_solid_24.png');
-}
-
-.ic_manager-and-member_solid_24,
-.ic_manager-and-member_solid_24:hover,
-.ic_manager-and-member_solid_24:focus {
-    background-image: url('style/images/ic_manager-and-member_solid_24.png');
-}
-
-.ic_member_solid_24,
-.ic_member_solid_24:hover,
-.ic_member_solid_24:focus {
-    background-image: url('style/images/ic_member_solid_24.png');
-}
-
-.ic_more_solid_16,
-.ic_more_solid_16:hover,
-.ic_more_solid_16:focus {
-    background-image: url('style/images/ic_more_solid_16.png');
-}
-
-.ic_more_solid_24,
-.ic_more_solid_24:hover,
-.ic_more_solid_24:focus {
-    background-image: url('style/images/ic_more_solid_24.png');
-}
-
-.ic_non_search_24,
-.ic_non_search_24:hover,
-.ic_non_search_24:focus {
-    background-image: url('style/images/ic_non_search_24.png');
-}
-
-.ic_open_message_solid_24,
-.ic_open_message_solid_24:hover,
-.ic_open_message_solid_24:focus {
-    background-image: url('style/images/ic_open_message_solid_24.png');
-}
-
-.ic_pencil_solid_16,
-.ic_pencil_solid_16:hover,
-.ic_pencil_solid_16:focus {
-    background-image: url('style/images/ic_pencil_solid_16.png');
-}
-
-.ic_places_sensewire_24,
-.ic_places_sensewire_24:hover,
-.ic_places_sensewire_24:focus {
-    background-image: url('style/images/ic_places_sensewire_24.png');
-}
-
-.ic_places_solid_24,
-.ic_places_solid_24:hover,
-.ic_places_solid_24:focus {
-    background-image: url('style/images/ic_places_solid_24.png');
-}
-
-.ic_plus_sensewire_16,
-.ic_plus_sensewire_16:hover,
-.ic_plus_sensewire_16:focus {
-    background-image: url('style/images/ic_plus_sensewire_16.png');
-}
-
-.ic_plus_solid_24,
-.ic_plus_solid_24:hover,
-.ic_plus_solid_24:focus {
-    background-image: url('style/images/ic_plus_solid_24.png');
-}
-
-.ic_relative_place_solid_24,
-.ic_relative_place_solid_24:hover,
-.ic_relative_place_solid_24:focus {
-    background-image: url('style/images/ic_relative_place_solid_24.png');
-}
-
-.ic_search_24,
-.ic_search_24:hover,
-.ic_search_24:focus {
-    background-image: url('style/images/ic_search_24.png');
-}
-
-.ic_search_solid_16,
-.ic_search_solid_16:hover,
-.ic_search_solid_16:focus {
-    background-image: url('style/images/ic_search_solid_16.png');
-}
-
-.ic_storage_sensewire_24,
-.ic_storage_sensewire_24:hover,
-.ic_storage_sensewire_24:focus {
-    background-image: url('style/images/ic_storage_sensewire_24.png');
-}
-
-.ic_storage_solid_24,
-.ic_storage_solid_24:hover,
-.ic_storage_solid_24:focus {
-    background-image: url('style/images/ic_storage_solid_24.png');
-}
-
-.ic_team_solid_16,
-.ic_team_solid_16:hover,
-.ic_team_solid_16:focus {
-    background-image: url('style/images/ic_team_solid_16.png');
-}
-
-.ic_team_solid_24,
-.ic_team_solid_24:hover,
-.ic_team_solid_24:focus {
-    background-image: url('style/images/ic_team_solid_24.png');
-}
-
-.ic_window_solid_16,
-.ic_window_solid_16:hover,
-.ic_window_solid_16:focus {
-    background-image: url('style/images/ic_window_solid_16.png');
-}
-
-.ic_window_solid_24,
-.ic_window_solid_24:hover,
-.ic_window_solid_24:focus {
-    background-image: url('style/images/ic_window_solid_24.png');
-}
-
-.ic_xcross_solid_24,
-.ic_xcross_solid_24:hover,
-.ic_xcross_solid_24:focus {
-    background-image: url('style/images/ic_xcross_solid_24.png');
-}
-
-.img_tickets,
-.img_tickets:hover,
-.img_tickets:focus {
-    background-image: url('style/images/img_tickets.png');
-}
-
-.ant-menu-item-selected {
-    .ic_dashboard_solid_24,
-    .ic_dashboard_solid_24:hover,
-    .ic_dashboard_solid_24:focus {
-        background-image: url('style/images/ic_dashboard_sensewire_24.png');
-    }
-    .ic_places_solid_24,
-    .ic_places_solid_24:hover,
-    .ic_places_solid_24:focus {
-        background-image: url('style/images/ic_places_sensewire_24.png');
-    }
-    .ic_account_solid_24,
-    .ic_account_solid_24:hover,
-    .ic_account_solid_24:focus {
-        background-image: url('style/images/ic_account_sensewire_24.png');
-    }
-    .ic_access_solid_24,
-    .ic_access_solid_24:hover,
-    .ic_access_solid_24:focus {
-        background-image: url('style/images/ic_access_sensewire_24.png');
     }
 }
 
@@ -1253,26 +980,26 @@ select {
     }
 
     .ant-menu-item-selected {
-        .ic_dashboard_solid_24,
-        .ic_dashboard_solid_24:hover,
-        .ic_dashboard_solid_24:focus {
-            background-image: url('style/images/ic_dashboard_sensewire_24@2x.png');
-        }
-        .ic_places_solid_24,
-        .ic_places_solid_24:hover,
-        .ic_places_solid_24:focus {
-            background-image: url('style/images/ic_places_sensewire_24.png');
-        }
-        .ic_account_solid_24,
-        .ic_account_solid_24:hover,
-        .ic_account_solid_24:focus {
-            background-image: url('style/images/ic_account_sensewire_24@2x.png');
-        }
-        .ic_access_solid_24,
-        .ic_access_solid_24:hover,
-        .ic_access_solid_24:focus {
-            background-image: url('style/images/ic_access_sensewire_24.png');
-        }
+        // .ic_dashboard_solid_24,
+        // .ic_dashboard_solid_24:hover,
+        // .ic_dashboard_solid_24:focus {
+        //     background-image: url('../style/images/ic_dashboard_sensewire_24@2x.png');
+        // }
+        // .ic_places_solid_24,
+        // .ic_places_solid_24:hover,
+        // .ic_places_solid_24:focus {
+        //     background-image: url('../style/images/ic_places_sensewire_24.png');
+        // }
+        // .ic_account_solid_24,
+        // .ic_account_solid_24:hover,
+        // .ic_account_solid_24:focus {
+        //     background-image: url('../style/images/ic_account_sensewire_24@2x.png');
+        // }
+        // .ic_access_solid_24,
+        // .ic_access_solid_24:hover,
+        // .ic_access_solid_24:focus {
+        //     background-image: url('../style/images/ic_access_sensewire_24.png');
+        // }
     }
 }
 .text-center {
@@ -1281,4 +1008,39 @@ select {
 .form-devider {
     height: 1px;
     border-bottom: 1px dashed #e9e9e9;
+}
+
+.gradient-bg {
+    min-height: 360px;
+    width: 100%;
+    background-image: url('../style/images/rainbow.png');
+    background-size: 300% 400px;
+    padding: 48px 32px;
+    background-repeat: repeat-y ;
+    background-position: left;
+    h1 {
+        font-weight: bold;
+        font-size: 24px;
+        letter-spacing: -0.02em;
+        color: #FFFFFF;
+    }
+    .image {
+        width: 128px;
+        height: 128px;
+        margin: 72px auto 0;
+        fill: #fff;
+        .s24 {
+            transform: scale(5,5);
+            transform-origin: top left;
+        }
+    }
+    &.frame1 {
+        background-position: 25%;
+    }
+    &.frame2 {
+        background-position: 50%;
+    }
+    &.frame3 {
+        background-position: right;
+    }
 }

@@ -1,0 +1,116 @@
+.places {
+    .places-tab {
+        position: relative;
+        .ant-tabs {
+            width: 100%;
+            .ant-tabs-bar {
+                margin-bottom: 24px;
+            }
+            .ant-tabs-nav {
+                .ant-tabs-tab {
+                    padding: 0;
+                    width: 156px;
+                    opacity: .4;
+                    color: @color-solid;
+                }
+                .ant-tabs-tab + .ant-tabs-tab{
+                    width: 184px;
+                }
+                .ant-tabs-tab-active {
+                    color: @color-solid;
+                    opacity: 1;
+                }
+                i {
+                    margin-right: 4px;
+                    transform: translateY(5px);
+                }
+            }
+            .ant-tabs-ink-bar {
+                background-color: @color-solid;
+            }
+            .ant-tabs-nav-container {
+                font-size: 18px;
+                font-weight: bold;
+                line-height: 56px;
+            }
+        }
+        .butn {
+            //width: 150px;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+        }
+    }
+}
+.white-block-container {
+    padding: 8px 0;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 4px rgba(50, 61, 71, 0.16);
+    border-radius: 4px;
+}
+.places-list {
+    .PlaveView {
+        // width: 100%;
+        // display: inline-flex;
+    }
+    .place-indent {
+        width: 32px;
+    }
+
+    @iterations: 1;
+    .iteration-helper-class (@i) when (@i < 8) {
+        .place-indent-@{i} {
+            width: @i * 32 + 0px;
+        }
+        .iteration-helper-class(@i + 1);
+    }
+    .iteration-helper-class(@iterations);
+    .arrow-holder {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+    .ant-checkbox-wrapper:not(:last-child) {
+        // margin: 0 12px;
+    }
+    .placePolicies {
+        i {
+            opacity: .4;
+            margin: 0 2px;
+            &:hover {
+                opacity: 1
+            }
+        }
+    }
+    .moreOptions {
+        i {
+            opacity: .4;
+            &:hover {
+                opacity: 1
+            }
+        }
+    }
+    .membersCounter {
+        opacity: .62;
+        color: @color-solid;
+        font-size: 13px;
+        i {
+            transform: translateY(3px);
+            margin: 0 4px;
+        }
+    }
+    .managers {
+        font-size: 13px;
+        .UserAvatar {
+            margin: 0 2px;
+        }
+    }
+    .placeType {
+        color: @color-solid;
+        opacity: .72;
+        i {
+            margin-right: 5px;
+            transform: translateY(3px)
+        }
+    }
+}

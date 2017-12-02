@@ -1,6 +1,6 @@
 import Api from './../index';
 import moment from 'moment';
-import CONFIG from '../../../app.config';
+import CONFIG from '/src/app/config';
 import AAA from './../../services/classes/aaa/index';
 
 export default class FileApi {
@@ -35,7 +35,7 @@ export default class FileApi {
 
   getUploadUrl(): Promise<any> {
     const credentials = AAA.getInstance().getCredentials();
-    const url = `${CONFIG.STORE.URL}/upload/${credentials.sk}/{token}`;
+    const url = `${CONFIG().STORE.URL}/upload/${credentials.sk}/{token}`;
 
     if (this.isTokenValid(this.token)) {
       return Promise.resolve(url.replace('{token}', this.token));
@@ -52,4 +52,4 @@ export default class FileApi {
     });
   }
 
-};
+}

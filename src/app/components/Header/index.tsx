@@ -16,12 +16,12 @@ const Group = AutoComplete.OptGroup;
 const Option = AutoComplete.Option;
 
 interface IHeaderProps {
-};
+}
 
 interface IHeaderState {
     showPlaceModal: boolean;
     showUserModal: boolean;
-};
+}
 
 class Header extends React.Component<IHeaderProps, IHeaderState> {
     keyword: string = '';

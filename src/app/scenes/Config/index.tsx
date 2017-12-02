@@ -140,6 +140,9 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                     callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_RETRACT_TIME + ' and lower than ' + appConfig.DEFAULT_POST_MAX_RETRACT_TIME);
                 }
                 break;
+            case 'max_attachment_size':
+                callback();
+                break;
             default:
                 callback();
         }
@@ -150,44 +153,18 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     render() {
         const {getFieldDecorator} = this.props.form;
         return (
-            <Form onSubmit={this.handleSubmit.bind(this)} onChange={this.handleChange.bind(this)}>
-                <Row className='toolbar' type='flex' align='center'>
-                    <Col span={6}>
-                        <h2>System Limits</h2>
-                    </Col>
-                    <Col span={18}>{this.state.activeBtn}
-                        <Button disabled={this.state.disableBtn} type='discard' size='large' onClick={this.handleReset}>Discard</Button>
-                        <Button disabled={this.state.disableBtn} type='apply' size='large'
-                                onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply</Button>
-                    </Col>
+            <Form onSubmit={this.handleSubmit.bind(this)} className='system-config' onChange={this.handleChange.bind(this)}>
+                <Row type='flex' className='scene-head' align='middle'>
+                    <h2>System</h2>
+                    {this.state.activeBtn}
+                    <Button disabled={this.state.disableBtn} type='discard' size='large' onClick={this.handleReset}>Discard</Button>
+                    <Button disabled={this.state.disableBtn} type='apply' size='large'
+                        onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply</Button>
                 </Row>
                 <Row gutter={24} className='dashboardRow' type='flex' align='center'>
                     <Col span={12}>
                         <Card className='optionCard' loading={false} title='Account Policies'>
                             <ul>
-                                <li>
-                                    <div className='option'>
-                                        <label>Max. Create Grand Places</label>
-                                        <FormItem>
-                                            {getFieldDecorator('account_grandplaces_limit', {
-                                                initialValue: this.state.data.account_grandplaces_limit,
-                                                rules: [
-                                                    {
-                                                        required: true,
-                                                        message: 'Required'
-                                                    },
-                                                    {
-                                                        validator: this.checkConfirm,
-                                                    }
-                                                ]
-                                            })(
-                                                <Input />
-                                            )}
-                                        </FormItem>
-                                    </div>
-                                    {/*<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-                    tincidunt ut.</p>*/}
-                                </li>
                                 <li>
                                     <div className='option'>
                                         <label>Account Register Mode</label>
@@ -213,6 +190,29 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             )}
                                         </FormItem>
                                     </div>
+                                    <p>In this mode only you or another admin can create accounts.</p>
+                                </li>
+                                <li>
+                                    <div className='option'>
+                                        <label>Default Maximum Grand Places that each account can be create:</label>
+                                        <FormItem>
+                                            {getFieldDecorator('account_grandplaces_limit', {
+                                                initialValue: this.state.data.account_grandplaces_limit,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: 'Required'
+                                                    },
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Input />
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                    <p>Changes will be apply for new accounts only.</p>
                                 </li>
                             </ul>
                         </Card>
@@ -264,7 +264,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Childrens</label>
+                                        <label>Default Maximum Sub-Places:</label>
                                         <FormItem>
                                             {getFieldDecorator('place_max_children', {
                                                 initialValue: this.state.data.place_max_children,
@@ -282,6 +282,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             )}
                                         </FormItem>
                                     </div>
+                                    <p>Changes will be apply for new places only. You can change it for each place seperatly in Place Settings.</p>
                                 </li>
                                 <li>
                                     <div className='option'>
@@ -312,7 +313,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                             <ul>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Attachments per Post</label>
+                                        <label>Maximum Attachments per Post</label>
 
                                         <FormItem>
                                             {getFieldDecorator('post_max_attachments', {
@@ -328,6 +329,35 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                 ]
                                             })(
                                                 <Input/>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className='option'>
+                                        <label>Maximum Attachment size</label>
+
+                                        <FormItem>
+                                            {getFieldDecorator('max_attachment_size', {
+                                                initialValue: this.state.data.max_attachment_size,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: 'Required!'
+                                                    },
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Select
+                                                    placeholder={this.state.data.max_attachment_size}
+                                                    style={{width: 128}} onChange={this.handleChange}>
+                                                    <Option value={20}>20 MB</Option>
+                                                    <Option value={50}>50 MB</Option>
+                                                    <Option value={100}>100 MB</Option>
+                                                    <Option value={200}>200 MB</Option>
+                                                </Select>
                                             )}
                                         </FormItem>
                                     </div>
@@ -371,7 +401,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                 ]
                                             })(
                                                 // <Input />
-                                                <Select style={{ width: 88 }} onChange={this.handleChange}>
+                                                <Select style={{ width: 128 }} onChange={this.handleChange}>
                                                   <Option value={3600000}>1</Option>
                                                   <Option value={21600000}>6</Option>
                                                   <Option value={43200000}>12</Option>

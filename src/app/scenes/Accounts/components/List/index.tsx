@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
     Icon,
+    Row,
     Table,
     Dropdown,
     Card,
@@ -27,15 +28,21 @@ import IPromoteRequest from '../../../../api/account/interfaces/IPromoteRequest'
 import IDemoteRequest from '../../../../api/account/interfaces/IDemoteRequest';
 import FilterGroup from '../../FilterGroup';
 import View from '../View/index';
+import {IcoN} from '../../../../components/icon/index';
+import IUser from '../../../../api/account/interfaces/IUser';
 
 interface IListProps {
     counters: any;
+    notifyChildrenUnselect: boolean;
     filter: FilterGroup;
     onChange: any;
+    updatedAccounts: number;
+    toggleSelected: (user:IPerson) => {};
 }
 
 interface IListState {
     users: IPerson[];
+    accounts: IPerson[];
     viewAccount: boolean;
     chosen: IAccount;
 }
@@ -46,7 +53,7 @@ class List extends React.Component <IListProps,
     dataColumns = {
         'name': 'Name',
         '_id': 'User ID',
-        'access_places': 'Member in Place',
+        'access_places': 'Member in',
         'joined_on': 'Joined Date',
         'phone': 'Phone',
         'gender': 'Gender',
@@ -64,34 +71,65 @@ class List extends React.Component <IListProps,
     COLUMNS_STORAGE_KEY = 'ronak.nested.admin.accounts.columns';
     PAGE_SIZE = 10;
 
-    // columns Render Handlers
+    checkboxClick  = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 
-    nameRender = (text, user, index) => <UserAvatar avatar name size='32' user={user}/>;
+    onCheckboxChange  = (user: IPerson) => {
+        user.isChecked = !user.isChecked;
+        this.props.toggleSelected(user);
+    }
+
+    // columns Render Handlers
+    nameRender = (text, user: IPerson, index) => {
+        return (
+            <Row type='flex' align='middle' onClick={this.checkboxClick.bind(this)}>
+                <Checkbox onChange={() => this.onCheckboxChange(user)}
+                    checked={user.isChecked}/>
+                    <UserAvatar avatar name size='24' user={user}/>
+            </Row>
+        );
+    }
     idRender = (text, user, index) => text;
 
-    placesRender = (text, user, index) => user.access_places
-        ? user.access_places.length
-        : '-';
+    placesRender = (text, user, index) => {
+        return (
+            <div className='user-member-place'>
+                {user.access_places && <IcoN size={16} name={'placesRelation16'}/>}
+                {user.access_places
+                ? user.access_places.length
+                : '-'}
+            </div>
+        );
+    }
+
     joinedRender = (text, user, index) => {
         const value = moment(user.joined_on);
+        let date = '-';
+        let time = '-';
         if (value.isValid()) {
-            return value.format('YYYY[/]MM[/]DD HH:mm A');
-        } else {
-            return '-';
+            date = value.format('YYYY[/]MM[/]DD');
+            time = value.format('HH:mm A');
         }
+        return (<div className='date'>{date} <span>{time}</span></div>);
     }
-    phoneRender = (text, user, index) => text;
-    genderRender = (text, user, index) => {
+    phoneRender = (text, user: IPerson, index) => text ? '+' + text : '';
+    genderRender = (text, user: IPerson, index) => {
         return this.genders[user.gender] || '-';
     }
-    disabledRender = (text, user, index) => {
+    disabledRender = (text, user: IPerson, index) => {
         if (user.disabled) {
-            return (<Badge status='error' text='Inactive' />);
+            return (<div className='deactive'>
+                <IcoN size={16} name={'circle16'}/>Deactive
+            </div>);
         } else {
-            return (<Badge status='success' text='Active' />);
+            return (<div className='active'>
+                <IcoN size={16} name={'circle16'}/>Active
+            </div>);
         }
     }
-    dobRender = (text, user, index) => {
+    dobRender = (text, user: IPerson, index) => {
         const value = moment(user.joined_on);
         if (value.isValid()) {
             return value.format('YYYY[/]MM[/]DD');
@@ -99,16 +137,16 @@ class List extends React.Component <IListProps,
             return '-';
         }
     }
-    searchableRender = (text, user, index) => {
-        if (user.privacy && _.has(user.privacy, 'searchable')) {
-            return user.privacy.searchable
-                ? 'Yes'
-                : 'No';
+    searchableRender = (text, user: IPerson, index) => {
+        if (user && _.has(user, 'searchable')) {
+            return user.searchable
+                ? <div className='search-cell'><IcoN size={16} name={'search16'}/></div>
+                : <div className='search-cell'><IcoN size={16} name={'nonsearch6'}/></div>;
         }
 
         return '-';
     }
-    enable = (user) => {
+    enable = (user: IPerson) => {
         this.accountApi.enable({account_id: user._id}).then((result) => {
             this.props.onChange();
             user.disabled = false;
@@ -116,7 +154,7 @@ class List extends React.Component <IListProps,
             notification.success({message: 'Activated', description: `"${user._id}" is enabled now.`});
         });
     }
-    disable = (user) => {
+    disable = (user: IPerson) => {
         this.accountApi.disable({account_id: user._id}).then((result) => {
             this.props.onChange();
             user.disabled = true;
@@ -176,6 +214,7 @@ class List extends React.Component <IListProps,
         }
     }
 
+
     insertColumn = (key) => {
         if (_.some(this.allColumns, {key: key})) {
             this.setState({
@@ -194,6 +233,7 @@ class List extends React.Component <IListProps,
     }
 
     constructor(props: IListProps) {
+        super(props);
 
         this.allColumns = [
             {
@@ -207,51 +247,59 @@ class List extends React.Component <IListProps,
                 dataIndex: '_id',
                 key: '_id',
                 render: this.idRender,
-                index: 1
+                index: 1,
+                width: 152,
             }, {
                 title: this.dataColumns.access_places,
                 dataIndex: 'access_places',
                 key: 'access_places',
                 render: this.placesRender,
-                index: 2
-            }, {
-                title: this.dataColumns.joined_on,
-                dataIndex: 'joined_on',
-                key: 'joined_on',
-                render: this.joinedRender,
-                index: 3
-            }, {
-                title: this.dataColumns.phone,
-                dataIndex: 'phone',
-                key: 'phone',
-                render: this.phoneRender,
-                index: 4
-            }, {
-                title: this.dataColumns.gender,
-                dataIndex: 'gender',
-                key: 'gender',
-                render: this.genderRender,
-                index: 5
-            }, {
-                title: this.dataColumns.dob,
-                dataIndex: 'dob',
-                key: 'dob',
-                render: this.dobRender,
-                index: 6
-            }, {
-                title: this.dataColumns.disabled,
-                dataIndex: 'disabled',
-                key: 'disabled',
-                render: this.disabledRender,
-                index: 7
+                index: 2,
+                width: 92,
             }, {
                 title: this.dataColumns.searchable,
                 dataIndex: 'searchable',
                 key: 'searchable',
                 render: this.searchableRender,
-                index: 7
+                index: 3,
+                width: 94,
+            }, {
+                title: this.dataColumns.phone,
+                dataIndex: 'phone',
+                key: 'phone',
+                render: this.phoneRender,
+                index: 4,
+                width: 136,
+            }, {
+                title: this.dataColumns.joined_on,
+                dataIndex: 'joined_on',
+                key: 'joined_on',
+                render: this.joinedRender,
+                index: 5,
+                width: 152,
+            }, {
+                title: this.dataColumns.disabled,
+                dataIndex: 'disabled',
+                key: 'disabled',
+                render: this.disabledRender,
+                index: 6,
+                width: 116,
             }
         ];
+
+        // {
+        //     title: this.dataColumns.gender,
+        //     dataIndex: 'gender',
+        //     key: 'gender',
+        //     render: this.genderRender,
+        //     index: 7
+        // }, {
+        //     title: this.dataColumns.dob,
+        //     dataIndex: 'dob',
+        //     key: 'dob',
+        //     render: this.dobRender,
+        //     index: 8
+        // }
 
         const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
         const storedColumnsList = storedColumns
@@ -259,8 +307,7 @@ class List extends React.Component <IListProps,
             : [];
         const tableColumns = storedColumnsList.length > 0
             ? storedColumnsList
-            : _(this.allColumns).take(5).map('key').value();
-
+            : _(this.allColumns).take(7).map('key').value();
         this.state = {
             users: [],
             columns: tableColumns,
@@ -296,6 +343,18 @@ class List extends React.Component <IListProps,
     componentWillReceiveProps(nextProps: IListProps) {
         if (_.has(nextProps, 'filter') && nextProps.filter !== this.props.filter) {
             this.load(1, this.PAGE_SIZE, nextProps.filter);
+        }
+        if (nextProps.updatedAccounts !== this.props.updatedAccounts) {
+            this.load(1, this.PAGE_SIZE, nextProps.filter);
+        }
+        if(nextProps.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
+            var accountsClone: IPerson[] = _.clone(this.state.accounts);
+            accountsClone.forEach((user: IPerson) => {
+               user.isChecked = false;
+            });
+            this.setState({
+                accounts: accountsClone
+            });
         }
     }
 
@@ -335,14 +394,7 @@ class List extends React.Component <IListProps,
             </Popover>
         );
 
-        const columns = _(this.allColumns).filter((column) => _.includes(this.state.columns, column.key)).orderBy(['index']).concat([
-            {
-                title: optionsTitle,
-                dataIndex: 'options',
-                key: 'options',
-                render: () => ''
-            }
-        ]).value();
+        const columns = _(this.allColumns).filter((column) => _.includes(this.state.columns, column.key)).orderBy(['index']).value();
 
         const rowSelection = {
             selectedRowKeys: this.state.selectedRowKeys,
@@ -362,7 +414,7 @@ class List extends React.Component <IListProps,
                 break;
         }
         return (
-            <Card>
+            <div>
                 <Table
                     onRowClick={(user) => {
                         this.onItemClick(user);
@@ -371,8 +423,11 @@ class List extends React.Component <IListProps,
                         total: total,
                         current: this.state.currentPage,
                         onChange: this.onPageChange
-                    }} rowKey='_id' columns={columns} dataSource={this.state.accounts}
-                    size='middle' className='nst-table' scroll={{
+                    }}
+                    rowKey='_id'
+                    columns={columns}
+                    dataSource={this.state.accounts}
+                    size='middle nst-table' scroll={{
                     x: 960
                 }} loading={this.state.loading}/>
                 {
@@ -380,7 +435,7 @@ class List extends React.Component <IListProps,
                     <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
                           onClose={this.onCloseView}/>
                 }
-            </Card>
+            </div>
         );
     }
 
@@ -396,6 +451,9 @@ class List extends React.Component <IListProps,
             case FilterGroup.Deactive:
                 filterValue = 'users_disabled';
                 break;
+            case FilterGroup.Searchable:
+            case FilterGroup.NonSearchable:
+            case FilterGroup.NotVerifiedPhone:
             default:
                 filterValue = 'users';
                 break;

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {Menu, Icon} from 'antd';
-import CONFIG from '../../../app.config';
+import CONFIG from '/src/app/config';
 
+import {IcoN} from '../icon/index';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 import {browserHistory, Link, withRouter} from 'react-router';
@@ -9,17 +10,17 @@ import {browserHistory, Link, withRouter} from 'react-router';
 import './style/style.less';
 
 interface IHeaderProps {
-};
+    location : any;
+}
 
-interface IHeaderState {
-};
+interface IHeaderState {}
 
-class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
+class Sidebar extends React.Component < IHeaderProps,
+IHeaderState > {
 
-    constructor(props: any) {
+    constructor(props : any) {
         super(props);
     }
-
 
     render() {
         let location = this.props.location.pathname;
@@ -27,8 +28,7 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
             location = '/dashboard';
         }
         return (
-            <div
-                className='main-menu'>
+            <div className='main-menu'>
                 <Link to='/dashboard' activeClassName='active center'>
                     <div className='logo'></div>
                 </Link>
@@ -37,30 +37,49 @@ class Sidebar extends React.Component<IHeaderProps, IHeaderState> {
                     defaultOpenKeys={[location]}
                     mode='inline'>
                     <Menu.Item key='/dashboard'>
-                        <Link to='/dashboard' activeClassName='active'><Icon
-                            type=' nst-ico ic_dashboard_solid_24'/><span>Dashboard</span></Link>
-                    </Menu.Item>
-                    <Menu.Item key='/places'>
-                        <Link to='/places' activeClassName='active'><Icon type=' nst-ico ic_places_solid_24'/><span>Places</span></Link>
+                        <Link to='/dashboard' activeClassName='active'>
+                            <IcoN size={24} name={'dashbooard24'}/>
+                            {/* <Icon type=' nst-ico ic_dashboard_solid_24'/> */}
+                            {/* <span>Dashboard</span> */}
+                        </Link>
                     </Menu.Item>
                     <Menu.Item key='/accounts'>
-                        <Link to='/accounts' activeClassName='active'><Icon type=' nst-ico ic_account_solid_24'/><span>Accounts</span></Link>
+                        <Link to='/accounts' activeClassName='active'>
+                            <IcoN size={24} name={'personWire24'}/>
+                            {/* <span>Accounts</span> */}
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item key='/places'>
+                        <Link to='/places' activeClassName='active'>
+                            <IcoN size={24} name={'placesRelationWire24'}/>
+                            {/* <span>Places</span> */}
+                        </Link>
                     </Menu.Item>
                     <Menu.Item key='/config'>
-                        <Link to='/config' activeClassName='active'><Icon type=' nst-ico ic_access_solid_24'/><span>System Limits</span></Link>
+                        <Link to='/config' activeClassName='active'>
+                            <IcoN size={24} name={'hdd24'}/>
+                            {/* <span>System Limits</span> */}
+                        </Link>
                     </Menu.Item>
                     <Menu.Item key='/charts'>
-                        <Link to='/charts' activeClassName='active'><Icon type='area-chart'/>Charts</Link>
+                        <Link to='/charts' activeClassName='active'>
+                            <IcoN size={24} name={'pieChart24'}/>
+                            {/* Charts */}
+                        </Link>
                     </Menu.Item>
                     <Menu.Item key='/assistant'>
-                        <Link to='/assistant' activeClassName='active'><Icon type='medicine-box' />Assistant</Link>
+                        <Link to='/assistant' activeClassName='active'>
+                            <IcoN size={24} name={'performances24'}/>
+                            {/* Assistant */}
+                        </Link>
                     </Menu.Item>
                 </Menu>
-                <small style={{
+                <small
+                    style={{
                     position: 'fixed',
                     bottom: 0,
-                    left: 10,
-                }}>v.{CONFIG.VERSION}</small>
+                    left: 10
+                }}>v.{CONFIG().VERSION}</small>
             </div>
         );
     }
