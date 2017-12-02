@@ -4,7 +4,7 @@ import IRequest from './interfaces/IRequest';
 import IResponse from './interfaces/IResponse';
 import ISocketRequest from './interfaces/ISocketRequest';
 import AAA from './../aaa/index';
-import CONFIG from '/src/app/config';
+import CONFIG from 'src/app/config';
 import SocketState from '../socket/states';
 import Client from './../client/index';
 export default class Server {

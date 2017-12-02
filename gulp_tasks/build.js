@@ -22,7 +22,7 @@ function build() {
   return gulp.src(conf.path.tmp('/index.html'))
     .pipe(useref({}, lazypipe().pipe(sourcemaps.init, {loadMaps: true})))
     .pipe(jsFilter)
-    .pipe(uglify({preserveComments: uglifySaveLicense})).on('error', conf.errorHandler('Uglify'))
+    .pipe(uglify()).on('error', conf.errorHandler('Uglify'))
     .pipe(rev())
     .pipe(jsFilter.restore)
     .pipe(cssFilter)

@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import {forEach, startsWith} from 'lodash';
 import Server from './../services/classes/server/index';
-import {setNewConfig} from '/src/app/config';
+import {setNewConfig} from 'src/app/config';
 
 export default class Api {
     static hasCredential : boolean = false;
