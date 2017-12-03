@@ -5,7 +5,7 @@ import IAccount from '../../../../interfaces/IAccount';
 import PacketState from '../../../../PacketState';
 import AccountApi from '../../../../../../api/account/account';
 import Packet from '../../../../Packet';
-import CONFIG from '/src/app/config';
+import CONFIG from 'src/app/config';
 import {IcoN} from '../../../../../../components/icon/index';
 
 interface IInputRowProps {

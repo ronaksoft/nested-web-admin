@@ -22,7 +22,7 @@ import PlaceAvatar from './../PlaceAvatar/index';
 import AccountApi from '../../api/account/account';
 import IUser from '../../api/account/interfaces/IUser';
 import AAA from '../../services/classes/aaa/index';
-import CONFIG from '/src/app/config';
+import CONFIG from 'src/app/config';
 import C_PLACE_POST_POLICY from '../../api/consts/CPlacePostPolicy';
 import SelectLevel from '../SelectLevel/index';
 import AddMemberModal from '../AddMember/index';
@@ -48,6 +48,7 @@ interface IStates {
     formValid: boolean;
     showError: boolean;
     uploadPercent: number;
+    imageIsUploading: boolean;
 }
 
 
@@ -73,6 +74,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 picture: '',
                 pictureData: '',
                 addPostPolicy: C_PLACE_POST_POLICY.MANAGER,
+                placeSearchPolicy: false,
                 addPlacePolicy: C_PLACE_POST_POLICY.MANAGER,
                 addMemberPolicy: C_PLACE_POST_POLICY.MANAGER,
                 managerLimit: 10,
@@ -84,6 +86,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             idValid: false,
             formValid: false,
             showError: false,
+            imageIsUploading: false,
         };
         if (this.props.place) {
             this.state.place = this.props.place;
@@ -200,12 +203,16 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         return createPlaceItems;
     }
 
-    updateModel(params: any) {
+    updateModel(params: any, callback?: any) {
         const model = this.state.model;
         _.forEach(params, (val, index) => {
             model[index] = val;
         });
-        this.setState({model: model});
+        this.setState({model: model}, () => {
+            if (_.isFunction(callback)) {
+                callback();
+            }
+        });
     }
 
     extractNumber(text: any) {
@@ -226,6 +233,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         this.updateModel({
             name: name,
             id: id,
+        }, () => {
+            this.checkId(this.state.model.id);
         });
     }
 
@@ -237,6 +246,10 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
     updatePlacePostPolicy(index: any) {
         this.updateModel({addPostPolicy: index});
+    }
+
+    updatePlaceSearchPolicy(check: any) {
+        this.updateModel({placeSearchPolicy: check});
     }
 
     updatePlaceCreateSubPlacePolicy(index: any) {
@@ -282,6 +295,10 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 picture: info.file.response.data[0].universal_id,
                 pictureData: info.file.response.data[0].thumbs
             });
+            this.setState({
+                uploadPercent: 0,
+                imageIsUploading: false,
+            });
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
@@ -289,7 +306,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
     beforeUpload() {
         this.setState({
-            uploadPercent: 0
+            uploadPercent: 0,
+            imageIsUploading: true,
         });
         if (!this.state.token) {
             notification.error({message: 'Error', description: 'We are not able to upload the picture.'});
@@ -347,22 +365,79 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         this.props.onClose(true);
     }
 
-    create() {
+    getAddPostPolicy(policy: any) {
+        let addPost: any;
+        let receptive: any;
+        switch (policy) {
+            case C_PLACE_POST_POLICY.MANAGER:
+                addPost = 'off';
+                receptive = 'creators';
+                break;
+            case C_PLACE_POST_POLICY.MANGER_MEMBER:
+                addPost = 'off';
+                receptive = 'everyone';
+                break;
+            case C_PLACE_POST_POLICY.TEAM:
+                addPost = 'internal';
+                receptive = 'everyone';
+                break;
+            case C_PLACE_POST_POLICY.COMPANY:
+                addPost = 'external';
+                receptive = 'everyone';
+                break;
+            case C_PLACE_POST_POLICY.EMAIL:
+                addPost = 'external';
+                receptive = 'everyone';
+                break;
+            default:
+                addPost = 'off';
+                receptive = 'creators';
+                break;
+        }
+        return {
+            addPost: addPost,
+            receptive: receptive,
+        };
+    }
+
+    validate() {
         const model = this.state.model;
+        if (this.state.imageIsUploading) {
+            message.warning('Wait till image uploads completely!');
+            return false;
+        } else if (_.trim(model.name).length === 0) {
+            message.warning('Choose a name!');
+            return false;
+        } else if (model.id > 3) {
+            message.warning('Id must be more than 3 characters!');
+            return false;
+        } else if (!this.state.idValid) {
+            message.warning('Id is not valid!');
+            return false;
+        }
+        return true;
+    }
+
+    create() {
+        if (!this.validate()) {
+            return;
+        }
+        const model = this.state.model;
+        const addPostPolicy = this.getAddPostPolicy(model.addPostPolicy);
         let params: IPlaceCreateRequest = {
             place_id: model.id,
             place_name: model.name,
             place_description: model.description,
             picture: model.pictureData,
             policy: {
-                add_post: model.addPostPolicy,
+                add_post: addPostPolicy.addPost,
                 add_place: model.addPlacePolicy,
                 add_member: model.addMemberPolicy,
             },
             privacy: {
                 locked: true,
-                search: true,
-                receptive: 'off',
+                search: model.placeSearchPolicy,
+                receptive: addPostPolicy.receptive,
             },
         };
         let members = _.map(this.state.model.members, (user) => {
@@ -371,11 +446,24 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
         this.placeApi.placeCreate(params).then((data) => {
             console.log('created', data);
-            this.placeApi.placeAddMember({
-                place_id: data.place_id,
-                member_id: members
-            }).then((memberData) => {
-                console.log(memberData);
+            Promise.all([
+                this.placeApi.placeAddMember({
+                    place_id: data._id,
+                    member_id: members
+                }),
+                this.placeApi.placeLimitEdit({
+                    place_id: data._id,
+                    limits: {
+                        key_holders: model.managerLimit,
+                        creators: model.memberLimit,
+                        size: model.storageLimit,
+                        childs: model.subPlaceLimit,
+                    }
+                }),
+            ]).then((data) => {
+                console.log(data);
+                this.props.onClose(true);
+                message.success('Place successfully created!');
             });
         });
     }
@@ -472,11 +560,12 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                                 <Button type=' butn secondary'>
                                     Upload a Photo
                                 </Button>
-                                {model.pictureData && (<Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
-                                    Remove Photo
-                                </Button>)}
+                                {model.pictureData && (
+                                    <Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
+                                        Remove Photo
+                                    </Button>)}
                                 {(this.state.uploadPercent < 100 && this.state.uploadPercent > 0) &&
-                                    <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/>
+                                <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/>
                                 }
                             </Upload>
                         </Row>
@@ -493,7 +582,9 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                         <Row className='input-row'>
                             <label htmlFor='placeId'>Place ID</label>
-                            <Input id='placeId' size='large' className={['nst-input', !this.state.idValid ? 'error' : ''].join(' ')} value={model.id}
+                            <Input id='placeId' size='large'
+                                   className={['nst-input', !this.state.idValid ? 'error' : ''].join(' ')}
+                                   value={model.id}
                                    onChange={this.updatePlaceId.bind(this)}/>
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change
                                 this afterwards, so choose wisely!</p>
@@ -507,10 +598,13 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                             <label>Who can share posts with this Place?</label>
                             <SelectLevel
                                 index={model.addPostPolicy}
+                                searchable={model.placeSearchPolicy}
                                 items={sharePostItems}
                                 onChangeLevel={this
                                     .updatePlacePostPolicy
-                                    .bind(this)}/>
+                                    .bind(this)}
+                                onChangeSearch={this.updatePlaceSearchPolicy.bind(this)}
+                            />
                         </Row>
                         <Row className='input-row select-level'>
                             <label>Who can create sub-places in this Place?</label>

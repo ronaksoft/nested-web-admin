@@ -1,6 +1,6 @@
 import * as React from 'react';
 import IUser from './../../api/account/interfaces/IUser';
-import CONFIG from '/src/app/config';
+import CONFIG from 'src/app/config';
 import AAA from './../../services/classes/aaa/index';
 const settings = {
   textColor: '#ffffff',

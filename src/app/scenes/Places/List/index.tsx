@@ -268,24 +268,22 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 this.setState({
                     loading: true
                 });
-                if (expand) {
-                    const placeApi = new PlaceApi();
-                    placeApi.placeList({
-                        grand_parent_id: record._id
-                    }).then((data) => {
-                        let tempTree = this.createTree(data);
-                        places[index] = _.merge(tempTree[0], {
-                            expanded: true,
-                        });
-                        places[index].expanded = true;
-                        places[index].children = tempTree[0].children;
-                        cachedTrees[record._id] = tempTree[0].children;
-                        this.setState({
-                            places: places,
-                            loading: false,
-                        });
+                const placeApi = new PlaceApi();
+                placeApi.placeList({
+                    grand_parent_id: record._id
+                }).then((data) => {
+                    let tempTree = this.createTree(data);
+                    places[index] = _.merge(tempTree[0], {
+                        expanded: true,
                     });
-                }
+                    places[index].expanded = true;
+                    places[index].children = tempTree[0].children;
+                    cachedTrees[record._id] = tempTree[0].children;
+                    this.setState({
+                        places: places,
+                        loading: false,
+                    });
+                });
             } else {
                 if (!places[index].children) {
                     places[index].children = cachedTrees[record._id];

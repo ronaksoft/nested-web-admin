@@ -50,18 +50,6 @@ export default class AccountApi {
         }
     }
 
-
-    // accountGet(accountGetRequest: IAccountGetRequest): Promise<any> {
-    //     return this.api.server.request({
-    //         cmd: 'account/get',
-    //         data: accountGetRequest,
-    //     }).then((res: IUser) => {
-    //         return res;
-    //     }).catch((err) => {
-    //         console.log(err);
-    //     });
-    // }
-
     /**
      * @func get
      * @desc Retrieves the current user account data

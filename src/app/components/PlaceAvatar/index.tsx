@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import CONFIG from '/src/app/config';
+import CONFIG from 'src/app/config';
 import AAA from './../../services/classes/aaa/index';
 
 export interface IAvatarProps {
