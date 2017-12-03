@@ -56,6 +56,10 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         // }, 200);
     }
 
+    extractNumber(text: any) {
+        return parseInt(text.replace(/[^0-9]/g, ''), 0);
+    }
+
     checkPhoneAvailable(rule: any, value: string, callback: any) {
         // callback();
         let accountApi = new AccountApi();
@@ -102,6 +106,15 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         });
     }
 
+    fromChange () {
+        this.props.onChange({
+            key: this.props.refKey,
+            model: this.props.form.getFieldsValue(),
+            password: this.state.manualPassword,
+            status: null
+        });
+    }
+
     render() {
         let self = this;
         const {getFieldDecorator} = this.props.form;
@@ -112,13 +125,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         console.log('manualPassword', manualPassword);
         return (
             <Form layout='inline' className='account-row'
-                  onChange={() => {
-                      this.props.onChange({
-                          key: self.props.refKey,
-                          model: self.props.form.getFieldsValue(),
-                          status: null
-                      });
-                  }}>
+                  onChange={self.fromChange.bind(self)}>
                 <Form.Item className='row-controls'>
                     {
                         !(pending || success) &&
@@ -135,18 +142,27 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('phone', {
-                        initialValue: this.props.account.phone || '+98',
+                        initialValue: this.props.account.phone || 98,
                         validateFirst: false,
                         rules: [
                             {
                                 required: true,
                                 message: 'Phone number is required!'
                             },
+                            {
+                                min: 6,
+                                message: 'Phone number is too short!'
+                            },
+                            {
+                                pattern: /^[0-9]*$/g,
+                                message: 'It is not a number'
+                            },
                             _.debounce(this.checkPhoneAvailable, 100)
                         ]
                     })(
                         <Input
-                            placeholder='+98 987 6543210'
+                            prefix='+'
+                            placeholder='98 987 6543210'
                             disabled={disabled}
                         />
                     )}
@@ -211,7 +227,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                         initialValue: this.props.account.pass,
                         rules: [
                             {
-                                required: true,
+                                required: manualPassword,
                                 message: 'Password is required!',
                             },
                             {
@@ -223,7 +239,8 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                     })(
                         <div>
                             {!manualPassword &&
-                                <Button type=' form-input-button' onClick={this.insertManualPassword}>- same as username -</Button>
+                                (<Button type=' form-input-button' onClick={this.insertManualPassword}
+                                    disabled={disabled}>- same as username -</Button>)
                             }
                             {manualPassword && (<Input
                                 placeholder='Password'

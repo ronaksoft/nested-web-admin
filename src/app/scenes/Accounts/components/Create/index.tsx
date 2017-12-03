@@ -93,9 +93,13 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             return;
         }
         let accounts = this.state.accounts;
-        accounts[packetIndex].model = model;
-        accounts[packetIndex].status = params.status;
 
+        if (!params.password) {
+            model.pass = model._id;
+        }
+        console.log(model.password);
+        accounts[packetIndex].status = params.status;
+        accounts[packetIndex].model = model;
         this.setState({
             accounts: accounts,
         });
@@ -191,6 +195,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 lname: '',
                 fname: '',
             },
+            password: false,
             messages: [],
         };
         let accounts = this.state.accounts;

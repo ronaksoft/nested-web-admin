@@ -256,8 +256,8 @@ class List extends React.Component <IListProps,
                 disabled_accounts: 0
             },
             sortedInfo: {
-                order: 'descend',
-                columnKey: 'name',
+                order: 'ascend',
+                columnKey: '_id',
             },
             viewAccount: false,
             chosen: {}
