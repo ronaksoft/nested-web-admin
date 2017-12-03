@@ -3,7 +3,6 @@ import _ from 'lodash';
 import {Table, Row, Col, Card, Icon, TableColumnConfig, Checkbox, Dropdown, Menu} from 'antd';
 import PlaceApi from '../../../api/place/index';
 import IPlace from '../../../api/place/interfaces/IPlace';
-import {columnsList, IPlaceListColumn} from './columsList';
 import IUser from '../../../api/account/interfaces/IUser';
 import AccountApi from '../../../api/account/account';
 import UserAvatar from '../../../components/avatar/index';
@@ -16,7 +15,21 @@ import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
 
 let cachedTrees = [];
+export interface IPlaceListColumn {
+    key: string;
+    title: string;
+    renderer: string;
+    index: number;
+    icon ?: string;
+    width?: number;
+    sorter?: () => {};
+    sortOrder?: any;
+}
 
+export interface ISort {
+    order: string;
+    columnKey: string;
+}
 export interface IPlaceOptionsItem {
     key: string;
     name: string;
@@ -43,6 +56,7 @@ interface IListState {
     selectedPlace?: IPlace;
     selectedTab: string;
     viewMode: string;
+    sortedInfo: ISort;
 }
 
 export default class PlaceList extends React.Component<IListProps, IListState> {
@@ -61,6 +75,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             counters: props.counters,
             pagination: {},
             viewMode: 'relation',
+            sortedInfo: {
+                order: 'ascend',
+                columnKey: 'name',
+            },
         };
     }
 
@@ -118,7 +136,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         }
     }
 
-    handleTableChange(pagination: any) {
+    handleTableChange(pagination: any, filters: any, sorter: any) {
+        console.log(arguments);
         const pager = {...this.state.pagination};
         pager.current = pagination.current;
         this.setState({
@@ -127,6 +146,14 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         setTimeout(() => {
             this.fetchPlaces();
         }, 100);
+        if(sorter.columnKey) {
+            this.setState({
+                sortedInfo: {
+                    order: sorter.order,
+                    columnKey: sorter.columnKey,
+                }
+            });
+        }
     }
 
     showPlaceModal(record: IPlace, index: number) {
@@ -397,9 +424,80 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                                                                                   type={true}/></Row>;
     }
 
-    getColumns() {
-        let columns: Array<TableColumnConfig> = [];
-        columnsList.forEach((column: IPlaceListColumn) => {
+    preventer = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    onCheckboxChange  = (place: IPlace) => {
+        place.isChecked = !place.isChecked;
+        this.props.toggleSelected(place);
+    }
+
+    render() {
+        // console.log(this.state.places);
+        let { sortedInfo } = this.state;
+        var columns = [
+            {
+                key: 'name',
+                index: 0,
+                title: 'Place Name',
+                renderer: 'place',
+                sorter: (a, b) => {
+                    console.log(a, b);
+                    return a.name === b.name ? 0 : a.name < b.name ? -1 : 1;
+                },
+                sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
+            },
+            {
+                key: 'creators',
+                index: 2,
+                title: 'Managers',
+                renderer: 'users',
+                width: 140,
+            },
+            {
+                key: 'counters.counters',
+                index: 3,
+                title: 'Members',
+                renderer: 'memberCounter',
+                icon: 'member',
+                width: 96,
+                sorter: (a, b) => {
+                    return a.counters.creators + a.counters.key_holders > b.counters.creators + b.counters.key_holders;
+                },
+                sortOrder: sortedInfo.columnKey === 'counters.counters' && sortedInfo.order
+            },
+            {
+                key: 'type',
+                index: 4,
+                title: 'Place Type',
+                renderer: 'placeType',
+                width: 128,
+                sorter: (a, b) => {
+                    return (a.privacy.locked === b.privacy.locked)? 0 : a.privacy.locked? -1 : 1;
+                },
+                sortOrder: sortedInfo.columnKey === 'type' && sortedInfo.order
+            },
+            {
+                key: 'sub-places',
+                index: 4,
+                title: 'Sub-places',
+                renderer: 'subPlaceCounter',
+                width: 104,
+                sorter: (a, b) => {
+                    return a.counters.childs > b.counters.childs;
+                },
+                sortOrder: sortedInfo.columnKey === 'sub-places' && sortedInfo.order
+            },
+            {
+                key: 'policies',
+                index: 5,
+                title: 'Policies',
+                renderer: 'placePolicy',
+                width: 80
+            }
+        ].map((column) => {
             let renderer: (text: string, record: IPlace, index: any) => {};
 
             switch (column.renderer) {
@@ -434,23 +532,15 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             if (column.width) {
                 col.width = column.width;
             }
-            columns.push(col);
+            return col;
         });
-        return columns;
-    }
-
-    preventer = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-
-    onCheckboxChange  = (place: IPlace) => {
-        place.isChecked = !place.isChecked;
-        this.props.toggleSelected(place);
-    }
-
-    render() {
-        let column = this.getColumns();
+        // {
+        //     key: 'options',
+        //     index: 6,
+        //     title: '',
+        //     renderer: 'options',
+        //     width: 80
+        // }
         return (
             <div className='places-list'>
                 {this.state.visibelPlaceModal &&
@@ -462,7 +552,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     onChange={this.handleTableChange.bind(this)}
                     rowKey='_id'
                     onRowClick={this.showPlaceModal.bind(this)}
-                    columns={column}
+                    columns={columns}
                     loading={this.state.loading}
                     dataSource={this.state.places}
                     size='middle nst-table'

@@ -296,7 +296,6 @@ class List extends React.Component <IListProps,
     }
 
     handleSortChange(pagination: any, filters: any, sorter: any) {
-        console.log(sorter);
         if(sorter.columnKey) {
             this.setState({
                 sortedInfo: {
@@ -322,7 +321,6 @@ class List extends React.Component <IListProps,
     }
 
     render() {
-        console.log(this.state.accounts);
         let { sortedInfo } = this.state;
         const allColumns = [
             {
