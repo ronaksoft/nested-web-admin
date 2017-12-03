@@ -447,13 +447,13 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             {searchableTxt}
                         </Col>
                     </Row>}
-                    {!this.isManager(this.currentUser) && place.type !== 'personal' &&
+                    {/* {!this.isManager(this.currentUser) && place.type !== 'personal' &&
                     <Row>
                         <Col>
                             <Button onClick={this.addAsManager.bind(this)}>Add you as a Manager</Button>
                         </Col>
                     </Row>
-                    }
+                    } */}
                     {place.counters.childs > 0 &&
                     <div>
                         <Row className='devide-row'>
