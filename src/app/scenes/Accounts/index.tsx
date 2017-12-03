@@ -100,7 +100,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
 
-    setFilterGroup = (group: FilterGroup) => this.setState({filterGroup: group});
+    setFilterGroup = (group: FilterGroup) => {
+        console.log(group);
+        this.setState({filterGroup: group});
+    }
 
     setActiveDeactive = (key: string) => {
         const checked = key === 'active';
