@@ -5,12 +5,14 @@ import {IcoN} from '../../components/icon/index';
 
 import Filter from './../../components/Filter/index';
 import BarMenu from './../../components/Filter/BarMenu';
-import {Row, Col, Icon, Input, Tabs, Button} from 'antd';
+import {Row, Col, Icon, Input, Tabs, Button, message} from 'antd';
 import PlaceList from './List/index';
 import SystemApi from '../../api/system/index';
+import PlaceApi from '../../api/place/index';
 import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import CreatePlaceModal from '../../components/CreatePlaceModal/index';
+import _ from 'lodash';
 
 // import './places.less';
 const TabPane = Tabs.TabPane;
@@ -27,15 +29,18 @@ export interface IAccountsState {
     searchKeywork: string;
     selectedTab: string;
     selectedItems: any[];
+    updates: number;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
+    updateData = _.debounce(this.updateDataMain, 512);
     constructor(props: IAccountsProps) {
         super(props);
         this.state = {
             selectedFilter: CPlaceFilterTypes.ALL,
             searchKeywork: '',
             counters: {},
+            updates: 0,
             selectedItems: [],
             notifyChildrenUnselect: false,
             loadCounters: false,
@@ -55,10 +60,29 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             });
     }
 
+    updateDataMain() {
+        this.setState({
+            updates: this.state.updates + 1,
+        });
+    }
+
     changeFilter(key: string) {
         this.setState({
             selectedFilter: key,
         });
+    }
+
+    deletePlaces = () => {
+        let placeApi = new PlaceApi();
+        this.state.selectedItems.forEach( place => {
+            const action = placeApi.placeDelete({
+                place_id: place._id
+            }).then( date => {
+                message.success(`"${place._id}" is deleted`);
+                this.updateData();
+            });
+        });
+        this.unselectAll();
     }
 
     showCreatePlaceModal() {
@@ -207,13 +231,13 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             <span className='bar-item'><b> {isSelected} Places Selected</b></span>
                         )}
                         <div className='filler'></div>
-                        {/* {isSelected && (
+                        {isSelected && (
                             <BarMenu menus={[{
                                 key: 'delete',
                                 name: 'Delete',
-                                icon: 'bin16'}]} onChange={this.deletePlace}/>
+                                icon: 'bin16'}]} onChange={this.deletePlaces}/>
                         )}
-                        {isSelected && (
+                        {/* {isSelected && (
                             <BarMenu menus={[{
                                 key: 'addMember',
                                 name: 'Add Member',
@@ -228,7 +252,8 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         <Col span={24}>
                             {this.state.loadCounters &&
                             <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter} selectedTab={this.state.selectedTab}
-                                notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)}/>
+                                notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)}
+                                updatedPlaces={this.state.updates}/>
                             }
                         </Col>
                     </Row>

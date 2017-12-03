@@ -29,6 +29,7 @@ interface IListProps {
     counters: IGetSystemCountersResponse;
     selectedFilter: string;
     selectedTab: string;
+    updatedPlaces: number;
     notifyChildrenUnselect: boolean;
     toggleSelected: (user: IPlace) => {};
 }
@@ -103,6 +104,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             },  () => {
                 this.fetchPlaces();
             });
+        } else if (props.updatedPlaces !== this.props.updatedPlaces) {
+            this.fetchPlaces();
         }
         if(props.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
             var PlacesClone: IPlace[] = _.clone(this.state.places);
@@ -141,7 +144,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     fetchPlaces() {
-
         this.setState({
             loading: true
         });
