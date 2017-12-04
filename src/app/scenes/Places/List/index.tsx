@@ -17,6 +17,7 @@ import MoreOption from '../../../components/Filter/MoreOption';
 import AddMemberModal from '../../../components/AddMember/index';
 
 let cachedTrees = [];
+
 export interface IPlaceListColumn {
     key: string;
     title: string;
@@ -29,9 +30,13 @@ export interface IPlaceListColumn {
 }
 
 export interface ISort {
-    order: string;
-    columnKey: string;
+    name: boolean;
+    key_holders: boolean;
+    creators: boolean;
+    children: boolean;
+    place_type: boolean;
 }
+
 export interface IPlaceOptionsItem {
     key: string;
     name: string;
@@ -61,6 +66,7 @@ interface IListState {
     viewMode: string;
     query: string;
     sortedInfo: ISort;
+    sortKey: any;
 }
 
 export default class PlaceList extends React.Component<IListProps, IListState> {
@@ -72,7 +78,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     constructor(props: any) {
         super(props);
         const counter = props.counters;
-        this.applySort = this.applySort.bind(this);
         this.state = {
             places: [],
             loading: false,
@@ -82,9 +87,13 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             pagination: {},
             viewMode: 'relation',
             sortedInfo: {
-                order: 'ascend',
-                columnKey: 'name',
+                name: false,
+                key_holders: false,
+                creators: false,
+                children: false,
+                place_type: false,
             },
+            sortKey: null,
         };
     }
 
@@ -94,7 +103,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         let totalCounter: number = counter.grand_places + counter.locked_places + counter.unlocked_places;
         if (this.props.selectedFilter === CPlaceFilterTypes.RELATION_VIEW ||
             this.props.selectedFilter === CPlaceFilterTypes.ALL) {
-                totalCounter = counter.grand_places;
+            totalCounter = counter.grand_places;
         }
 
         this.setState({
@@ -120,7 +129,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             if (props.selectedFilter === CPlaceFilterTypes.ABSOLUTE_VIEW) {
                 totalCounter = counter.grand_places + counter.locked_places + counter.unlocked_places + counter.personal_places;
             } else if (props.selectedFilter === CPlaceFilterTypes.RELATION_VIEW ||
-                       props.selectedFilter === CPlaceFilterTypes.ALL) {
+                props.selectedFilter === CPlaceFilterTypes.ALL) {
                 totalCounter = counter.grand_places;
             } else {
                 totalCounter = counter[props.selectedFilter];
@@ -135,7 +144,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     current: 1,
                     total: totalCounter,
                 }
-            },  () => {
+            }, () => {
                 this.fetchPlaces();
             });
         } else if (props.updatedPlaces !== this.props.updatedPlaces) {
@@ -146,7 +155,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         if (props.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
             var PlacesClone: IPlace[] = _.clone(this.state.places);
             PlacesClone.forEach((user: IPlace) => {
-               user.isChecked = false;
+                user.isChecked = false;
             });
             this.setState({
                 places: PlacesClone
@@ -164,18 +173,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         setTimeout(() => {
             this.fetchPlaces();
         }, 100);
-        if(sorter.columnKey) {
-            this.applySort(sorter);
-        }
-    }
-
-    applySort(sorter: any) {
-        this.setState({
-            sortedInfo: {
-                order: sorter.order,
-                columnKey: sorter.columnKey,
-            }
-        });
     }
 
     showPlaceModal(record: IPlace, index: number) {
@@ -216,8 +213,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             });
         }
 
-        const sort = 'key_holders';
-
         let placeApi = new PlaceApi();
         // placeApi.placeList({
         //     filter: this.state.selectedFilter === CPlaceFilterTypes.ALL ? CPlaceFilterTypes.ALL : this.state.selectedFilter,
@@ -228,8 +223,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             filter: filter,
             limit: this.pageLimit,
             skip: (this.state.pagination.current - 1) * this.pageLimit,
-            sort: sort,
             keyword: this.state.query,
+            sort: (this.state.sortedInfo[this.state.sortKey] ? '-' : '') + this.state.sortKey,
         }).then(this.setPlaces.bind(this));
 
     }
@@ -368,11 +363,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             <Row type='flex' align='middle'>
                 <Row type='flex' align='middle' onClick={this.preventer.bind(this)}>
                     <Checkbox onChange={() => this.onCheckboxChange(record)}
-                            checked={record.isChecked}/>
+                              checked={record.isChecked}/>
                     {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
                     <div className='arrow-holder'>{(record.child !== true && this.state.viewMode === 'relation') &&
                     <Arrow rotate={record.children === undefined ? '0' : '180'} child={record.child}
-                        onClick={loadChildren.bind(this)}/>}</div>
+                           onClick={loadChildren.bind(this)}/>}</div>
                 </Row>
                 <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
             </Row>
@@ -474,20 +469,32 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         event.stopPropagation();
     }
 
-    onCheckboxChange  = (place: IPlace) => {
+    onCheckboxChange = (place: IPlace) => {
         place.isChecked = !place.isChecked;
         this.props.toggleSelected(place);
     }
 
+    onSortChanged(key: string) {
+        let sort = this.state.sortedInfo;
+        sort[key] = !sort[key];
+        this.setState({
+            sortedInfo: sort,
+            sortKey: key,
+        }, () => {
+            this.fetchPlaces();
+        });
+    }
+
     render() {
-        let { sortedInfo } = this.state;
+        let sortedInfo = this.state.sortedInfo;
         var columns = [
             {
                 key: 'name',
                 index: 0,
                 title: (
                     <span>Place Name
-                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                        <Arrow rotate={sortedInfo.name === false ? '0' : '180'}
+                               onClick={this.onSortChanged.bind(this, 'name')}/>
                     </span>),
                 renderer: 'place',
             },
@@ -496,7 +503,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 index: 2,
                 title: (
                     <span>Managers
-                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                        <Arrow rotate={sortedInfo.creators === false ? '0' : '180'}
+                               onClick={this.onSortChanged.bind(this, 'creators')}/>
                     </span>),
                 renderer: 'users',
                 width: 140,
@@ -506,7 +514,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 index: 3,
                 title: (
                     <span>Members
-                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                        <Arrow rotate={sortedInfo.key_holders === false ? '0' : '180'}
+                               onClick={this.onSortChanged.bind(this, 'key_holders')}/>
                     </span>),
                 renderer: 'memberCounter',
                 icon: 'member',
@@ -519,7 +528,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 width: 128,
                 title: (
                     <span>Place Type
-                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                        <Arrow rotate={sortedInfo.place_type === false ? '0' : '180'}
+                               onClick={this.onSortChanged.bind(this, 'place_type')}/>
                     </span>)
             },
             {
@@ -527,7 +537,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 index: 4,
                 title: (
                     <span>Sub-places
-                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                        <Arrow rotate={sortedInfo.children === false ? '0' : '180'}
+                               onClick={this.onSortChanged.bind(this, 'children')}/>
                     </span>),
                 renderer: 'subPlaceCounter',
                 width: 104,
@@ -536,9 +547,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 key: 'policies',
                 index: 5,
                 title: (
-                    <span>Policies
-                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
-                    </span>),
+                    <span>Policies</span>),
                 renderer: 'placePolicy',
                 width: 80
             },

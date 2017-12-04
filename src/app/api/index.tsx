@@ -41,6 +41,7 @@ export default class Api {
      * @returns {Promise<any>}
      */
     public reconfigEndPoints(domain: string): Promise<any> {
+        console.log(domain);
         const api = this;
         return new Promise((resolve, reject) => {
 
@@ -74,8 +75,9 @@ export default class Api {
 
                         // close server socket and remove current server
                         if (api.server) {
-                            api.server.socket.close();
+                            api.server.getSocket().close();
                             api.server = null;
+                            api.server = new Server();
                         }
 
                         // store domain of new configs in local storage

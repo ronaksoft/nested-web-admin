@@ -21,7 +21,6 @@ export default class AAA {
     getCredentials() {
         this.nss = Cookies.get('nss');
         this.nsk = Cookies.get('nsk');
-        console.log(this.nss, this.nsk);
         return {
             ss: this.nss,
             sk: this.nsk

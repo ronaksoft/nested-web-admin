@@ -39,12 +39,14 @@ export default class Server {
         };
 
 
-        if (credential.sk && credential.sk !== 'null') {
-            socketRequest._sk = credential.sk;
-        }
+        if (req.cmd === 'session/register' && req.cmd === 'session/recall') {
+            if (credential.sk && credential.sk !== 'null') {
+                socketRequest._sk = credential.sk;
+            }
 
-        if (credential.ss && credential.ss !== 'null') {
-            socketRequest._ss = credential.ss;
+            if (credential.ss && credential.ss !== 'null') {
+                socketRequest._ss = credential.ss;
+            }
         }
 
 
@@ -78,6 +80,10 @@ export default class Server {
 
     onConnectionStateChange(callback: (state: SocketState) => void) {
         this.socket.onStateChanged = callback;
+    }
+
+    public getSocket() {
+        return this.socket;
     }
 
     public constructor() {
