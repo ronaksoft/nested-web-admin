@@ -198,6 +198,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             });
         }
 
+        const sort = 'key_holders';
+
         let placeApi = new PlaceApi();
         // placeApi.placeList({
         //     filter: this.state.selectedFilter === CPlaceFilterTypes.ALL ? CPlaceFilterTypes.ALL : this.state.selectedFilter,
@@ -208,6 +210,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             filter: filter,
             limit: this.pageLimit,
             skip: (this.state.pagination.current - 1) * this.pageLimit,
+            sort: sort,
         }).then(this.setPlaces.bind(this));
     }
 
