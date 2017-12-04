@@ -39,7 +39,7 @@ export default class Server {
         };
 
 
-        if (req.cmd === 'session/register' && req.cmd === 'session/recall') {
+        if (req.cmd !== 'session/register' && req.cmd !== 'session/recall') {
             if (credential.sk && credential.sk !== 'null') {
                 socketRequest._sk = credential.sk;
             }
