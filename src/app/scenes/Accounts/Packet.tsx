@@ -7,6 +7,7 @@ interface IPocket {
     key: string;
     model: IAccount;
     status: PacketState;
+    password: boolean;
     messages: string[];
 }
 

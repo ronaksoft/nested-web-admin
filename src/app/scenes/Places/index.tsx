@@ -5,12 +5,14 @@ import {IcoN} from '../../components/icon/index';
 
 import Filter from './../../components/Filter/index';
 import BarMenu from './../../components/Filter/BarMenu';
-import {Row, Col, Icon, Input, Tabs, Button} from 'antd';
+import {Row, Col, Icon, Input, Tabs, Button, message} from 'antd';
 import PlaceList from './List/index';
 import SystemApi from '../../api/system/index';
+import PlaceApi from '../../api/place/index';
 import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import CreatePlaceModal from '../../components/CreatePlaceModal/index';
+import _ from 'lodash';
 
 // import './places.less';
 const TabPane = Tabs.TabPane;
@@ -27,15 +29,18 @@ export interface IAccountsState {
     searchKeywork: string;
     selectedTab: string;
     selectedItems: any[];
+    updates: number;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
+    updateData = _.debounce(this.updateDataMain, 512);
     constructor(props: IAccountsProps) {
         super(props);
         this.state = {
             selectedFilter: CPlaceFilterTypes.ALL,
             searchKeywork: '',
             counters: {},
+            updates: 0,
             selectedItems: [],
             notifyChildrenUnselect: false,
             loadCounters: false,
@@ -55,10 +60,29 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             });
     }
 
+    updateDataMain() {
+        this.setState({
+            updates: this.state.updates + 1,
+        });
+    }
+
     changeFilter(key: string) {
         this.setState({
             selectedFilter: key,
         });
+    }
+
+    deletePlaces = () => {
+        let placeApi = new PlaceApi();
+        this.state.selectedItems.forEach( place => {
+            const action = placeApi.placeDelete({
+                place_id: place._id
+            }).then( date => {
+                message.success(`"${place._id}" is deleted`);
+                this.updateData();
+            });
+        });
+        this.unselectAll();
     }
 
     showCreatePlaceModal() {
@@ -107,20 +131,22 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
     render() {
+        console.log(this.state.counters);
         const isSelected = this.state.selectedItems.length;
+        const total = this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places + this.state.counters.personal_places;
         const filterItems = [
             {
                 key: CPlaceFilterTypes.ALL,
                 name: 'Relation View',
                 icon: 'placesRelation16',
-                count: this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places + this.state.counters.personal_places,
+                count: this.state.counters.grand_places,
                 disableChart: true,
             },
             {
-                key: CPlaceFilterTypes.GRAND_PLACES,
+                key: CPlaceFilterTypes.ABSOLUTE_VIEW,
                 name: 'Absolute View',
                 icon: 'listView16',
-                count: this.state.counters.grand_places,
+                count: total,
                 disableChart: true,
             },
             {
@@ -137,43 +163,38 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 count: this.state.counters.locked_places,
                 disableChart: true,
             },
-            {
-                key: CPlaceFilterTypes.UNLOCKED_PLACES,
-                name: 'Recieving Emails',
-                icon: 'atsign16',
-                count: this.state.counters.unlocked_places,
-                disableChart: true,
-            },
-            {
-                key: CPlaceFilterTypes.WITHOUT_MANAGER,
-                name: 'without Managers',
-                icon: 'manager16',
-                count: this.state.counters.personal_places,
-                disableChart: true,
-            },
-            {
-                key: CPlaceFilterTypes.WITHOUT_MEMBERS,
-                name: 'without Members',
-                icon: 'member16',
-                count: this.state.counters.personal_places,
-                disableChart: true,
-            },
-            {
-                key: CPlaceFilterTypes.SEARCHABLE,
-                name: 'Searchable',
-                icon: 'search16',
-                count: this.state.counters.personal_places,
-                disableChart: true,
-            },
-            {
-                key: CPlaceFilterTypes.NON_SEARCHABLE,
-                name: 'Non-Searchable',
-                icon: 'nonsearch16',
-                count: this.state.counters.personal_places,
-                disableChart: true,
-            }
+            // {
+            //     key: CPlaceFilterTypes.UNLOCKED_PLACES,
+            //     name: 'Recieving Emails',
+            //     icon: 'atsign16',
+            //     count: this.state.counters.unlocked_places,
+            //     disableChart: true,
+            // },
+            // {
+            //     key: CPlaceFilterTypes.WITHOUT_MANAGER,
+            //     name: 'without Managers',
+            //     icon: 'manager16',
+            //     disableChart: true,
+            // },
+            // {
+            //     key: CPlaceFilterTypes.WITHOUT_MEMBERS,
+            //     name: 'without Members',
+            //     icon: 'member16',
+            //     disableChart: true,
+            // },
+            // {
+            //     key: CPlaceFilterTypes.SEARCHABLE,
+            //     name: 'Searchable',
+            //     icon: 'search16',
+            //     disableChart: true,
+            // },
+            // {
+            //     key: CPlaceFilterTypes.NON_SEARCHABLE,
+            //     name: 'Non-Searchable',
+            //     icon: 'nonsearch16',
+            //     disableChart: true,
+            // }
         ];
-        console.log(this.state.counters, this.state.selectedFilter !== filterItems[0].key);
         return (
             <div className='places'>
                 {this.state.visibleCreatePlaceModal &&
@@ -207,13 +228,13 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             <span className='bar-item'><b> {isSelected} Places Selected</b></span>
                         )}
                         <div className='filler'></div>
-                        {/* {isSelected && (
+                        {isSelected && (
                             <BarMenu menus={[{
                                 key: 'delete',
                                 name: 'Delete',
-                                icon: 'bin16'}]} onChange={this.deletePlace}/>
+                                icon: 'bin16'}]} onChange={this.deletePlaces}/>
                         )}
-                        {isSelected && (
+                        {/* {isSelected && (
                             <BarMenu menus={[{
                                 key: 'addMember',
                                 name: 'Add Member',
@@ -228,7 +249,8 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         <Col span={24}>
                             {this.state.loadCounters &&
                             <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter} selectedTab={this.state.selectedTab}
-                                notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)}/>
+                                notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)}
+                                updatedPlaces={this.state.updates} query={this.state.searchKeywork}/>
                             }
                         </Col>
                     </Row>

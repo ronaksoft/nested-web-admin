@@ -44,7 +44,7 @@ interface IStates {
     place: IPlace;
     model: any;
     token: string;
-    idValid: boolean;
+    idValidation: any;
     formValid: boolean;
     showError: boolean;
     uploadPercent: number;
@@ -83,7 +83,10 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 storageLimit: 10,
                 members: [],
             },
-            idValid: false,
+            idValidation: {
+                valid: false,
+                reason: 0
+            },
             formValid: false,
             showError: false,
             imageIsUploading: false,
@@ -346,17 +349,33 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             this.placeApi.isIdAvailable(id).then((data) => {
                 if (data.err_code) {
                     this.setState({
-                        idValid: false,
+                        idValidation: {
+                            valid: false,
+                            reason: 2
+                        },
                     });
                 } else {
                     this.setState({
-                        idValid: true,
+                        idValidation: {
+                            valid: true,
+                            reason: 0
+                        },
                     });
                 }
             }).catch(() => {
                 this.setState({
-                    idValid: false,
+                    idValidation: {
+                        valid: false,
+                        reason: 2
+                    },
                 });
+            });
+        } else {
+            this.setState({
+                idValidation: {
+                    valid: false,
+                    reason: 1
+                },
             });
         }
     }
@@ -411,7 +430,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         } else if (model.id > 3) {
             message.warning('Id must be more than 3 characters!');
             return false;
-        } else if (!this.state.idValid) {
+        } else if (!this.state.idValidation.valid) {
             message.warning('Id is not valid!');
             return false;
         }
@@ -583,9 +602,11 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         <Row className='input-row'>
                             <label htmlFor='placeId'>Place ID</label>
                             <Input id='placeId' size='large'
-                                   className={['nst-input', !this.state.idValid ? 'error' : ''].join(' ')}
+                                   className={['nst-input', (!this.state.idValidation.valid && this.state.idValidation.reason !== 0) ? 'error' : ''].join(' ')}
                                    value={model.id}
                                    onChange={this.updatePlaceId.bind(this)}/>
+                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 1) && <p class='nsd-error'>Id Invalid</p>}
+                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 2) && <p class='nsd-error'>Already Exist</p>}
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change
                                 this afterwards, so choose wisely!</p>
                         </Row>

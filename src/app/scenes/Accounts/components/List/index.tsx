@@ -31,6 +31,11 @@ import View from '../View/index';
 import {IcoN} from '../../../../components/icon/index';
 import IUser from '../../../../api/account/interfaces/IUser';
 
+export interface ISort {
+    order: string;
+    columnKey: string;
+}
+
 interface IListProps {
     counters: any;
     notifyChildrenUnselect: boolean;
@@ -45,6 +50,9 @@ interface IListState {
     accounts: IPerson[];
     viewAccount: boolean;
     chosen: IAccount;
+    dataColumns: Array< any >;
+    columns: Array< any >;
+    sortedInfo: ISort;
 }
 
 class List extends React.Component <IListProps,
@@ -96,9 +104,9 @@ class List extends React.Component <IListProps,
     placesRender = (text, user, index) => {
         return (
             <div className='user-member-place'>
-                {user.access_places && <IcoN size={16} name={'placesRelation16'}/>}
-                {user.access_places
-                ? user.access_places.length
+                {user.bookmarked_places.length > 0 && <IcoN size={16} name={'placesRelation16'}/>}
+                {user.bookmarked_places.length  > 0
+                ? user.bookmarked_places.length
                 : '-'}
             </div>
         );
@@ -235,82 +243,9 @@ class List extends React.Component <IListProps,
     constructor(props: IListProps) {
         super(props);
 
-        this.allColumns = [
-            {
-                title: this.dataColumns.name,
-                dataIndex: 'name',
-                key: 'name',
-                render: this.nameRender,
-                index: 0
-            }, {
-                title: this.dataColumns._id,
-                dataIndex: '_id',
-                key: '_id',
-                render: this.idRender,
-                index: 1,
-                width: 152,
-            }, {
-                title: this.dataColumns.access_places,
-                dataIndex: 'access_places',
-                key: 'access_places',
-                render: this.placesRender,
-                index: 2,
-                width: 92,
-            }, {
-                title: this.dataColumns.searchable,
-                dataIndex: 'searchable',
-                key: 'searchable',
-                render: this.searchableRender,
-                index: 3,
-                width: 94,
-            }, {
-                title: this.dataColumns.phone,
-                dataIndex: 'phone',
-                key: 'phone',
-                render: this.phoneRender,
-                index: 4,
-                width: 136,
-            }, {
-                title: this.dataColumns.joined_on,
-                dataIndex: 'joined_on',
-                key: 'joined_on',
-                render: this.joinedRender,
-                index: 5,
-                width: 152,
-            }, {
-                title: this.dataColumns.disabled,
-                dataIndex: 'disabled',
-                key: 'disabled',
-                render: this.disabledRender,
-                index: 6,
-                width: 116,
-            }
-        ];
-
-        // {
-        //     title: this.dataColumns.gender,
-        //     dataIndex: 'gender',
-        //     key: 'gender',
-        //     render: this.genderRender,
-        //     index: 7
-        // }, {
-        //     title: this.dataColumns.dob,
-        //     dataIndex: 'dob',
-        //     key: 'dob',
-        //     render: this.dobRender,
-        //     index: 8
-        // }
-
-        const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
-        const storedColumnsList = storedColumns
-            ? _.split(storedColumns, ',')
-            : [];
-        const tableColumns = storedColumnsList.length > 0
-            ? storedColumnsList
-            : _(this.allColumns).take(7).map('key').value();
         this.state = {
             users: [],
-            columns: tableColumns,
+            columns: [],
             dataColumns: [],
             selectedRowKeys: [],
             currentPage: 1,
@@ -320,17 +255,15 @@ class List extends React.Component <IListProps,
                 enabled_accounts: 0,
                 disabled_accounts: 0
             },
+            sortedInfo: {
+                order: 'ascend',
+                columnKey: '_id',
+            },
             viewAccount: false,
             chosen: {}
         };
 
-        this.state.dataColumns = _.map(this.dataColumns, (value, key) => {
-            return {
-                key: key,
-                title: value,
-                checked: _.includes(this.state.columns, key)
-            };
-        });
+
         this.onPageChange = this.onPageChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
@@ -362,6 +295,17 @@ class List extends React.Component <IListProps,
         this.load(value, this.PAGE_SIZE, this.props.filter);
     }
 
+    handleSortChange(pagination: any, filters: any, sorter: any) {
+        if(sorter.columnKey) {
+            this.setState({
+                sortedInfo: {
+                    order: sorter.order,
+                    columnKey: sorter.columnKey,
+                }
+            });
+        }
+    }
+
     handleChange(account: IPerson) {
         this.props.onChange();
         const accounts = _.clone(this.state.accounts);
@@ -377,24 +321,122 @@ class List extends React.Component <IListProps,
     }
 
     render() {
-        window.localStorage.setItem(this.COLUMNS_STORAGE_KEY, _.join(this.state.columns, ','));
-        const optionsPopover = (
-            <ul>
-                {_(this.state.dataColumns).orderBy(['index']).map((item) => <li key={item.key}>
-                    <Checkbox onChange={() => this.onColumnCheckChange(item)}
-                              checked={item.checked}>{item.title}</Checkbox>
-                </li>).value()
-                }
-            </ul>
-        );
+        let { sortedInfo } = this.state;
+        const allColumns = [
+            {
+                title: this.dataColumns.name,
+                dataIndex: 'name',
+                key: 'name',
+                render: this.nameRender,
+                index: 0,
+                sorter: (a, b) => {
+                    return a.fname + a.lname === b.fname + b.lname ? 0 : a.fname + a.lname< b.fname + b.lname ? -1 : 1;
+                },
+                sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
+            }, {
+                title: this.dataColumns._id,
+                dataIndex: '_id',
+                key: '_id',
+                render: this.idRender,
+                index: 1,
+                width: 152,
+                sorter: (a, b) => {
+                    return a._id === b._id ? 0 : a._id < b._id ? -1 : 1;
+                },
+                sortOrder: sortedInfo.columnKey === '_id' && sortedInfo.order
+            }, {
+                title: this.dataColumns.access_places,
+                dataIndex: 'access_places',
+                key: 'access_places',
+                render: this.placesRender,
+                index: 2,
+                width: 102
+            }, {
+                title: this.dataColumns.searchable,
+                dataIndex: 'searchable',
+                key: 'searchable',
+                render: this.searchableRender,
+                index: 3,
+                width: 128,
+                sorter: (a, b) => {
+                    return (a.privacy.searchable === b.privacy.searchable)? 0 : a.privacy.searchable? -1 : 1;
+                },
+                sortOrder: sortedInfo.columnKey === 'searchable' && sortedInfo.order
+            }, {
+                title: this.dataColumns.phone,
+                dataIndex: 'phone',
+                key: 'phone',
+                render: this.phoneRender,
+                index: 4,
+                width: 136,
+                sorter: (a, b) => {
+                    let bp = parseInt(b.phone);
+                    let ap = parseInt(a.phone);
+                    if ( !bp ) {
+                        bp = 0;
+                    }
+                    if ( !ap ) {
+                        ap = 0;
+                    }
+                    return ap > bp;
+                },
+                sortOrder: sortedInfo.columnKey === 'phone' && sortedInfo.order
+            }, {
+                title: this.dataColumns.joined_on,
+                dataIndex: 'joined_on',
+                key: 'joined_on',
+                render: this.joinedRender,
+                index: 5,
+                width: 152,
+                sorter: (a, b) => {
+                    return new Date(a.joined_on).getTime() - new Date(b.joined_on).getTime();
+                },
+                sortOrder: sortedInfo.columnKey === 'joined_on' && sortedInfo.order
+            }, {
+                title: this.dataColumns.disabled,
+                dataIndex: 'disabled',
+                key: 'disabled',
+                render: this.disabledRender,
+                index: 6,
+                width: 116,
+                sorter: (a, b) => {
+                    return (a.disabled === b.disabled)? 0 : a.disabled? -1 : 1;
+                },
+                sortOrder: sortedInfo.columnKey === 'disabled' && sortedInfo.order
+            }
+        ];
 
-        const optionsTitle = (
-            <Popover content={optionsPopover} placement='bottom'>
-                <Icon type='setting'/>
-            </Popover>
-        );
+        // {
+        //     title: this.dataColumns.gender,
+        //     dataIndex: 'gender',
+        //     key: 'gender',
+        //     render: this.genderRender,
+        //     index: 7
+        // }, {
+        //     title: this.dataColumns.dob,
+        //     dataIndex: 'dob',
+        //     key: 'dob',
+        //     render: this.dobRender,
+        //     index: 8
+        // }
 
-        const columns = _(this.allColumns).filter((column) => _.includes(this.state.columns, column.key)).orderBy(['index']).value();
+        const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
+        const storedColumnsList = storedColumns
+            ? _.split(storedColumns, ',')
+            : [];
+        const tableColumns = storedColumnsList.length > 0
+            ? storedColumnsList
+            : _(allColumns).take(7).map('key').value();
+
+        const dataColumns = _.map(this.dataColumns, (value, key) => {
+            return {
+                key: key,
+                title: value,
+                checked: _.includes(tableColumns, key)
+            };
+        });
+        window.localStorage.setItem(this.COLUMNS_STORAGE_KEY, _.join(tableColumns, ','));
+        const columns = _(allColumns).filter((column) => _.includes(tableColumns, column.key)).orderBy(['index']).value();
 
         const rowSelection = {
             selectedRowKeys: this.state.selectedRowKeys,
@@ -402,6 +444,7 @@ class List extends React.Component <IListProps,
         };
 
         let total = 0;
+        console.log(this.props.counters);
         switch (this.props.filter) {
             case FilterGroup.Active:
                 total = this.props.counters.enabled_accounts || 0;
@@ -427,6 +470,7 @@ class List extends React.Component <IListProps,
                     rowKey='_id'
                     columns={columns}
                     dataSource={this.state.accounts}
+                    onChange={this.handleSortChange.bind(this)}
                     size='middle nst-table' scroll={{
                     x: 960
                 }} loading={this.state.loading}/>

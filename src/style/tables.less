@@ -9,6 +9,10 @@
             &:first-of-type {
                 padding: 0 32px!important;
             }
+            span {
+                white-space: nowrap;
+                display: flex;
+            }
         }
     }
     tbody.ant-table-tbody {
@@ -88,6 +92,12 @@
         }
         .user-member-place {
             opacity: .72;
+            text-align: center;
+            font-size: 13px;
+            i {
+                transform: translateY(3px);
+                margin: 0 4px;
+            }
         }
         .date {
             span {

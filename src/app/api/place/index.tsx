@@ -7,6 +7,7 @@ import IAccountPlacesRequest from './interfaces/IAccountPlacesRequest';
 import IPlaceAddMembersRequest from './interfaces/IPlaceAddMembersRequest';
 import IPlaceUpdate from './interfaces/IPlaceUpdate';
 import IPlaceCreateRequest from './interfaces/IPlaceCreateRequest';
+import IPlaceDeleteRequest from './interfaces/IPlaceDeleteRequest';
 
 export default class PlaceApi {
     private api;
@@ -69,6 +70,13 @@ export default class PlaceApi {
     placeCreate(params: IPlaceCreateRequest): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/create_grand_place',
+            data: params,
+        });
+    }
+
+    placeDelete(params: IPlaceDeleteRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/place_remove',
             data: params,
         });
     }

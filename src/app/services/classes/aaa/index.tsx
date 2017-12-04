@@ -67,6 +67,7 @@ export default class AAA {
         this.hasUserCookie = this.checkUserCookie();
         this.nss = Cookies.get('nss');
         this.nsk = Cookies.get('nsk');
+        console.log(this.nss, this.nsk);
     }
 
     private checkUserCookie(): boolean {

@@ -140,7 +140,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                     callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_RETRACT_TIME + ' and lower than ' + appConfig.DEFAULT_POST_MAX_RETRACT_TIME);
                 }
                 break;
-            case 'max_attachment_size':
+            case 'attach_max_size':
                 callback();
                 break;
             default:
@@ -220,7 +220,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                             <ul>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Keyholders</label>
+                                        <label>Max. Place Members</label>
 
                                         <FormItem>
                                             {getFieldDecorator('place_max_keyholders', {
@@ -243,7 +243,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 <li>
                                     <div className='option'>
                                         <label>Max. Place Managers</label>
-
                                         <FormItem>
                                             {getFieldDecorator('place_max_creators', {
                                                 initialValue: this.state.data.place_max_creators,
@@ -338,8 +337,8 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                         <label>Maximum Attachment size</label>
 
                                         <FormItem>
-                                            {getFieldDecorator('max_attachment_size', {
-                                                initialValue: this.state.data.max_attachment_size,
+                                            {getFieldDecorator('attach_max_size', {
+                                                initialValue: this.state.data.attach_max_size,
                                                 rules: [
                                                     {
                                                         required: true,
@@ -351,7 +350,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                 ]
                                             })(
                                                 <Select
-                                                    placeholder={this.state.data.max_attachment_size}
+                                                    placeholder={this.state.data.attach_max_size}
                                                     style={{width: 128}} onChange={this.handleChange}>
                                                     <Option value={20}>20 MB</Option>
                                                     <Option value={50}>50 MB</Option>

@@ -81,7 +81,7 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
             pass: md5(data.pass),
             _did: did,
             _dt: dt,
-            _do: 'android',
+            _os: 'android',
         }).then((data) => {
             if (data.account && data.account.admin) {
                 AAA.getInstance().setCredentials(data);

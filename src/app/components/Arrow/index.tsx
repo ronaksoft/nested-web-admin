@@ -14,6 +14,7 @@ interface IArrowProps {
     rotate?: string;
     size?: number;
     onClick?: () => any;
+    child? : any;
 }
 
 interface IArrowStats {

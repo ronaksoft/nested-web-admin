@@ -93,9 +93,13 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             return;
         }
         let accounts = this.state.accounts;
-        accounts[packetIndex].model = model;
-        accounts[packetIndex].status = params.status;
 
+        if (!params.password) {
+            model.pass = model._id;
+        }
+        console.log(model.password);
+        accounts[packetIndex].status = params.status;
+        accounts[packetIndex].model = model;
         this.setState({
             accounts: accounts,
         });
@@ -191,6 +195,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 lname: '',
                 fname: '',
             },
+            password: false,
             messages: [],
         };
         let accounts = this.state.accounts;
@@ -376,7 +381,22 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     private downloadListCSV() {
         let data = [];
 
-        this.state.accounts.forEach((row) => {
+        [
+            {model : {
+                phone : '+989123456789',
+                _id : 'username1',
+                fname : 'First Name 1',
+                lname : 'Last Name 1',
+                pass : 'password1',
+            }},
+            {model : {
+                phone : '+989123456788',
+                _id : 'username2',
+                fname : 'First Name 2',
+                lname : 'Last Name 2',
+                pass : 'password1',
+            }},
+        ].forEach((row) => {
             data.push([
                 row.model.phone,
                 row.model._id,

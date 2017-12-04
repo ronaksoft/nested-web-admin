@@ -286,7 +286,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 <Form onSubmit={() => this.applyChanges(this.form)}>
                     {
                         this.state.editTarget === EditableFields.creators &&
-                        <Form.Item label='Maximum Number of Creators '>
+                        <Form.Item label='Maximum Number of Managers '>
                             {getFieldDecorator('limits.creators', {
                                 initialValue: this.state.place.limits.creators,
                                 rules: [{required: true, message: 'Maximum number of Managers is required!'}],
@@ -385,7 +385,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                         <Row>
                             <Col span={14}>
-                                <label>Maximum Keyholders</label>
+                                <label>Maximum Members</label>
                             </Col>
                             <Col span={8}>
                                 {place.limits.key_holders}
@@ -447,13 +447,13 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             {searchableTxt}
                         </Col>
                     </Row>}
-                    {!this.isManager(this.currentUser) && place.type !== 'personal' &&
+                    {/* {!this.isManager(this.currentUser) && place.type !== 'personal' &&
                     <Row>
                         <Col>
                             <Button onClick={this.addAsManager.bind(this)}>Add you as a Manager</Button>
                         </Col>
                     </Row>
-                    }
+                    } */}
                     {place.counters.childs > 0 &&
                     <div>
                         <Row className='devide-row'>
