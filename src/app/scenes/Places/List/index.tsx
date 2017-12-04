@@ -58,6 +58,7 @@ interface IListState {
     selectedPlace?: IPlace;
     selectedTab: string;
     viewMode: string;
+    query: string;
     sortedInfo: ISort;
 }
 
@@ -65,7 +66,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     users = {};
     pageLimit: number = 10;
     selectedPlace: IPlace | null = null;
-    lastQuery: string;
+    updateQueryDeb = _.debounce(this.updateQuery, 512);
 
     constructor(props: any) {
         super(props);
@@ -76,6 +77,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             loading: false,
             selectedFilter: CPlaceFilterTypes.ALL,
             counters: props.counters,
+            query: '',
             pagination: {},
             viewMode: 'relation',
             sortedInfo: {
@@ -87,7 +89,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
     componentDidMount() {
         this.fetchPlaces();
-        this.lastQuery = '';
         const counter = this.props.counters;
         let totalCounter: number = counter.grand_places + counter.locked_places + counter.unlocked_places;
         if (this.props.selectedFilter === CPlaceFilterTypes.RELATION_VIEW ||
@@ -104,7 +105,13 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             }
         });
     }
-
+    updateQuery(q: string) {
+        this.setState({
+            query: q
+        },  () => {
+            this.fetchPlaces();
+        });
+    }
     componentWillReceiveProps(props: IListProps) {
         const counter = props.counters;
         if (props.selectedFilter !== this.state.selectedFilter || props.selectedTab !== this.state.selectedTab) {
@@ -130,8 +137,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             },  () => {
                 this.fetchPlaces();
             });
-        } else if (props.updatedPlaces !== this.props.updatedPlaces || props.query !== this.lastQuery) {
-            this.fetchPlaces(props.query);
+        } else if (props.updatedPlaces !== this.props.updatedPlaces) {
+            this.fetchPlaces();
+        } else if (props.query !== this.state.query) {
+            this.updateQueryDeb(props.query);
         }
         if (props.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
             var PlacesClone: IPlace[] = _.clone(this.state.places);
@@ -182,7 +191,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         });
     }
 
-    fetchPlaces(query?: string) {
+    fetchPlaces() {
         this.setState({
             loading: true
         });
@@ -219,12 +228,9 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             limit: this.pageLimit,
             skip: (this.state.pagination.current - 1) * this.pageLimit,
             sort: sort,
-            keyword: query || this.props.query,
+            keyword: this.state.query,
         }).then(this.setPlaces.bind(this));
 
-        if (query !== undefined) {
-            this.lastQuery = query;
-        }
     }
 
     setPlaces(places: Array<IPlace>) {

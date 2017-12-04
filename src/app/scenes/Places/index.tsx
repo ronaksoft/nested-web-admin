@@ -130,8 +130,14 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             notifyChildrenUnselect: !this.state.notifyChildrenUnselect
         });
     }
+
+    clearQuery () {
+        this.setState({
+            searchKeyword: '',
+        });
+    }
+
     render() {
-        console.log(this.state.counters);
         const isSelected = this.state.selectedItems.length;
         const total = this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places + this.state.counters.personal_places;
         const filterItems = [
@@ -215,9 +221,12 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             this.state.selectedFilter !== filterItems[0].key ? 'filter-mode' : ''
                         ].join(' ')} type='flex'>
                         {!isSelected && (<div className='filter-search'>
-                            <Input className='filter-search' placeholder='type to search...' onPressEnter={this.searchKeyDown.bind(this, event)}/>
+                            <Input className='filter-search' value={this.state.searchKeyword} placeholder='type to search...'
+                                   onChange={this.searchKeyDown.bind(this, event)}/>
                             { this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
-                            { this.state.searchKeyword.length > 0 && <IcoN size={16} name={'xcross16'}/>}
+                            { this.state.searchKeyword.length > 0 &&
+                                <div className='_cp' onClick={this.clearQuery.bind(this)}><IcoN size={16} name={'xcross16'}/></div>
+                            }
                         </div>)}
                         {isSelected && (
                             <div className='default-mode-butn _cp' onClick={this.unselectAll.bind(this)}>
