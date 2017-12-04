@@ -43,6 +43,7 @@ interface IListProps {
     counters: IGetSystemCountersResponse;
     selectedFilter: string;
     selectedTab: string;
+    query: string;
     updatedPlaces: number;
     notifyChildrenUnselect: boolean;
     toggleSelected: (user: IPlace) => {};
@@ -128,8 +129,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             },  () => {
                 this.fetchPlaces();
             });
-        } else if (props.updatedPlaces !== this.props.updatedPlaces) {
-            this.fetchPlaces();
+        } else if (props.updatedPlaces !== this.props.updatedPlaces || props.query !== this.props.query) {
+            this.fetchPlaces(props.query);
         }
         if(props.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
             var PlacesClone: IPlace[] = _.clone(this.state.places);
@@ -180,7 +181,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         });
     }
 
-    fetchPlaces() {
+    fetchPlaces(query?: string) {
         this.setState({
             loading: true
         });
@@ -217,14 +218,24 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             limit: this.pageLimit,
             skip: (this.state.pagination.current - 1) * this.pageLimit,
             sort: sort,
+            keyword: query || ''
         }).then(this.setPlaces.bind(this));
     }
 
     setPlaces(places: Array<IPlace>) {
         this.setState({
             places: places,
-            loading: false
+            loading: false,
         });
+        if (this.props.query.length > 0) {
+            this.setState({
+                pagination: {
+                    pageSize: this.pageLimit,
+                    current: 1,
+                    total: places.length,
+                }
+            });
+        }
 
         let creators = [];
         places.forEach((place: IPlace) => {

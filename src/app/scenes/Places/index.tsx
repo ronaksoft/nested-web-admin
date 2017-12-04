@@ -195,7 +195,6 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             //     disableChart: true,
             // }
         ];
-        console.log(this.state.counters, this.state.selectedFilter !== filterItems[0].key);
         return (
             <div className='places'>
                 {this.state.visibleCreatePlaceModal &&
@@ -251,7 +250,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             {this.state.loadCounters &&
                             <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter} selectedTab={this.state.selectedTab}
                                 notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)}
-                                updatedPlaces={this.state.updates}/>
+                                updatedPlaces={this.state.updates} query={this.state.searchKeywork}/>
                             }
                         </Col>
                     </Row>
