@@ -108,10 +108,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         const counter = props.counters;
         if (props.selectedFilter !== this.state.selectedFilter || props.selectedTab !== this.state.selectedTab) {
             let totalCounter: number = 0;
-            if (props.selectedFilter === CPlaceFilterTypes.ALL ||
-                props.selectedFilter === CPlaceFilterTypes.ABSOLUTE_VIEW) {
+            if (props.selectedFilter === CPlaceFilterTypes.ABSOLUTE_VIEW) {
                 totalCounter = counter.grand_places + counter.locked_places + counter.unlocked_places + counter.personal_places;
-            } else if (props.selectedFilter === CPlaceFilterTypes.RELATION_VIEW) {
+            } else if (props.selectedFilter === CPlaceFilterTypes.RELATION_VIEW ||
+                       props.selectedFilter === CPlaceFilterTypes.ALL) {
                 totalCounter = counter.grand_places;
             } else {
                 totalCounter = counter[props.selectedFilter];
