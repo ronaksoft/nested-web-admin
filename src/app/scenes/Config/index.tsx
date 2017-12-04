@@ -220,7 +220,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                             <ul>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Keyholders</label>
+                                        <label>Max. Place Members</label>
 
                                         <FormItem>
                                             {getFieldDecorator('place_max_keyholders', {
@@ -243,7 +243,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 <li>
                                     <div className='option'>
                                         <label>Max. Place Managers</label>
-
                                         <FormItem>
                                             {getFieldDecorator('place_max_creators', {
                                                 initialValue: this.state.data.place_max_creators,

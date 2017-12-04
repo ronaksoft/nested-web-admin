@@ -381,7 +381,22 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     private downloadListCSV() {
         let data = [];
 
-        this.state.accounts.forEach((row) => {
+        [
+            {model : {
+                phone : '+989123456789',
+                _id : 'username1',
+                fname : 'First Name 1',
+                lname : 'Last Name 1',
+                pass : 'password1',
+            }},
+            {model : {
+                phone : '+989123456788',
+                _id : 'username2',
+                fname : 'First Name 2',
+                lname : 'Last Name 2',
+                pass : 'password1',
+            }},
+        ].forEach((row) => {
             data.push([
                 row.model.phone,
                 row.model._id,
