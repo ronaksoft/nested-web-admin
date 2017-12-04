@@ -218,7 +218,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             limit: this.pageLimit,
             skip: (this.state.pagination.current - 1) * this.pageLimit,
             sort: sort,
-            keyword: query || ''
+            keyword: query || this.props.query,
         }).then(this.setPlaces.bind(this));
     }
 
