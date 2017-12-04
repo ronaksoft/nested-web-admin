@@ -49,8 +49,22 @@
             position: relative;
             &.ant-table-row-level-0 {
                 > td {
-                    border-bottom: none;
-                    border-top: 1px solid #efeff0;
+                    border-bottom: 1px solid #efeff0;
+                    &:first-child{
+                        border-bottom: none;
+                    }
+                }
+            }
+            &.ant-table-row-level-0 > td:first-of-type {
+                // border-bottom: none;
+                border-top: 1px solid #efeff0;
+            }
+            &:last-child {
+                > td {
+                    border-bottom: 1px solid #efeff0;
+                    &:first-of-type {
+                        border-bottom: 1px solid #efeff0;
+                    }
                 }
             }
             &.ant-table-row-level-0 ~ &.ant-table-row-level-1{
