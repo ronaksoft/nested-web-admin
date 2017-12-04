@@ -131,20 +131,22 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
     render() {
+        console.log(this.state.counters);
         const isSelected = this.state.selectedItems.length;
+        const total = this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places + this.state.counters.personal_places;
         const filterItems = [
             {
                 key: CPlaceFilterTypes.ALL,
                 name: 'Relation View',
                 icon: 'placesRelation16',
-                count: this.state.counters.grand_places + this.state.counters.locked_places + this.state.counters.unlocked_places + this.state.counters.personal_places,
+                count: this.state.counters.grand_places,
                 disableChart: true,
             },
             {
-                key: CPlaceFilterTypes.GRAND_PLACES,
+                key: CPlaceFilterTypes.ABSOLUTE_VIEW,
                 name: 'Absolute View',
                 icon: 'listView16',
-                count: this.state.counters.grand_places,
+                count: total,
                 disableChart: true,
             },
             {
@@ -161,41 +163,37 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 count: this.state.counters.locked_places,
                 disableChart: true,
             },
-            {
-                key: CPlaceFilterTypes.UNLOCKED_PLACES,
-                name: 'Recieving Emails',
-                icon: 'atsign16',
-                count: this.state.counters.unlocked_places,
-                disableChart: true,
-            },
-            {
-                key: CPlaceFilterTypes.WITHOUT_MANAGER,
-                name: 'without Managers',
-                icon: 'manager16',
-                count: this.state.counters.personal_places,
-                disableChart: true,
-            },
-            {
-                key: CPlaceFilterTypes.WITHOUT_MEMBERS,
-                name: 'without Members',
-                icon: 'member16',
-                count: this.state.counters.personal_places,
-                disableChart: true,
-            },
-            {
-                key: CPlaceFilterTypes.SEARCHABLE,
-                name: 'Searchable',
-                icon: 'search16',
-                count: this.state.counters.personal_places,
-                disableChart: true,
-            },
-            {
-                key: CPlaceFilterTypes.NON_SEARCHABLE,
-                name: 'Non-Searchable',
-                icon: 'nonsearch16',
-                count: this.state.counters.personal_places,
-                disableChart: true,
-            }
+            // {
+            //     key: CPlaceFilterTypes.UNLOCKED_PLACES,
+            //     name: 'Recieving Emails',
+            //     icon: 'atsign16',
+            //     count: this.state.counters.unlocked_places,
+            //     disableChart: true,
+            // },
+            // {
+            //     key: CPlaceFilterTypes.WITHOUT_MANAGER,
+            //     name: 'without Managers',
+            //     icon: 'manager16',
+            //     disableChart: true,
+            // },
+            // {
+            //     key: CPlaceFilterTypes.WITHOUT_MEMBERS,
+            //     name: 'without Members',
+            //     icon: 'member16',
+            //     disableChart: true,
+            // },
+            // {
+            //     key: CPlaceFilterTypes.SEARCHABLE,
+            //     name: 'Searchable',
+            //     icon: 'search16',
+            //     disableChart: true,
+            // },
+            // {
+            //     key: CPlaceFilterTypes.NON_SEARCHABLE,
+            //     name: 'Non-Searchable',
+            //     icon: 'nonsearch16',
+            //     disableChart: true,
+            // }
         ];
         console.log(this.state.counters, this.state.selectedFilter !== filterItems[0].key);
         return (
