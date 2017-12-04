@@ -65,6 +65,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     users = {};
     pageLimit: number = 10;
     selectedPlace: IPlace | null = null;
+    lastQuery: string;
 
     constructor(props: any) {
         super(props);
@@ -86,7 +87,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
     componentDidMount() {
         this.fetchPlaces();
-
+        this.lastQuery = '';
         const counter = this.props.counters;
         let totalCounter: number = counter.grand_places + counter.locked_places + counter.unlocked_places;
         if (this.props.selectedFilter === CPlaceFilterTypes.RELATION_VIEW ||
@@ -108,10 +109,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         const counter = props.counters;
         if (props.selectedFilter !== this.state.selectedFilter || props.selectedTab !== this.state.selectedTab) {
             let totalCounter: number = 0;
-            if (props.selectedFilter === CPlaceFilterTypes.ALL ||
-                props.selectedFilter === CPlaceFilterTypes.ABSOLUTE_VIEW) {
+            if (props.selectedFilter === CPlaceFilterTypes.ABSOLUTE_VIEW) {
                 totalCounter = counter.grand_places + counter.locked_places + counter.unlocked_places + counter.personal_places;
-            } else if (props.selectedFilter === CPlaceFilterTypes.RELATION_VIEW) {
+            } else if (props.selectedFilter === CPlaceFilterTypes.RELATION_VIEW ||
+                       props.selectedFilter === CPlaceFilterTypes.ALL) {
                 totalCounter = counter.grand_places;
             } else {
                 totalCounter = counter[props.selectedFilter];
@@ -129,10 +130,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             },  () => {
                 this.fetchPlaces();
             });
-        } else if (props.updatedPlaces !== this.props.updatedPlaces || props.query !== this.props.query) {
+        } else if (props.updatedPlaces !== this.props.updatedPlaces || props.query !== this.lastQuery) {
             this.fetchPlaces(props.query);
         }
-        if(props.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
+        if (props.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
             var PlacesClone: IPlace[] = _.clone(this.state.places);
             PlacesClone.forEach((user: IPlace) => {
                user.isChecked = false;
@@ -220,6 +221,10 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             sort: sort,
             keyword: query || this.props.query,
         }).then(this.setPlaces.bind(this));
+
+        if (query !== undefined) {
+            this.lastQuery = query;
+        }
     }
 
     setPlaces(places: Array<IPlace>) {
