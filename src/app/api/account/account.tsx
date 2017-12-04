@@ -17,6 +17,7 @@ import ISetPasswordRequest from './interfaces/ISetPasswordRequest';
 import IGetListRequest from './interfaces/IGetListRequest';
 import ISessionRegisterRequest from './interfaces/ISessionRegisterRequest';
 import C_USER_SEARCH_AREA from '../consts/CUserSearchArea';
+import CONFIG from 'src/app/config';
 
 export default class AccountApi {
     private api;
@@ -28,8 +29,9 @@ export default class AccountApi {
     }
 
     sessionRecall(sessionRecallParams: ISessionRecallRequest): Promise<any> {
-        if (localStorage.getItem('nested.server.domain')) {
-            return this.api.reconfigEndPoints(localStorage.getItem('nested.server.domain'))
+        var localDomain = localStorage.getItem('nested.server.domain');
+        if (localDomain && localDomain != '_DOMAIN_' && CONFIG().DOMAIN !== localDomain) {
+            return this.api.reconfigEndPoints(localDomain)
                 .then(() => {
                     return this.api.server.request({
                         cmd: 'session/recall',
