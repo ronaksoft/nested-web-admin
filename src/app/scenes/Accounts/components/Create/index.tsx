@@ -219,7 +219,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 </label>
                 <Switch defaultChecked={this.state.sendSms} onChange={this.switchSms.bind(this)}/>
                 <div className='filler'></div>
-                <Button type=' butn butn-white' size='large'>Discard</Button>
+                <Button type=' butn butn-white' size='large' onClick={this.handleClose}>Discard</Button>
                 <Button disabled={this.state.accounts.length === 0}
                     type=' butn butn-green' size='large' onClick={this.create.bind(this)}>
                         Create {this.state.accounts.length} Accounts

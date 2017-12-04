@@ -228,6 +228,12 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
 
+    clearQuery () {
+        this.setState({
+            searchKeyword: '',
+        });
+    }
+
     render() {
         const isSelected = this.state.selectedItems.length;
         const total = (this.state.counters.enabled_accounts || 0) + (this.state.counters.disabled_accounts || 0);
@@ -250,21 +256,21 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 name: 'Inactive',
                 icon: 'circleWire16',
             },
-            {
-                key: FilterGroup.Searchable,
-                name: 'Searchable',
-                icon: 'search16',
-            },
-            {
-                key: FilterGroup.NonSearchable,
-                name: 'Non-Searchable',
-                icon: 'nonsearch16',
-            },
-            {
-                key: FilterGroup.NotVerifiedPhone,
-                name: 'Not Verified Phones',
-                icon: 'devicePhone16',
-            }
+            // {
+            //     key: FilterGroup.Searchable,
+            //     name: 'Searchable',
+            //     icon: 'search16',
+            // },
+            // {
+            //     key: FilterGroup.NonSearchable,
+            //     name: 'Non-Searchable',
+            //     icon: 'nonsearch16',
+            // },
+            // {
+            //     key: FilterGroup.NotVerifiedPhone,
+            //     name: 'Not Verified Phones',
+            //     icon: 'devicePhone16',
+            // }
         ];
         if(this.state.selectedCounters.disabled_accounts) {
             activeItems.push({
@@ -315,7 +321,9 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         {!isSelected && (<div className='filter-search'>
                             <Input className='filter-search' value={this.state.searchKeyword} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
                             { this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
-                            { this.state.searchKeyword.length > 0 && <IcoN size={16} name={'xcross16'}/>}
+                            { this.state.searchKeyword.length > 0 &&
+                                <div className='_cp' onClick={this.clearQuery.bind(this)}><IcoN size={16} name={'xcross16'}/></div>
+                            }
                         </div>)}
                         {isSelected && (
                             <div className='default-mode-butn _cp' onClick={this.unselectAll.bind(this)}>
@@ -359,7 +367,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         <Col span={24}>
                             {
                                 this.state.countersLoaded &&
-                                <List counters={this.state.counters} filter={this.state.filterGroup}
+                                <List counters={this.state.counters} filter={this.state.filterGroup} query={this.state.searchKeyword}
                                       notifyChildrenUnselect={this.state.notifyChildrenUnselect} updatedAccounts={this.state.updates}
                                       onChange={this.onChange.bind(this)} toggleSelected={this.toggleSelect.bind(this)}/>
                             }

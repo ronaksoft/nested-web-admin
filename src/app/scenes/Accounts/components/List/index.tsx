@@ -41,6 +41,7 @@ interface IListProps {
     notifyChildrenUnselect: boolean;
     filter: FilterGroup;
     onChange: any;
+    query: string;
     updatedAccounts: number;
     toggleSelected: (user:IPerson) => {};
 }
@@ -50,6 +51,7 @@ interface IListState {
     accounts: IPerson[];
     viewAccount: boolean;
     chosen: IAccount;
+    query: string;
     dataColumns: Array< any >;
     columns: Array< any >;
     sortedInfo: ISort;
@@ -57,7 +59,7 @@ interface IListState {
 
 class List extends React.Component <IListProps,
     IListState> {
-
+    updateQueryDeb = _.debounce(this.updateQuery, 512);
     dataColumns = {
         'name': 'Name',
         '_id': 'User ID',
@@ -273,12 +275,22 @@ class List extends React.Component <IListProps,
         this.load(1, this.PAGE_SIZE, FilterGroup.Total);
     }
 
+    updateQuery(q: string) {
+        this.setState({
+            query: q
+        },  () => {
+            this.load(1, this.PAGE_SIZE, this.props.filter);
+        });
+    }
+
     componentWillReceiveProps(nextProps: IListProps) {
         if (_.has(nextProps, 'filter') && nextProps.filter !== this.props.filter) {
             this.load(1, this.PAGE_SIZE, nextProps.filter);
         }
         if (nextProps.updatedAccounts !== this.props.updatedAccounts) {
             this.load(1, this.PAGE_SIZE, nextProps.filter);
+        } else if (nextProps.query !== this.props.query) {
+            this.updateQueryDeb(nextProps.query);
         }
         if(nextProps.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
             var accountsClone: IPerson[] = _.clone(this.state.accounts);
@@ -444,7 +456,6 @@ class List extends React.Component <IListProps,
         };
 
         let total = 0;
-        console.log(this.props.counters);
         switch (this.props.filter) {
             case FilterGroup.Active:
                 total = this.props.counters.enabled_accounts || 0;
@@ -504,7 +515,7 @@ class List extends React.Component <IListProps,
 
         }
 
-        return this.accountApi.getAll({skip: skip, limit: size, filter: filterValue}).then((result) => {
+        return this.accountApi.getAll({skip: skip, limit: size, filter: filterValue, keyword: this.state.query || ''}).then((result) => {
             this.setState({accounts: result.accounts, loading: false, currentPage: page});
         }).catch((error) => {
             this.setState({loading: false, page: page});
