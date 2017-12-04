@@ -14,6 +14,7 @@ import {IcoN} from '../../../components/icon/index';
 import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
 import MoreOption from '../../../components/Filter/MoreOption';
+import AddMemberModal from '../../../components/AddMember/index';
 
 let cachedTrees = [];
 export interface IPlaceListColumn {
@@ -604,6 +605,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     className='nst-table'
                     scroll={{x: 960}}
                 />
+                {/* <AddMemberModal
+                    members={this.state.model.members}
+                    addMembers={this.addMembers.bind(this)}
+                    onClose={this.toggleAddMemberModal.bind(this)}
+                    visible={this.state.visibleAddMemberModal}/> */}
             </div>
         );
     }
