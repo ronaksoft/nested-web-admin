@@ -26,7 +26,7 @@ export interface IAccountsState {
     loadCounters: boolean;
     visibleCreatePlaceModal: boolean;
     selectedFilter: string;
-    searchKeywork: string;
+    searchKeyword: string;
     selectedTab: string;
     selectedItems: any[];
     updates: number;
@@ -38,7 +38,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         super(props);
         this.state = {
             selectedFilter: CPlaceFilterTypes.ALL,
-            searchKeywork: '',
+            searchKeyword: '',
             counters: {},
             updates: 0,
             selectedItems: [],
@@ -105,7 +105,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     searchKeyDown(e: any) {
         this.setState({
-            searchKeywork: e.target.value || '',
+            searchKeyword: e.target.value || '',
         });
     }
 
@@ -215,9 +215,9 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             this.state.selectedFilter !== filterItems[0].key ? 'filter-mode' : ''
                         ].join(' ')} type='flex'>
                         {!isSelected && (<div className='filter-search'>
-                            <Input className='filter-search' value={this.state.searchKeywork} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
-                            { this.state.searchKeywork.length === 0 && <IcoN size={16} name={'search16'}/>}
-                            { this.state.searchKeywork.length > 0 && <IcoN size={16} name={'xcross16'}/>}
+                            <Input className='filter-search' placeholder='type to search...' onPressEnter={this.searchKeyDown.bind(this, event)}/>
+                            { this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
+                            { this.state.searchKeyword.length > 0 && <IcoN size={16} name={'xcross16'}/>}
                         </div>)}
                         {isSelected && (
                             <div className='default-mode-butn _cp' onClick={this.unselectAll.bind(this)}>
@@ -250,7 +250,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             {this.state.loadCounters &&
                             <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter} selectedTab={this.state.selectedTab}
                                 notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)}
-                                updatedPlaces={this.state.updates} query={this.state.searchKeywork}/>
+                                updatedPlaces={this.state.updates} query={this.state.searchKeyword}/>
                             }
                         </Col>
                     </Row>
