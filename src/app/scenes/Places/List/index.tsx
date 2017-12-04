@@ -13,6 +13,7 @@ import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
 import {IcoN} from '../../../components/icon/index';
 import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
+import MoreOption from '../../../components/Filter/MoreOption';
 
 let cachedTrees = [];
 export interface IPlaceListColumn {
@@ -385,35 +386,44 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     renderOptionsCell(text: string, record: IPlace, index: any) {
-        var items = [
+        const items = [
             {
-                key: CPlaceFilterTypes.ALL,
-                name: 'Relation View',
-                icon: 'placesRelation16',
-                onClick: () => {
-                    console.log('onclick item');
+                key: 'message',
+                name: 'Post a Message',
+                icon: 'message16',
+                action: () => {
+                    console.log('send a message');
                 },
+            },
+            {
+                key: 'create',
+                name: 'Create a Private Subplace',
+                icon: 'brickWall16',
+                action: () => {
+                    console.log('create a subplace');
+                },
+            },
+            {
+                key: 'person16',
+                name: 'Add Member',
+                icon: 'person16',
+                action: () => {
+                    console.log('send a message');
+                },
+            },
+            {
+                key: 'delete',
+                name: 'Delete',
+                icon: 'bin16',
+                action: () => {
+                    console.log('Delete place');
+                },
+                class: 'nst-red'
             }
         ];
-        items.map((menu: IPlaceOptionsItem, index: number) => {
-
-            return (<div>
-                <Menu.Item key={index}>
-                    <div>
-                        <IcoN size={16} name={menu.icon}/>
-                        <p>{menu.name}</p>
-                    </div>
-                </Menu.Item>
-                <Menu.Divider/>
-            </div>);
-        });
         return (
-            <Row className='moreOptions' type='flex' justify='end'>
-                <Dropdown overlay={<Menu>
-                    {items}
-                </Menu>} trigger={['click']}>
-                    <IcoN size={24} name={'more24'}/>
-                </Dropdown>
+            <Row className='moreOptions' type='flex' justify='end' onClick={this.preventer.bind(this)}>
+                <MoreOption menus={items} deviders={[0, 2]}/>
             </Row>
         );
     }
@@ -500,6 +510,13 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     </span>),
                 renderer: 'placePolicy',
                 width: 80
+            },
+            {
+                key: 'options',
+                index: 6,
+                title: '',
+                renderer: 'options',
+                width: 80
             }
         ].map((column) => {
             let renderer: (text: string, record: IPlace, index: any) => {};
@@ -524,7 +541,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     renderer = this.renderPoliciesCell;
                     break;
                 case 'options':
-                    renderer = this.renderOptionsCell;
+                    renderer = this.renderOptionsCell.bind(this);
                     break;
             }
             var col = {
@@ -538,13 +555,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             }
             return col;
         });
-        // {
-        //     key: 'options',
-        //     index: 6,
-        //     title: '',
-        //     renderer: 'options',
-        //     width: 80
-        // }
+
         return (
             <div className='places-list'>
                 {this.state.visibelPlaceModal &&
