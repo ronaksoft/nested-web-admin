@@ -3,7 +3,7 @@ interface ISessionRecallRequest {
     _ss: string;
     _did: string;
     _dt: string;
-    _do: string;
+    _os: string;
 }
 
 export default ISessionRecallRequest;

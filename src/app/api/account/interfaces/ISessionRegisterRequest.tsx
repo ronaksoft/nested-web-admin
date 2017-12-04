@@ -3,7 +3,7 @@ interface ISessionRegisterRequest {
   pass: string;
   _did: string;
   _dt: string;
-  _do: string;
+  _os: string;
 }
 
 export default ISessionRegisterRequest;

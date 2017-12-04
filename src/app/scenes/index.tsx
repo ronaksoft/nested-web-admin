@@ -60,7 +60,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 _ss: credential.ss,
                 _sk: credential.sk,
                 _did: did,
-                _do: 'android',
+                _os: 'android',
                 _dt: dt,
             }).then((user: IUser) => {
                 if (user && user.admin) {
@@ -71,11 +71,11 @@ class App extends React.Component<IAppProps, IAppState> {
                     Client.setDid(did);
                     Client.setDt(dt);
                 } else {
-                    aaa.setIsUnAthenticated();
+                    // aaa.setIsUnAthenticated();
                     hashHistory.push('/403');
                 }
             }).catch((err) => {
-                aaa.setIsUnAthenticated();
+                // aaa.setIsUnAthenticated();
                 hashHistory.push('/signin');
             });
         } else {
