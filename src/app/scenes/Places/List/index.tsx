@@ -67,7 +67,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     constructor(props: any) {
         super(props);
         const counter = props.counters;
-
+        this.applySort = this.applySort.bind(this);
         this.state = {
             places: [],
             loading: false,
@@ -137,7 +137,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     handleTableChange(pagination: any, filters: any, sorter: any) {
-        console.log(arguments);
+        // console.log(arguments);
         const pager = {...this.state.pagination};
         pager.current = pagination.current;
         this.setState({
@@ -147,13 +147,17 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             this.fetchPlaces();
         }, 100);
         if(sorter.columnKey) {
-            this.setState({
-                sortedInfo: {
-                    order: sorter.order,
-                    columnKey: sorter.columnKey,
-                }
-            });
+            this.applySort(sorter);
         }
+    }
+
+    applySort(sorter: any) {
+        this.setState({
+            sortedInfo: {
+                order: sorter.order,
+                columnKey: sorter.columnKey,
+            }
+        });
     }
 
     showPlaceModal(record: IPlace, index: number) {
@@ -435,65 +439,65 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     render() {
-        // console.log(this.state.places);
         let { sortedInfo } = this.state;
         var columns = [
             {
                 key: 'name',
                 index: 0,
-                title: 'Place Name',
+                title: (
+                    <span>Place Name
+                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                    </span>),
                 renderer: 'place',
-                sorter: (a, b) => {
-                    console.log(a, b);
-                    return a.name === b.name ? 0 : a.name < b.name ? -1 : 1;
-                },
-                sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
             },
             {
                 key: 'creators',
                 index: 2,
-                title: 'Managers',
+                title: (
+                    <span>Managers
+                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                    </span>),
                 renderer: 'users',
                 width: 140,
             },
             {
                 key: 'counters.counters',
                 index: 3,
-                title: 'Members',
+                title: (
+                    <span>Members
+                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                    </span>),
                 renderer: 'memberCounter',
                 icon: 'member',
                 width: 96,
-                sorter: (a, b) => {
-                    return a.counters.creators + a.counters.key_holders > b.counters.creators + b.counters.key_holders;
-                },
-                sortOrder: sortedInfo.columnKey === 'counters.counters' && sortedInfo.order
             },
             {
                 key: 'type',
                 index: 4,
-                title: 'Place Type',
                 renderer: 'placeType',
                 width: 128,
-                sorter: (a, b) => {
-                    return (a.privacy.locked === b.privacy.locked)? 0 : a.privacy.locked? -1 : 1;
-                },
-                sortOrder: sortedInfo.columnKey === 'type' && sortedInfo.order
+                title: (
+                    <span>Place Type
+                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                    </span>)
             },
             {
                 key: 'sub-places',
                 index: 4,
-                title: 'Sub-places',
+                title: (
+                    <span>Sub-places
+                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                    </span>),
                 renderer: 'subPlaceCounter',
                 width: 104,
-                sorter: (a, b) => {
-                    return a.counters.childs > b.counters.childs;
-                },
-                sortOrder: sortedInfo.columnKey === 'sub-places' && sortedInfo.order
             },
             {
                 key: 'policies',
                 index: 5,
-                title: 'Policies',
+                title: (
+                    <span>Policies
+                        <Arrow rotate={sortedInfo.order === 'ascend' ? '0' : '180'}/>
+                    </span>),
                 renderer: 'placePolicy',
                 width: 80
             }
