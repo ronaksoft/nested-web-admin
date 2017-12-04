@@ -30,7 +30,7 @@ export default class AccountApi {
 
     sessionRecall(sessionRecallParams: ISessionRecallRequest): Promise<any> {
         var localDomain = localStorage.getItem('nested.server.domain');
-        if (localDomain && localDomain != '_DOMAIN_' && CONFIG().DOMAIN !== localDomain) {
+        if (localDomain && localDomain !== '_DOMAIN_' && CONFIG().DOMAIN !== localDomain) {
             return this.api.reconfigEndPoints(localDomain)
                 .then(() => {
                     return this.api.server.request({
