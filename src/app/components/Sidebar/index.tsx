@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Menu, Icon} from 'antd';
+import {Menu, Icon, Tooltip, Button} from 'antd';
 import CONFIG from 'src/app/config';
 
 import {IcoN} from '../icon/index';
@@ -37,23 +37,25 @@ IHeaderState > {
                     defaultOpenKeys={[location]}
                     mode='inline'>
                     <Menu.Item key='/dashboard'>
-                        <Link to='/dashboard' activeClassName='active'>
-                            <IcoN size={24} name={'dashbooard24'}/>
-                            {/* <Icon type=' nst-ico ic_dashboard_solid_24'/> */}
-                            {/* <span>Dashboard</span> */}
-                        </Link>
+                        <Tooltip placement='right' title={'Dashboard'}>
+                            <Link to='/dashboard' activeClassName='active'>
+                                <IcoN size={24} name={'dashbooard24'}/>
+                            </Link>
+                        </Tooltip>
                     </Menu.Item>
                     <Menu.Item key='/accounts'>
-                        <Link to='/accounts' activeClassName='active'>
-                            <IcoN size={24} name={'personWire24'}/>
-                            {/* <span>Accounts</span> */}
-                        </Link>
+                        <Tooltip placement='right' title={'Accounts'}>
+                            <Link to='/accounts' activeClassName='active'>
+                                <IcoN size={24} name={'personWire24'}/>
+                            </Link>
+                        </Tooltip>
                     </Menu.Item>
                     <Menu.Item key='/places'>
-                        <Link to='/places' activeClassName='active'>
-                            <IcoN size={24} name={'placesRelationWire24'}/>
-                            {/* <span>Places</span> */}
-                        </Link>
+                        <Tooltip placement='right' title={'Places'}>
+                            <Link to='/places' activeClassName='active'>
+                                <IcoN size={24} name={'placesRelationWire24'}/>
+                            </Link>
+                        </Tooltip>
                     </Menu.Item>
                     {/* <Menu.Item key='/config'>
                         <Link to='/config' activeClassName='active'>
@@ -61,15 +63,18 @@ IHeaderState > {
                         </Link>
                     </Menu.Item> */}
                     <Menu.Item key='/charts'>
-                        <Link to='/charts' activeClassName='active'>
-                            <IcoN size={24} name={'pieChart24'}/>
-                            {/* Charts */}
-                        </Link>
+                        <Tooltip placement='right' title={'Charts'}>
+                            <Link to='/charts' activeClassName='active'>
+                                <span><IcoN size={24} name={'pieChart24'}/></span>
+                            </Link>
+                        </Tooltip>
                     </Menu.Item>
                     <Menu.Item key='/config'>
-                        <Link to='/config' activeClassName='active'>
-                            <IcoN size={24} name={'performances24'}/>
-                        </Link>
+                        <Tooltip placement='right' title={'Settings'}>
+                            <Link to='/config' activeClassName='active'>
+                                <span><IcoN size={24} name={'performances24'}/></span>
+                            </Link>
+                        </Tooltip>
                     </Menu.Item>
                 </Menu>
                 <small
