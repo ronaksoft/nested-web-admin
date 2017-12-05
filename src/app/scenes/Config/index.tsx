@@ -181,6 +181,13 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                     callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_RETRACT_TIME + ' and lower than ' + appConfig.DEFAULT_POST_MAX_RETRACT_TIME);
                 }
                 break;
+            case 'post_max_labels':
+                if (value >= appConfig.DEFAULT_POST_MIN_LABELS && value <= appConfig.DEFAULT_POST_MAX_LABELS) {
+                    callback();
+                } else {
+                    callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_LABELS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_LABELS);
+                }
+                break;
             case 'attach_max_size':
                 callback();
                 break;
@@ -443,7 +450,29 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Post Retract Time (hours)</label>
+                                        <label>Maximum Post Labels</label>
+
+                                        <FormItem>
+                                            {getFieldDecorator('post_max_labels', {
+                                                initialValue: this.state.data.post_max_labels,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: 'Required'
+                                                    },
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Input />
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className='option'>
+                                        <label>Maximum Post Retract Time (hours)</label>
                                         <FormItem>
                                             {getFieldDecorator('post_retract_time', {
                                                 initialValue: this.state.data.post_retract_time,

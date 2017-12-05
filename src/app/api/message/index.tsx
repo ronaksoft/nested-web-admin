@@ -26,7 +26,7 @@ export default class FileApi {
 
   getMessageTemplate(setMessageTemplateRequest: IGetMessageTemplateRequest): Promise<any> {
     return this.api.server.request({
-        cmd: 'admin/get_message_template',
+        cmd: 'admin/get_message_templates',
         data: setMessageTemplateRequest,
     }).then((res: IGetMessageTemplateResponse) => {
         return res.message_templates;
