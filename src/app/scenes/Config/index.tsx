@@ -44,7 +44,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         }).catch((error) => {
             console.log('error', error);
         });
-        this.MessageApi.getMessageTemplate({}).then((result) => {
+        this.MessageApi.getMessageTemplate().then((result) => {
             console.log(result);
             // this.setState({
             //     data: result
