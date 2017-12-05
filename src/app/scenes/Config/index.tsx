@@ -5,10 +5,12 @@ import {connect} from 'react-redux';
 import Filter from './../../components/Filter/index';
 import {Form, Row, Col, InputNumber, Button, Card, Input, Select, message} from 'antd';
 import SystemApi from '../../api/system/index';
+import MessageApi from '../../api/message/index';
 import IGetConstantsResponse from '../../api/system/interfaces/IGetConstantsResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import appConfig from '../../../app.config';
 import HealthCheck from './components/HealthCheck/index';
+import EditMessageModal from './components/EditMessageModal/index';
 
 const FormItem = Form.Item;
 
@@ -16,16 +18,20 @@ export interface IConfigProps {
 }
 
 export interface IConfigState {
+    editMessageModal: boolean;
+    data: any;
+    disableBtn: boolean;
 }
 
 class Config extends React.Component<IConfigProps, IConfigState> {
     constructor(props: IConfigProps) {
         super(props);
-        this.state = {data: {}, disableBtn: true};
+        this.state = {data: {}, disableBtn: true, editMessageModal: false};
     }
 
     componentDidMount() {
         this.SystemApi = new SystemApi();
+        this.MessageApi = new MessageApi();
         this.GetData();
     }
 
@@ -35,6 +41,14 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             this.setState({
                 data: result
             });
+        }).catch((error) => {
+            console.log('error', error);
+        });
+        this.MessageApi.getMessageTemplate({}).then((result) => {
+            console.log(result);
+            // this.setState({
+            //     data: result
+            // });
         }).catch((error) => {
             console.log('error', error);
         });
@@ -73,6 +87,31 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     handleChange = (value) => {
         this.setState({
             disableBtn: false
+        });
+    }
+
+    editWelcomeMessage = () => {
+        this.setState({
+            editMessageModal : !this.state.editMessageModal
+        });
+    }
+
+    submitMessage = (message: any) => {
+        const req = {
+            msg_id: 'WELCOME_MSG',
+            msg_body: message.body,
+            msg_subject: message.subject
+        };
+        console.log(req);
+        this.MessageApi.setMessageTemplate(req).then((result) => {
+            message.success('Welcome message template is set');
+            // this.setState({
+            //     disableBtn: true
+            // });
+            // this.GetData();
+        }).catch((error) => {
+            console.log(error);
+            message.error('Welcome message cant be set');
         });
     }
 
@@ -156,6 +195,10 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         const {getFieldDecorator} = this.props.form;
         return (
             <Form onSubmit={this.handleSubmit.bind(this)} className='system-config' onChange={this.handleChange.bind(this)}>
+                <EditMessageModal
+                    messageChange={this.submitMessage.bind(this)}
+                    onClose={this.editWelcomeMessage.bind(this)}
+                    visible={this.state.editMessageModal}/>
                 <Row type='flex' className='scene-head' align='middle'>
                     <h2>System</h2>
                     {this.state.activeBtn}
@@ -311,6 +354,18 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         <HealthCheck />
                     </Col>
                     <Col span={12}>
+                        <Card className='optionCard' loading={false} title='System Messages'>
+                            <ul>
+                                <li>
+                                    <div className='option'>
+                                        <label>Welcome Message</label>
+                                        <Button type=' butn butn-green' size='large'
+                                        onClick={this.editWelcomeMessage.bind(this)}>Edit</Button>
+                                    </div>
+                                    <p>New accounts recive this message automatily in first login.</p>
+                                </li>
+                            </ul>
+                        </Card>
                         <Card className='optionCard' loading={false} title='Post Limits'>
                             <ul>
                                 <li>
