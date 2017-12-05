@@ -5,7 +5,7 @@ import {IcoN} from '../../components/icon/index';
 
 import Filter from './../../components/Filter/index';
 import BarMenu from './../../components/Filter/BarMenu';
-import {Row, Col, Icon, Input, Tabs, Button, message} from 'antd';
+import {Row, Col, Icon, Input, Tabs, Button, message, Modal} from 'antd';
 import PlaceList from './List/index';
 import SystemApi from '../../api/system/index';
 import PlaceApi from '../../api/place/index';
@@ -13,6 +13,8 @@ import IGetSystemCountersResponse from '../../api/system/interfaces/IGetSystemCo
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import CreatePlaceModal from '../../components/CreatePlaceModal/index';
 import _ from 'lodash';
+import AddMemberModal from '../../components/AddMember/index';
+import IUser from '../../api/account/interfaces/IUser';
 
 // import './places.less';
 const TabPane = Tabs.TabPane;
@@ -24,12 +26,15 @@ export interface IAccountsState {
     counters: IGetSystemCountersResponse;
     notifyChildrenUnselect: boolean;
     loadCounters: boolean;
+    visibleAddMemberModal: boolean;
     visibleCreatePlaceModal: boolean;
+    visibleDeletePlace: boolean;
     selectedFilter: string;
     searchKeyword: string;
     selectedTab: string;
     selectedItems: any[];
     updates: number;
+    focusPlace: string;
 }
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
@@ -39,12 +44,15 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.state = {
             selectedFilter: CPlaceFilterTypes.ALL,
             searchKeyword: '',
+            focusPlace: '',
             counters: {},
             updates: 0,
             selectedItems: [],
             notifyChildrenUnselect: false,
             loadCounters: false,
+            visibleAddMemberModal: false,
             visibleCreatePlaceModal: false,
+            visibleDeletePlace: false,
             selectedTab: CPlaceFilterTypes.TAB_SHARED,
         };
     }
@@ -74,6 +82,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     deletePlaces = () => {
         let placeApi = new PlaceApi();
+        // todo delete single place
         this.state.selectedItems.forEach( place => {
             const action = placeApi.placeDelete({
                 place_id: place._id
@@ -83,17 +92,12 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             });
         });
         this.unselectAll();
+        this.toggleDeletePlaceModal();
     }
 
-    showCreatePlaceModal() {
+    toggleCreatePlaceModal() {
         this.setState({
-            visibleCreatePlaceModal: true,
-        });
-    }
-
-    closeCreatePlaceModal() {
-        this.setState({
-            visibleCreatePlaceModal: false,
+            visibleCreatePlaceModal: !this.state.visibleCreatePlaceModal,
         });
     }
 
@@ -135,6 +139,46 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.setState({
             searchKeyword: '',
         });
+    }
+
+    toggleAddMemberModal () {
+        this.setState({
+            visibleAddMemberModal: !this.state.visibleAddMemberModal
+        });
+    }
+
+    toggleDeletePlaceModal () {
+        this.setState({
+            visibleDeletePlace: !this.state.visibleDeletePlace
+        });
+    }
+
+    addMembers (members: IUser[]) {
+        console.log(members);
+    }
+
+    actionOnPlace (placeId: string, action: string) {
+        if( action === 'addMember' ) {
+            this.setState({
+                focusPlace: placeId
+            }, () => {
+                this.toggleAddMemberModal();
+            });
+        }
+        if( action === 'create' ) {
+            this.setState({
+                focusPlace: placeId
+            }, () => {
+                this.toggleCreatePlaceModal();
+            });
+        }
+        if( action === 'delete' ) {
+            this.setState({
+                focusPlace: placeId
+            }, () => {
+                this.toggleDeletePlaceModal();
+            });
+        }
     }
 
     render() {
@@ -205,14 +249,35 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             <div className='places'>
                 {this.state.visibleCreatePlaceModal &&
                     <CreatePlaceModal visible={this.state.visibleCreatePlaceModal}
-                        onClose={this.closeCreatePlaceModal.bind(this)}/>
+                        onClose={this.toggleCreatePlaceModal.bind(this)}/>
                 }
+                <AddMemberModal
+                    addMembers={this.addMembers.bind(this)}
+                    onClose={this.toggleAddMemberModal.bind(this)}
+                    visible={this.state.visibleAddMemberModal}/>
+                <Modal
+                    key={this.state.focusPlace}
+                    content='Some descriptions'
+                    title='Delete Place'
+                    width={360}
+                    visible={this.state.visibleDeletePlace}
+                    onOk={this.deletePlaces}
+                    onCancel={this.toggleDeletePlaceModal.bind(this)}
+                    footer={[
+                        <Button key='cancel' type=' butn butn secondary' size='large'
+                                onClick={this.toggleDeletePlaceModal.bind(this)}>Cancel</Button>,
+                        <Button key='submit' type=' butn butn-red' size='large'
+                                onClick={this.deletePlaces}>Delete</Button>,
+                    ]}
+                >
+                    By deleting this Place all data will erase and have no irreverse action.
+                </Modal>
                 <Row className='places-tab' type='flex'>
                     <Tabs defaultActiveKey={this.state.selectedTab} onChange={this.tabChangeHandler.bind(this)}>
                         <TabPane tab={<span><IcoN size={24} name={'dudesWire24'}/>Shared Places</span>} key={CPlaceFilterTypes.TAB_SHARED}/>
                         <TabPane tab={<span><IcoN size={24} name={'dudeWire24'}/>Individual Places</span>} key={CPlaceFilterTypes.TAB_INDIVIDUAL}/>
                     </Tabs>
-                    <Button type=' butn butn-green secondary' onClick={this.showCreatePlaceModal.bind(this)}>Create Grand Place</Button>
+                    <Button type=' butn butn-green secondary' onClick={this.toggleCreatePlaceModal.bind(this)}>Create Grand Place</Button>
                 </Row>
                 <div className='white-block-container'>
                     <Row className={[
@@ -259,7 +324,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             {this.state.loadCounters &&
                             <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter} selectedTab={this.state.selectedTab}
                                 notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)}
-                                updatedPlaces={this.state.updates} query={this.state.searchKeyword}/>
+                                updatedPlaces={this.state.updates} query={this.state.searchKeyword} actionOnPlace={this.actionOnPlace.bind(this)}/>
                             }
                         </Col>
                     </Row>

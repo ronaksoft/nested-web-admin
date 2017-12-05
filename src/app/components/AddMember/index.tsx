@@ -23,7 +23,7 @@ interface IProps {
     visible: boolean;
     onClose?: () => {};
     addMembers: (members: Array<IUser>) => {};
-    members: Array<IUser>;
+    members?: Array<IUser>;
 }
 
 interface IStates {
@@ -42,7 +42,7 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
         this.searchIt = _.debounce(this.searchAccounts, 512);
         this.state = {
             visible: false,
-            members: this.props.members,
+            members: this.props.members || [],
             suggests: [],
             selectedUsers: [],
             query: ''

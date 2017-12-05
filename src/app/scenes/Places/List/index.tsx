@@ -14,7 +14,6 @@ import {IcoN} from '../../../components/icon/index';
 import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
 import MoreOption from '../../../components/Filter/MoreOption';
-import AddMemberModal from '../../../components/AddMember/index';
 
 let cachedTrees = [];
 
@@ -37,6 +36,7 @@ export interface ISort {
     place_type: boolean;
 }
 
+
 export interface IPlaceOptionsItem {
     key: string;
     name: string;
@@ -53,10 +53,12 @@ interface IListProps {
     updatedPlaces: number;
     notifyChildrenUnselect: boolean;
     toggleSelected: (user: IPlace) => {};
+    actionOnPlace: (placeId: string, action: string) => {};
 }
 
 interface IListState {
     places: Array<IPlace>;
+    visibleAddMemberModal: boolean;
     loading: boolean;
     pagination: {};
     selectedFilter: string;
@@ -80,6 +82,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         const counter = props.counters;
         this.state = {
             places: [],
+            visibleAddMemberModal: false,
             loading: false,
             selectedFilter: CPlaceFilterTypes.ALL,
             counters: props.counters,
@@ -412,13 +415,14 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     renderOptionsCell(text: string, record: IPlace, index: any) {
+        let visibleAddMemberModal = true;
         const items = [
             {
                 key: 'message',
                 name: 'Post a Message',
                 icon: 'message16',
                 action: () => {
-                    console.log('send a message');
+                    this.props.actionOnPlace(record._id, 'message');
                 },
             },
             {
@@ -427,6 +431,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 icon: 'brickWall16',
                 action: () => {
                     console.log('create a subplace');
+                    this.props.actionOnPlace(record._id, 'create');
                 },
             },
             {
@@ -434,7 +439,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 name: 'Add Member',
                 icon: 'person16',
                 action: () => {
-                    console.log('send a message');
+                    this.props.actionOnPlace(record._id, 'addMember');
                 },
             },
             {
@@ -442,7 +447,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 name: 'Delete',
                 icon: 'bin16',
                 action: () => {
-                    console.log('Delete place');
+                    this.props.actionOnPlace(record._id, 'delete');
                 },
                 class: 'nst-red'
             }
@@ -614,11 +619,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     className='nst-table'
                     scroll={{x: 960}}
                 />
-                {/* <AddMemberModal
-                    members={this.state.model.members}
-                    addMembers={this.addMembers.bind(this)}
-                    onClose={this.toggleAddMemberModal.bind(this)}
-                    visible={this.state.visibleAddMemberModal}/> */}
             </div>
         );
     }
