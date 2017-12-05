@@ -65,14 +65,14 @@ IHeaderState > {
                     <Menu.Item key='/charts'>
                         <Tooltip placement='right' title={'Charts'}>
                             <Link to='/charts' activeClassName='active'>
-                                <span><IcoN size={24} name={'pieChart24'}/></span>
+                                <IcoN size={24} name={'pieChart24'}/>
                             </Link>
                         </Tooltip>
                     </Menu.Item>
                     <Menu.Item key='/config'>
                         <Tooltip placement='right' title={'Settings'}>
                             <Link to='/config' activeClassName='active'>
-                                <span><IcoN size={24} name={'performances24'}/></span>
+                                <IcoN size={24} name={'performances24'}/>
                             </Link>
                         </Tooltip>
                     </Menu.Item>
