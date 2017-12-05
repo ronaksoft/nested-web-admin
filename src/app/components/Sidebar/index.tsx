@@ -55,22 +55,20 @@ IHeaderState > {
                             {/* <span>Places</span> */}
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key='/config'>
+                    {/* <Menu.Item key='/config'>
                         <Link to='/config' activeClassName='active'>
                             <IcoN size={24} name={'hdd24'}/>
-                            {/* <span>System Limits</span> */}
                         </Link>
-                    </Menu.Item>
+                    </Menu.Item> */}
                     <Menu.Item key='/charts'>
                         <Link to='/charts' activeClassName='active'>
                             <IcoN size={24} name={'pieChart24'}/>
                             {/* Charts */}
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key='/assistant'>
-                        <Link to='/assistant' activeClassName='active'>
+                    <Menu.Item key='/config'>
+                        <Link to='/config' activeClassName='active'>
                             <IcoN size={24} name={'performances24'}/>
-                            {/* Assistant */}
                         </Link>
                     </Menu.Item>
                 </Menu>

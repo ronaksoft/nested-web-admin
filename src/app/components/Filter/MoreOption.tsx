@@ -51,11 +51,14 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
     render() {
         // console.log(this.state.menus);
         const menus = [];
-        const classNames = ['filterPopover'].join(' ');
+        const classNames = ['filterPopover'];
         this.state.menus.forEach((menu: IMenuItem, index: number) => {
+            if (menu.class) {
+                classNames.push(menu.class);
+            }
             menus.push(
                 <Menu.Item key={index}>
-                    <Row type='flex' align='middle' className={classNames}>
+                    <Row type='flex' align='middle' className={classNames.join(' ')}>
                         <IcoN size={16} name={menu.icon}/>
                         <p>{menu.name}</p>
                     </Row>

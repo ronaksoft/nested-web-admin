@@ -22,8 +22,6 @@ import Accounts from './app/scenes/Accounts/index';
 import Places from './app/scenes/Places/index';
 import Config from './app/scenes/Config/index';
 import Charts from './app/scenes/Charts/index';
-import Assistant from './app/scenes/Assistant/index';
-
 
 const store: IStore<any> = configureStore({});
 
@@ -38,7 +36,6 @@ ReactDOM.render(
                     <Route path='/places' component={Places}/>
                     <Route path='/config' component={Config}/>
                     <Route path='/charts' component={Charts}/>
-                    <Route path='/assistant' component={Assistant}/>
                 </Route>
                 <Route component={BoxPages}>
                     <Route path='/intro' component={Introduction}/>
