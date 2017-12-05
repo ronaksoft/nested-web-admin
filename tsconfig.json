@@ -5,6 +5,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "removeComments": false,
+    "allowJs": true,
     "noImplicitAny": false,
     "typeRoots": ["node_modules/@types/"],
     "types": [
