@@ -5,10 +5,12 @@ import {connect} from 'react-redux';
 import Filter from './../../components/Filter/index';
 import {Form, Row, Col, InputNumber, Button, Card, Input, Select, message} from 'antd';
 import SystemApi from '../../api/system/index';
+import MessageApi from '../../api/message/index';
 import IGetConstantsResponse from '../../api/system/interfaces/IGetConstantsResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import appConfig from '../../../app.config';
 import HealthCheck from './components/HealthCheck/index';
+import EditMessageModal from './components/EditMessageModal/index';
 
 const FormItem = Form.Item;
 
@@ -16,25 +18,50 @@ export interface IConfigProps {
 }
 
 export interface IConfigState {
+    editMessageModal: boolean;
+    data: any;
+    disableBtn: boolean;
+    welcomeMessage: any;
 }
 
 class Config extends React.Component<IConfigProps, IConfigState> {
     constructor(props: IConfigProps) {
         super(props);
-        this.state = {data: {}, disableBtn: true};
+        this.state = {
+            data: {},
+            welcomeMessage: {
+                subject: '',
+                body: '',
+            },
+            disableBtn: true,
+            editMessageModal: false
+        };
     }
 
     componentDidMount() {
         this.SystemApi = new SystemApi();
+        this.MessageApi = new MessageApi();
         this.GetData();
     }
 
     GetData() {
         this.SystemApi.getConstants().then((result) => {
-            console.log(result);
+            // console.log(result);
             this.setState({
                 data: result
             });
+        }).catch((error) => {
+            console.log('error', error);
+        });
+        this.MessageApi.getMessageTemplate().then((result) => {
+            if(result.WELCOME_MSG) {
+                this.setState({
+                    welcomeMessage: {
+                        body: result.WELCOME_MSG.body,
+                        subject: result.WELCOME_MSG.subject
+                    }
+                });
+            }
         }).catch((error) => {
             console.log('error', error);
         });
@@ -73,6 +100,33 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     handleChange = (value) => {
         this.setState({
             disableBtn: false
+        });
+    }
+
+    editWelcomeMessage = () => {
+        this.setState({
+            editMessageModal : !this.state.editMessageModal
+        });
+    }
+
+    submitMessage = (msg: any) => {
+        const req = {
+            msg_id: 'WELCOME_MSG',
+            msg_body: msg.body,
+            msg_subject: msg.subject
+        };
+        this.MessageApi.setMessageTemplate(req).then((result) => {
+            message.success('Welcome message template is set');
+            this.setState({
+                welcomeMessage: {
+                    body: msg.body,
+                    subject: msg.subject
+                }
+            });
+            this.GetData();
+        }).catch((error) => {
+            console.log(error);
+            message.error('Welcome message cant be set');
         });
     }
 
@@ -142,6 +196,13 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                     callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_RETRACT_TIME + ' and lower than ' + appConfig.DEFAULT_POST_MAX_RETRACT_TIME);
                 }
                 break;
+            case 'post_max_labels':
+                if (value >= appConfig.DEFAULT_POST_MIN_LABELS && value <= appConfig.DEFAULT_POST_MAX_LABELS) {
+                    callback();
+                } else {
+                    callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_LABELS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_LABELS);
+                }
+                break;
             case 'attach_max_size':
                 callback();
                 break;
@@ -156,6 +217,11 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         const {getFieldDecorator} = this.props.form;
         return (
             <Form onSubmit={this.handleSubmit.bind(this)} className='system-config' onChange={this.handleChange.bind(this)}>
+                <EditMessageModal
+                    messageChange={this.submitMessage.bind(this)}
+                    onClose={this.editWelcomeMessage.bind(this)}
+                    visible={this.state.editMessageModal}
+                    message={this.state.welcomeMessage}/>
                 <Row type='flex' className='scene-head' align='middle'>
                     <h2>System</h2>
                     {this.state.activeBtn}
@@ -222,7 +288,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                             <ul>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Members</label>
+                                        <label>Maximum Place Members</label>
 
                                         <FormItem>
                                             {getFieldDecorator('place_max_keyholders', {
@@ -244,7 +310,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Managers</label>
+                                        <label>Maximum Place Managers</label>
                                         <FormItem>
                                             {getFieldDecorator('place_max_creators', {
                                                 initialValue: this.state.data.place_max_creators,
@@ -287,7 +353,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Childrens Level</label>
+                                        <label>Maximum Place Childrens Level</label>
                                         <FormItem>
                                             {getFieldDecorator('place_max_level', {
                                                 initialValue: this.state.data.place_max_level,
@@ -311,6 +377,18 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                         <HealthCheck />
                     </Col>
                     <Col span={12}>
+                        <Card className='optionCard' loading={false} title='System Messages'>
+                            <ul>
+                                <li>
+                                    <div className='option'>
+                                        <label>Welcome Message</label>
+                                        <Button type=' butn butn-green' size='large'
+                                        onClick={this.editWelcomeMessage.bind(this)}>Edit</Button>
+                                    </div>
+                                    <p>New accounts recive this message automatily in first login.</p>
+                                </li>
+                            </ul>
+                        </Card>
                         <Card className='optionCard' loading={false} title='Post Limits'>
                             <ul>
                                 <li>
@@ -366,7 +444,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li> */}
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Post Destinations</label>
+                                        <label>Maximum Post Destinations</label>
 
                                         <FormItem>
                                             {getFieldDecorator('post_max_targets', {
@@ -388,7 +466,29 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Post Retract Time (hours)</label>
+                                        <label>Maximum Post Labels</label>
+
+                                        <FormItem>
+                                            {getFieldDecorator('post_max_labels', {
+                                                initialValue: this.state.data.post_max_labels,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: 'Required'
+                                                    },
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Input />
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className='option'>
+                                        <label>Maximum Post Retract Time (hours)</label>
                                         <FormItem>
                                             {getFieldDecorator('post_retract_time', {
                                                 initialValue: this.state.data.post_retract_time,

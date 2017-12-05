@@ -370,9 +370,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     <Checkbox onChange={() => this.onCheckboxChange(record)}
                               checked={record.isChecked}/>
                     {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
-                    <div className='arrow-holder'>{(record.counters.childs > 0 && this.state.viewMode === 'relation') &&
-                    <Arrow rotate={record.children === undefined ? '0' : '180'} child={record.child}
-                           onClick={loadChildren.bind(this)}/>}</div>
+                    <div className='arrow-holder'>
+                        {(record.counters.childs > 0 && this.state.viewMode === 'relation' && record.grand_parent_id === record._id ) &&
+                            <Arrow rotate={record.children === undefined ? '0' : '180'} child={record.child}
+                                onClick={loadChildren.bind(this)}/>}
+                    </div>
                 </Row>
                 <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
             </Row>
