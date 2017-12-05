@@ -74,6 +74,13 @@ export default class PlaceApi {
         });
     }
 
+    placeSubCreate(params: IPlaceCreateRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/create_place',
+            data: params,
+        });
+    }
+
     placeDelete(params: IPlaceDeleteRequest): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/place_remove',
