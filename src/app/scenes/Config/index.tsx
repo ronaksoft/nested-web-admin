@@ -21,12 +21,21 @@ export interface IConfigState {
     editMessageModal: boolean;
     data: any;
     disableBtn: boolean;
+    welcomeMessage: any;
 }
 
 class Config extends React.Component<IConfigProps, IConfigState> {
     constructor(props: IConfigProps) {
         super(props);
-        this.state = {data: {}, disableBtn: true, editMessageModal: false};
+        this.state = {
+            data: {},
+            welcomeMessage: {
+                subject: '',
+                body: '',
+            },
+            disableBtn: true,
+            editMessageModal: false
+        };
     }
 
     componentDidMount() {
@@ -37,7 +46,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
     GetData() {
         this.SystemApi.getConstants().then((result) => {
-            console.log(result);
+            // console.log(result);
             this.setState({
                 data: result
             });
@@ -45,10 +54,14 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             console.log('error', error);
         });
         this.MessageApi.getMessageTemplate().then((result) => {
-            console.log(result);
-            // this.setState({
-            //     data: result
-            // });
+            if(result.WELCOME_MSG) {
+                this.setState({
+                    welcomeMessage: {
+                        body: result.WELCOME_MSG.body,
+                        subject: result.WELCOME_MSG.subject
+                    }
+                });
+            }
         }).catch((error) => {
             console.log('error', error);
         });
@@ -96,19 +109,21 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         });
     }
 
-    submitMessage = (message: any) => {
+    submitMessage = (msg: any) => {
         const req = {
             msg_id: 'WELCOME_MSG',
-            msg_body: message.body,
-            msg_subject: message.subject
+            msg_body: msg.body,
+            msg_subject: msg.subject
         };
-        console.log(req);
         this.MessageApi.setMessageTemplate(req).then((result) => {
             message.success('Welcome message template is set');
-            // this.setState({
-            //     disableBtn: true
-            // });
-            // this.GetData();
+            this.setState({
+                welcomeMessage: {
+                    body: msg.body,
+                    subject: msg.subject
+                }
+            });
+            this.GetData();
         }).catch((error) => {
             console.log(error);
             message.error('Welcome message cant be set');
@@ -205,7 +220,8 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                 <EditMessageModal
                     messageChange={this.submitMessage.bind(this)}
                     onClose={this.editWelcomeMessage.bind(this)}
-                    visible={this.state.editMessageModal}/>
+                    visible={this.state.editMessageModal}
+                    message={this.state.welcomeMessage}/>
                 <Row type='flex' className='scene-head' align='middle'>
                     <h2>System</h2>
                     {this.state.activeBtn}
@@ -272,7 +288,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                             <ul>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Members</label>
+                                        <label>Maximum Place Members</label>
 
                                         <FormItem>
                                             {getFieldDecorator('place_max_keyholders', {
@@ -294,7 +310,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Managers</label>
+                                        <label>Maximum Place Managers</label>
                                         <FormItem>
                                             {getFieldDecorator('place_max_creators', {
                                                 initialValue: this.state.data.place_max_creators,
@@ -337,7 +353,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Place Childrens Level</label>
+                                        <label>Maximum Place Childrens Level</label>
                                         <FormItem>
                                             {getFieldDecorator('place_max_level', {
                                                 initialValue: this.state.data.place_max_level,
@@ -428,7 +444,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li> */}
                                 <li>
                                     <div className='option'>
-                                        <label>Max. Post Destinations</label>
+                                        <label>Maximum Post Destinations</label>
 
                                         <FormItem>
                                             {getFieldDecorator('post_max_targets', {

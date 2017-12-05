@@ -21,13 +21,14 @@ import {IcoN} from '../../../../components/icon/index';
 interface IProps {
     visible: boolean;
     onClose?: () => {};
+    message: any;
     messageChange: (message: any) => {};
 }
 
 interface IStates {
     visible: boolean;
     subject: string;
-    message: string;
+    body: string;
 }
 
 export default class EditMessageModal extends React.Component <IProps, IStates> {
@@ -38,13 +39,21 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
         this.state = {
             visible: false,
             subject: '',
-            message: ''
+            body: ''
         };
     }
 
+    componentDidMount() {
+        this.setState({
+            subject: this.props.message.subject,
+            body: this.props.message.body
+        });
+    }
     componentWillReceiveProps(props: any) {
         this.setState({
             visible: props.visible,
+            subject: props.message.subject,
+            body: props.message.body
         });
     }
 
@@ -55,7 +64,7 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
     saveMessage() {
         this.props.messageChange({
             subject: this.state.subject,
-            body: this.state.message
+            body: this.state.body
         });
         this.props.onClose();
     }
@@ -68,7 +77,7 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
 
     changeBody (e: any) {
         this.setState({
-            message: e.target.value || '',
+            body: e.target.value || '',
         });
     }
 
@@ -92,7 +101,7 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
                 title='Welcome Message'>
                 <div>
                     <Input className='no-style' value={this.state.subject} placeholder='Add a title' onChange={this.changeSubj.bind(this)}/>
-                    <Input className='no-style' value={this.state.message} type='textarea' placeholder='Type something...'
+                    <Input className='no-style' value={this.state.body} type='textarea' placeholder='Type something...'
                         onChange={this.changeBody.bind(this)}/>
                 </div>
             </Modal>
