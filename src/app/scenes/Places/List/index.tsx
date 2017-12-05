@@ -55,6 +55,7 @@ interface IListProps {
     notifyChildrenUnselect: boolean;
     toggleSelected: (user: IPlace) => {};
     actionOnPlace: (placeId: string, action: string) => {};
+    grandPlaceId?: string;
 }
 
 interface IListState {
@@ -363,7 +364,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 });
             }
         };
-        console.log(record);
         return (
             <Row type='flex' align='middle'>
                 <Row type='flex' align='middle' onClick={this.preventer.bind(this)}>
@@ -432,13 +432,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 name: 'Create a Private Subplace',
                 icon: 'brickWall16',
                 action: () => {
-                    console.log('create a subplace');
                     this.props.actionOnPlace(record._id, 'create');
                 },
             }
         ];
         const deviders = [0];
-        console.log(record, record.type, C_PLACE_TYPE['0']);
         if (record.type !== C_PLACE_TYPE['0']) {
             items.push({
                 key: 'person16',
@@ -449,7 +447,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 },
             });
         }
-        console.log(record.grand_parent_id.length > 0, record.type !== C_PLACE_TYPE['0']);
         if (record.grand_parent_id !== record._id || record.type !== C_PLACE_TYPE['0']) {
             items.push(
                 {
