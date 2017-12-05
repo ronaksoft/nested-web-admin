@@ -34,6 +34,7 @@ import UserAvatar from '../avatar/index';
 interface IProps {
     place?: IPlace;
     visible?: boolean;
+    grandPlaceId?: string;
     onClose?: (v: boolean) => {};
     onChange?: (place: IPlace) => {};
 }
@@ -49,6 +50,7 @@ interface IStates {
     showError: boolean;
     uploadPercent: number;
     imageIsUploading: boolean;
+    grandPlaceId: string;
 }
 
 
@@ -63,6 +65,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         super(props);
         this.placeIdRegex = new RegExp('^[A-Za-z][A-Za-z0-9-]*$');
         this.checkId = _.debounce(this.checkIdAvailability, 512);
+        console.log(this.props);
         this.state = {
             visible: false,
             uploadPercent: 0,
@@ -90,6 +93,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             formValid: false,
             showError: false,
             imageIsUploading: false,
+            grandPlaceId: this.props.grandPlaceId,
         };
         if (this.props.place) {
             this.state.place = this.props.place;
@@ -120,14 +124,21 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     }
 
     componentWillReceiveProps(props: any) {
-        this.setState({visible: props.visible});
+        console.log(props);
+        this.setState({
+            visible: props.visible,
+            grandPlaceId: props.grandPlaceId,
+        });
     }
 
     componentDidMount() {
         this.accountApi = new AccountApi();
         this.placeApi = new PlaceApi();
         if (this.props.place) {
-            this.setState({visible: this.props.visible});
+            this.setState({
+                visible: this.props.visible,
+                grandPlaceId: this.props.grandPlaceId,
+            });
         }
         this.loadUploadToken();
     }
@@ -346,6 +357,9 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     checkIdAvailability(id: string) {
         id = id.toLowerCase();
         if (this.placeIdRegex.test(id)) {
+            if (this.state.grandPlaceId !== '') {
+                id = this.state.grandPlaceId + '.' + id;
+            }
             this.placeApi.isIdAvailable(id).then((data) => {
                 if (data.err_code) {
                     this.setState({
@@ -441,8 +455,11 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         if (!this.validate()) {
             return;
         }
-        const model = this.state.model;
+        let model = this.state.model;
         const addPostPolicy = this.getAddPostPolicy(model.addPostPolicy);
+        if (this.state.grandPlaceId !== '') {
+            model.id = this.state.grandPlaceId + '.' + model.id;
+        }
         let params: IPlaceCreateRequest = {
             place_id: model.id,
             place_name: model.name,
@@ -463,23 +480,35 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             return user._id;
         }).join(',');
 
-        this.placeApi.placeCreate(params).then((data) => {
+        let promise;
+        if (this.state.grandPlaceId === '') {
+            promise = this.placeApi.placeCreate(params);
+        } else {
+            promise = this.placeApi.placeSubCreate(params);
+        }
+        promise.then((data) => {
             console.log('created', data);
-            Promise.all([
+            const promises = [];
+            promises.push(
                 this.placeApi.placeAddMember({
                     place_id: data._id,
-                    member_id: members
-                }),
-                this.placeApi.placeLimitEdit({
-                    place_id: data._id,
-                    limits: {
-                        key_holders: model.managerLimit,
-                        creators: model.memberLimit,
-                        size: model.storageLimit,
-                        childs: model.subPlaceLimit,
-                    }
-                }),
-            ]).then((data) => {
+                    account_id: members
+                })
+            );
+            if (this.state.grandPlaceId === '') {
+                promises.push(
+                    this.placeApi.placeLimitEdit({
+                        place_id: data._id,
+                        limits: {
+                            key_holders: model.managerLimit,
+                            creators: model.memberLimit,
+                            size: model.storageLimit,
+                            childs: model.subPlaceLimit,
+                        }
+                    })
+                );
+            }
+            Promise.all(promises).then((data) => {
                 console.log(data);
                 this.props.onClose(true);
                 message.success('Place successfully created!');

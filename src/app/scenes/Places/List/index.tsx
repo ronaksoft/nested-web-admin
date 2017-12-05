@@ -10,6 +10,7 @@ import PlaceView from '../../../components/placeview/index';
 import PlaceModal from '../../../components/PlaceModal/index';
 import IGetSystemCountersResponse from '../../../api/system/interfaces/IGetSystemCountersResponse';
 import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
+import C_PLACE_TYPE from '../../../api/consts/CPlaceType';
 import {IcoN} from '../../../components/icon/index';
 import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
@@ -54,6 +55,7 @@ interface IListProps {
     notifyChildrenUnselect: boolean;
     toggleSelected: (user: IPlace) => {};
     actionOnPlace: (placeId: string, action: string) => {};
+    grandPlaceId?: string;
 }
 
 interface IListState {
@@ -368,7 +370,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     <Checkbox onChange={() => this.onCheckboxChange(record)}
                               checked={record.isChecked}/>
                     {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
-                    <div className='arrow-holder'>{(record.child !== true && this.state.viewMode === 'relation') &&
+                    <div className='arrow-holder'>{(record.counters.childs > 0 && this.state.viewMode === 'relation') &&
                     <Arrow rotate={record.children === undefined ? '0' : '180'} child={record.child}
                            onClick={loadChildren.bind(this)}/>}</div>
                 </Row>
@@ -430,31 +432,38 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 name: 'Create a Private Subplace',
                 icon: 'brickWall16',
                 action: () => {
-                    console.log('create a subplace');
                     this.props.actionOnPlace(record._id, 'create');
                 },
-            },
-            {
+            }
+        ];
+        const deviders = [0];
+        if (record.type !== C_PLACE_TYPE['0']) {
+            items.push({
                 key: 'person16',
                 name: 'Add Member',
                 icon: 'person16',
                 action: () => {
                     this.props.actionOnPlace(record._id, 'addMember');
                 },
-            },
-            {
-                key: 'delete',
-                name: 'Delete',
-                icon: 'bin16',
-                action: () => {
-                    this.props.actionOnPlace(record._id, 'delete');
-                },
-                class: 'nst-red'
-            }
-        ];
+            });
+        }
+        if (record.grand_parent_id !== record._id || record.type !== C_PLACE_TYPE['0']) {
+            items.push(
+                {
+                    key: 'delete',
+                    name: 'Delete',
+                    icon: 'bin16',
+                    action: () => {
+                        this.props.actionOnPlace(record._id, 'delete');
+                    },
+                    class: 'nst-red'
+                }
+            );
+            deviders.push(items.length - 2);
+        }
         return (
             <Row className='moreOptions' type='flex' justify='end' onClick={this.preventer.bind(this)}>
-                <MoreOption menus={items} deviders={[0, 2]}/>
+                <MoreOption menus={items} deviders={deviders}/>
             </Row>
         );
     }

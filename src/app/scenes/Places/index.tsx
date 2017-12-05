@@ -28,6 +28,7 @@ export interface IAccountsState {
     loadCounters: boolean;
     visibleAddMemberModal: boolean;
     visibleCreatePlaceModal: boolean;
+    createGrandPlace: boolean;
     visibleDeletePlace: boolean;
     selectedFilter: string;
     searchKeyword: string;
@@ -52,6 +53,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             loadCounters: false,
             visibleAddMemberModal: false,
             visibleCreatePlaceModal: false,
+            createGrandPlace: true,
             visibleDeletePlace: false,
             selectedTab: CPlaceFilterTypes.TAB_SHARED,
         };
@@ -95,9 +97,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.toggleDeletePlaceModal();
     }
 
-    toggleCreatePlaceModal() {
+    toggleCreatePlaceModal(grandPlace: boolean) {
         this.setState({
             visibleCreatePlaceModal: !this.state.visibleCreatePlaceModal,
+            createGrandPlace: grandPlace,
         });
     }
 
@@ -158,21 +161,21 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     }
 
     actionOnPlace (placeId: string, action: string) {
-        if( action === 'addMember' ) {
+        if (action === 'addMember') {
             this.setState({
                 focusPlace: placeId
             }, () => {
                 this.toggleAddMemberModal();
             });
         }
-        if( action === 'create' ) {
+        if (action === 'create') {
             this.setState({
                 focusPlace: placeId
             }, () => {
-                this.toggleCreatePlaceModal();
+                this.toggleCreatePlaceModal(false);
             });
         }
-        if( action === 'delete' ) {
+        if (action === 'delete') {
             this.setState({
                 focusPlace: placeId
             }, () => {
@@ -245,11 +248,14 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             //     disableChart: true,
             // }
         ];
+
+
         return (
             <div className='places'>
                 {this.state.visibleCreatePlaceModal &&
                     <CreatePlaceModal visible={this.state.visibleCreatePlaceModal}
-                        onClose={this.toggleCreatePlaceModal.bind(this)}/>
+                        onClose={this.toggleCreatePlaceModal.bind(this, true)}
+                                      grandPlaceId={!this.state.createGrandPlace ? this.state.focusPlace : ''}/>
                 }
                 <AddMemberModal
                     addMembers={this.addMembers.bind(this)}
@@ -277,7 +283,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         <TabPane tab={<span><IcoN size={24} name={'dudesWire24'}/>Shared Places</span>} key={CPlaceFilterTypes.TAB_SHARED}/>
                         <TabPane tab={<span><IcoN size={24} name={'dudeWire24'}/>Individual Places</span>} key={CPlaceFilterTypes.TAB_INDIVIDUAL}/>
                     </Tabs>
-                    <Button type=' butn butn-green secondary' onClick={this.toggleCreatePlaceModal.bind(this)}>Create Grand Place</Button>
+                    <Button type=' butn butn-green secondary' onClick={this.toggleCreatePlaceModal.bind(this, true)}>Create Grand Place</Button>
                 </Row>
                 <div className='white-block-container'>
                     <Row className={[

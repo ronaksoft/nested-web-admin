@@ -8,6 +8,7 @@ import SystemApi from '../../api/system/index';
 import IGetConstantsResponse from '../../api/system/interfaces/IGetConstantsResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import appConfig from '../../../app.config';
+import HealthCheck from './components/HealthCheck/index';
 
 const FormItem = Form.Item;
 
@@ -30,6 +31,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
     GetData() {
         this.SystemApi.getConstants().then((result) => {
+            console.log(result);
             this.setState({
                 data: result
             });
@@ -306,6 +308,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                             </ul>
                         </Card>
+                        <HealthCheck />
                     </Col>
                     <Col span={12}>
                         <Card className='optionCard' loading={false} title='Post Limits'>
@@ -332,7 +335,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                         </FormItem>
                                     </div>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <div className='option'>
                                         <label>Maximum Attachment size</label>
 
@@ -360,7 +363,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             )}
                                         </FormItem>
                                     </div>
-                                </li>
+                                </li> */}
                                 <li>
                                     <div className='option'>
                                         <label>Max. Post Destinations</label>
