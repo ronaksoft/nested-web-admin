@@ -84,9 +84,9 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.load();
     }
 
-    searchKeyDown(e: any) {
+    searchKeyDown(event: any) {
         this.setState({
-            searchKeyword: e.target.value || '',
+            searchKeyword: event.currentTarget.value || '',
         });
     }
 
@@ -319,7 +319,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                                     this.state.filterGroup !== filterItems[0].key ? 'filter-mode' : ''
                         ].join(' ')} type='flex'>
                         {!isSelected && (<div className='filter-search'>
-                            <Input className='filter-search' value={this.state.searchKeyword} placeholder='type to search...' onChange={this.searchKeyDown.bind(this, event)}/>
+                            <Input className='filter-search' value={this.state.searchKeyword} placeholder='type to search...' onChange={this.searchKeyDown.bind(this)}/>
                             { this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
                             { this.state.searchKeyword.length > 0 &&
                                 <div className='_cp' onClick={this.clearQuery.bind(this)}><IcoN size={16} name={'xcross16'}/></div>
