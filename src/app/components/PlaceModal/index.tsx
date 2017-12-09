@@ -85,6 +85,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 visible: this.props.visible,
             });
         }
+        console.log(this.props.place);
         this.fetchUsers();
     }
 
