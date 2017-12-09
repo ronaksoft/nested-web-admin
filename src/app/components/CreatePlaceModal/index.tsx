@@ -65,7 +65,6 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         super(props);
         this.placeIdRegex = new RegExp('^[A-Za-z][A-Za-z0-9-]*$');
         this.checkId = _.debounce(this.checkIdAvailability, 512);
-        console.log(this.props);
         this.state = {
             visible: false,
             uploadPercent: 0,
@@ -339,6 +338,10 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         let currentMembers = this.state.model.members;
         const list = _.differenceBy(members, currentMembers, '_id');
         currentMembers = currentMembers.concat(list);
+        if (currentMembers.length > this.state.model.memberLimit) {
+            message.warning(`You cannot have more than ${this.state.model.memberLimit} members`);
+            return;
+        }
         this.updateModel({
             members: currentMembers,
         });
@@ -486,19 +489,20 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         } else {
             promise = this.placeApi.placeSubCreate(params);
         }
+        let placeId = '';
         promise.then((data) => {
-            console.log('created', data);
+            placeId = data._id;
             const promises = [];
             promises.push(
                 this.placeApi.placeAddMember({
-                    place_id: data._id,
+                    place_id: placeId,
                     account_id: members
                 })
             );
             if (this.state.grandPlaceId === '') {
                 promises.push(
                     this.placeApi.placeLimitEdit({
-                        place_id: data._id,
+                        place_id: placeId,
                         limits: {
                             key_holders: model.managerLimit,
                             creators: model.memberLimit,
@@ -509,11 +513,49 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 );
             }
             Promise.all(promises).then((data) => {
-                console.log(data);
-                this.props.onClose(true);
-                message.success('Place successfully created!');
+                const admins = _.map(_.filter(model.members, (item: any) => {
+                    return item.admin === true;
+                }), (item: any) => {
+                    return item._id;
+                });
+                if (admins.length > 0) {
+                    const adminPromises = [];
+                    _.forEach(admins, (item: string) => {
+                        adminPromises.push(this.placeApi.promoteMember({
+                            place_id: placeId,
+                            account_id: item,
+                        }));
+                    });
+                    Promise.all(adminPromises).then((data) => {
+                        message.success('Place successfully created!');
+                        this.props.onClose(true);
+                    });
+                } else {
+                    message.success('Place successfully created!');
+                    this.props.onClose(true);
+                }
             });
         });
+    }
+
+    toggleAdmin(user: any) {
+        const index = _.findIndex(this.state.model.members, {
+            '_id': user._id,
+        });
+        if (index > -1) {
+            let members = JSON.parse(JSON.stringify(this.state.model.members));
+            members[index].admin = !members[index].admin;
+            const adminCount = _.filter(members, (item) => {
+                return item.admin === true;
+            }).length;
+            if (adminCount > this.state.model.managerLimit) {
+                message.warning(`You cannot have more than ${this.state.model.memberLimit} admins`);
+                return;
+            }
+            this.updateModel({
+                members: members,
+            });
+        }
     }
 
     getMembersItems() {
@@ -523,7 +565,9 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                     <Row type='flex' align='middle'>
                         <UserAvatar user={u} borderRadius={'16'} size={24} avatar></UserAvatar>
                         <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
-                        <IcoN size={24} name={'crown24'}/>
+                        <span className={['nst-opacity-hover', (u.admin ? 'no-hover': '')].join(' ')} onClick={this.toggleAdmin.bind(this, u)}>
+                            <IcoN size={24} name={'crown24'}/>
+                        </span>
                     </Row>
                 </li>
             );
