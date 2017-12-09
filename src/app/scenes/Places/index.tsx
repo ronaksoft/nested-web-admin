@@ -40,6 +40,7 @@ export interface IAccountsState {
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     updateData = _.debounce(this.updateDataMain, 512);
+    placeApi: any;
     constructor(props: IAccountsProps) {
         super(props);
         this.state = {
@@ -60,6 +61,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     }
 
     componentDidMount() {
+        this.placeApi = new PlaceApi();
         let systemApi = new SystemApi();
         systemApi.getSystemCounters()
             .then((data: IGetSystemCountersResponse) => {
@@ -157,7 +159,18 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     }
 
     addMembers (members: IUser[]) {
-        console.log(members);
+        if (members.length === 0) {
+            return;
+        }
+        const membersId = _.map(members, (user) => {
+            return user._id;
+        }).join(',');
+        this.placeApi.placeAddMember({
+            place_id: this.state.focusPlace,
+            account_id: membersId
+        }).then(() => {
+            message.success(`${members.length} member(s) added to "${this.state.focusPlace}"`);
+        });
     }
 
     actionOnPlace (placeId: string, action: string) {
