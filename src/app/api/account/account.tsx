@@ -178,7 +178,7 @@ export default class AccountApi {
 
     getCounters(): Promise<any> {
         return this.api.server.request({
-            cmd: 'admin/get_system_counters',
+            cmd: 'system/get_counters',
             data: {}
         }).then((response) => {
             return response;
