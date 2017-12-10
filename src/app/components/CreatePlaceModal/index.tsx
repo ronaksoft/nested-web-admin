@@ -338,6 +338,12 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         let currentMembers = this.state.model.members;
         const list = _.differenceBy(members, currentMembers, '_id');
         currentMembers = currentMembers.concat(list);
+        const adminCount = _.filter(currentMembers, (item) => {
+            return item.admin === true;
+        }).length;
+        if (currentMembers.length > 0 && adminCount === 0) {
+            currentMembers[0].admin = true;
+        }
         if (currentMembers.length > this.state.model.memberLimit) {
             message.warning(`You cannot have more than ${this.state.model.memberLimit} members`);
             return;
@@ -558,15 +564,31 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         }
     }
 
+    removeMember(user: any) {
+        const index = _.findIndex(this.state.model.members, {
+            '_id': user._id,
+        });
+        if (index > -1) {
+            const members = this.state.model.members;
+            members.splice(index, 1);
+            this.updateModel({
+                members: members,
+            });
+        }
+    }
+
     getMembersItems() {
         var list = this.state.model.members.map((u: any) => {
             return (
-                <li key={u._id}>
+                <li key={u._id} className={'nst-opacity-hover-parent'}>
                     <Row type='flex' align='middle'>
                         <UserAvatar user={u} borderRadius={'16'} size={24} avatar></UserAvatar>
                         <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
+                        <span className={'nst-opacity-hover'} onClick={this.removeMember.bind(this, u)}>
+                            <IcoN size={24} name={'xcross16'}/>
+                        </span>
                         <span className={['nst-opacity-hover', (u.admin ? 'no-hover': '')].join(' ')} onClick={this.toggleAdmin.bind(this, u)}>
-                            <IcoN size={24} name={'crown24'}/>
+                            <IcoN size={24} name={u.admin ? 'crown24' : 'atsign24'}/>
                         </span>
                     </Row>
                 </li>
