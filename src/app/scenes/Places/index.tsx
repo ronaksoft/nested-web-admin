@@ -87,20 +87,30 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     deletePlaces = () => {
         let placeApi = new PlaceApi();
         // todo delete single place
-        this.state.selectedItems.forEach( place => {
+        if(this.state.focusPlace.length > 0 ) {
             const action = placeApi.placeDelete({
-                place_id: place._id
-            }).then( date => {
-                message.success(`"${place._id}" is deleted`);
+                place_id: this.state.focusPlace
+            }).then( data => {
+                message.success(`"${this.state.focusPlace}" is deleted`);
                 this.updateData();
             });
-        });
-        this.unselectAll();
+        } else {
+            this.state.selectedItems.forEach( place => {
+                const action = placeApi.placeDelete({
+                    place_id: place._id
+                }).then( data => {
+                    message.success(`"${place._id}" is deleted`);
+                    this.updateData();
+                });
+            });
+            this.unselectAll();
+        }
         this.toggleDeletePlaceModal();
     }
 
     toggleCreatePlaceModal(grandPlace: boolean) {
         this.setState({
+            focusPlace: this.state.visibleCreatePlaceModal ? '' : this.state.focusPlace,
             visibleCreatePlaceModal: !this.state.visibleCreatePlaceModal,
             createGrandPlace: grandPlace,
         });
@@ -154,12 +164,14 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     toggleAddMemberModal () {
         this.setState({
+            focusPlace: this.state.visibleAddMemberModal ? '' : this.state.focusPlace,
             visibleAddMemberModal: !this.state.visibleAddMemberModal
         });
     }
 
     toggleDeletePlaceModal () {
         this.setState({
+            focusPlace: this.state.visibleDeletePlace ? '' : this.state.focusPlace,
             visibleDeletePlace: !this.state.visibleDeletePlace
         });
     }
@@ -286,7 +298,6 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                     title='Delete Place'
                     width={360}
                     visible={this.state.visibleDeletePlace}
-                    onOk={this.deletePlaces}
                     onCancel={this.toggleDeletePlaceModal.bind(this)}
                     footer={[
                         <Button key='cancel' type=' butn butn secondary' size='large'
@@ -331,7 +342,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             <BarMenu menus={[{
                                 key: 'delete',
                                 name: 'Delete',
-                                icon: 'bin16'}]} onChange={this.deletePlaces}/>
+                                icon: 'bin16'}]} onChange={this.toggleDeletePlaceModal.bind(this)}/>
                         )}
                         {/* {isSelected && (
                             <BarMenu menus={[{

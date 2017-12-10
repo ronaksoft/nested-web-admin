@@ -700,8 +700,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                                    className={['nst-input', (!this.state.idValidation.valid && this.state.idValidation.reason !== 0) ? 'error' : ''].join(' ')}
                                    value={model.id}
                                    onChange={this.updatePlaceId.bind(this)}/>
-                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 1) && <p class='nst-error'>Id Invalid</p>}
-                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 2) && <p class='nst-error'>Already Exist</p>}
+                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 1) && <p className='nst-error'>Id Invalid</p>}
+                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 2) && <p className='nst-error'>Already Exist</p>}
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change
                                 this afterwards, so choose wisely!</p>
                         </Row>
