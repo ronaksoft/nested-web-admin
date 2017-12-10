@@ -91,9 +91,9 @@ class App extends React.Component<IAppProps, IAppState> {
                 }
             }
 
-            // if (state === SocketState.CLOSED) {
-            //     this.hideDisconnected = message.loading('Reconnecting...', 0);
-            // }
+            if (state === SocketState.CLOSED) {
+                this.hideDisconnected = message.loading('Reconnecting...', 1000);
+            }
         });
         log.setLevel(0);
     }

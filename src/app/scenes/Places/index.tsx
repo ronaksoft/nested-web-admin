@@ -40,6 +40,7 @@ export interface IAccountsState {
 
 class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     updateData = _.debounce(this.updateDataMain, 512);
+    placeApi: any;
     constructor(props: IAccountsProps) {
         super(props);
         this.state = {
@@ -60,6 +61,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     }
 
     componentDidMount() {
+        this.placeApi = new PlaceApi();
         let systemApi = new SystemApi();
         systemApi.getSystemCounters()
             .then((data: IGetSystemCountersResponse) => {
@@ -110,17 +112,23 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
 
-    searchKeyDown(e: any) {
+    searchKeyDown(event: any) {
         this.setState({
-            searchKeyword: e.target.value || '',
+            searchKeyword: event.currentTarget.value || '',
+        });
+    }
+
+    resetSelect() {
+        this.setState({
+            selectedItems: []
         });
     }
 
     toggleSelect (place: any) {
-        var ind = this.state.selectedItems.indexOf(place);
-        if (ind > -1) {
-            var filteredArray = this.state.selectedItems.slice(0);
-            filteredArray.splice(ind, 1);
+        const index = this.state.selectedItems.indexOf(place);
+        if (index > -1) {
+            const filteredArray = this.state.selectedItems.slice(0);
+            filteredArray.splice(index, 1);
             this.setState({
                 selectedItems: filteredArray
             });
@@ -157,7 +165,18 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     }
 
     addMembers (members: IUser[]) {
-        console.log(members);
+        if (members.length === 0) {
+            return;
+        }
+        const membersId = _.map(members, (user) => {
+            return user._id;
+        }).join(',');
+        this.placeApi.placeAddMember({
+            place_id: this.state.focusPlace,
+            account_id: membersId
+        }).then(() => {
+            message.success(`${members.length} member(s) added to "${this.state.focusPlace}"`);
+        });
     }
 
     actionOnPlace (placeId: string, action: string) {
@@ -293,7 +312,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         ].join(' ')} type='flex'>
                         {!isSelected && (<div className='filter-search'>
                             <Input className='filter-search' value={this.state.searchKeyword} placeholder='type to search...'
-                                   onChange={this.searchKeyDown.bind(this, event)}/>
+                                   onChange={this.searchKeyDown.bind(this)}/>
                             { this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
                             { this.state.searchKeyword.length > 0 &&
                                 <div className='_cp' onClick={this.clearQuery.bind(this)}><IcoN size={16} name={'xcross16'}/></div>
@@ -329,7 +348,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                         <Col span={24}>
                             {this.state.loadCounters &&
                             <PlaceList counters={this.state.counters} selectedFilter={this.state.selectedFilter} selectedTab={this.state.selectedTab}
-                                notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)}
+                                notifyChildrenUnselect={this.state.notifyChildrenUnselect} toggleSelected={this.toggleSelect.bind(this)} resetSelected={this.resetSelect.bind(this)}
                                 updatedPlaces={this.state.updates} query={this.state.searchKeyword} actionOnPlace={this.actionOnPlace.bind(this)}/>
                             }
                         </Col>

@@ -133,7 +133,7 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
                                 <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
                                 <UserAvatar user={u} id size={18} className='uid'></UserAvatar>
                             </div>
-                            <div className='add-button' onClick={this.addThisMember.bind(this, u)}>Add</div>
+                            <div className='add-button _cp' onClick={this.addThisMember.bind(this, u)}>Add</div>
                         </Row>
                     </li>
                 );
@@ -171,7 +171,9 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
     }
 
     addMembers() {
-        this.props.addMembers(_.clone(this.state.selectedUsers));
+        this.props.addMembers(_.merge(_.clone(this.state.selectedUsers), {
+            admin: false,
+        }));
         this.props.onClose();
         this.setState({
             selectedUsers: [],

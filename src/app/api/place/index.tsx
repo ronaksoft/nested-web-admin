@@ -88,4 +88,11 @@ export default class PlaceApi {
         });
     }
 
+    promoteMember(params: IPlaceAddMembersRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/place_promote_member',
+            data: params,
+        });
+    }
+
 }

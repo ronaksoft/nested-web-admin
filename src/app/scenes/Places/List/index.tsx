@@ -54,6 +54,7 @@ interface IListProps {
     updatedPlaces: number;
     notifyChildrenUnselect: boolean;
     toggleSelected: (user: IPlace) => {};
+    resetSelected: () => {};
     actionOnPlace: (placeId: string, action: string) => {};
     grandPlaceId?: string;
 }
@@ -195,6 +196,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     fetchPlaces() {
+        this.props.resetSelected();
+
         this.setState({
             loading: true
         });
@@ -367,7 +370,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         return (
             <Row type='flex' align='middle'>
                 <Row type='flex' align='middle' onClick={this.preventer.bind(this)}>
-                    <Checkbox onChange={() => this.onCheckboxChange(record)}
+                    <Checkbox onChange={(event) => this.onCheckboxChange(event, record)}
                               checked={record.isChecked}/>
                     {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
                     <div className='arrow-holder'>
@@ -485,7 +488,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         event.stopPropagation();
     }
 
-    onCheckboxChange = (place: IPlace) => {
+    onCheckboxChange = (event, place: IPlace) => {
+        event.stopPropagation();
         place.isChecked = !place.isChecked;
         this.props.toggleSelected(place);
     }
@@ -507,11 +511,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             {
                 key: 'name',
                 index: 0,
-                title: (
-                    <span>Place Name
-                        <Arrow rotate={sortedInfo.name === false ? '0' : '180'}
-                               onClick={this.onSortChanged.bind(this, 'name')}/>
-                    </span>),
+                title: (<span>Place Name</span>),
                 renderer: 'place',
             },
             {

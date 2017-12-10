@@ -27,7 +27,7 @@ class PlaceAvatar extends React.Component<IAvatarProps, IAvatarStates> {
                 return `${CONFIG().STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${avatar.x64}`;
             }
         } else {
-            return `/style/images/ph_place.png`;
+            return `style/images/ph_place.png`;
         }
     }
 
