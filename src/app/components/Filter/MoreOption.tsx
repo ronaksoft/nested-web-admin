@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Menu, Dropdown, Icon, Row, Col} from 'antd';
+import {Menu, Dropdown, Icon, Row, Col, Switch} from 'antd';
 import {IcoN} from '../icon/index';
 // import './filter.less';
 
@@ -9,6 +9,7 @@ export interface IMenuItem {
     icon: string;
     action: any;
     class?: string;
+    switch?: boolean;
 }
 
 export interface IFilterProps {
@@ -33,7 +34,6 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
     }
 
     handleGroupChange(menu: any) {
-        console.log('handleGroupChange', menu);
         this.selectedMenuIndex = parseInt(menu.key, 0);
         const item = this.state.menus[this.selectedMenuIndex];
         if (typeof item.action === 'function') {
@@ -53,6 +53,7 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
         const menus = [];
         const classNames = ['filterPopover'];
         this.state.menus.forEach((menu: IMenuItem, index: number) => {
+            const haveSwitch = menu.switch || menu.switch === false;
             if (menu.class) {
                 classNames.push(menu.class);
             }
@@ -61,11 +62,17 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
                     <Row type='flex' align='middle' className={classNames.join(' ')}>
                         <IcoN size={16} name={menu.icon}/>
                         <p>{menu.name}</p>
+                        {haveSwitch && (
+                            <Switch
+                                defaultChecked={menu.switch}
+                                onChange={menu.action}
+                            />)
+                        }
                     </Row>
                 </Menu.Item>
             );
 
-            if (this.props.deviders.indexOf(index) > -1) {
+            if (this.props.deviders && this.props.deviders.indexOf(index) > -1) {
                 menus.push(<Menu.Divider  key={index + 'aaa'}/>);
             }
         });

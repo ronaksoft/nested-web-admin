@@ -455,7 +455,7 @@ class List extends React.Component <IListProps,
             onChange: this.onSelectChange
         };
 
-        let total = 0;
+        let total = 10;
         switch (this.props.filter) {
             case FilterGroup.Active:
                 total = this.props.counters.enabled_accounts || 0;
@@ -467,6 +467,11 @@ class List extends React.Component <IListProps,
                 total = (this.props.counters.enabled_accounts || 0) + (this.props.counters.disabled_accounts || 0);
                 break;
         }
+
+        if (total < this.PAGE_SIZE) {
+            total = this.PAGE_SIZE;
+        }
+        console.log(total);
         return (
             <div>
                 <Table
@@ -497,6 +502,7 @@ class List extends React.Component <IListProps,
     private load(page: Number, size: Number, filter: FilterGroup) {
         this.setState({loading: true});
         page = page || this.state.currentPage;
+        size = size || this.size;
         const skip = (page - 1) * size;
         let filterValue = null;
         switch (filter) {
