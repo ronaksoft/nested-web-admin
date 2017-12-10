@@ -94,7 +94,7 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
             <Modal
                 className='message-modal'
                 maskClosable={true}
-                width={480}
+                width={664}
                 onCancel={this.handleCancel.bind(this)}
                 visible={this.state.visible}
                 footer={modalFooter}

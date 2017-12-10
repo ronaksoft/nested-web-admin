@@ -80,6 +80,7 @@
       "md5": "npm:md5@^2.2.1",
       "moment": "npm:moment@^2.18.1",
       "react-inlinesvg": "npm:react-inlinesvg@^0.6.0",
+      "react-json-tree": "npm:react-json-tree@^0.11.0",
       "react-platform-js": "npm:react-platform-js@^0.0.1",
       "react-router": "npm:react-router@^3.0.2",
       "classnames": "npm:classnames@^2.2.5",
@@ -113,7 +114,7 @@
       "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
       "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
       "prop-types": "npm:prop-types@^15.5",
-      "react": "npm:react@^15.5.4",
+      "react": "npm:react@^15.6.2",
       "react-dom": "npm:react-dom@^15.0.0",
       "react-transition-group": "npm:react-transition-group@^1.1.2",
       "redux": "npm:redux@^3.6.0",
@@ -157,10 +158,10 @@
       "npm:moment@2.18.1": {
         "jspmNodeConversion": false
       },
-      "npm:pbkdf2@3.0.12": {
+      "npm:pbkdf2@3.0.14": {
         "main": "browser.js"
       },
-      "npm:safe-buffer@5.0.1": {
+      "npm:safe-buffer@5.1.1": {
         "browser": "index.js"
       },
       "npm:typescript@2.3.2": {

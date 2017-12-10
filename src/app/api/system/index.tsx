@@ -1,6 +1,7 @@
 import Api from './../index';
 import IGetSystemCountersResponse from './interfaces/IGetSystemCountersResponse';
 import IGetConstantsResponse from './interfaces/IGetConstantsResponse';
+import IGetStatsResponse from './interfaces/IGetStatsResponse';
 
 export default class SystemApi {
     private api;
@@ -19,6 +20,14 @@ export default class SystemApi {
 
     getConstants() : Promise < any > {
         return this.api.server.request({cmd: 'system/get_int_constants', data: {}}).then((res : IGetConstantsResponse) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    getStats() : Promise < any > {
+        return this.api.server.request({cmd: 'system/stats', data: {}}).then((res : IGetStatsResponse) => {
             return res;
         }).catch((err) => {
             console.log(err);
