@@ -12,6 +12,7 @@ import {
     Upload,
     Icon,
     message,
+    Select,
     Switch
 } from 'antd';
 import _ from 'lodash';
@@ -665,19 +666,27 @@ class View extends React.Component<IViewProps, IViewState> {
                                 </Row>
                                 {!editMode && <hr className='info-row'/>}
                                 {editMode &&
-                                    <Row className='info-row' gutter={32}>
+                                    <Row className='info-row' gutter={24}>
                                         <Col span={12}>
                                             <label>First Name</label>
-                                            <Input/>
+                                            <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.fname}/>
                                         </Col>
                                         <Col span={12}>
                                             <label>Last Name</label>
-                                            <Input/>
+                                            <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.lname}/>
                                         </Col>
                                     </Row>
                                 }
                                 {!editMode &&
-                                    <Row className='info-row' gutter={32}>
+                                    <Row className='info-row' gutter={24}>
                                         <Col span={12}>
                                             <label>Phone Number</label>
                                             <span className='label-value'>
@@ -693,24 +702,32 @@ class View extends React.Component<IViewProps, IViewState> {
                                     </Row>
                                 }
                                 {editMode &&
-                                    <Row className='info-row' gutter={32}>
+                                    <Row className='info-row' gutter={24}>
                                         <Col span={24}>
                                             <label>Phone Number</label>
-                                            <Input value={this.state.account.phone} />
-                                            <p>Enter phone number with country code.</p>
+                                            <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.phone}/>
+                                            <p className='field-description'>Enter phone number with country code.</p>
                                         </Col>
                                     </Row>
                                 }
                                 {editMode &&
-                                    <Row className='info-row' gutter={32}>
+                                    <Row className='info-row' gutter={24}>
                                         <Col span={24}>
                                             <label>Email</label>
-                                            <Input value={this.state.account.email} />
+                                            <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.email}/>
                                         </Col>
                                     </Row>
                                 }
-                                <Row className='info-row' gutter={32}>
-                                    <Col span={editMode ? 12 : 16}>
+                                <Row className='info-row' gutter={24}>
+                                    <Col span={editMode ? 16 : 12}>
                                         <label>Birthday</label>
                                         {!editMode &&
                                             <span className='label-value'>
@@ -718,8 +735,8 @@ class View extends React.Component<IViewProps, IViewState> {
                                             </span>
                                         }
                                         {editMode &&
-                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                                onClick={() => this.editField(EditableFields.dob)}></Button>
+                                            <DatePicker value={this.state.account.dob}
+                                                size='large' className='nst-input' format={this.DATE_FORMAT}/>
                                         }
                                     </Col>
                                     <Col span={editMode ? 8 : 12}>
@@ -730,30 +747,50 @@ class View extends React.Component<IViewProps, IViewState> {
                                             </span>
                                         }
                                         {editMode &&
-                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                                onClick={() => this.editField(EditableFields.gender)}></Button>
+                                            <Select
+                                                placeholder={this.state.account.gender === 'm' ? 'Male' : 'Female'}
+                                                size='large'
+                                                style={{width: '100%'}}>
+                                                <Option value={'m'}>Male</Option>
+                                                <Option value={'f'}>Female</Option>
+                                            </Select>
                                         }
                                     </Col>
                                 </Row>
-                                {editMode && <Row className='info-row' gutter={32}>
+                                {editMode && <Row className='info-row' gutter={24}>
                                     <Col span={12}>
                                         <label>Max. Grand Place</label>
+                                        <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.limits.grand_places}/>
                                     </Col>
                                     <Col span={12}>
                                         <label>Edit Profile Access</label>
+                                        <Select
+                                            placeholder={this.state.account.privacy.change_profile ? 'Yes' : 'No'}
+                                            style={{width: '100%'}} size='large'>
+                                            <Option value={true}>Yes</Option>
+                                            <Option value={false}>Female</Option>
+                                        </Select>
                                     </Col>
                                 </Row>}
-                                {editMode && <Row className='info-row' gutter={32}>
-                                        <label>Searchable</label>
+                                {editMode && <Row className='info-row' gutter={24}>
+                                    <Row style={{width: '100%'}} type='flex'>
+                                        <label style={{width: 'auto'}}>Searchable</label>
                                         <div className='filler'></div>
-                                        <p>A short description about searchable feature.</p>
+                                        <Switch checkedChildren='Yes' unCheckedChildren='No'
+                                            defaultChecked={!this.state.account.privacy.searchable}/>
+                                    </Row>
+                                    <p className='field-description'>A short description about searchable feature.</p>
                                 </Row>}
                                 {!editMode && <hr className='info-row'/>}
                                 {!editMode && <Row className='more-info'>
                                     <Col span={8}>
                                         <label>Searchable</label>
                                         <span className='label-value'>
-                                            {this.state.account.privacy.searchable}
+                                            {this.state.account.privacy.searchable ? 'Yes' : 'No'}
                                         </span>
                                     </Col>
                                     <Col span={8}>
@@ -765,7 +802,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                     <Col span={8}>
                                         <label>Edit Profile Access</label>
                                         <span className='label-value'>
-                                            {this.state.account.privacy.change_profile}
+                                            {this.state.account.privacy.change_profile ? 'Yes' : 'No'}
                                         </span>
                                     </Col>
                                 </Row>}
