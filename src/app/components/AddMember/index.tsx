@@ -177,7 +177,9 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
         this.props.onClose();
         this.setState({
             selectedUsers: [],
+            query: '',
         });
+        this.searchAccounts('');
     }
 
     render() {
