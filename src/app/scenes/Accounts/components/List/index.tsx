@@ -30,10 +30,13 @@ import FilterGroup from '../../FilterGroup';
 import View from '../View/index';
 import {IcoN} from '../../../../components/icon/index';
 import IUser from '../../../../api/account/interfaces/IUser';
+import Arrow from '../../../../components/Arrow/index';
 
 export interface ISort {
-    order: string;
-    columnKey: string;
+    joined_on: boolean;
+    birthday: boolean;
+    user_id: boolean;
+    email: boolean;
 }
 
 interface IListProps {
@@ -55,6 +58,7 @@ interface IListState {
     dataColumns: Array< any >;
     columns: Array< any >;
     sortedInfo: ISort;
+    sortKey: any;
 }
 
 class List extends React.Component <IListProps,
@@ -262,7 +266,8 @@ class List extends React.Component <IListProps,
                 columnKey: '_id',
             },
             viewAccount: false,
-            chosen: {}
+            chosen: {},
+            sortKey: null,
         };
 
 
@@ -332,8 +337,19 @@ class List extends React.Component <IListProps,
         });
     }
 
+    onSortChanged(key: string) {
+        let sort = this.state.sortedInfo;
+        sort[key] = !sort[key];
+        this.setState({
+            sortedInfo: sort,
+            sortKey: key,
+        }, () => {
+            this.load();
+        });
+    }
+
     render() {
-        let { sortedInfo } = this.state;
+        let sortedInfo = this.state.sortedInfo;
         const allColumns = [
             {
                 title: this.dataColumns.name,
@@ -341,21 +357,17 @@ class List extends React.Component <IListProps,
                 key: 'name',
                 render: this.nameRender,
                 index: 0,
-                sorter: (a, b) => {
-                    return a.fname + a.lname === b.fname + b.lname ? 0 : a.fname + a.lname< b.fname + b.lname ? -1 : 1;
-                },
-                sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
             }, {
-                title: this.dataColumns._id,
+                title: (
+                    <span>{this.dataColumns._id}
+                        <Arrow rotate={sortedInfo.user_id === false ? '0' : '180'}
+                               onClick={this.onSortChanged.bind(this, 'user_id')}/>
+                    </span>),
                 dataIndex: '_id',
                 key: '_id',
                 render: this.idRender,
                 index: 1,
                 width: 152,
-                sorter: (a, b) => {
-                    return a._id === b._id ? 0 : a._id < b._id ? -1 : 1;
-                },
-                sortOrder: sortedInfo.columnKey === '_id' && sortedInfo.order
             }, {
                 title: this.dataColumns.access_places,
                 dataIndex: 'access_places',
@@ -370,10 +382,6 @@ class List extends React.Component <IListProps,
                 render: this.searchableRender,
                 index: 3,
                 width: 128,
-                sorter: (a, b) => {
-                    return (a.privacy.searchable === b.privacy.searchable)? 0 : a.privacy.searchable? -1 : 1;
-                },
-                sortOrder: sortedInfo.columnKey === 'searchable' && sortedInfo.order
             }, {
                 title: this.dataColumns.phone,
                 dataIndex: 'phone',
@@ -381,29 +389,17 @@ class List extends React.Component <IListProps,
                 render: this.phoneRender,
                 index: 4,
                 width: 136,
-                sorter: (a, b) => {
-                    let bp = parseInt(b.phone);
-                    let ap = parseInt(a.phone);
-                    if ( !bp ) {
-                        bp = 0;
-                    }
-                    if ( !ap ) {
-                        ap = 0;
-                    }
-                    return ap > bp;
-                },
-                sortOrder: sortedInfo.columnKey === 'phone' && sortedInfo.order
             }, {
-                title: this.dataColumns.joined_on,
+                title: (
+                    <span>{this.dataColumns.joined_on}
+                        <Arrow rotate={sortedInfo.joined_on === false ? '0' : '180'}
+                               onClick={this.onSortChanged.bind(this, 'joined_on')}/>
+                    </span>),
                 dataIndex: 'joined_on',
                 key: 'joined_on',
                 render: this.joinedRender,
                 index: 5,
                 width: 152,
-                sorter: (a, b) => {
-                    return new Date(a.joined_on).getTime() - new Date(b.joined_on).getTime();
-                },
-                sortOrder: sortedInfo.columnKey === 'joined_on' && sortedInfo.order
             }, {
                 title: this.dataColumns.disabled,
                 dataIndex: 'disabled',
@@ -411,10 +407,6 @@ class List extends React.Component <IListProps,
                 render: this.disabledRender,
                 index: 6,
                 width: 116,
-                sorter: (a, b) => {
-                    return (a.disabled === b.disabled)? 0 : a.disabled? -1 : 1;
-                },
-                sortOrder: sortedInfo.columnKey === 'disabled' && sortedInfo.order
             }
         ];
 
@@ -499,7 +491,7 @@ class List extends React.Component <IListProps,
         );
     }
 
-    private load(page: Number, size: Number, filter: FilterGroup) {
+    private load(page?: Number, size?: Number, filter?: FilterGroup) {
         this.setState({loading: true});
         page = page || this.state.currentPage;
         size = size || this.size;
@@ -521,7 +513,13 @@ class List extends React.Component <IListProps,
 
         }
 
-        return this.accountApi.getAll({skip: skip, limit: size, filter: filterValue, keyword: this.state.query || ''}).then((result) => {
+        return this.accountApi.getAll({
+            skip: skip,
+            limit: size,
+            filter: filterValue,
+            keyword: this.state.query || '',
+            sort: (this.state.sortedInfo[this.state.sortKey] ? '-' : '') + this.state.sortKey,
+        }).then((result) => {
             this.setState({accounts: result.accounts, loading: false, currentPage: page});
         }).catch((error) => {
             this.setState({loading: false, page: page});
