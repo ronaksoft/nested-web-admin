@@ -347,9 +347,11 @@
     border-radius: 6px;
     overflow: hidden;
     background-color: #fff;
+    height: ~'calc(100% - 80px)';
     .ant-modal-content {
         box-shadow: none;
-        min-height: ~'calc(100vh - 80px)';
+        min-height: unset;
+        height: 100%;
     }
     .ant-modal-header {
         padding: 0;
@@ -357,12 +359,24 @@
     }
     .ant-modal-body {
         padding: 24px;
+        height: ~'calc(100% - 72px)';
+        > .ant-row-flex {
+            height: 100%;
+        }
         .account-body {
             border: 1px solid @color-light-breeze;
             border-radius: 4px;
+            min-height: 100%;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
             padding: 0 24px 64px;
             background: rgba(50, 61, 71, 0.02);
         }
+    }
+    .account-places {
+        height: 100%;
+        overflow: auto;
     }
     .ant-modal-close {
         display: none;

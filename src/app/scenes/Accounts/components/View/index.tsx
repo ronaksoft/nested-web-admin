@@ -570,13 +570,13 @@ class View extends React.Component<IViewProps, IViewState> {
                 )}
                 {!editMode && (
                     <Row className='account-control' type='flex' align='middle'>
-                        <IcoN size={16} name={'pencil16'}/>
+                        <IcoN size={16} name={'chart16'}/>
                         <span>Reports</span>
                     </Row>
                 )}
                 {!editMode && (
                     <Row className='account-control' type='flex' align='middle'>
-                        <IcoN size={16} name={'pencil16'}/>
+                        <IcoN size={16} name={'compose16'}/>
                         <span>Send a Message</span>
                     </Row>
                 )}
@@ -610,7 +610,7 @@ class View extends React.Component<IViewProps, IViewState> {
                        footer={null} title={header} maskClosable={this.state.maskClosable}
                        afterClose={this.cleanup} width={800}
                        className={['account-modal', 'nst-modal', editMode ? 'edit-mode' : ''].join(' ')}>
-                    <Row gutter={16}>
+                    <Row gutter={16} type='flex'>
                         <Col span={16}>
                             <div className='account-body'>
                                 <Row className='account-info-top'>
@@ -1005,7 +1005,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                 </Row> */}
                             </div>
                         </Col>
-                        <Col span={8}>
+                        <Col span={8} className='account-places'>
                             {
                                 managerInPlaces.length > 0 &&
                                 <Row className='list-head'>
