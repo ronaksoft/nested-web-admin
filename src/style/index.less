@@ -1056,14 +1056,19 @@ div.ant-modal-mask {
     font-weight: bold;
 }
 
-.nst-opacity-hover {
-    opacity: 0.2;
-    transition: opacity 0.2s;
-    cursor: pointer;
-    &:hover {
-        opacity: 0.8;
+.nst-opacity-hover-parent {
+    border-radius: 5px;
+    .nst-opacity-hover {
+        opacity: 0;
+        cursor: pointer;
+        &.no-hover {
+            opacity: 1;
+        }
     }
-    &.no-hover {
-        opacity: 1;
+    &:hover {
+        background-color: rgba(50, 61, 71, 0.04);
+        .nst-opacity-hover {
+            opacity: 1;
+        }
     }
 }
