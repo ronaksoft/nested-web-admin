@@ -105,17 +105,14 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             });
             this.unselectAll();
         }
-        this.setState({
-            focusPlace: '',
-        });
         this.toggleDeletePlaceModal();
     }
 
     toggleCreatePlaceModal(grandPlace: boolean) {
         this.setState({
+            focusPlace: this.state.visibleCreatePlaceModal ? '' : this.state.focusPlace,
             visibleCreatePlaceModal: !this.state.visibleCreatePlaceModal,
             createGrandPlace: grandPlace,
-            focusPlace: '',
         });
     }
 
@@ -167,12 +164,14 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
 
     toggleAddMemberModal () {
         this.setState({
+            focusPlace: this.state.visibleAddMemberModal ? '' : this.state.focusPlace,
             visibleAddMemberModal: !this.state.visibleAddMemberModal
         });
     }
 
     toggleDeletePlaceModal () {
         this.setState({
+            focusPlace: this.state.visibleDeletePlace ? '' : this.state.focusPlace,
             visibleDeletePlace: !this.state.visibleDeletePlace
         });
     }
@@ -189,10 +188,6 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             account_id: membersId
         }).then(() => {
             message.success(`${members.length} member(s) added to "${this.state.focusPlace}"`);
-        }).finally(() => {
-            this.setState({
-                focusPlace: '',
-            });
         });
     }
 
