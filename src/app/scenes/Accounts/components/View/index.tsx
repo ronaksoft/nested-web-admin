@@ -607,17 +607,18 @@ class View extends React.Component<IViewProps, IViewState> {
                 }
                 <Modal key={this.state.account._id} visible={this.state.visible} onCancel={this.onClose.bind(this)}
                        footer={null} title={header} maskClosable={this.state.maskClosable}
-                       afterClose={this.cleanup} className='account-modal nst-modal' width={800}>
+                       afterClose={this.cleanup} width={800}
+                       className={['account-modal', 'nst-modal', editMode ? 'edit-mode' : ''].join(' ')}>
                     <Row gutter={16}>
                         <Col span={16}>
                             <div className='account-body'>
-                                <Row className='account-info-top info-row'>
+                                <Row className='account-info-top'>
                                     <Row className='account-info-top-1' type='flex' align='middle'>
                                         <div className='account-avatar'>
                                             <UserAvatar avatar size={64} user={this.state.account}/>
                                         </div>
-                                        {/* {
-                                            this.state.token &&
+                                        {
+                                            (this.state.token && editMode) &&
                                             <Upload
                                                 name='avatar'
                                                 action={uploadUrl}
@@ -625,62 +626,130 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 onChange={this.pictureChange}
                                                 beforeUpload={this.beforeUpload}
                                             >
-                                                <a className='change-photo' onClick={this.changePhoto}>Change Photo</a>
+                                            <Button
+                                                type=' butn butn-green secondary'
+                                                onClick={this.changePhoto}>Upload Photo</Button>
+                                            <Button type=' butn butn-red secondary'>
+                                                Remove Photo
+                                            </Button>
                                             </Upload>
-                                        } */}
-                                        <div className='account-name'>
-                                            <span><b>{this.state.account.fname} {this.state.account.lname}</b></span>
-                                            <span>@{this.state.account._id}</span>
-                                        </div>
+                                        }
+                                        {!editMode &&
+                                            <div className='account-name'>
+                                                <span><b>{this.state.account.fname} {this.state.account.lname}</b></span>
+                                                <span>@{this.state.account._id}</span>
+                                            </div>
+                                        }
                                         {/* {
                                             this.state.account.picture && this.state.account.picture.org &&
                                             <a className='remove-photo' onClick={this.removePicture}>Remove Photo</a>
                                         } */}
                                         <div className='filler'/>
-                                        <Switch checkedChildren='Active' unCheckedChildren='Deactive' defaultChecked={!this.state.account.disabled}
+                                        {!editMode &&
+                                            <Switch checkedChildren='Active' unCheckedChildren='Deactive' defaultChecked={!this.state.account.disabled}
                                             onChange={this.onActiveChange}/>
+                                        }
                                     </Row>
-                                    <Row className='account-info-top-2' type='flex' align='middle'>
-                                        <div className='account-avatar'>
-                                            <Row type='flex' justify='center'>
-                                                <IcoN size={16} name={'gearWire16'}/>
-                                                <IcoN size={16} name={'tagWire16'}/>
-                                            </Row>
-                                        </div>
-                                        <h5>Admin and Label Manager</h5>
-                                        <div className='filler'/>
+                                    {!editMode &&
+                                        <Row className='account-info-top-2' type='flex' align='middle'>
+                                            <div className='account-avatar'>
+                                                <Row type='flex' justify='center'>
+                                                    <IcoN size={16} name={'gearWire16'}/>
+                                                    <IcoN size={16} name={'tagWire16'}/>
+                                                </Row>
+                                            </div>
+                                            <h5>Admin and Label Manager</h5>
+                                            <div className='filler'/>
+                                        </Row>
+                                    }
+                                </Row>
+                                {!editMode && <hr className='info-row'/>}
+                                {editMode &&
+                                    <Row className='info-row' gutter={32}>
+                                        <Col span={12}>
+                                            <label>First Name</label>
+                                            <Input/>
+                                        </Col>
+                                        <Col span={12}>
+                                            <label>Last Name</label>
+                                            <Input/>
+                                        </Col>
                                     </Row>
-                                </Row>
+                                }
+                                {!editMode &&
+                                    <Row className='info-row' gutter={32}>
+                                        <Col span={12}>
+                                            <label>Phone Number</label>
+                                            <span className='label-value'>
+                                                {this.state.account.phone}
+                                            </span>
+                                        </Col>
+                                        <Col span={12}>
+                                            <label>Email</label>
+                                            <span className='label-value'>
+                                                {this.state.account.email}
+                                            </span>
+                                        </Col>
+                                    </Row>
+                                }
+                                {editMode &&
+                                    <Row className='info-row' gutter={32}>
+                                        <Col span={24}>
+                                            <label>Phone Number</label>
+                                            <Input value={this.state.account.phone} />
+                                            <p>Enter phone number with country code.</p>
+                                        </Col>
+                                    </Row>
+                                }
+                                {editMode &&
+                                    <Row className='info-row' gutter={32}>
+                                        <Col span={24}>
+                                            <label>Email</label>
+                                            <Input value={this.state.account.email} />
+                                        </Col>
+                                    </Row>
+                                }
                                 <Row className='info-row' gutter={32}>
-                                    <Col span={12}>
-                                        <label>Phone Number</label>
-                                        <span className='label-value'>
-                                            {this.state.account.phone}
-                                        </span>
-                                    </Col>
-                                    <Col span={12}>
-                                        <label>Email</label>
-                                        <span className='label-value'>
-                                            {this.state.account.email}
-                                        </span>
-                                    </Col>
-                                </Row>
-                                <Row className='info-row' gutter={32}>
-                                    <Col span={12}>
+                                    <Col span={editMode ? 12 : 16}>
                                         <label>Birthday</label>
-                                        <span className='label-value'>
-                                            {this.state.account.dob}
-                                        </span>
+                                        {!editMode &&
+                                            <span className='label-value'>
+                                                {this.state.account.dob}
+                                            </span>
+                                        }
+                                        {editMode &&
+                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                                onClick={() => this.editField(EditableFields.dob)}></Button>
+                                        }
                                     </Col>
-                                    <Col span={12}>
+                                    <Col span={editMode ? 8 : 12}>
                                         <label>Gender</label>
-                                        <span className='label-value'>
-                                            Male
-                                        </span>
+                                        {!editMode &&
+                                            <span className='label-value'>
+                                            Male/Female
+                                            </span>
+                                        }
+                                        {editMode &&
+                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                                onClick={() => this.editField(EditableFields.gender)}></Button>
+                                        }
                                     </Col>
                                 </Row>
-                                <hr className='info-row'/>
-                                <Row className='more-info'>
+                                {editMode && <Row className='info-row' gutter={32}>
+                                    <Col span={12}>
+                                        <label>Max. Grand Place</label>
+                                    </Col>
+                                    <Col span={12}>
+                                        <label>Edit Profile Access</label>
+                                    </Col>
+                                </Row>}
+                                {editMode && <Row className='info-row' gutter={32}>
+                                        <label>Searchable</label>
+                                        <div className='filler'></div>
+                                        <p>A short description about searchable feature.</p>
+                                </Row>}
+                                {!editMode && <hr className='info-row'/>}
+                                {!editMode && <Row className='more-info'>
                                     <Col span={8}>
                                         <label>Searchable</label>
                                         <span className='label-value'>
@@ -699,7 +768,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                             {this.state.account.privacy.change_profile}
                                         </span>
                                     </Col>
-                                </Row>
+                                </Row>}
                                 {/* <Row>
                                     <Col span={8}>
                                         <label>First Name</label>
@@ -910,8 +979,16 @@ class View extends React.Component<IViewProps, IViewState> {
                                 managerInPlaces.length > 0 &&
                                 <Row className='remove-margin'>
                                     <Col span={24}>
-                                        {managerInPlaces.map((place) => <PlaceItem onClick={this.showPlaceModal.bind(this)}
-                                                                                place={place}/>)}
+                                        {managerInPlaces.map((place) => {
+                                            return (
+                                                <div className='user-in-place-item'>
+                                                    <PlaceItem onClick={this.showPlaceModal.bind(this)}
+                                                            place={place}/>
+                                                    <a className='promote'>Demote</a>
+                                                    <a className='remove'><IcoN size={16} name={'xcross16'}/></a>
+                                                </div>
+                                            );
+                                        })}
                                     </Col>
                                 </Row>
                             }
@@ -925,8 +1002,12 @@ class View extends React.Component<IViewProps, IViewState> {
                                 memberInPlaces.length > 0 &&
                                 <Row className='remove-margin'>
                                     <Col span={24}>
-                                        {memberInPlaces.map((place) => <PlaceItem onClick={this.showPlaceModal.bind(this)}
-                                                                                place={place} key={place._id}/>)}
+                                        {memberInPlaces.map((place) => <div className='user-in-place-item'>
+                                                    <PlaceItem onClick={this.showPlaceModal.bind(this)}
+                                                        place={place} key={place._id}/>
+                                                    <a className='promote'>Demote</a>
+                                                    <a className='remove'><IcoN size={16} name={'xcross16'}/></a>
+                                                </div>)}
                                     </Col>
                                 </Row>
                             }

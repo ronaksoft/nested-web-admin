@@ -395,6 +395,10 @@
             width: 24px;
             height: 24px;
         }
+        .butn-green {
+            margin-right: 18px;
+            margin-left: 8px;
+        }
     }
     .ant-row, .ant-row-flex {
         padding: 0;
@@ -402,7 +406,7 @@
     }
     .account-info-top {
         height: 132px;
-        border-bottom: 1px solid @color-light-breeze;
+        width: 100%;
         .ant-row-flex {
             width: 100%;
         }
@@ -466,6 +470,47 @@
         text-align: center;
         label {
             justify-content: center;
+        }
+    }
+    .user-in-place-item {
+        position: relative;
+        .promote,
+        .remove {
+            position: absolute;
+            opacity: 0;
+            transition: opacity @animation-duration-base;
+            background-color: white;
+            border-radius: 6px;
+        }
+        &:hover {
+            .promote,
+            .remove {
+                opacity: 1;
+            }
+        }
+        .promote {
+            right: 48px;
+            font-size: 14px;
+            font-weight: bold;
+            top: 24px;
+            padding: 0 8px;
+            line-height: 36px;
+        }
+        .remove {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 32px;
+            top: 16px;
+            right: 4px;
+            fill: @color-force;
+        }
+    }
+    &.edit-mode {
+        .promote,
+        .remove {
+            opacity: 1!important;
         }
     }
 }

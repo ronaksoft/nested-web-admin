@@ -79,7 +79,7 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
 
         return (
             <Dropdown overlay={<Menu onClick={this.handleGroupChange.bind(this)} selectable={false}>{menus}</Menu>}
-                trigger={['click']}>
+                trigger={['click']} placement='bottomRight'>
                 <a className='ant-dropdown-link' href='#'>
                     <IcoN size={24} name='more24'/>
                 </a>
