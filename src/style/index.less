@@ -28,6 +28,10 @@ body {
     cursor: pointer
 }
 
+.fill-force {
+    fill: @color-force;
+}
+
 .filler {
     display: flex;
     flex: 1;
@@ -37,6 +41,10 @@ body {
     justify-content: center
 }
 
+hr {
+    border-top-color: @color-light-breeze;
+    border-bottom: none;
+}
 .main-panel {
     display: table;
     width: 100%;
@@ -588,10 +596,6 @@ div.ant-modal-mask {
         color: @color-solid;
     }
 }
-// contact
-.account-modal {
-
-}
 
 .system-config {
     .scene-head {
@@ -604,13 +608,13 @@ div.ant-modal-mask {
         }
     }
 }
-.change-photo {
-    color: @primary-color;
-    vertical-align: middle;
-    &:hover {
-        text-decoration: underline;
-    }
-}
+// .change-photo {
+//     color: @primary-color;
+//     vertical-align: middle;
+//     &:hover {
+//         text-decoration: underline;
+//     }
+// }
 
 .remove-photo {
     color: @force-color;
@@ -1046,14 +1050,29 @@ div.ant-modal-mask {
     }
 }
 
-.nst-opacity-hover {
-    opacity: 0.2;
-    transition: opacity 0.2s;
-    cursor: pointer;
-    &:hover {
-        opacity: 0.8;
+.list-head {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 6px!important;
+    border-radius: 6px;
+    background: #F6F6F7;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.nst-opacity-hover-parent {
+    border-radius: 5px;
+    .nst-opacity-hover {
+        opacity: 0;
+        cursor: pointer;
+        &.no-hover {
+            opacity: 1;
+        }
     }
-    &.no-hover {
-        opacity: 1;
+    &:hover {
+        background-color: rgba(50, 61, 71, 0.04);
+        .nst-opacity-hover {
+            opacity: 1;
+        }
     }
 }

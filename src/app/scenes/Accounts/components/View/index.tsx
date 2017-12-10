@@ -12,6 +12,7 @@ import {
     Upload,
     Icon,
     message,
+    Select,
     Switch
 } from 'antd';
 import _ from 'lodash';
@@ -22,6 +23,8 @@ import IPerson from '../../interfaces/IPerson';
 import PlaceApi from '../../../../api/place/index';
 import AccountApi from '../../../../api/account/account';
 import UserAvatar from '../../../../components/avatar/index';
+import {IcoN} from '../../../../components/icon/index';
+import MoreOption from '../../../../components/Filter/MoreOption';
 import EditableFields from './EditableFields';
 import CONFIG from 'src/app/config';
 import AAA from './../../../../services/classes/aaa/index';
@@ -42,7 +45,9 @@ interface IViewState {
     token: string;
     selectedPlace?: IPlace;
     visiblePlaceModal: boolean;
+    maskClosable: boolean;
     visible: boolean;
+    editMode: boolean;
 }
 
 class View extends React.Component<IViewProps, IViewState> {
@@ -52,9 +57,11 @@ class View extends React.Component<IViewProps, IViewState> {
         super(props);
         this.state = {
             setEmail: false,
+            editMode: false,
             setDateOfBirth: false,
             account: props.account,
             visiblePlaceModal: false,
+            maskClosable: true,
             visible: true,
         };
 
@@ -68,6 +75,8 @@ class View extends React.Component<IViewProps, IViewState> {
         this.onAdminChange = this.onAdminChange.bind(this);
         this.onActiveChange = this.onActiveChange.bind(this);
         this.onPrivacyChange = this.onPrivacyChange.bind(this);
+        this.toggleEditMode = this.toggleEditMode.bind(this);
+        this.clearForm = this.clearForm.bind(this);
 
     }
 
@@ -231,7 +240,15 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
-    saveForm = (form) => this.form = form;
+    saveForm = (form) => {
+        this.toggleEditMode(false);
+        return this.form = form;
+    }
+
+    clearForm = () => {
+        // this.form.resetFields();
+        this.toggleEditMode(false);
+    }
 
     removePicture() {
         this.accountApi.removePicture({
@@ -390,7 +407,15 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+    toggleEditMode(editMode: boolean) {
+        this.setState({
+            editMode: editMode || !this.state.editMode,
+        });
+    }
+
     render() {
+        const {editMode} = this.state;
+        console.log(editMode);
         const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.access, 'C'));
         const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
 
@@ -508,6 +533,73 @@ class View extends React.Component<IViewProps, IViewState> {
         const accountClone = _.clone(this.state.account);
         const credentials = AAA.getInstance().getCredentials();
         const uploadUrl = `${CONFIG().STORE.URL}/upload/profile_pic/${credentials.sk}/${this.state.token}`;
+
+        const items = [
+            {
+                key: 'label',
+                name: 'Label Manager',
+                icon: 'tag16',
+                switch: false,
+                action: () => {
+                    // tODO Toggle label manager
+                },
+            },
+            {
+                key: 'admin',
+                name: 'Admin',
+                icon: 'gear16',
+                switch: true,
+                action: () => {
+                    // tODO Toggle Admin manager
+                },
+            }
+        ];
+        const header = (
+            <Row className='account-bar' type='flex' align='middle'>
+                {/* Top bar */}
+                <div className='modal-close' onClick={this.onClose.bind(this)}>
+                    <IcoN size={24} name={'xcross24'}/>
+                </div>
+                <h3>Account Deatils</h3>
+                <div className='filler'></div>
+                {!editMode && (
+                    <Row className='account-control' type='flex' align='middle' onClick={this.toggleEditMode}>
+                        <IcoN size={16} name={'pencil16'}/>
+                        <span>Edit</span>
+                    </Row>
+                )}
+                {!editMode && (
+                    <Row className='account-control' type='flex' align='middle'>
+                        <IcoN size={16} name={'chart16'}/>
+                        <span>Reports</span>
+                    </Row>
+                )}
+                {!editMode && (
+                    <Row className='account-control' type='flex' align='middle'>
+                        <IcoN size={16} name={'compose16'}/>
+                        <span>Send a Message</span>
+                    </Row>
+                )}
+                {!editMode && (
+                    <div className='modal-more'>
+                        <MoreOption menus={items}/>
+                    </div>
+                )}
+                {editMode && (
+                        <Button
+                            type=' butn butn-white'
+                            onClick={this
+                                .clearForm}>Discard</Button>
+                )}
+                {editMode && (
+                        <Button
+                            type=' butn butn-green'
+                            onClick={this
+                                .saveForm}>Save Changes</Button>
+                )}
+            </Row>
+        );
+
         return (
             <Row>
                 {this.state.visiblePlaceModal &&
@@ -515,290 +607,449 @@ class View extends React.Component<IViewProps, IViewState> {
                             onClose={this.closePlaceModal.bind(this)}/>
                 }
                 <Modal key={this.state.account._id} visible={this.state.visible} onCancel={this.onClose.bind(this)}
-                       footer={null}
-                       afterClose={this.cleanup} className='account-modal nst-modal' width={480} title='Account Info'>
-                    <Row type='flex' align='top'>
-                        <Col span={8}>
-                            <UserAvatar avatar size={64} user={this.state.account}/>
+                       footer={null} title={header} maskClosable={this.state.maskClosable}
+                       afterClose={this.cleanup} width={800}
+                       className={['account-modal', 'nst-modal', editMode ? 'edit-mode' : ''].join(' ')}>
+                    <Row gutter={16} type='flex'>
+                        <Col span={16}>
+                            <div className='account-body'>
+                                <Row className='account-info-top'>
+                                    <Row className='account-info-top-1' type='flex' align='middle'>
+                                        <div className='account-avatar'>
+                                            <UserAvatar avatar size={64} user={this.state.account}/>
+                                        </div>
+                                        {
+                                            (this.state.token && editMode) &&
+                                            <Upload
+                                                name='avatar'
+                                                action={uploadUrl}
+                                                accept='image/*'
+                                                onChange={this.pictureChange}
+                                                beforeUpload={this.beforeUpload}
+                                            >
+                                            <Button
+                                                type=' butn butn-green secondary'
+                                                onClick={this.changePhoto}>Upload Photo</Button>
+                                            <Button type=' butn butn-red secondary'>
+                                                Remove Photo
+                                            </Button>
+                                            </Upload>
+                                        }
+                                        {!editMode &&
+                                            <div className='account-name'>
+                                                <span><b>{this.state.account.fname} {this.state.account.lname}</b></span>
+                                                <span>@{this.state.account._id}</span>
+                                            </div>
+                                        }
+                                        {/* {
+                                            this.state.account.picture && this.state.account.picture.org &&
+                                            <a className='remove-photo' onClick={this.removePicture}>Remove Photo</a>
+                                        } */}
+                                        <div className='filler'/>
+                                        {!editMode &&
+                                            <Switch checkedChildren='Active' unCheckedChildren='Deactive' defaultChecked={!this.state.account.disabled}
+                                            onChange={this.onActiveChange}/>
+                                        }
+                                    </Row>
+                                    {!editMode &&
+                                        <Row className='account-info-top-2' type='flex' align='middle'>
+                                            <div className='account-avatar'>
+                                                <Row type='flex' justify='center'>
+                                                    <IcoN size={16} name={'gearWire16'}/>
+                                                    <IcoN size={16} name={'tagWire16'}/>
+                                                </Row>
+                                            </div>
+                                            <h5>Admin and Label Manager</h5>
+                                            <div className='filler'/>
+                                        </Row>
+                                    }
+                                </Row>
+                                {!editMode && <hr className='info-row'/>}
+                                {editMode &&
+                                    <Row className='info-row' gutter={24}>
+                                        <Col span={12}>
+                                            <label>First Name</label>
+                                            <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.fname}/>
+                                        </Col>
+                                        <Col span={12}>
+                                            <label>Last Name</label>
+                                            <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.lname}/>
+                                        </Col>
+                                    </Row>
+                                }
+                                {!editMode &&
+                                    <Row className='info-row' gutter={24}>
+                                        <Col span={12}>
+                                            <label>Phone Number</label>
+                                            <span className='label-value'>
+                                                {this.state.account.phone}
+                                            </span>
+                                        </Col>
+                                        <Col span={12}>
+                                            <label>Email</label>
+                                            <span className='label-value'>
+                                                {this.state.account.email}
+                                            </span>
+                                        </Col>
+                                    </Row>
+                                }
+                                {editMode &&
+                                    <Row className='info-row' gutter={24}>
+                                        <Col span={24}>
+                                            <label>Phone Number</label>
+                                            <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.phone}/>
+                                            <p className='field-description'>Enter phone number with country code.</p>
+                                        </Col>
+                                    </Row>
+                                }
+                                {editMode &&
+                                    <Row className='info-row' gutter={24}>
+                                        <Col span={24}>
+                                            <label>Email</label>
+                                            <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.email}/>
+                                        </Col>
+                                    </Row>
+                                }
+                                <Row className='info-row' gutter={24}>
+                                    <Col span={editMode ? 16 : 12}>
+                                        <label>Birthday</label>
+                                        {!editMode &&
+                                            <span className='label-value'>
+                                                {this.state.account.dob}
+                                            </span>
+                                        }
+                                        {editMode &&
+                                            <DatePicker value={this.state.account.dob}
+                                                size='large' className='nst-input' format={this.DATE_FORMAT}/>
+                                        }
+                                    </Col>
+                                    <Col span={editMode ? 8 : 12}>
+                                        <label>Gender</label>
+                                        {!editMode &&
+                                            <span className='label-value'>
+                                            Male/Female
+                                            </span>
+                                        }
+                                        {editMode &&
+                                            <Select
+                                                placeholder={this.state.account.gender === 'm' ? 'Male' : 'Female'}
+                                                size='large'
+                                                style={{width: '100%'}}>
+                                                <Option value={'m'}>Male</Option>
+                                                <Option value={'f'}>Female</Option>
+                                            </Select>
+                                        }
+                                    </Col>
+                                </Row>
+                                {editMode && <Row className='info-row' gutter={24}>
+                                    <Col span={12}>
+                                        <label>Max. Grand Place</label>
+                                        <Input
+                                                id='name'
+                                                size='large'
+                                                className='nst-input'
+                                                value={this.state.account.limits.grand_places}/>
+                                    </Col>
+                                    <Col span={12}>
+                                        <label>Edit Profile Access</label>
+                                        <Select
+                                            placeholder={this.state.account.privacy.change_profile ? 'Yes' : 'No'}
+                                            style={{width: '100%'}} size='large'>
+                                            <Option value={true}>Yes</Option>
+                                            <Option value={false}>Female</Option>
+                                        </Select>
+                                    </Col>
+                                </Row>}
+                                {editMode && <Row className='info-row' gutter={24}>
+                                    <Row style={{width: '100%'}} type='flex'>
+                                        <label style={{width: 'auto'}}>Searchable</label>
+                                        <div className='filler'></div>
+                                        <Switch checkedChildren='Yes' unCheckedChildren='No'
+                                            defaultChecked={!this.state.account.privacy.searchable}/>
+                                    </Row>
+                                    <p className='field-description'>A short description about searchable feature.</p>
+                                </Row>}
+                                {!editMode && <hr className='info-row'/>}
+                                {!editMode && <Row className='more-info'>
+                                    <Col span={8}>
+                                        <label>Searchable</label>
+                                        <span className='label-value'>
+                                            {this.state.account.privacy.searchable ? 'Yes' : 'No'}
+                                        </span>
+                                    </Col>
+                                    <Col span={8}>
+                                        <label>Max. Grand Place</label>
+                                        <span className='label-value'>
+                                        {this.state.account.limits.grand_places}
+                                        </span>
+                                    </Col>
+                                    <Col span={8}>
+                                        <label>Edit Profile Access</label>
+                                        <span className='label-value'>
+                                            {this.state.account.privacy.change_profile ? 'Yes' : 'No'}
+                                        </span>
+                                    </Col>
+                                </Row>}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>First Name</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <b>{this.state.account.fname}</b>
+                                    </Col>
+                                    <Col span={2}>
+                                        <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                                onClick={() => this.editField(EditableFields.fname)}></Button>
+                                    </Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>Last Name</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <b>{this.state.account.lname}</b>
+                                    </Col>
+                                    <Col span={2}>
+                                        <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                                onClick={() => this.editField(EditableFields.lname)}></Button>
+                                    </Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>User ID</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        @{this.state.account._id}
+                                    </Col>
+                                    <Col span={2}></Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>Password</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <i>●●●●●●●●</i>
+                                    </Col>
+                                    <Col span={2}>
+                                        <Button type='toolkit nst-ico ic_more_solid_16'
+                                                onClick={() => this.editField(EditableFields.pass)}></Button>
+                                    </Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>Phone Number</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        {this.state.account.phone}
+                                    </Col>
+                                    <Col span={2}>
+                                        <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                                onClick={() => this.editField(EditableFields.phone)}></Button>
+                                    </Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>Birthday</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        {
+                                            this.state.account.dob &&
+                                            <span>{this.state.account.dob}</span>
+                                        }
+                                        {
+                                            !this.state.account.dob &&
+                                            <a onClick={() => this.editField(EditableFields.dob)}><i>-click to assign-</i></a>
+                                        }
+                                    </Col>
+                                    <Col span={2}>
+                                        {
+                                            this.state.account.dob &&
+                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                                    onClick={() => this.editField(EditableFields.dob)}></Button>
+                                        }
+                                    </Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>Email</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        {
+                                            this.state.account.email &&
+                                            <span>{this.state.account.email}</span>
+                                        }
+                                        {
+                                            !this.state.account.email &&
+                                            <a onClick={() => this.editField(EditableFields.email)}><i>-click to assign-</i></a>
+                                        }
+                                    </Col>
+                                    <Col span={2}>
+                                        {
+                                            this.state.account.email &&
+                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                                    onClick={() => this.editField(EditableFields.email)}></Button>
+                                        }
+                                    </Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>Searchable</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <Switch
+                                            checkedChildren={<Icon type='check'/>}
+                                            unCheckedChildren={<Icon type='cross'/>}
+                                            defaultChecked={this.state.account.privacy.searchable}
+                                            onChange={(checked) => this.onPrivacyChange({searchable: checked})}
+                                        />
+                                    </Col>
+                                    <Col span={2}></Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>Grand Places Limit</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        {this.state.account.limits.grand_places}
+                                    </Col>
+                                    <Col span={2}>
+                                        <Button type='toolkit nst-ico ic_pencil_solid_16'
+                                                onClick={() => this.editField(EditableFields['limits.grand_places'])}></Button>
+                                    </Col>
+                                </Row> */}
+                                {/* <Row>
+                                    <Col span={8}>
+                                        <label>Edit Profile</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <Switch
+                                            checkedChildren={<Icon type='check'/>}
+                                            unCheckedChildren={<Icon type='cross'/>}
+                                            defaultChecked={this.state.account.privacy.change_profile}
+                                            onChange={(checked) => this.onPrivacyChange({change_profile: checked})}
+                                        />
+                                    </Col>
+                                    <Col span={2}></Col>
+                                </Row>
+                                <Row>
+                                    <Col span={8}>
+                                        <label>Change Profile Picture</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <Switch
+                                            checkedChildren={<Icon type='check'/>}
+                                            unCheckedChildren={<Icon type='cross'/>}
+                                            defaultChecked={this.state.account.privacy.change_picture}
+                                            onChange={(checked) => this.onPrivacyChange({change_picture: checked})}
+                                        />
+                                    </Col>
+                                    <Col span={2}></Col>
+                                </Row>
+                                <Row>
+                                    <Col span={8}>
+                                        <label>Force Password Change</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <Switch
+                                            checkedChildren={<Icon type='check'/>}
+                                            unCheckedChildren={<Icon type='cross'/>}
+                                            defaultChecked={this.state.account.flags.force_password_change}
+                                            onChange={(checked) => this.onFlagChange({force_password: checked})}
+                                        />
+                                    </Col>
+                                    <Col span={2}></Col>
+                                </Row>
+                                <Row>
+                                    <Col span={8}>
+                                        <label>Administrator</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <Switch
+                                            checkedChildren={<Icon type='check'/>}
+                                            unCheckedChildren={<Icon type='cross'/>}
+                                            defaultChecked={this.state.account.admin}
+                                            onChange={this.onAdminChange}
+                                        />
+                                    </Col>
+                                    <Col span={2}></Col>
+                                </Row>
+                                <Row>
+                                    <Col span={8}>
+                                        <label>Label Manager</label>
+                                    </Col>
+                                    <Col span={14}>
+                                        <Switch
+                                            checkedChildren={<Icon type='check'/>}
+                                            unCheckedChildren={<Icon type='cross'/>}
+                                            defaultChecked={this.state.account.authority ? this.state.account.authority.label_editor : false}
+                                            onChange={(checked) => this.onAuthorityChange(checked)}
+                                        />
+                                    </Col>
+                                    <Col span={2}></Col>
+                                </Row> */}
+                            </div>
                         </Col>
-                        <Col span={8}>
+                        <Col span={8} className='account-places'>
                             {
-                                this.state.token &&
-                                <Upload
-                                    name='avatar'
-                                    action={uploadUrl}
-                                    accept='image/*'
-                                    onChange={this.pictureChange}
-                                    beforeUpload={this.beforeUpload}
-                                >
-                                    <a className='change-photo' onClick={this.changePhoto}>Change Photo</a>
-                                </Upload>
+                                managerInPlaces.length > 0 &&
+                                <Row className='list-head'>
+                                    Manager of {managerInPlaces.length} place
+                                </Row>
+                            }
+                            {
+                                managerInPlaces.length > 0 &&
+                                <Row className='remove-margin'>
+                                    <Col span={24}>
+                                        {managerInPlaces.map((place) => {
+                                            return (
+                                                <div className='user-in-place-item'>
+                                                    <PlaceItem onClick={this.showPlaceModal.bind(this)}
+                                                            place={place}/>
+                                                    <a className='promote'>Demote</a>
+                                                    <a className='remove'><IcoN size={16} name={'xcross16'}/></a>
+                                                </div>
+                                            );
+                                        })}
+                                    </Col>
+                                </Row>
+                            }
+                            {
+                                memberInPlaces.length > 0 &&
+                                <Row className='list-head'>
+                                        Member of {memberInPlaces.length} place
+                                </Row>
+                            }
+                            {
+                                memberInPlaces.length > 0 &&
+                                <Row className='remove-margin'>
+                                    <Col span={24}>
+                                        {memberInPlaces.map((place) => <div className='user-in-place-item'>
+                                                    <PlaceItem onClick={this.showPlaceModal.bind(this)}
+                                                        place={place} key={place._id}/>
+                                                    <a className='promote'>Demote</a>
+                                                    <a className='remove'><IcoN size={16} name={'xcross16'}/></a>
+                                                </div>)}
+                                    </Col>
+                                </Row>
                             }
                         </Col>
-                        <Col span={8}>
-                            {
-                                this.state.account.picture && this.state.account.picture.org &&
-                                <a className='remove-photo' onClick={this.removePicture}>Remove Photo</a>
-                            }
-                        </Col>
                     </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>First Name</label>
-                        </Col>
-                        <Col span={14}>
-                            <b>{this.state.account.fname}</b>
-                        </Col>
-                        <Col span={2}>
-                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                    onClick={() => this.editField(EditableFields.fname)}></Button>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Last Name</label>
-                        </Col>
-                        <Col span={14}>
-                            <b>{this.state.account.lname}</b>
-                        </Col>
-                        <Col span={2}>
-                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                    onClick={() => this.editField(EditableFields.lname)}></Button>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>User ID</label>
-                        </Col>
-                        <Col span={14}>
-                            @{this.state.account._id}
-                        </Col>
-                        <Col span={2}></Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Active</label>
-                        </Col>
-                        <Col span={14}>
-                            <Switch
-                                checkedChildren={<Icon type='check'/>}
-                                unCheckedChildren={<Icon type='cross'/>}
-                                defaultChecked={!this.state.account.disabled}
-                                onChange={this.onActiveChange}
-                            />
-                        </Col>
-                        <Col span={2}></Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Password</label>
-                        </Col>
-                        <Col span={14}>
-                            <i>●●●●●●●●</i>
-                        </Col>
-                        <Col span={2}>
-                            <Button type='toolkit nst-ico ic_more_solid_16'
-                                    onClick={() => this.editField(EditableFields.pass)}></Button>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Phone Number</label>
-                        </Col>
-                        <Col span={14}>
-                            {this.state.account.phone}
-                        </Col>
-                        <Col span={2}>
-                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                    onClick={() => this.editField(EditableFields.phone)}></Button>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Birthday</label>
-                        </Col>
-                        <Col span={14}>
-                            {
-                                this.state.account.dob &&
-                                <span>{this.state.account.dob}</span>
-                            }
-                            {
-                                !this.state.account.dob &&
-                                <a onClick={() => this.editField(EditableFields.dob)}><i>-click to assign-</i></a>
-                            }
-                        </Col>
-                        <Col span={2}>
-                            {
-                                this.state.account.dob &&
-                                <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                        onClick={() => this.editField(EditableFields.dob)}></Button>
-                            }
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Email</label>
-                        </Col>
-                        <Col span={14}>
-                            {
-                                this.state.account.email &&
-                                <span>{this.state.account.email}</span>
-                            }
-                            {
-                                !this.state.account.email &&
-                                <a onClick={() => this.editField(EditableFields.email)}><i>-click to assign-</i></a>
-                            }
-                        </Col>
-                        <Col span={2}>
-                            {
-                                this.state.account.email &&
-                                <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                        onClick={() => this.editField(EditableFields.email)}></Button>
-                            }
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Searchable</label>
-                        </Col>
-                        <Col span={14}>
-                            <Switch
-                                checkedChildren={<Icon type='check'/>}
-                                unCheckedChildren={<Icon type='cross'/>}
-                                defaultChecked={this.state.account.privacy.searchable}
-                                onChange={(checked) => this.onPrivacyChange({searchable: checked})}
-                            />
-                        </Col>
-                        <Col span={2}></Col>
-                    </Row>
-                    <Row>
-                        <Col span={24}>
-                            <div className='form-devider'></div>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Grand Places Limit</label>
-                        </Col>
-                        <Col span={14}>
-                            {this.state.account.limits.grand_places}
-                        </Col>
-                        <Col span={2}>
-                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                    onClick={() => this.editField(EditableFields['limits.grand_places'])}></Button>
-                        </Col>
-
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Edit Profile</label>
-                        </Col>
-                        <Col span={14}>
-                            <Switch
-                                checkedChildren={<Icon type='check'/>}
-                                unCheckedChildren={<Icon type='cross'/>}
-                                defaultChecked={this.state.account.privacy.change_profile}
-                                onChange={(checked) => this.onPrivacyChange({change_profile: checked})}
-                            />
-                        </Col>
-                        <Col span={2}></Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Change Profile Picture</label>
-                        </Col>
-                        <Col span={14}>
-                            <Switch
-                                checkedChildren={<Icon type='check'/>}
-                                unCheckedChildren={<Icon type='cross'/>}
-                                defaultChecked={this.state.account.privacy.change_picture}
-                                onChange={(checked) => this.onPrivacyChange({change_picture: checked})}
-                            />
-                        </Col>
-                        <Col span={2}></Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Force Password Change</label>
-                        </Col>
-                        <Col span={14}>
-                            <Switch
-                                checkedChildren={<Icon type='check'/>}
-                                unCheckedChildren={<Icon type='cross'/>}
-                                defaultChecked={this.state.account.flags.force_password_change}
-                                onChange={(checked) => this.onFlagChange({force_password: checked})}
-                            />
-                        </Col>
-                        <Col span={2}></Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Administrator</label>
-                        </Col>
-                        <Col span={14}>
-                            <Switch
-                                checkedChildren={<Icon type='check'/>}
-                                unCheckedChildren={<Icon type='cross'/>}
-                                defaultChecked={this.state.account.admin}
-                                onChange={this.onAdminChange}
-                            />
-                        </Col>
-                        <Col span={2}></Col>
-                    </Row>
-                    <Row>
-                        <Col span={8}>
-                            <label>Label Manager</label>
-                        </Col>
-                        <Col span={14}>
-                            <Switch
-                                checkedChildren={<Icon type='check'/>}
-                                unCheckedChildren={<Icon type='cross'/>}
-                                defaultChecked={this.state.account.authority ? this.state.account.authority.label_editor : false}
-                                onChange={(checked) => this.onAuthorityChange(checked)}
-                            />
-                        </Col>
-                        <Col span={2}></Col>
-                    </Row>
-                    {
-                        managerInPlaces.length > 0 &&
-                        <Row className='devide-row'>
-                            <Col span={18}>
-                                Manager of
-                            </Col>
-                            <Col style={{textAlign: 'right'}} span={6}>
-                                {managerInPlaces.length} place
-                            </Col>
-                        </Row>
-                    }
-                    {
-                        managerInPlaces.length > 0 &&
-                        <Row className='remove-margin'>
-                            <Col span={24}>
-                                {managerInPlaces.map((place) => <PlaceItem onClick={this.showPlaceModal.bind(this)}
-                                                                           place={place}/>)}
-                            </Col>
-                        </Row>
-                    }
-                    {
-                        memberInPlaces.length > 0 &&
-                        <Row className='devide-row'>
-                            <Col span={18}>
-                                Member of
-                            </Col>
-                            <Col style={{textAlign: 'right'}} span={6}>
-                                {memberInPlaces.length} place
-                            </Col>
-                        </Row>
-                    }
-                    {
-                        memberInPlaces.length > 0 &&
-                        <Row className='remove-margin'>
-                            <Col span={24}>
-                                {memberInPlaces.map((place) => <PlaceItem onClick={this.showPlaceModal.bind(this)}
-                                                                          place={place} key={place._id}/>)}
-                            </Col>
-                        </Row>
-                    }
                     <Modal
                         key={this.props.account._id}
                         title='Edit'

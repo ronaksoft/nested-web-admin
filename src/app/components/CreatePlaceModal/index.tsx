@@ -338,6 +338,12 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         let currentMembers = this.state.model.members;
         const list = _.differenceBy(members, currentMembers, '_id');
         currentMembers = currentMembers.concat(list);
+        const adminCount = _.filter(currentMembers, (item) => {
+            return item.admin === true;
+        }).length;
+        if (currentMembers.length > 0 && adminCount === 0) {
+            currentMembers[0].admin = true;
+        }
         if (currentMembers.length > this.state.model.memberLimit) {
             message.warning(`You cannot have more than ${this.state.model.memberLimit} members`);
             return;
@@ -359,7 +365,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
     checkIdAvailability(id: string) {
         id = id.toLowerCase();
-        if (this.placeIdRegex.test(id)) {
+        if (this.placeIdRegex.test(id) && id.length > 2) {
             if (this.state.grandPlaceId !== '') {
                 id = this.state.grandPlaceId + '.' + id;
             }
@@ -558,15 +564,31 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         }
     }
 
+    removeMember(user: any) {
+        const index = _.findIndex(this.state.model.members, {
+            '_id': user._id,
+        });
+        if (index > -1) {
+            const members = this.state.model.members;
+            members.splice(index, 1);
+            this.updateModel({
+                members: members,
+            });
+        }
+    }
+
     getMembersItems() {
         var list = this.state.model.members.map((u: any) => {
             return (
-                <li key={u._id}>
+                <li key={u._id} className={'nst-opacity-hover-parent'}>
                     <Row type='flex' align='middle'>
                         <UserAvatar user={u} borderRadius={'16'} size={24} avatar></UserAvatar>
                         <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
+                        <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.removeMember.bind(this, u)}>
+                            <IcoN size={16 } name={'bin16'}/>
+                        </span>
                         <span className={['nst-opacity-hover', (u.admin ? 'no-hover': '')].join(' ')} onClick={this.toggleAdmin.bind(this, u)}>
-                            <IcoN size={24} name={'crown24'}/>
+                            <IcoN size={24} name={u.admin ? 'crown24' : 'crownWire24'}/>
                         </span>
                     </Row>
                 </li>
@@ -678,8 +700,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                                    className={['nst-input', (!this.state.idValidation.valid && this.state.idValidation.reason !== 0) ? 'error' : ''].join(' ')}
                                    value={model.id}
                                    onChange={this.updatePlaceId.bind(this)}/>
-                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 1) && <p class='nsd-error'>Id Invalid</p>}
-                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 2) && <p class='nsd-error'>Already Exist</p>}
+                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 1) && <p class='nst-error'>Id Invalid</p>}
+                            {(!this.state.idValidation.valid && this.state.idValidation.reason === 2) && <p class='nst-error'>Already Exist</p>}
                             <p>Place will be identified by this unique address: grand-place.choosen-id You can't change
                                 this afterwards, so choose wisely!</p>
                         </Row>

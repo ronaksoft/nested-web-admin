@@ -91,6 +91,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
             .then(() => {
                 aaa.setIsUnAthenticated();
                 hashHistory.push('/signin');
+                localStorage.removeItem('nested.server.domain');
             });
     }
 

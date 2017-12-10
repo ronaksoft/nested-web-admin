@@ -16,10 +16,8 @@ function PlaceItem(props: any) {
                 props.onClick(props.place);
             }
         }}>
-            <Col span={3}>
-                <PlaceView borderRadius={4} place={props.place} size={32} avatar></PlaceView>
-            </Col>
-            <Col span={15}>
+            <PlaceView borderRadius={4} place={props.place} size={32} avatar></PlaceView>
+            <Row type='flex' className='place-name-id'>
                 <p>
                     {props.place.privacy.locked &&
                     <Icon type=' nst-ico ic_brick_wall_solid_16' style={iconStyle}/>
@@ -30,10 +28,8 @@ function PlaceItem(props: any) {
                     {props.place.name}
                 </p>
                 <span>{props.place._id}</span>
-            </Col>
-            <Col span={6}>
-                <aside>{props.place.counters.creators + props.place.counters.key_holders} Members</aside>
-            </Col>
+            </Row>
+            <aside>{props.place.counters.creators + props.place.counters.key_holders} Members</aside>
         </Row>
     );
 }

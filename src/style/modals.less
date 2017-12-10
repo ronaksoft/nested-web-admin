@@ -40,6 +40,9 @@
         height: 16px;
         padding: 0;
     }
+    .ant-calendar-picker {
+        width: 100%;
+    }
     .devide-row {
         background-color: #F7FAF8;
         height: 32px;
@@ -52,8 +55,23 @@
     }
     .place-row {
         height: 64px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        .place-name-id {
+            flex-direction: column;
+            padding: 0 4px;
+            max-width: ~'calc(100% - 40px)';
+        }
+        aside,i {
+            display: none;
+        }
+        p, span {
+            width: 100%;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         p {
+            margin-top: 6px;
             font-size: 14px;
             i {
               margin-right: 4px;
@@ -67,6 +85,29 @@
             text-align: right;
             color: rgba(0, 0, 0, .48)
         }
+        .PlaveView {
+            margin: 0 4px;
+        }
+    }
+
+    .modal-close{
+        width: 40px;
+        margin: 0 2px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity @animation-duration-base;
+        opacity: .64;
+        &:hover {
+            opacity: 1;
+        }
+    }
+    .field-description {
+        font-size: 13px;
+        opacity: 0.8;
+        line-height: 26px;
+        padding: 0 6px;
     }
 }
 .ant-modal.create-place-modal {
@@ -296,5 +337,206 @@
         font-size: 14px;
         color: @color-solid;
         min-height: 160px;
+    }
+}
+
+// contact
+.account-modal {
+    margin: 32px auto 48px;
+    box-shadow: 0px 32px 64px #232629;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #fff;
+    height: ~'calc(100% - 80px)';
+    .ant-modal-content {
+        box-shadow: none;
+        min-height: unset;
+        height: 100%;
+    }
+    .ant-modal-header {
+        padding: 0;
+        border-bottom: none;
+    }
+    .ant-modal-body {
+        padding: 24px;
+        height: ~'calc(100% - 72px)';
+        > .ant-row-flex {
+            height: 100%;
+        }
+        .account-body {
+            border: 1px solid @color-light-breeze;
+            border-radius: 4px;
+            min-height: 100%;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            padding: 0 24px 64px;
+            background: rgba(50, 61, 71, 0.02);
+        }
+    }
+    .account-places {
+        height: 100%;
+        overflow: auto;
+    }
+    .ant-modal-close {
+        display: none;
+    }
+    .modal-more {
+        width: 40px;
+        margin: 0 2px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .account-bar {
+        height: 72px;
+        margin: 0;
+        padding: 0 16px!important;
+        border-bottom: 1px solid @color-light-breeze;
+        h3 {
+            opacity: .72;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .account-control {
+            padding: 0 8px;
+            margin-right: 16px;
+            margin-bottom: 0;
+            i {
+                margin-right: 4px;
+                opacity: .64;
+                display: flex;
+            }
+            span {
+                font-size: 14px;
+                opacity: .8;
+                font-weight: bold
+            }
+        }
+        .ant-dropdown-link.ant-dropdown-trigger {
+            width: 24px;
+            height: 24px;
+        }
+        .butn-green {
+            margin-right: 18px;
+            margin-left: 8px;
+        }
+    }
+    .ant-row, .ant-row-flex {
+        padding: 0;
+        margin-bottom: 0;
+    }
+    .account-info-top {
+        height: 132px;
+        width: 100%;
+        .butn {
+            margin-right: 16px;
+        }
+        .ant-row-flex {
+            width: 100%;
+        }
+        .account-info-top-1 {
+            height: 96px;
+        }
+        .account-info-top-2 {
+            height: 36px;
+            opacity: .8;
+        }
+        .account-avatar {
+            width: 64px;
+        }
+        h5 {
+            font-size: 13px;
+            margin: 0;
+            font-weight: bold;
+            line-height: 18px;
+        }
+        .account-name { 
+            display: flex;
+            flex-direction: column;
+            span:first-of-type {
+                font-size: 20px;
+                line-height: 28px;
+                margin-bottom: 4px;
+            }
+            span:first-of-type + span{
+                font-size: 16px;
+                opacity: .8;
+                color: @primary-color;
+                line-height: 22px;
+            }
+        }
+        .account-avatar {
+            margin-right: 24px;
+            i {
+                margin: 2px;
+            }
+        }
+    }
+    .info-row {
+        margin-bottom: 24px;
+        width: 100%;
+    }
+    label {
+        opacity: 0.8;
+        font-size: 13px;
+        line-height: 18px;
+        margin-bottom: 4px;
+        display: flex;
+        width: 100%;
+    }
+    .label-value {
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 22px;
+        width: 100%;
+    }
+    .more-info {
+        text-align: center;
+        label {
+            justify-content: center;
+        }
+    }
+    .user-in-place-item {
+        position: relative;
+        .promote,
+        .remove {
+            position: absolute;
+            opacity: 0;
+            transition: opacity @animation-duration-base;
+            background-color: white;
+            border-radius: 6px;
+        }
+        &:hover {
+            .promote,
+            .remove {
+                opacity: 1;
+            }
+        }
+        .promote {
+            right: 48px;
+            font-size: 14px;
+            font-weight: bold;
+            top: 24px;
+            padding: 0 8px;
+            line-height: 36px;
+        }
+        .remove {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 32px;
+            top: 16px;
+            right: 4px;
+            fill: @color-force;
+        }
+    }
+    &.edit-mode {
+        .promote,
+        .remove {
+            opacity: 1!important;
+        }
     }
 }

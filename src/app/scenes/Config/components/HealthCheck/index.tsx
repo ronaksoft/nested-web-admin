@@ -18,7 +18,7 @@ IHealthCheckState > {
             loading: true
         };
 
-        this.run = this.run.bind(this);
+        // this.run = this.run.bind(this);
         this.checkStatusInterval = null;
     }
 
@@ -29,7 +29,7 @@ IHealthCheckState > {
             this.setState({ loading: false });
             this.checkStatusInterval = setInterval(() => {
                 this.load();
-            }, 6000);
+            }, 30000);
         }, () => {
             this.setState({loading: false});
         });
@@ -41,45 +41,7 @@ IHealthCheckState > {
         }
     }
 
-    render() {
-        return (
-            <Card title='Health Check' className='optionCard'>
-                <ul>
-                    <li>
-                        <Row>
-                            <Col span={12}>
-                                <Row style={{marginBottom: 16}}>
-                                    <Col span={24}>
-                                        <p>Health check is designed to fix any possible errors.</p>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={12}>
-                                        <Button size='large' icon='play-circle' loading={this.state.isRunning} onClick={this.run}>Run</Button>
-                                    </Col>
-                                    <Col span={12}>
-                                    {
-                                        this.state.last &&
-                                        <p>Last Run: <b>{this.state.last.format('dddd, MMMM Do YYYY, h:mm:ss a')}</b></p>
-                                    }
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col span={12}>
-                                <Alert  message='Notes'
-                                        description='It is recommended to run this job during nights or while your server is not busy. Please note that it takes several minutes and you will be notified once the job has been completed.'
-                                        type='info'
-                                        showIcon/>
-                            </Col>
-                        </Row>
-                    </li>
-                </ul>
-            </Card>
-        );
-    }
-
     run() {
-
         this.setState({progress: true});
 
         return this.systemApi.runHealthCheck().then((response) => {
@@ -113,6 +75,43 @@ IHealthCheckState > {
         }
 
         return lastMoment;
+    }
+
+    render() {
+        return (
+            <Card title='Health Check' className='optionCard'>
+                <ul>
+                    <li>
+                        <Row>
+                            <Col span={12}>
+                                <Row style={{marginBottom: 16}}>
+                                    <Col span={24}>
+                                        <p>Health check is designed to fix any possible errors.</p>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={12}>
+                                        <Button size='large' icon='play-circle' loading={this.state.isRunning} onClick={this.run.bind(this)}>Run</Button>
+                                    </Col>
+                                    <Col span={12}>
+                                    {
+                                        this.state.last &&
+                                        <p>Last Run: <b>{this.state.last.format('dddd, MMMM Do YYYY, h:mm:ss a')}</b></p>
+                                    }
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col span={12}>
+                                <Alert  message='Notes'
+                                        description='It is recommended to run this job during nights or while your server is not busy. Please note that it takes several minutes and you will be notified once the job has been completed.'
+                                        type='info'
+                                        showIcon/>
+                            </Col>
+                        </Row>
+                    </li>
+                </ul>
+            </Card>
+        );
     }
 }
 
