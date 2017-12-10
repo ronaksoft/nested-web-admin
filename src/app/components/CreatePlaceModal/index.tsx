@@ -584,11 +584,11 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                     <Row type='flex' align='middle'>
                         <UserAvatar user={u} borderRadius={'16'} size={24} avatar></UserAvatar>
                         <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
-                        <span className={'nst-opacity-hover'} onClick={this.removeMember.bind(this, u)}>
-                            <IcoN size={24} name={'xcross16'}/>
+                        <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.removeMember.bind(this, u)}>
+                            <IcoN size={16 } name={'bin16'}/>
                         </span>
                         <span className={['nst-opacity-hover', (u.admin ? 'no-hover': '')].join(' ')} onClick={this.toggleAdmin.bind(this, u)}>
-                            <IcoN size={24} name={u.admin ? 'crown24' : 'atsign24'}/>
+                            <IcoN size={24} name={u.admin ? 'crown24' : 'crownWire24'}/>
                         </span>
                     </Row>
                 </li>
