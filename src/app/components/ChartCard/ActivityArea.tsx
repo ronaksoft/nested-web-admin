@@ -14,14 +14,17 @@ import MeasureType, {MeasureTypeValues} from './MeasureType';
 
 interface IActivityAreaProps {
     color: string;
-    dataType: ReportType;
+    dataType: ReportType[];
     period: TimePeriod;
     title: string;
     measure: MeasureType;
+    comparePreviousPeriod?: boolean;
+    syncId? : string;
 }
 
 interface IActivityAreaState {
     activities: Array;
+    comparePreviousPeriod: boolean;
 }
 
 class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaState> {
@@ -31,6 +34,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
         this.state = {
             activities: [],
             period: this.props.period,
+            comparePreviousPeriod: false,
             loading: false
         };
     }
@@ -40,40 +44,58 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
         this.load(this.state.period);
     }
 
-    componentWillReceiveProps(newProps: IFilterProps) {
-        this.load(newProps.period);
+    componentWillReceiveProps(newProps: IActivityAreaProps) {
+        if(newProps.comparePreviousPeriod !== this.props.comparePreviousPeriod) {
+            this.setState({
+                comparePreviousPeriod: newProps.comparePreviousPeriod,
+            });
+        } else {
+            this.load(newProps.period);
+        }
     }
 
     reload() {
         this.load(this.state.period);
     }
 
+    info(e: any) {
+        // console.log(e);
+    }
+
     render() {
         const settings = this.getSettings(this.state.period);
         const days = this.getDays(settings);
+        const stroke = ['#8884d8', '#82ca9d', '#ffc658', '#000000', '#000000', '#000000'];
+        const fills = ['#8884d8', '#82ca9d', '#ffc658', '#ff2215', '#ffcc58', '#ffbb58'];
+        const dataTypes = this.props.dataType || [];
+        if (dataTypes.length === 0) {
+            return;
+        }
+        const Areas = dataTypes.map((dType, i) => {
+            return <Area key={i + 'a'} type='monotone' dataKey={dType} name={ReportType[dType]}
+                    stroke={stroke[i]} stackId='1' fill={fills[i]}/>;
+        });
+        if (this.state.comparePreviousPeriod) {
+            dataTypes.map((dType, i) => {
+                Areas.push(<Area key={i + 'b'} type='monotone' dataKey={'previous' + dType} name={'Previous ' + ReportType[dType]}
+                        stroke={stroke[i]} stackId='2' fill={fills[i]} fillOpacity={.16} strokeOpacity={.32}/>);
+            });
+        }
         const content = (
             <ResponsiveContainer width='100%' height={300}>
-                <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
-                    <defs>
-                        <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
-                            <stop offset='5%' stopColor={settings.latestAreaColor} stopOpacity={0.5}/>
-                            <stop offset='95%' stopColor={settings.latestAreaColor} stopOpacity={0}/>
-                        </linearGradient>
-                        <linearGradient id='colorPv' x1='0' y1='0' x2='0' y2='1'>
-                            <stop offset='5%' stopColor={settings.secondAreaColor} stopOpacity={0.5}/>
-                            <stop offset='95%' stopColor={settings.secondAreaColor} stopOpacity={0}/>
-                        </linearGradient>
-                    </defs>
+                <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}} onMouseMove={this.info.bind(this)}
+                    syncId={this.props.syncId}>
                     <XAxis dataKey='label' tickLine={false} axisLine={false} tickFormatter={settings.tickFormatter}
                            minTickGap={1}/>
                     <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
                     <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
                     <Tooltip formatter={(value) => this.formatValue(value, 3)}
                              labelFormatter={settings.tooltipLabelFormatter}/>
-                    <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel}
+                    {/* <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel}
                           stroke={settings.latestAreaColor} fill='url(#colorUv)'/>
                     <Area type='monotone' dataKey='second' name={settings.secondAreaLabel}
-                          stroke={settings.secondAreaColor} fill='url(#colorPv)'/>
+                          stroke={settings.secondAreaColor} fill='url(#colorPv)'/> */}
+                    {Areas}
                 </AreaChart>
             </ResponsiveContainer>
         );
@@ -148,20 +170,24 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
             loading: true,
             activities: []
         });
-
-        this.reportApi.get({
-            from: start,
-            to: end,
-            type: this.props.dataType,
-            res: settings.resolutionKey
-        }).then((response) => {
-            const parsedActivities = settings.parser(response.result);
+        if(!Array.isArray(this.props.dataType) || this.props.dataType.length === 0) {
+            return;
+        }
+        Promise.all(this.props.dataType.map(dataType => {
+            return this.reportApi.get({
+                from: start,
+                to: end,
+                type: dataType,
+                res: settings.resolutionKey
+            });
+        })).then(values => {
+            const parsedActivities = values.map(val => settings.parser(val.result));
             this.setState({
                 activities: parsedActivities,
                 period: period,
                 loading: false
             });
-        }, (error) => {
+        }).catch(error => {
             this.setState({
                 loading: false
             });
@@ -183,12 +209,20 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
             const duration = settings.ticksGapDuration * number;
             const latestHalfDay = latestHalfStart.clone().add(duration);
             const secondHalfDay = secondHalfStart.clone().add(duration);
-
-            return {
+            var res = {
                 label: latestHalfDay.format('YYYY-MM-DD:HH:mm'),
-                latest: this.findSumByDate(this.state.activities, latestHalfDay.format('YYYY-MM-DD:HH:mm')),
-                second: this.findSumByDate(this.state.activities, secondHalfDay.format('YYYY-MM-DD:HH:mm'))
+                latest: this.findSumByDate(this.state.activities[0], latestHalfDay.format('YYYY-MM-DD:HH:mm')),
+                second: this.findSumByDate(this.state.activities[0], secondHalfDay.format('YYYY-MM-DD:HH:mm'))
             };
+            this.props.dataType.forEach((dType, i) => {
+                res[dType] = this.findSumByDate(this.state.activities[i], latestHalfDay.format('YYYY-MM-DD:HH:mm'));
+            });
+            if (this.state.comparePreviousPeriod) {
+                this.props.dataType.forEach((dType, i) => {
+                    res['previous' + dType] = this.findSumByDate(this.state.activities[i], secondHalfDay.format('YYYY-MM-DD:HH:mm'));
+                });
+            }
+            return res;
         });
     }
 

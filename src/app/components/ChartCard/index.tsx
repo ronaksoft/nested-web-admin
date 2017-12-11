@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dropdown, Card, Menu, Icon, Button, ButtonGroup} from 'antd';
+import {Dropdown, Card, Menu, Icon, Button, Switch} from 'antd';
 import TimePeriod from './TimePeriod';
 import ActivityArea from './ActivityArea';
 import ReportType from '../../api/report/ReportType';
@@ -7,13 +7,16 @@ import MeasureType from './MeasureType';
 
 interface IChartCardProps {
     title: string;
-    dataType: ReportType;
+    dataType: ReportType[];
     color: string;
     measure: MeasureType;
+    syncId?: string;
 }
 
 interface IChartCardState {
-    activities: Array;
+    activities: Array<any>;
+    comparePreviousPeriod: boolean;
+    period: any;
 }
 
 class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
@@ -21,6 +24,8 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
         super(props);
 
         this.state = {
+            activities: [],
+            comparePreviousPeriod: false,
             period: TimePeriod.Week
         };
 
@@ -31,10 +36,23 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
         this.area.reload();
     }
 
+    changeCompare(checked: boolean) {
+        this.setState({
+            comparePreviousPeriod: checked,
+        });
+    }
+
     render() {
         return (
             <Card title={this.props.title} extra={
                 <div>
+                    Compare with previous period ?!
+                    &nbsp;
+                    &nbsp;
+                    <Switch defaultChecked={this.state.comparePreviousPeriod}
+                    onChange={this.changeCompare.bind(this)} />
+                    &nbsp;
+                    &nbsp;
                     <a rel='noopener noreferrer' onClick={this.reload}><Icon type='reload'/></a>
                     &nbsp;
                     &nbsp;
@@ -64,8 +82,8 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
             }>
                 <ActivityArea measure={this.props.measure} ref={(area) => {
                     this.area = area;
-                }} dataType={this.props.dataType} color={this.props.color} title={this.props.title}
-                              period={this.state.period}/>
+                }} syncId={this.props.syncId} dataType={this.props.dataType} color={this.props.color} title={this.props.title}
+                              period={this.state.period} comparePreviousPeriod={this.state.comparePreviousPeriod}/>
             </Card>
         );
     }
