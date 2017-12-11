@@ -12,6 +12,9 @@ interface IPerson extends IAccount {
     limits: any;
     email: string;
     isChecked?: boolean;
+    privacy?: any;
+    flags?: any;
+    authority?: any;
 }
 
 export default IPerson;

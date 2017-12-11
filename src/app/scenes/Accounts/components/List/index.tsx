@@ -59,6 +59,7 @@ interface IListState {
     columns: Array< any >;
     sortedInfo: ISort;
     sortKey: any;
+    currentPage: number;
 }
 
 class List extends React.Component <IListProps,
@@ -84,6 +85,47 @@ class List extends React.Component <IListProps,
 
     COLUMNS_STORAGE_KEY = 'ronak.nested.admin.accounts.columns';
     PAGE_SIZE = 10;
+    listRefresh: any;
+
+    constructor(props: IListProps) {
+        super(props);
+
+        this.state = {
+            users: [],
+            columns: [],
+            dataColumns: [],
+            selectedRowKeys: [],
+            currentPage: 1,
+            loading: false,
+            filter: props.filter,
+            counters: {
+                enabled_accounts: 0,
+                disabled_accounts: 0
+            },
+            sortedInfo: {
+                order: 'ascend',
+                columnKey: '_id',
+            },
+            viewAccount: false,
+            chosen: {},
+            sortKey: null,
+        };
+
+
+        this.onPageChange = this.onPageChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.listRefresh = this.load.bind(this);
+    }
+
+    componentDidMount() {
+        this.accountApi = new AccountApi();
+        window.addEventListener('account_updated', this.listRefresh, false);
+        this.load(1, this.PAGE_SIZE, FilterGroup.Total);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('account_updated', this.listRefresh, false);
+    }
 
     checkboxClick  = (event) => {
         event.preventDefault();
@@ -105,6 +147,7 @@ class List extends React.Component <IListProps,
             </Row>
         );
     }
+
     idRender = (text, user, index) => text;
 
     placesRender = (text, user, index) => {
@@ -244,40 +287,6 @@ class List extends React.Component <IListProps,
         this.setState({
             columns: _.without(this.state.columns, key)
         });
-    }
-
-    constructor(props: IListProps) {
-        super(props);
-
-        this.state = {
-            users: [],
-            columns: [],
-            dataColumns: [],
-            selectedRowKeys: [],
-            currentPage: 1,
-            loading: false,
-            filter: props.filter,
-            counters: {
-                enabled_accounts: 0,
-                disabled_accounts: 0
-            },
-            sortedInfo: {
-                order: 'ascend',
-                columnKey: '_id',
-            },
-            viewAccount: false,
-            chosen: {},
-            sortKey: null,
-        };
-
-
-        this.onPageChange = this.onPageChange.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    componentDidMount() {
-        this.accountApi = new AccountApi();
-        this.load(1, this.PAGE_SIZE, FilterGroup.Total);
     }
 
     updateQuery(q: string) {
@@ -494,7 +503,7 @@ class List extends React.Component <IListProps,
     private load(page?: Number, size?: Number, filter?: FilterGroup) {
         this.setState({loading: true});
         page = page || this.state.currentPage;
-        size = size || this.size;
+        size = size || this.PAGE_SIZE;
         const skip = (page - 1) * size;
         let filterValue = null;
         switch (filter) {
