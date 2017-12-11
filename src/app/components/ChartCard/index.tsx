@@ -4,13 +4,16 @@ import TimePeriod from './TimePeriod';
 import ActivityArea from './ActivityArea';
 import ReportType from '../../api/report/ReportType';
 import MeasureType from './MeasureType';
+import _ from 'lodash';
 
 interface IChartCardProps {
     title: string;
     dataType: ReportType[];
     color: string;
     measure: MeasureType;
+    period?: TimePeriod;
     syncId?: string;
+    syncPeriod?: (period: TimePeriod) => {};
 }
 
 interface IChartCardState {
@@ -30,6 +33,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
         };
 
         this.reload = this.reload.bind(this);
+        this.updatePeriod = this.updatePeriod.bind(this);
     }
 
     reload() {
@@ -42,12 +46,26 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
         });
     }
 
+    componentWillReceiveProps(newProps: IChartCardProps) {
+        if(newProps.period && newProps.period !== this.state.period) {
+            this.setState({
+                period: newProps.period,
+            });
+        }
+    }
+
+    updatePeriod(period: TimePeriod) {
+        this.setState({period});
+        if (_.isFunction(this.props.syncPeriod)) {
+            this.props.syncPeriod(period);
+        }
+    }
+
     render() {
         return (
             <Card title={this.props.title} extra={
                 <div>
                     Compare with previous period ?!
-                    &nbsp;
                     &nbsp;
                     <Switch defaultChecked={this.state.comparePreviousPeriod}
                     onChange={this.changeCompare.bind(this)} />
@@ -59,19 +77,19 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
                     <Dropdown overlay={
                         <Menu>
                             <Menu.Item>
-                                <a rel='noopener noreferrer' onClick={() => this.setState({period: TimePeriod.Hour})}>Last
+                                <a rel='noopener noreferrer' onClick={() => this.updatePeriod(TimePeriod.Hour)}>Last
                                     1 hour</a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel='noopener noreferrer' onClick={() => this.setState({period: TimePeriod.Day})}>Last
+                                <a rel='noopener noreferrer' onClick={() => this.updatePeriod(TimePeriod.Day)}>Last
                                     24 hours</a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel='noopener noreferrer' onClick={() => this.setState({period: TimePeriod.Week})}>Last
+                                <a rel='noopener noreferrer' onClick={() => this.updatePeriod(TimePeriod.Week)}>Last
                                     7 days</a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel='noopener noreferrer' onClick={() => this.setState({period: TimePeriod.Month})}>Last
+                                <a rel='noopener noreferrer' onClick={() => this.updatePeriod(TimePeriod.Month)}>Last
                                     30 days</a>
                             </Menu.Item>
                         </Menu>
