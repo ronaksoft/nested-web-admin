@@ -1013,8 +1013,8 @@ SystemJS.config({
     },
     'npm:react-json-tree@0.11.0': {
       'map': {
-        'babel-runtime': 'npm:babel-runtime@6.26.0',
-        'prop-types': 'npm:prop-types@15.6.0',
+        'babel-runtime': 'npm:babel-runtime@6.23.0',
+        'prop-types': 'npm:prop-types@15.5.10',
         'react-base16-styling': 'npm:react-base16-styling@0.5.3'
       }
     },
@@ -1044,10 +1044,10 @@ SystemJS.config({
     },
     'npm:react-base16-styling@0.5.3': {
       'map': {
+        'pure-color': 'npm:pure-color@1.3.0',
         'base16': 'npm:base16@1.0.0',
         'lodash.curry': 'npm:lodash.curry@4.1.1',
-        'lodash.flow': 'npm:lodash.flow@3.5.0',
-        'pure-color': 'npm:pure-color@1.3.0'
+        'lodash.flow': 'npm:lodash.flow@3.5.0'
       }
     },
     'npm:promise@7.3.1': {
@@ -1204,19 +1204,16 @@ SystemJS.config({
         'prop-types': 'npm:prop-types@15.6.0'
       }
     },
-    'npm:react-json-tree@0.11.0': {
+    'npm:prop-types@15.5.10': {
       'map': {
-        'babel-runtime': 'npm:babel-runtime@6.23.0',
-        'prop-types': 'npm:prop-types@15.5.10',
-        'react-base16-styling': 'npm:react-base16-styling@0.5.3'
+        'loose-envify': 'npm:loose-envify@1.3.1',
+        'fbjs': 'npm:fbjs@0.8.16'
       }
     },
-    'npm:react-base16-styling@0.5.3': {
+    'npm:babel-runtime@6.23.0': {
       'map': {
-        'pure-color': 'npm:pure-color@1.3.0',
-        'base16': 'npm:base16@1.0.0',
-        'lodash.curry': 'npm:lodash.curry@4.1.1',
-        'lodash.flow': 'npm:lodash.flow@3.5.0'
+        'regenerator-runtime': 'npm:regenerator-runtime@0.10.5',
+        'core-js': 'npm:core-js@2.5.2'
       }
     }
   }

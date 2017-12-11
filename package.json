@@ -158,10 +158,10 @@
       "npm:moment@2.18.1": {
         "jspmNodeConversion": false
       },
-      "npm:pbkdf2@3.0.12": {
+      "npm:pbkdf2@3.0.14": {
         "main": "browser.js"
       },
-      "npm:safe-buffer@5.0.1": {
+      "npm:safe-buffer@5.1.1": {
         "browser": "index.js"
       },
       "npm:typescript@2.3.2": {
