@@ -357,6 +357,9 @@ class View extends React.Component<IViewProps, IViewState> {
                 this.props.onChange(editedAccount);
             }
             this.updated = true;
+            this.setState({
+                account: editedAccount,
+            });
             message.success('The field has been updated.');
         }, (error) => {
             message.error('We were not able to update the field!');
