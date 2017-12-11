@@ -127,8 +127,8 @@ class List extends React.Component <IListProps,
         window.removeEventListener('account_updated', this.listRefresh, false);
     }
 
-    checkboxClick  = (event) => {
-        event.preventDefault();
+    checkboxClick = (event) => {
+        // event.preventDefault();
         event.stopPropagation();
     }
 
@@ -140,10 +140,12 @@ class List extends React.Component <IListProps,
     // columns Render Handlers
     nameRender = (text, user: IPerson, index) => {
         return (
-            <Row type='flex' align='middle' onClick={this.checkboxClick.bind(this)}>
-                <Checkbox onChange={() => this.onCheckboxChange(user)}
-                    checked={user.isChecked}/>
-                    <UserAvatar avatar name size='24' user={user}/>
+            <Row type='flex' align='middle'>
+                <div className='item-selector' onClick={this.checkboxClick.bind(this)}>
+                    <Checkbox onChange={() => this.onCheckboxChange(user)}
+                        checked={user.isChecked}/>
+                </div>
+                <UserAvatar avatar name size='24' user={user}/>
             </Row>
         );
     }
