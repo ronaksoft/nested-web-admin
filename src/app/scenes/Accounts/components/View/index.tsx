@@ -324,7 +324,7 @@ class View extends React.Component<IViewProps, IViewState> {
 
     updateAdmin(checked: boolean) {
         let editedAccount = _.clone(this.state.account);
-        _.merge(editedAccount, {admin: checked});
+        _.merge(editedAccount.authority, {admin: checked});
 
         const action = checked
             ? this.accountApi.promote({account_id: editedAccount._id})
@@ -339,6 +339,9 @@ class View extends React.Component<IViewProps, IViewState> {
             } else {
                 message.success(`"${editedAccount._id}" would not be longer able to access Nested Administrator.`);
             }
+            this.setState({
+                account: editedAccount,
+            });
             this.updated = true;
         }, (error) => {
             message.error('We were not able to update the field!');
@@ -799,11 +802,23 @@ class View extends React.Component<IViewProps, IViewState> {
                                         <Row className='account-info-top-2' type='flex' align='middle'>
                                             <div className='account-avatar'>
                                                 <Row type='flex' justify='center'>
-                                                    <IcoN size={16} name={'gearWire16'}/>
-                                                    <IcoN size={16} name={'tagWire16'}/>
+                                                    {this.state.account.authority.admin &&
+                                                        <IcoN size={16} name={'gearWire16'}/>
+                                                    }
+                                                    {this.state.account.authority.label_editor &&
+                                                        <IcoN size={16} name={'tagWire16'}/>
+                                                    }
                                                 </Row>
                                             </div>
-                                            <h5>Admin and Label Manager</h5>
+                                            {this.state.account.authority.admin && this.state.account.authority.label_editor &&
+                                                <h5>Admin and Label Manager</h5>
+                                            }
+                                            {this.state.account.authority.admin && !this.state.account.authority.label_editor &&
+                                            <h5>Admin</h5>
+                                            }
+                                            {!this.state.account.authority.admin && this.state.account.authority.label_editor &&
+                                            <h5>Label Manager</h5>
+                                            }
                                             <div className='filler'/>
                                         </Row>
                                     }
