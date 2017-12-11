@@ -48,11 +48,12 @@ interface IViewState {
     maskClosable: boolean;
     visible: boolean;
     editMode: boolean;
+    model: any;
 }
 
 class View extends React.Component<IViewProps, IViewState> {
     DATE_FORMAT: string = 'YYYY-MM-DD';
-
+    model: any;
     constructor(props: IViewProps) {
         super(props);
         this.state = {
@@ -63,6 +64,22 @@ class View extends React.Component<IViewProps, IViewState> {
             visiblePlaceModal: false,
             maskClosable: true,
             visible: true,
+            model: {
+                account_id: this.props.account._id,
+                fname: this.props.account.fname,
+                lname: this.props.account.lname,
+                gender: this.props.account.gender,
+                dob: this.props.account.dob,
+                email: this.props.account.email,
+                phone: this.props.account.phone,
+                searchable: this.props.account.searchable,
+                change_profile: this.props.account.privacy.change_profile,
+                change_picture: this.props.account.privacy.change_picture,
+                force_password: this.props.account.flags.force_password_change,
+                grand_places_limit: this.props.account.limits.grand_places,
+                label_editor_authority: this.props.account.authority.label_editor,
+                admin_authority: this.props.account.authority.admin,
+            }
         };
 
         this.loadPlaces = this.loadPlaces.bind(this);
@@ -75,15 +92,11 @@ class View extends React.Component<IViewProps, IViewState> {
         this.onAdminChange = this.onAdminChange.bind(this);
         this.onActiveChange = this.onActiveChange.bind(this);
         this.onPrivacyChange = this.onPrivacyChange.bind(this);
-        this.toggleEditMode = this.toggleEditMode.bind(this);
-        this.clearForm = this.clearForm.bind(this);
-
     }
 
     componentDidMount() {
         this.placeApi = new PlaceApi();
         this.accountApi = new AccountApi();
-
         if (this.state.account && this.state.account._id) {
             this.loadPlaces(this.state.account._id);
         }
@@ -238,16 +251,6 @@ class View extends React.Component<IViewProps, IViewState> {
                 });
             }
         });
-    }
-
-    saveForm = (form) => {
-        this.toggleEditMode(false);
-        return this.form = form;
-    }
-
-    clearForm = () => {
-        // this.form.resetFields();
-        this.toggleEditMode(false);
     }
 
     removePicture() {
@@ -413,9 +416,125 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+    updateModel(params: any, callback?: any) {
+        const model = this.state.model;
+        _.forEach(params, (val, index) => {
+            model[index] = val;
+        });
+        this.setState({model: model}, () => {
+            if (_.isFunction(callback)) {
+                callback();
+            }
+        });
+    }
+
+    updateFName(event: any) {
+        this.updateModel({
+            fname: event.currentTarget.value,
+        });
+    }
+
+    updateLName(event: any) {
+        this.updateModel({
+            lname: event.currentTarget.value,
+        });
+    }
+
+    updatePhone(event: any) {
+        this.updateModel({
+            phone: event.currentTarget.value,
+        });
+    }
+
+    updateEmail(event: any) {
+        this.updateModel({
+            email: event.currentTarget.value,
+        });
+    }
+
+    updateDOB(data: any) {
+        this.updateModel({
+            dob: moment(data).format(this.DATE_FORMAT),
+        });
+    }
+
+    updateGender(data: any) {
+        this.updateModel({
+            gender: data,
+        });
+    }
+
+    updateGrandPlaceLimit(event: any) {
+        this.updateModel({
+            grand_places_limit: event.currentTarget.value,
+        });
+    }
+
+    updateEditProfile(data: any) {
+        this.updateModel({
+            change_profile: data,
+        });
+    }
+
+    updateSearchable(data: any) {
+        this.updateModel({
+            searchable: data,
+        });
+    }
+
+    resetModel () {
+        this.updateModel({
+            account_id: this.props.account._id,
+            fname: this.props.account.fname,
+            lname: this.props.account.lname,
+            gender: this.props.account.gender,
+            dob: this.props.account.dob,
+            email: this.props.account.email,
+            phone: this.props.account.phone,
+            searchable: this.props.account.searchable,
+            change_profile: this.props.account.privacy.change_profile,
+            change_picture: this.props.account.privacy.change_picture,
+            force_password: this.props.account.flags.force_password_change,
+            grand_places_limit: this.props.account.limits.grand_places,
+            label_editor_authority: this.props.account.authority.label_editor,
+            admin_authority: this.props.account.authority.admin,
+        });
+    }
+
+    saveForm () {
+        // return this.form = form;
+        this.accountApi.edit({
+            account_id: this.state.model.account_id,
+            fname: this.state.model.fname,
+            lname: this.state.model.lname,
+            gender: this.state.model.gender,
+            dob: this.state.model.dob,
+            email: this.state.model.email,
+            phone: this.state.model.phone,
+            searchable: this.state.model.searchable,
+            change_profile: this.state.model.change_profile,
+            change_picture: this.state.model.change_picture,
+            force_password: this.state.model.force_password,
+            limits: {
+                grand_places: this.state.model.grand_places_limit,
+            },
+            authority: {
+                label_editor: this.state.model.label_editor_authority,
+            }
+        }).then((data) => {
+            console.log(data);
+            this.toggleEditMode(false);
+        });
+    }
+
+    clearForm () {
+        // this.form.resetFields();
+        this.resetModel();
+        this.toggleEditMode(false);
+    }
+
     render() {
         const {editMode} = this.state;
-        console.log(editMode);
         const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.access, 'C'));
         const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
 
@@ -560,10 +679,10 @@ class View extends React.Component<IViewProps, IViewState> {
                 <div className='modal-close' onClick={this.onClose.bind(this)}>
                     <IcoN size={24} name={'xcross24'}/>
                 </div>
-                <h3>Account Deatils</h3>
+                <h3>Account Details</h3>
                 <div className='filler'></div>
                 {!editMode && (
-                    <Row className='account-control' type='flex' align='middle' onClick={this.toggleEditMode}>
+                    <Row className='account-control' type='flex' align='middle' onClick={this.toggleEditMode.bind(this)}>
                         <IcoN size={16} name={'pencil16'}/>
                         <span>Edit</span>
                     </Row>
@@ -588,14 +707,12 @@ class View extends React.Component<IViewProps, IViewState> {
                 {editMode && (
                         <Button
                             type=' butn butn-white'
-                            onClick={this
-                                .clearForm}>Discard</Button>
+                            onClick={this.clearForm.bind(this)}>Discard</Button>
                 )}
                 {editMode && (
                         <Button
                             type=' butn butn-green'
-                            onClick={this
-                                .saveForm}>Save Changes</Button>
+                            onClick={this.saveForm.bind(this)}>Save Changes</Button>
                 )}
             </Row>
         );
@@ -673,7 +790,9 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 id='name'
                                                 size='large'
                                                 className='nst-input'
-                                                value={this.state.account.fname}/>
+                                                value={this.state.model.fname}
+                                                onChange={this.updateFName.bind(this)}
+                                            />
                                         </Col>
                                         <Col span={12}>
                                             <label>Last Name</label>
@@ -681,7 +800,9 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 id='name'
                                                 size='large'
                                                 className='nst-input'
-                                                value={this.state.account.lname}/>
+                                                value={this.state.model.lname}
+                                                onChange={this.updateLName.bind(this)}
+                                            />
                                         </Col>
                                     </Row>
                                 }
@@ -709,7 +830,9 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 id='name'
                                                 size='large'
                                                 className='nst-input'
-                                                value={this.state.account.phone}/>
+                                                value={this.state.model.phone}
+                                                onChange={this.updatePhone.bind(this)}
+                                            />
                                             <p className='field-description'>Enter phone number with country code.</p>
                                         </Col>
                                     </Row>
@@ -722,7 +845,9 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 id='name'
                                                 size='large'
                                                 className='nst-input'
-                                                value={this.state.account.email}/>
+                                                value={this.state.model.email}
+                                                onChange={this.updateEmail.bind(this)}
+                                            />
                                         </Col>
                                     </Row>
                                 }
@@ -735,7 +860,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                             </span>
                                         }
                                         {editMode &&
-                                            <DatePicker value={this.state.account.dob}
+                                            <DatePicker value={moment(this.state.model.dob)} onChange={this.updateDOB.bind(this)}
                                                 size='large' className='nst-input' format={this.DATE_FORMAT}/>
                                         }
                                     </Col>
@@ -743,16 +868,20 @@ class View extends React.Component<IViewProps, IViewState> {
                                         <label>Gender</label>
                                         {!editMode &&
                                             <span className='label-value'>
-                                            Male/Female
+                                            {this.state.account.gender === 'm' ? 'Male' : 'Female'}
                                             </span>
                                         }
                                         {editMode &&
                                             <Select
-                                                placeholder={this.state.account.gender === 'm' ? 'Male' : 'Female'}
+                                                placeholder={'choose a gender'}
                                                 size='large'
-                                                style={{width: '100%'}}>
+                                                style={{width: '100%'}}
+                                                value={this.state.model.gender}
+                                                onChange={this.updateGender.bind(this)}
+                                            >
                                                 <Option value={'m'}>Male</Option>
                                                 <Option value={'f'}>Female</Option>
+                                                <Option value={'x'}>Other</Option>
                                             </Select>
                                         }
                                     </Col>
@@ -764,15 +893,20 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 id='name'
                                                 size='large'
                                                 className='nst-input'
-                                                value={this.state.account.limits.grand_places}/>
+                                                value={this.state.model.grand_places_limit}
+                                                onChange={this.updateGrandPlaceLimit.bind(this)}
+                                        />
                                     </Col>
                                     <Col span={12}>
                                         <label>Edit Profile Access</label>
                                         <Select
-                                            placeholder={this.state.account.privacy.change_profile ? 'Yes' : 'No'}
-                                            style={{width: '100%'}} size='large'>
+                                            placeholder={this.state.model.change_profile ? 'Yes' : 'No'}
+                                            style={{width: '100%'}} size='large'
+                                            value={this.state.model.change_profile}
+                                            onChange={this.updateEditProfile.bind(this)}
+                                        >
                                             <Option value={true}>Yes</Option>
-                                            <Option value={false}>Female</Option>
+                                            <Option value={false}>No</Option>
                                         </Select>
                                     </Col>
                                 </Row>}
@@ -781,7 +915,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                         <label style={{width: 'auto'}}>Searchable</label>
                                         <div className='filler'></div>
                                         <Switch checkedChildren='Yes' unCheckedChildren='No'
-                                            defaultChecked={!this.state.account.privacy.searchable}/>
+                                            checked={this.state.model.searchable} onChange={this.updateSearchable.bind(this)}/>
                                     </Row>
                                     <p className='field-description'>A short description about searchable feature.</p>
                                 </Row>}
@@ -1064,7 +1198,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                     onClick={() => this.applyChanges(this.form)}>Save</Button>,
                         ]}
                     >
-                        <EditForm ref={this.saveForm} {...accountClone} />
+                        <EditForm ref={this.saveForm.bind(this)} {...accountClone} />
                     </Modal>
                 </Modal>
             </Row>

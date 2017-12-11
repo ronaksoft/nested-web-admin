@@ -463,7 +463,7 @@ class List extends React.Component <IListProps,
         if (total < this.PAGE_SIZE) {
             total = this.PAGE_SIZE;
         }
-        console.log(total);
+
         return (
             <div>
                 <Table
