@@ -118,7 +118,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 </Row>
                 <Row className='dashboardRow'>
                     <Col span={24}>
-                        <ChartCard dataType={ReportType.AllRequests} title='System Activities'/>
+                        <ChartCard dataType={[ReportType.AllRequests]} title='System Activities'/>
                     </Col>
                     {/*<Col span={8}>
                         <Card loading={this.state.loading} title={card2Title} extra={card2Extra}>

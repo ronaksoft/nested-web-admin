@@ -71,6 +71,7 @@ export default class Settings {
         latestAreaColor: '#00B45A',
         secondAreaLabel: '7 days ago',
         secondAreaColor: '#FF6464',
+        thirdAreaColor: '#ffc658',
         resolutionKey: 'd',
         tickFormatter: (value) => {
             const date = moment.utc(value, 'YYYY-MM-DD:HH').local();
