@@ -53,7 +53,7 @@ interface IViewState {
 
 class View extends React.Component<IViewProps, IViewState> {
     DATE_FORMAT: string = 'YYYY-MM-DD';
-    model: any;
+    updated: boolean;
     constructor(props: IViewProps) {
         super(props);
         this.state = {
@@ -79,9 +79,9 @@ class View extends React.Component<IViewProps, IViewState> {
                 grand_places_limit: this.props.account.limits.grand_places,
                 label_editor_authority: this.props.account.authority.label_editor,
                 admin_authority: this.props.account.authority.admin,
-            }
+            },
         };
-
+        this.updated = false;
         this.loadPlaces = this.loadPlaces.bind(this);
         this.editField = this.editField.bind(this);
         this.applyChanges = this.applyChanges.bind(this);
@@ -89,7 +89,6 @@ class View extends React.Component<IViewProps, IViewState> {
         this.loadUploadToken = this.loadUploadToken.bind(this);
         this.beforeUpload = this.beforeUpload.bind(this);
         this.removePicture = this.removePicture.bind(this);
-        this.onAdminChange = this.onAdminChange.bind(this);
         this.onActiveChange = this.onActiveChange.bind(this);
         this.onPrivacyChange = this.onPrivacyChange.bind(this);
     }
@@ -314,13 +313,16 @@ class View extends React.Component<IViewProps, IViewState> {
     }
 
     onClose() {
+        if (this.updated) {
+            this.broadcastUpdate();
+        }
         this.props.onClose();
         this.setState({
             visible: false,
         });
     }
 
-    onAdminChange(checked: boolean) {
+    updateAdmin(checked: boolean) {
         let editedAccount = _.clone(this.state.account);
         _.merge(editedAccount, {admin: checked});
 
@@ -337,12 +339,13 @@ class View extends React.Component<IViewProps, IViewState> {
             } else {
                 message.success(`"${editedAccount._id}" would not be longer able to access Nested Administrator.`);
             }
+            this.updated = true;
         }, (error) => {
             message.error('We were not able to update the field!');
         });
     }
 
-    onAuthorityChange(value: boolean) {
+    updateLabelManager(value: boolean) {
         let editedAccount = _.clone(this.state.account);
         _.merge(editedAccount.authority, { label_editor: value });
 
@@ -350,7 +353,7 @@ class View extends React.Component<IViewProps, IViewState> {
             if (this.props.onChange) {
                 this.props.onChange(editedAccount);
             }
-
+            this.updated = true;
             message.success('The field has been updated.');
         }, (error) => {
             message.error('We were not able to update the field!');
@@ -484,21 +487,44 @@ class View extends React.Component<IViewProps, IViewState> {
 
     resetModel () {
         this.updateModel({
-            account_id: this.props.account._id,
-            fname: this.props.account.fname,
-            lname: this.props.account.lname,
-            gender: this.props.account.gender,
-            dob: this.props.account.dob,
-            email: this.props.account.email,
-            phone: this.props.account.phone,
-            searchable: this.props.account.searchable,
-            change_profile: this.props.account.privacy.change_profile,
-            change_picture: this.props.account.privacy.change_picture,
-            force_password: this.props.account.flags.force_password_change,
-            grand_places_limit: this.props.account.limits.grand_places,
-            label_editor_authority: this.props.account.authority.label_editor,
-            admin_authority: this.props.account.authority.admin,
+            account_id: this.state.account._id,
+            fname: this.state.account.fname,
+            lname: this.state.account.lname,
+            gender: this.state.account.gender,
+            dob: this.state.account.dob,
+            email: this.state.account.email,
+            phone: this.state.account.phone,
+            searchable: this.state.account.searchable,
+            change_profile: this.state.account.privacy.change_profile,
+            change_picture: this.state.account.privacy.change_picture,
+            force_password: this.state.account.flags.force_password_change,
+            grand_places_limit: this.state.account.limits.grand_places,
+            label_editor_authority: this.state.account.authority.label_editor,
+            admin_authority: this.state.account.authority.admin,
         });
+    }
+
+    updateViewModel () {
+        let account = this.state.account;
+        account.fname = this.state.model.fname;
+        account.lname = this.state.model.lname;
+        account.gender = this.state.model.gender;
+        account.dob = this.state.model.dob;
+        account.email = this.state.model.email;
+        account.phone = this.state.model.phone;
+        account.searchable = this.state.model.searchable;
+        account.privacy.change_profile = this.state.model.change_profile;
+        account.privacy.change_picture = this.state.model.change_picture;
+        account.limits.change_picture = this.state.model.grand_places_limit;
+
+        this.setState({
+            account: account,
+        });
+    }
+
+    broadcastUpdate() {
+        const event = new Event('account_updated');
+        window.dispatchEvent(event);
     }
 
     saveForm () {
@@ -522,8 +548,9 @@ class View extends React.Component<IViewProps, IViewState> {
                 label_editor: this.state.model.label_editor_authority,
             }
         }).then((data) => {
-            console.log(data);
+            this.updateViewModel();
             this.toggleEditMode(false);
+            this.updated = true;
         });
     }
 
@@ -658,18 +685,18 @@ class View extends React.Component<IViewProps, IViewState> {
                 key: 'label',
                 name: 'Label Manager',
                 icon: 'tag16',
-                switch: false,
-                action: () => {
-                    // tODO Toggle label manager
+                switch: this.state.model.label_editor_authority,
+                switchChange: (data) => {
+                    this.updateLabelManager(data);
                 },
             },
             {
                 key: 'admin',
                 name: 'Admin',
                 icon: 'gear16',
-                switch: true,
-                action: () => {
-                    // tODO Toggle Admin manager
+                switch: this.state.model.admin_authority,
+                switchChange: (data) => {
+                    this.updateAdmin(data);
                 },
             }
         ];

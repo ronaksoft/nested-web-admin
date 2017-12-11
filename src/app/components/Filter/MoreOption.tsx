@@ -1,13 +1,15 @@
 import * as React from 'react';
 import {Menu, Dropdown, Icon, Row, Col, Switch} from 'antd';
 import {IcoN} from '../icon/index';
+import _ from 'lodash';
 // import './filter.less';
 
 export interface IMenuItem {
     key: string;
     name: string;
     icon: string;
-    action: any;
+    action?: any;
+    switchChange: any;
     class?: string;
     switch?: boolean;
 }
@@ -36,7 +38,7 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
     handleGroupChange(menu: any) {
         this.selectedMenuIndex = parseInt(menu.key, 0);
         const item = this.state.menus[this.selectedMenuIndex];
-        if (typeof item.action === 'function') {
+        if (_.isFunction(item.action)) {
             item.action(item);
         }
     }
@@ -65,7 +67,7 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
                         {haveSwitch && (
                             <Switch
                                 defaultChecked={menu.switch}
-                                onChange={menu.action}
+                                onChange={menu.switchChange}
                             />)
                         }
                     </Row>

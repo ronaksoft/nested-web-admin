@@ -1203,6 +1203,21 @@ SystemJS.config({
         'object-assign': 'npm:object-assign@4.1.1',
         'prop-types': 'npm:prop-types@15.6.0'
       }
+    },
+    'npm:react-json-tree@0.11.0': {
+      'map': {
+        'babel-runtime': 'npm:babel-runtime@6.23.0',
+        'prop-types': 'npm:prop-types@15.5.10',
+        'react-base16-styling': 'npm:react-base16-styling@0.5.3'
+      }
+    },
+    'npm:react-base16-styling@0.5.3': {
+      'map': {
+        'pure-color': 'npm:pure-color@1.3.0',
+        'base16': 'npm:base16@1.0.0',
+        'lodash.curry': 'npm:lodash.curry@4.1.1',
+        'lodash.flow': 'npm:lodash.flow@3.5.0'
+      }
     }
   }
 });
