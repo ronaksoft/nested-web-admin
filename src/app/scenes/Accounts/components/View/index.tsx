@@ -685,6 +685,16 @@ class View extends React.Component<IViewProps, IViewState> {
 
         const items = [
             {
+                key: 'password',
+                name: 'Force Change Password',
+                icon: 'lock16',
+                switch: this.state.model.force_password,
+                switchChange: (data) => {
+                    console.log(data);
+                    this.onFlagChange({force_password: data});
+                },
+            },
+            {
                 key: 'label',
                 name: 'Label Manager',
                 icon: 'tag16',
@@ -731,7 +741,7 @@ class View extends React.Component<IViewProps, IViewState> {
                 )}
                 {!editMode && (
                     <div className='modal-more'>
-                        <MoreOption menus={items}/>
+                        <MoreOption menus={items} deviders={[0]}/>
                     </div>
                 )}
                 {editMode && (
