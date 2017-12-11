@@ -30,18 +30,10 @@ class Charts extends React.Component <IChartsProps,
                             dataType={[ReportType.AddComment, ReportType.AddEmail, ReportType.AddPost]}
                                    color='#1abc9c' syncId='post'/>
                     </Col>
-                    {/* <Col span={12}>
-                        <ChartCard title='Emails' measure={MeasureType.NUMBER} dataType={}
-                                   color='#2ecc71'/>
-                    </Col> */}
                     <Col span={12}>
                         <ChartCard title='Logins / Session Recalls' measure={MeasureType.NUMBER} dataType={[ReportType.Login, ReportType.SessionRecall]}
                                    color='#9b59b6' syncId='session'/>
                     </Col>
-                    {/* <Col span={12}>
-                        <ChartCard title='Session Recalls' measure={MeasureType.NUMBER}
-                                   dataType={[ReportType.SessionRecall]} color='#e67e22'/>
-                    </Col> */}
                 </Row>
                 <RelatedChartCards
                     title={['Attachments Size', 'Attachments Count']}
@@ -57,13 +49,9 @@ class Charts extends React.Component <IChartsProps,
                     measure={[MeasureType.NUMBER, MeasureType.TIME]}/>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
                     <Col span={12}>
-                        <ChartCard title='Traffic In' measure={MeasureType.FILE_SIZE}
+                        <ChartCard title='Traffic In / Out' measure={MeasureType.FILE_SIZE}
                                    dataType={[ReportType.dataIn, ReportType.dataOut]} color='#f1c40f' syncId='terrafic'/>
                     </Col>
-                    {/* <Col span={12}>
-                        <ChartCard title='Traffic Out' measure={MeasureType.FILE_SIZE}
-                                   dataType={[ReportType.dataOut]} color='#34495e'/>
-                    </Col> */}
                 </Row>
             </div>
         );
