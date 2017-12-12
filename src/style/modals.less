@@ -481,7 +481,7 @@
             font-weight: bold;
             line-height: 18px;
         }
-        .account-name { 
+        .account-name {
             display: flex;
             flex-direction: column;
             span:first-of-type {
@@ -522,6 +522,12 @@
             transition: opacity @animation-duration-base;
             background-color: white;
             border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 100%;
+            top: 0;
         }
         &:hover {
             .promote,
@@ -530,20 +536,9 @@
             }
         }
         .promote {
-            right: 48px;
-            font-size: 14px;
-            font-weight: bold;
-            top: 24px;
-            padding: 0 8px;
-            line-height: 36px;
+            right: 32px;
         }
         .remove {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 32px;
-            height: 32px;
-            top: 16px;
             right: 4px;
             fill: @color-force;
         }

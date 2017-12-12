@@ -13,7 +13,8 @@ import {
     Icon,
     message,
     Select,
-    Switch
+    Switch,
+    Tooltip
 } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
@@ -564,6 +565,66 @@ class View extends React.Component<IViewProps, IViewState> {
         // this.form.resetFields();
         this.resetModel();
         this.toggleEditMode(false);
+    }
+
+    removeFromPlace (id: string) {
+        const index = _.findIndex(this.state.places, {
+            _id: id,
+        });
+        if (index > -1) {
+            this.placeApi.removeMember({
+                place_id: id,
+                account_id: this.state.account._id,
+            }).then((data) => {
+                console.log(data);
+                this.state.places.splice(index, 1);
+                this.setState({
+                    places: this.state.places,
+                });
+            });
+        }
+    }
+
+    demoteInPlace(id: string) {
+        const index = _.findIndex(this.state.places, {
+            _id: id,
+        });
+        if (index > -1 && _.includes(this.state.places[index].access, 'C')) {
+            this.placeApi.demoteMember({
+                place_id: id,
+                account_id: this.state.account._id,
+            }).then((data) => {
+                console.log(data);
+                _.remove(this.state.places[index].access, (item) => {
+                    return item === 'C';
+                });
+                this.setState({
+                    places: this.state.places,
+                });
+            });
+        }
+    }
+
+    promoteInPlace(id: string) {
+        const index = _.findIndex(this.state.places, {
+            _id: id,
+        });
+        if (index > -1 && !_.includes(this.state.places[index].access, 'C')) {
+            this.placeApi.promoteMember({
+                place_id: id,
+                account_id: this.state.account._id,
+            }).then((data) => {
+                console.log(data);
+                if (_.isArray(this.state.places[index].access)) {
+                    this.state.places[index].access.push('C');
+                } else {
+                    this.state.places[index].acces = ['C'];
+                }
+                this.setState({
+                    places: this.state.places,
+                });
+            });
+        }
     }
 
     render() {
@@ -1185,8 +1246,11 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 <div key={place._id} className='user-in-place-item'>
                                                     <PlaceItem onClick={this.showPlaceModal.bind(this)}
                                                             place={place}/>
-                                                    <a className='promote'>Demote</a>
-                                                    <a className='remove'><IcoN size={16} name={'xcross16'}/></a>
+                                                    {this.state.account._id !== place._id &&
+                                                    <a className='remove' title={'Remove From Place'} onClick={this.removeFromPlace.bind(this, place._id)}><IcoN size={16} name={'xcross16'}/></a> }
+                                                    {this.state.account._id !== place._id &&
+                                                    <a className='promote' title={'Demote Member'} onClick={this.demoteInPlace.bind(this, place._id)}><IcoN size={24} name={'crownWire24'}/></a>}
+
                                                 </div>
                                             );
                                         })}
@@ -1203,12 +1267,14 @@ class View extends React.Component<IViewProps, IViewState> {
                                 memberInPlaces.length > 0 &&
                                 <Row className='remove-margin'>
                                     <Col span={24}>
-                                        {memberInPlaces.map((place) => <div className='user-in-place-item'>
-                                                    <PlaceItem onClick={this.showPlaceModal.bind(this)}
-                                                        place={place} key={place._id}/>
-                                                    <a className='promote'>Demote</a>
-                                                    <a className='remove'><IcoN size={16} name={'xcross16'}/></a>
-                                                </div>)}
+                                        {memberInPlaces.map((place) => {
+                                            return (<div className='user-in-place-item'>
+                                                <PlaceItem onClick={this.showPlaceModal.bind(this)}
+                                                           place={place} key={place._id}/>
+                                                <a className='remove' title={'Remove From Place'} onClick={this.removeFromPlace.bind(this, place._id)}><IcoN size={16} name={'bin16'}/></a>
+                                                <a className='promote' title={'Promote Member'}  onClick={this.promoteInPlace.bind(this, place._id)}><IcoN size={24} name={'crown24'}/></a>
+                                            </div>);
+                                        })}
                                     </Col>
                                 </Row>
                             }
