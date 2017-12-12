@@ -19,6 +19,10 @@ import {IcoN} from '../icon/index';
 import MoreOption from '../Filter/MoreOption';
 import UserAvatar from '../avatar/index';
 import PlacePolicy from '../PlacePolicy/index';
+import ChartCard from '../ChartCard/index';
+import ReportType from '../../api/report/ReportType';
+import MeasureType from '../ChartCard/MeasureType';
+import TimePeriod from '../ChartCard/TimePeriod';
 
 interface IProps {
     place?: IPlace;
@@ -39,6 +43,7 @@ interface IStates {
     showEdit: boolean;
     updateProgress: boolean;
     editMode: boolean;
+    reportTab: boolean;
     sidebarTab: number;
 }
 
@@ -56,12 +61,14 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             visible: false,
             place: this.props.place,
             members: [],
+            reportTab: false,
             editMode: false,
             viewAccount: false,
             creators: this.props.place.creators,
             isGrandPlace: true
         };
         this.changeSidebarTab = this.changeSidebarTab.bind(this);
+        this.toggleReportTab = this.toggleReportTab.bind(this);
         this.currentUser = AAA.getInstance().getUser();
     }
 
@@ -94,7 +101,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 visible: this.props.visible,
             });
         }
-        console.log(this.props.place);
         this.fetchUsers();
     }
 
@@ -242,6 +248,12 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         });
     }
 
+    toggleReportTab(reportTab: boolean) {
+        this.setState({
+            reportTab: !this.state.reportTab,
+        });
+    }
+
     toggleAdmin(user: any) {
         // todo
     }
@@ -283,7 +295,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     render() {
         const {place, editMode} = this.state;
         const isPersonal = place.type === C_PLACE_TYPE[C_PLACE_TYPE.personal];
-        console.log(isPersonal, place.type, C_PLACE_TYPE.personal, C_PLACE_TYPE[C_PLACE_TYPE.personal]);
         const iconStyle = {
             width: '16px',
             height: '16px',
@@ -381,47 +392,60 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             },
         ];
 
-        const header = (
-            <Row className='modal-head' type='flex' align='middle'>
-                {/* Top bar */}
-                <div className='modal-close' onClick={this.handleCancel.bind(this)}>
-                    <IcoN size={24} name={'xcross24'}/>
-                </div>
-                <h3>Place Info</h3>
-                <div className='filler'></div>
-                {(!editMode && !isPersonal) && (
-                    <Row className='account-control' type='flex' align='middle' onClick={this.toggleEditMode.bind(this)}>
-                        <IcoN size={16} name={'pencil16'}/>
-                        <span>Edit</span>
-                    </Row>
-                )}
-                {!editMode && (
-                    <Row className='account-control' type='flex' align='middle'>
-                        <IcoN size={16} name={'chart16'}/>
-                        <span>Reports</span>
-                    </Row>
-                )}
-                {!editMode && (
-                    <Row className='account-control' type='flex' align='middle'>
-                        <IcoN size={16} name={'compose16'}/>
-                        <span>Send a Message</span>
-                    </Row>
-                )}
-                {!editMode && (
-                    <div className='modal-more'>
-                        <MoreOption menus={items} deviders={[0]}/>
+        if (this.state.reportTab) {
+            const header = (
+                <Row className='modal-head reports-head' type='flex' align='middle'>
+                    {/* Top bar */}
+                    <div className='modal-close' onClick={this.toggleReportTab}>
+                        <IcoN size={24} name={'back24'}/>
                     </div>
-                )}
-                {editMode && (
+                    <h3>Reports</h3>
+                    <div className='filler'></div>
+                </Row>
+            );
+        } else {
+            const header = (
+                <Row className='modal-head' type='flex' align='middle'>
+                    {/* Top bar */}
+                    <div className='modal-close' onClick={this.handleCancel.bind(this)}>
+                        <IcoN size={24} name={'xcross24'}/>
+                    </div>
+                    <h3>Place Info</h3>
+                    <div className='filler'></div>
+                    {(!editMode && !isPersonal) && (
+                        <Row className='account-control' type='flex' align='middle' onClick={this.toggleEditMode.bind(this)}>
+                            <IcoN size={16} name={'pencil16'}/>
+                            <span>Edit</span>
+                        </Row>
+                    )}
+                    {!editMode && (
+                        <Row className='account-control' type='flex' align='middle' onClick={this.toggleReportTab}>
+                            <IcoN size={16} name={'chart16'}/>
+                            <span>Reports</span>
+                        </Row>
+                    )}
+                    {!editMode && (
+                        <Row className='account-control' type='flex' align='middle'>
+                            <IcoN size={16} name={'compose16'}/>
+                            <span>Send a Message</span>
+                        </Row>
+                    )}
+                    {!editMode && (
+                        <div className='modal-more'>
+                            <MoreOption menus={items} deviders={[0]}/>
+                        </div>
+                    )}
+                    {editMode && (
                         <Button
                             type=' butn butn-white'>Discard</Button>
-                )}
-                {editMode && (
+                    )}
+                    {editMode && (
                         <Button
                             type=' butn butn-green'>Save Changes</Button>
-                )}
-            </Row>
-        );
+                    )}
+                </Row>
+            );
+        }
 
         return (
             <div>
@@ -433,7 +457,9 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 }
                 {place &&
                 <Modal
-                       className={['place-modal', 'modal-template', 'nst-modal', editMode ? 'edit-mode' : ''].join(' ')}
+                       className={['place-modal', 'modal-template', 'nst-modal',
+                       editMode ? 'edit-mode' : '',
+                       this.state.reportTab ? 'report-mode' : ''].join(' ')}
                        maskClosable={true}
                        width={800}
                        closable={true}
@@ -441,7 +467,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                        visible={this.state.visible}
                        footer={null}
                        title={header}>
-                    <Row gutter={16} type='flex'>
+                    {!this.state.reportTab && <Row gutter={16} type='flex'>
                         <Col span={16}>
                             <div className='modal-body'>
                                 <Row type='flex'>
@@ -537,7 +563,15 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 place subplaces
                             </div>}
                         </Col>
-                    </Row>
+                    </Row>}
+                    {this.state.reportTab &&
+                        <div className='reports'>
+                            <ChartCard title='Posts' measure={MeasureType.NUMBER} dataType={[ReportType.PlacePost]}
+                                   color='#9b59b6' syncId='place' params={{id: place._id}}/>
+                            <ChartCard title='Comments' measure={MeasureType.NUMBER} dataType={[ReportType.PlaceComment]}
+                                   color='#9b59b6' syncId='place' params={{id: place._id}}/>
+                        </div>
+                    }
                     {/* <Row type='flex' align='middle'>
                         <Col span={6}>
                             <PlaceView className='placemodal' avatar size={64} place={place}/>

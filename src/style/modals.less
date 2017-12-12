@@ -306,6 +306,11 @@
     border-radius: 6px;
     overflow: hidden;
     background-color: #fff;
+    &.report-mode {
+        .ant-modal-content {
+            background: #EEEFEF;
+        }
+    }
     // max-height: ~'calc(100% - 80px)';
     .ant-modal-content {
         box-shadow: none;
@@ -375,6 +380,10 @@
         margin: 0;
         padding: 0 16px!important;
         border-bottom: 1px solid @color-light-breeze;
+        &.reports-head {
+            background-color: #EEEFEF;
+            border: none;
+        }
         h3 {
             opacity: .72;
             font-size: 20px;
@@ -402,6 +411,15 @@
         .butn-green {
             margin-right: 18px;
             margin-left: 8px;
+        }
+    }
+    .reports {
+        padding: 0 32px;
+        > * {
+            margin-bottom: 24px;
+            .ant-card-head {
+                border: none;
+            }
         }
     }
 }

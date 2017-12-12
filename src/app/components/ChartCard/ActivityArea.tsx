@@ -19,7 +19,8 @@ interface IActivityAreaProps {
     title: string;
     measure: MeasureType;
     comparePreviousPeriod?: boolean;
-    syncId? : string;
+    syncId?: string;
+    params?: any;
 }
 
 interface IActivityAreaState {
@@ -173,12 +174,14 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
         if(!Array.isArray(this.props.dataType) || this.props.dataType.length === 0) {
             return;
         }
+        const id = this.props.params && this.props.params.id ? this.props.params.id : '';
         Promise.all(this.props.dataType.map(dataType => {
             return this.reportApi.get({
                 from: start,
                 to: end,
                 type: dataType,
-                res: settings.resolutionKey
+                res: settings.resolutionKey,
+                id
             });
         })).then(values => {
             const parsedActivities = values.map(val => settings.parser(val.result));

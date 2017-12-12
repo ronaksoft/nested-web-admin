@@ -8,19 +8,61 @@ export default class PlaceApi {
 
   constructor() {
     this.api = Api.getInstance();
+  }
 
-    this.reportTypeMap = {};
-    this.reportTypeMap[ReportType.AddPost] = 'post_add';
-    this.reportTypeMap[ReportType.AddEmail] = 'post_ext_add';
-    this.reportTypeMap[ReportType.AttachmentSize] = 'post_attach_size';
-    this.reportTypeMap[ReportType.AttachmentCount] = 'post_attach_count';
-    this.reportTypeMap[ReportType.AddComment] = 'comment_add';
-    this.reportTypeMap[ReportType.Login] = 'session_login';
-    this.reportTypeMap[ReportType.SessionRecall] = 'session_recall';
-    this.reportTypeMap[ReportType.AllRequests] = 'requests';
-    this.reportTypeMap[ReportType.dataIn] = 'data_in';
-    this.reportTypeMap[ReportType.dataOut] = 'data_out';
-    this.reportTypeMap[ReportType.processTime] = 'process_time';
+  getKey(type: ReportType, id?: string) {
+    var key: string;
+    switch (type) {
+      case ReportType.AddPost:
+        key = 'post_add';
+        break;
+      case ReportType.AddEmail:
+        key = 'post_ext_add';
+        break;
+      case ReportType.AttachmentSize:
+        key = 'post_attach_size';
+        break;
+      case ReportType.AttachmentCount:
+        key = 'post_attach_count';
+        break;
+      case ReportType.AddComment:
+        key = 'comment_add';
+        break;
+      case ReportType.Login:
+        key = 'session_login';
+        break;
+      case ReportType.SessionRecall:
+        key = 'session_recall';
+        break;
+      case ReportType.AllRequests:
+        key = 'requests';
+        break;
+      case ReportType.dataIn:
+        key = 'data_in';
+        break;
+      case ReportType.dataOut:
+        key = 'data_out';
+        break;
+      case ReportType.processTime:
+        key = 'process_time';
+        break;
+      case ReportType.PlaceComment:
+        key = `place_${id}_comments`;
+        break;
+      case ReportType.PlacePost:
+        key = `place_${id}_posts`;
+        break;
+      case ReportType.AccountComment:
+        key = `account_${id}_comments`;
+        break;
+      case ReportType.AccountPost:
+        key = `account_${id}_posts`;
+        break;
+      default:
+        key = 'data_in';
+        break;
+    }
+    return key;
   }
 
 
@@ -30,7 +72,7 @@ export default class PlaceApi {
       data: {
         from: params.from,
         to: params.to,
-        key: this.reportTypeMap[params.type],
+        key: this.getKey(params.type, params.id),
         res: params.res || 'd'
       }
     });

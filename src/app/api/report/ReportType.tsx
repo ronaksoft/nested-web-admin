@@ -9,6 +9,10 @@ enum ReportType {
   AllRequests,
   dataIn,
   dataOut,
+  AccountPost,
+  PlacePost,
+  AccountComment,
+  PlaceComment,
   processTime
 }
 

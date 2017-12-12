@@ -13,6 +13,7 @@ interface IChartCardProps {
     measure: MeasureType;
     period?: TimePeriod;
     syncId?: string;
+    params?: any;
     syncPeriod?: (period: TimePeriod) => {};
 }
 
@@ -101,7 +102,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
                 <ActivityArea measure={this.props.measure} ref={(area) => {
                     this.area = area;
                 }} syncId={this.props.syncId} dataType={this.props.dataType} color={this.props.color} title={this.props.title}
-                              period={this.state.period} comparePreviousPeriod={this.state.comparePreviousPeriod}/>
+                              period={this.state.period} comparePreviousPeriod={this.state.comparePreviousPeriod} params={this.props.params}/>
             </Card>
         );
     }

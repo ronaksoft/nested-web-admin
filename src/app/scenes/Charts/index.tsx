@@ -4,11 +4,12 @@ import {connect} from 'react-redux';
 import {Row, Col, notification, Card} from 'antd';
 import ReportApi from '../../api/report/index';
 import ReportType from '../../api/report/ReportType';
+import MeasureType from '../../components/ChartCard/MeasureType';
+import TimePeriod from '../../components/ChartCard/TimePeriod';
 import moment from 'moment';
 import ChartCard from '../../components/ChartCard/index';
 import RelatedChartCards from '../../components/ChartCard/RelatedChartCards';
-import MeasureType from '../../components/ChartCard/MeasureType';
-import TimePeriod from '../../components/ChartCard/TimePeriod';
+
 
 export interface IChartsProps {
 }
