@@ -15,6 +15,10 @@ import AAA from '../../services/classes/aaa/index';
 import C_PLACE_TYPE from '../../api/consts/CPlaceType';
 import EditableFields from './EditableFields';
 import _ from 'lodash';
+import {IcoN} from '../icon/index';
+import MoreOption from '../Filter/MoreOption';
+import UserAvatar from '../avatar/index';
+import PlacePolicy from '../PlacePolicy/index';
 
 interface IProps {
     place?: IPlace;
@@ -34,6 +38,8 @@ interface IStates {
     isGrandPlace: boolean;
     showEdit: boolean;
     updateProgress: boolean;
+    editMode: boolean;
+    sidebarTab: number;
 }
 
 
@@ -44,15 +50,18 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     constructor(props: any) {
         super(props);
         this.state = {
+            sidebarTab: 0,
             updateProgress: false,
             showEdit: false,
             visible: false,
             place: this.props.place,
             members: [],
+            editMode: false,
             viewAccount: false,
             creators: this.props.place.creators,
             isGrandPlace: true
         };
+        this.changeSidebarTab = this.changeSidebarTab.bind(this);
         this.currentUser = AAA.getInstance().getUser();
     }
 
@@ -221,8 +230,60 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         return size / 1073741824;
     }
 
+    changeSidebarTab(sidebarTab: number) {
+        this.setState({
+            sidebarTab
+        });
+    }
+
+    toggleEditMode(editMode: boolean) {
+        this.setState({
+            editMode: editMode || !this.state.editMode,
+        });
+    }
+
+    toggleAdmin(user: any) {
+        // todo
+    }
+
+    removeMember(user: any) {
+        // todo
+    }
+
+    getMembersItems() {
+        var list = this.state.members.map((u: any) => {
+            return (
+                <li key={u._id} className={'nst-opacity-hover-parent'}>
+                    <Row type='flex' align='middle'>
+                        <UserAvatar user={u} borderRadius={'16'} size={24} avatar></UserAvatar>
+                        <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
+                        <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.removeMember.bind(this, u)}>
+                            <IcoN size={16 } name={'bin16'}/>
+                        </span>
+                        <span className={['nst-opacity-hover', (u.admin ? 'no-hover': '')].join(' ')} onClick={this.toggleAdmin.bind(this, u)}>
+                            <IcoN size={24} name={u.admin ? 'crown24' : 'crownWire24'}/>
+                        </span>
+                    </Row>
+                </li>
+            );
+        });
+        return (
+            <ul>
+                {list}
+                <li
+                    key='addmember'
+                    className='addMemberItem'>
+                    <IcoN size={16} name={'cross16'}/>
+                    Add member...
+                </li>
+            </ul>
+        );
+    }
+
     render() {
-        const {place} = this.state;
+        const {place, editMode} = this.state;
+        const isPersonal = place.type === C_PLACE_TYPE[C_PLACE_TYPE.personal];
+        console.log(isPersonal, place.type, C_PLACE_TYPE.personal, C_PLACE_TYPE[C_PLACE_TYPE.personal]);
         const iconStyle = {
             width: '16px',
             height: '16px',
@@ -342,6 +403,56 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             );
         });
 
+        const items = [
+            {
+                key: 'forcepassword',
+                name: 'Force Change Password',
+                icon: 'lock16',
+            },
+        ];
+
+        const header = (
+            <Row className='modal-head' type='flex' align='middle'>
+                {/* Top bar */}
+                <div className='modal-close' onClick={this.handleCancel.bind(this)}>
+                    <IcoN size={24} name={'xcross24'}/>
+                </div>
+                <h3>Place Info</h3>
+                <div className='filler'></div>
+                {(!editMode && !isPersonal) && (
+                    <Row className='account-control' type='flex' align='middle' onClick={this.toggleEditMode.bind(this)}>
+                        <IcoN size={16} name={'pencil16'}/>
+                        <span>Edit</span>
+                    </Row>
+                )}
+                {!editMode && (
+                    <Row className='account-control' type='flex' align='middle'>
+                        <IcoN size={16} name={'chart16'}/>
+                        <span>Reports</span>
+                    </Row>
+                )}
+                {!editMode && (
+                    <Row className='account-control' type='flex' align='middle'>
+                        <IcoN size={16} name={'compose16'}/>
+                        <span>Send a Message</span>
+                    </Row>
+                )}
+                {!editMode && (
+                    <div className='modal-more'>
+                        <MoreOption menus={items} deviders={[0]}/>
+                    </div>
+                )}
+                {editMode && (
+                        <Button
+                            type=' butn butn-white'>Discard</Button>
+                )}
+                {editMode && (
+                        <Button
+                            type=' butn butn-green'>Save Changes</Button>
+                )}
+            </Row>
+        );
+
         return (
             <div>
                 {
@@ -351,15 +462,98 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                           onClose={this.onCloseView}/>
                 }
                 {place &&
-                <Modal className='place-modal nst-modal'
+                <Modal
+                       className={['place-modal', 'modal-template', 'nst-modal', editMode ? 'edit-mode' : ''].join(' ')}
                        maskClosable={true}
-                       width={480}
+                       width={800}
                        closable={true}
                        onCancel={this.handleCancel.bind(this)}
                        visible={this.state.visible}
                        footer={null}
-                       title='Place Info'>
-                    <Row type='flex' align='middle'>
+                       title={header}>
+                    <Row gutter={16} type='flex'>
+                        <Col span={16}>
+                            <div className='modal-body'>
+                                <Row type='flex'>
+                                    <div className='place-pic'>
+                                        <PlaceView className='placemodal' avatar size={64} place={place}/>
+                                    </div>
+                                    <div className='Place-Des'>
+                                        <h2>{place.name}</h2>
+                                        <h4>{place._id}</h4>
+                                        <hr/>
+                                        <p>
+                                            {place.description}
+                                        </p>
+                                        <label>
+                                            Share Post Policy
+                                        </label>
+                                        <span className='label-value'>
+                                            <PlacePolicy place={place} text={true} receptive={true}/>  
+                                        </span>
+                                        {!isPersonal && <label>
+                                            Create Sub-Place Policy
+                                        </label>}
+                                        {!isPersonal && <span className='label-value'>
+                                            <PlacePolicy place={place} text={true} create={true}/>  
+                                        </span>}
+                                        {!isPersonal && <label>
+                                            Add Member Policy
+                                        </label>}
+                                        {!isPersonal && <span className='label-value'>
+                                            <PlacePolicy place={place} text={true} add={true}/>  
+                                        </span>}
+                                        {!isPersonal && <Row className='info-row' gutter={24}>
+                                            <Col span={12}>
+                                                <label>Max. Managers</label>
+                                                <span className='label-value power'>
+                                                {place.counters.creators}
+                                                </span>
+                                                <span className='label-value not-assigned'>
+                                                    /{place.limits.creators}
+                                                </span>
+                                            </Col>
+                                            <Col span={12}>
+                                                <label>Max. Members</label>
+                                                <span className='label-value power'>
+                                                    {place.counters.key_holders}
+                                                </span>
+                                                <span className='label-value not-assigned'>
+                                                    /{place.limits.key_holders}
+                                                </span>
+                                            </Col>
+                                        </Row>}
+                                        <Row className='info-row' gutter={24}>
+                                            <Col span={12}>
+                                                <label>Max. Sub-Places</label>
+                                                <span className='label-value power'>
+                                                    {place.counters.childs}
+                                                </span>
+                                                <span className='label-value not-assigned'>
+                                                    /{place.limits.childs}
+                                                </span>
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </Row>
+                            </div>
+                        </Col>
+                        <Col span={8} className='modal-sidebar'>
+                            {!isPersonal && <Row type='flex' className='box-tab'>
+                                <span onClick={() => this.changeSidebarTab(0)}
+                                    className={this.state.sidebarTab === 0 ? 'active' : ''}>Members</span>
+                                <span onClick={() => this.changeSidebarTab(1)}
+                                    className={this.state.sidebarTab === 1 ? 'active' : ''}>Sub-places</span>
+                            </Row>}
+                            {(this.state.sidebarTab === 0 && !isPersonal) && <div className='place-members'>
+                                {this.getMembersItems()}
+                            </div>}
+                            {(this.state.sidebarTab === 1 || isPersonal) && <div className='place-members'>
+                                place subplaces
+                            </div>}
+                        </Col>
+                    </Row>
+                    {/* <Row type='flex' align='middle'>
                         <Col span={6}>
                             <PlaceView className='placemodal' avatar size={64} place={place}/>
                         </Col>
@@ -448,13 +642,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             {searchableTxt}
                         </Col>
                     </Row>}
-                    {/* {!this.isManager(this.currentUser) && place.type !== 'personal' &&
-                    <Row>
-                        <Col>
-                            <Button onClick={this.addAsManager.bind(this)}>Add you as a Manager</Button>
-                        </Col>
-                    </Row>
-                    } */}
                     {place.counters.childs > 0 &&
                     <div>
                         <Row className='devide-row'>
@@ -496,7 +683,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         >
                             <EditForm ref={this.saveForm} {...placeClone} />
                         </Modal>
-                    </Row>
+                    </Row> */}
                 </Modal>
                 }
             </div>

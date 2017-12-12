@@ -18,6 +18,8 @@ interface IPlacePolicyProps {
   search?: boolean;
   type?: boolean;
   receptive?: boolean;
+  create?: boolean;
+  add?: boolean;
   text? : boolean;
 }
 
@@ -95,6 +97,51 @@ export default class PlacePolicy extends React.Component<IPlacePolicyProps, any>
       return <div></div>;
     }
   }
+
+  create(place: IPlace) {
+    console.log(place);
+    var icon, text;
+    if (place.policy.add_place === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
+      icon = <IcoN size={16} name={'managerMember16'}/>;
+      text = 'Managers & Members';
+    } else if (place.policy.add_place === C_PLACE_POLICY[C_PLACE_POLICY.creators]) {
+      icon = <IcoN size={16} name={'manager16'}/>;
+      text = 'Managers Only.';
+    }
+
+    if (this.props.create) {
+      return <div>
+        {icon}
+        {this.props.text && text}
+      </div>;
+    } else {
+      return <div></div>;
+    }
+  }
+
+  add(place: IPlace) {
+
+    var icon, text;
+    if (place.policy.add_member === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
+      icon = <IcoN size={16} name={'managerMember16'}/>;
+      text = 'Managers & Members';
+    } else if (place.policy.add_member === C_PLACE_POLICY[C_PLACE_POLICY.creators]) {
+      icon = <IcoN size={16} name={'manager16'}/>;
+      text = 'Managers Only.';
+    } else if (place.policy.add_member === 'noone') {
+      icon = <IcoN size={16} name={'xcross16'}/>;
+      text = 'No one';
+    }
+
+    if (this.props.add) {
+      return <div>
+        {icon}
+        {this.props.text && text}
+      </div>;
+    } else {
+      return <div></div>;
+    }
+  }
   /**
    * @function render
    * @description Renders the component
@@ -109,6 +156,8 @@ export default class PlacePolicy extends React.Component<IPlacePolicyProps, any>
         {this.receptive(place)}
         {this.type(place)}
         {this.search(place)}
+        {this.add(place)}
+        {this.create(place)}
       </div>
     );
   }

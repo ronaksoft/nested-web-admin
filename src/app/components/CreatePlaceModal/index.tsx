@@ -646,7 +646,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         let model = this.state.model;
         return (
             <Modal
-                className='create-place-modal'
+                className='create-place-modal modal-template-place'
                 maskClosable={true}
                 width={800}
                 closable={true}
@@ -790,7 +790,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                     </Col>
                     <Col className='place-members' span={8}>
-                        <h3>Members</h3>
+                        <h5>Members</h5>
                         {this.getMembersItems()}
                     </Col>
                 </Row>

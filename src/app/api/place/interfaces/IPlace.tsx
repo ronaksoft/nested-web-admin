@@ -12,6 +12,7 @@ interface IPlace {
     description: string;
     grand_parent_id: string;
     groups: any;
+    counters?: any;
     limits: IPlaceLimits;
     name: string;
     picture: IPicture;
