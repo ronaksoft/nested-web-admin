@@ -95,4 +95,18 @@ export default class PlaceApi {
         });
     }
 
+    demoteMember(params: IPlaceAddMembersRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/place_demote_member',
+            data: params,
+        });
+    }
+
+    removeMember(params: IPlaceAddMembersRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/place_remove_member',
+            data: params,
+        });
+    }
+
 }

@@ -459,19 +459,23 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                             Share Post Policy
                                         </label>
                                         <span className='label-value'>
-                                            <PlacePolicy place={place} text={true} receptive={true}/>  
+                                            <PlacePolicy place={place} text={true} receptive={true}/>
                                         </span>
-                                        {!isPersonal && <label>
+                                        {!isPersonal &&
+                                        <label>
                                             Create Sub-Place Policy
                                         </label>}
-                                        {!isPersonal && <span className='label-value'>
-                                            <PlacePolicy place={place} text={true} create={true}/>  
+                                        {!isPersonal &&
+                                        <span className='label-value'>
+                                            <PlacePolicy place={place} text={true} create={true}/>
                                         </span>}
-                                        {!isPersonal && <label>
+                                        {!isPersonal &&
+                                        <label>
                                             Add Member Policy
                                         </label>}
-                                        {!isPersonal && <span className='label-value'>
-                                            <PlacePolicy place={place} text={true} add={true}/>  
+                                        {!isPersonal &&
+                                        <span className='label-value'>
+                                            <PlacePolicy place={place} text={true} add={true}/>
                                         </span>}
                                         {!isPersonal && <Row className='info-row' gutter={24}>
                                             <Col span={12}>
