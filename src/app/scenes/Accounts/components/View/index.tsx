@@ -724,7 +724,7 @@ class View extends React.Component<IViewProps, IViewState> {
             },
         ];
         const header = (
-            <Row className='account-bar' type='flex' align='middle'>
+            <Row className='modal-head' type='flex' align='middle'>
                 {/* Top bar */}
                 <div className='modal-close' onClick={this.onClose.bind(this)}>
                     <IcoN size={24} name={'xcross24'}/>
@@ -776,10 +776,10 @@ class View extends React.Component<IViewProps, IViewState> {
                 <Modal key={this.state.account._id} visible={this.state.visible} onCancel={this.onClose.bind(this)}
                        footer={null} title={header} maskClosable={this.state.maskClosable}
                        afterClose={this.cleanup} width={800}
-                       className={['account-modal', 'nst-modal', editMode ? 'edit-mode' : ''].join(' ')}>
+                       className={['account-modal', 'modal-template', 'nst-modal', editMode ? 'edit-mode' : ''].join(' ')}>
                     <Row gutter={16} type='flex'>
                         <Col span={16}>
-                            <div className='account-body'>
+                            <div className='modal-body'>
                                 <Row className='account-info-top'>
                                     <Row className='account-info-top-1' type='flex' align='middle'>
                                         <div className='account-avatar'>
@@ -1169,7 +1169,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                 </Row> */}
                             </div>
                         </Col>
-                        <Col span={8} className='account-places'>
+                        <Col span={8} className='modal-sidebar'>
                             {
                                 managerInPlaces.length > 0 &&
                                 <Row className='list-head'>

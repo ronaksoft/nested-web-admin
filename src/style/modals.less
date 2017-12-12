@@ -339,19 +339,17 @@
         min-height: 360px;
     }
 }
-
-// contact
-.account-modal {
+.modal-template {
     margin: 32px auto 48px;
     box-shadow: 0px 32px 64px #232629;
     border-radius: 6px;
     overflow: hidden;
     background-color: #fff;
-    height: ~'calc(100% - 80px)';
+    min-height: ~'calc(100% - 80px)';
     .ant-modal-content {
         box-shadow: none;
         min-height: unset;
-        height: 100%;
+        min-height: 100%;
     }
     .ant-modal-header {
         padding: 0;
@@ -359,11 +357,11 @@
     }
     .ant-modal-body {
         padding: 24px;
-        height: ~'calc(100% - 72px)';
+        min-height: ~'calc(100% - 72px)';
         > .ant-row-flex {
-            height: 100%;
+            min-height: 100%;
         }
-        .account-body {
+        .modal-body {
             border: 1px solid @color-light-breeze;
             border-radius: 4px;
             min-height: 100%;
@@ -374,7 +372,7 @@
             background: rgba(50, 61, 71, 0.02);
         }
     }
-    .account-places {
+    .modal-sidebar {
         height: 100%;
         overflow: auto;
     }
@@ -389,7 +387,24 @@
         justify-content: center;
         align-items: center;
     }
-    .account-bar {
+    label {
+        opacity: 0.8;
+        font-size: 13px;
+        line-height: 18px;
+        margin-bottom: 4px;
+        display: flex;
+        width: 100%;
+    }
+    .label-value {
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 22px;
+        width: 100%;
+        &.not-assigned {
+            opacity: .24;
+        }
+    }
+    .modal-head {
         height: 72px;
         margin: 0;
         padding: 0 16px!important;
@@ -423,6 +438,9 @@
             margin-left: 8px;
         }
     }
+}
+// contact
+.account-modal {
     .ant-row, .ant-row-flex {
         padding: 0;
         margin-bottom: 0;
@@ -477,23 +495,6 @@
     .info-row {
         margin-bottom: 24px;
         width: 100%;
-    }
-    label {
-        opacity: 0.8;
-        font-size: 13px;
-        line-height: 18px;
-        margin-bottom: 4px;
-        display: flex;
-        width: 100%;
-    }
-    .label-value {
-        font-weight: bold;
-        font-size: 16px;
-        line-height: 22px;
-        width: 100%;
-        &.not-assigned {
-            opacity: .24;
-        }
     }
     .more-info {
         text-align: center;
