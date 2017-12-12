@@ -292,36 +292,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         let lockedIcon, lockedTxt, reciveIcon, reciveTxt, searchableIcon, searchableTxt;
         const placeClone = _.clone(this.state.place);
 
-        if (place.privacy.locked === true) {
-            lockedIcon = <Icon type=' nst-ico ic_brick_wall_solid_16' style={iconStyle}/>;
-            lockedTxt = 'Private Place';
-        } else {
-            lockedIcon = <Icon type=' nst-ico ic_window_solid_16' style={iconStyle}/>;
-            lockedTxt = 'Common Place';
-        }
-
-        if (place.privacy.search === true) {
-            searchableIcon = <Icon type=' nst-ico ic_search_24' style={iconStyle}/>;
-            searchableTxt = 'This place shows in search results.';
-        } else {
-            searchableIcon = <Icon type=' nst-ico ic_non_search_24' style={iconStyle}/>;
-            searchableTxt = 'This place is not shown in search results.';
-        }
-
-        if (place.privacy.receptive === 'external' && place.policy.add_post === 'everyone') {
-            reciveIcon = <Icon type=' nst-ico ic_earth_solid_24' style={iconStyle}/>;
-            reciveTxt = 'Everyone can share post.';
-        } else if (place.privacy.receptive === 'internal' && place.policy.add_post === 'everyone') {
-            reciveIcon = <Icon type=' nst-ico ic_team_solid_24' style={iconStyle}/>;
-            reciveTxt = 'All grand-place members can share post';
-        } else if (place.privacy.receptive === 'off' && place.policy.add_post === 'everyone') {
-            reciveIcon = <Icon type=' nst-ico ic_manager-and-member_solid_24' style={iconStyle}/>;
-            reciveTxt = 'All members of the place could share post.';
-        } else if (place.privacy.receptive === 'off' && place.policy.add_post === 'creators') {
-            reciveIcon = <Icon type=' nst-ico ic_manager_solid_24' style={iconStyle}/>;
-            reciveTxt = 'Only managers can share post';
-        }
-
         const EditForm = Form.create({
             mapPropsToFields: (props: any) => {
                 return {
@@ -540,7 +510,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                 </span>
                                                 <span className='label-value not-assigned'>
                                                     /
-                                                    {place.limits.size === 0 && 'Unlimited'}
+                                                    {place.limits.size === 0 && '∞'}
                                                     {place.limits.size > 0 && this.convertSize(place.limits.size) + ' GB'}
                                                 </span>
                                             </Col>
@@ -628,31 +598,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                     </Row>
                     }
-                    {lockedIcon &&
-                    <Row type='flex' align='middle'>
-                        <Col span={6}>
-                            {lockedIcon}
-                        </Col>
-                        <Col span={18}>
-                            {lockedTxt}
-                        </Col>
-                    </Row>}
-                    {reciveIcon && <Row type='flex' align='middle'>
-                        <Col span={6}>
-                            {reciveIcon}
-                        </Col>
-                        <Col span={18}>
-                            {reciveTxt}
-                        </Col>
-                    </Row>}
-                    {searchableIcon && <Row type='flex' align='middle'>
-                        <Col span={6}>
-                            {searchableIcon}
-                        </Col>
-                        <Col span={18}>
-                            {searchableTxt}
-                        </Col>
-                    </Row>}
                     {place.counters.childs > 0 &&
                     <div>
                         <Row className='devide-row'>

@@ -84,7 +84,7 @@ export default class PlacePolicy extends React.Component<IPlacePolicyProps, any>
     } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
       icon = <IcoN size={16} name={'managerMember16'}/>;
       text = 'All members of the place could share post.';
-    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
+    } else if (place.privacy.receptive === C_PLACE_RECEPTIVE[C_PLACE_RECEPTIVE.off] && place.policy.add_post === C_PLACE_POLICY[C_PLACE_POLICY.creators]) {
       icon = <IcoN size={16} name={'manager16'}/>;
       text = 'Only managers can share post';
     }
