@@ -306,7 +306,7 @@
     border-radius: 6px;
     overflow: hidden;
     background-color: #fff;
-    max-height: ~'calc(100% - 80px)';
+    // max-height: ~'calc(100% - 80px)';
     .ant-modal-content {
         box-shadow: none;
         min-height: unset;
@@ -337,6 +337,9 @@
     }
     .modal-sidebar {
         height: 100%;
+        height: ~'calc(100% - 104px)';
+        position: absolute;
+        right: 8px;
         overflow: auto;
     }
     .ant-modal-close {
