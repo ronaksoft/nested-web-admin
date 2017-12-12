@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
-import {Modal, Row, Col, Icon, Button, message, Form, Input, Select, notification} from 'antd';
+import {Modal, Row, Col, Icon, Button, message, Form, Input, Select, notification, Upload} from 'antd';
 
 let Option = Select.Option;
 import PlaceView from './../placeview/index';
@@ -23,6 +23,10 @@ import RelatedChartCards from '../ChartCard/RelatedChartCards';
 import ReportType from '../../api/report/ReportType';
 import MeasureType from '../ChartCard/MeasureType';
 import TimePeriod from '../ChartCard/TimePeriod';
+import SelectLevel from '../SelectLevel/index';
+import C_PLACE_POST_POLICY from '../../api/consts/CPlacePostPolicy';
+import CONFIG from 'src/app/config';
+import PlaceAvatar from '../PlaceAvatar/index';
 
 interface IProps {
     place?: IPlace;
@@ -45,6 +49,8 @@ interface IStates {
     editMode: boolean;
     reportTab: boolean;
     sidebarTab: number;
+    uploadPercent: number;
+    token: string;
 }
 
 
@@ -55,6 +61,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     constructor(props: any) {
         super(props);
         this.state = {
+            uploadPercent: 0,
             sidebarTab: 0,
             updateProgress: false,
             showEdit: false,
@@ -64,6 +71,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             reportTab: false,
             editMode: false,
             viewAccount: false,
+            token: '',
             creators: this.props.place.creators,
             isGrandPlace: true
         };
@@ -262,6 +270,11 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         // todo
     }
 
+    clearForm () {
+        // this.form.resetFields();
+        this.toggleEditMode(false);
+    }
+
     getMembersItems() {
         var list = this.state.members.map((u: any) => {
             return (
@@ -292,9 +305,120 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         );
     }
 
+    getPostPolicyItem() {
+        let placeId = this.state
+            ? this.state.place._id
+            : '';
+        if (placeId !== '') {
+            placeId = placeId + '@' + CONFIG().DOMAIN;
+        }
+        const sharePostItems = [
+            {
+                index: C_PLACE_POST_POLICY.MANAGER,
+                label: 'manager',
+                description: 'Managers Only',
+                searchProperty: false
+            }, {
+                index: C_PLACE_POST_POLICY.MANGER_MEMBER,
+                label: 'managerMember',
+                description: 'This Place Managers & Members',
+                searchProperty: false
+            }, {
+                index: C_PLACE_POST_POLICY.TEAM,
+                label: 'team',
+                description: 'All Grand Place Members',
+                searchProperty: true
+            }, {
+                index: C_PLACE_POST_POLICY.COMPANY,
+                label: 'building',
+                description: 'All Company Members',
+                searchProperty: true
+            }, {
+                index: C_PLACE_POST_POLICY.EMAIL,
+                label: 'atsign',
+                description: `All Company Members + Everyone via Email: <br> <a href="mailto:${placeId}">${placeId}</a>`,
+                searchProperty: true,
+                searchText: 'Searchable for Company Accounts'
+            }
+        ];
+        return sharePostItems;
+    }
+
+    getPolicyItem() {
+        const createPlaceItems = [
+            {
+                index: C_PLACE_POST_POLICY.MANAGER,
+                label: 'manager',
+                description: 'Managers Only',
+                searchProperty: false
+            }, {
+                index: C_PLACE_POST_POLICY.MANGER_MEMBER,
+                label: 'managerMember',
+                description: 'This Place Managers & Members',
+                searchProperty: false
+            }
+        ];
+        return createPlaceItems;
+    }
+
+    beforeUpload() {
+        this.setState({
+            uploadPercent: 0,
+            imageIsUploading: true,
+        });
+        if (!this.state.token) {
+            notification.error({message: 'Error', description: 'We are not able to upload the picture.'});
+            return false;
+        }
+    }
+
+    removePhoto(e: any) {
+        // todo remove photo from model
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    updatePlaceName(event: any) {
+        const name = event.currentTarget.value;
+    }
+
+    pictureChange(info: any) {
+        if (info.event && info.event.percent) {
+            this.setState({
+                uploadPercent: parseInt(info.event.percent.toFixed(2)),
+            });
+        }
+    }
+
+    updatePlaceDescription(event: any) {
+        console.log('aaa');
+    }
+
+    updatePlacePostPolicy(index: any) {
+        console.log('aaa');
+    }
+
+    updatePlaceCreateSubPlacePolicy(index: any) {
+        console.log('aaa');
+    }
+
+    updatePlaceAddMemberPolicy(index: any) {
+        console.log('aaa');
+    }
+
+    updatePlaceSearchPolicy(check: any) {
+        console.log('aaa');
+    }
+
     render() {
         const {place, editMode} = this.state;
         const isPersonal = place.type === C_PLACE_TYPE[C_PLACE_TYPE.personal];
+        const sharePostItems = this.getPostPolicyItem();
+        const createPlaceItems = this.getPolicyItem();
+        const credentials = AAA
+        .getInstance()
+        .getCredentials();
+        const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
         const iconStyle = {
             width: '16px',
             height: '16px',
@@ -436,7 +560,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         </div>
                     )}
                     {editMode && (
-                        <Button
+                        <Button onClick={this.clearForm.bind(this)}
                             type=' butn butn-white'>Discard</Button>
                     )}
                     {editMode && (
@@ -446,7 +570,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 </Row>
             );
         }
-
         return (
             <div>
                 {
@@ -470,13 +593,13 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     {!this.state.reportTab && <Row gutter={16} type='flex'>
                         <Col span={16}>
                             <div className='modal-body'>
-                                <Row type='flex'>
+                                {!this.state.editMode && <Row type='flex'>
                                     <div className='place-pic'>
                                         <PlaceView className='placemodal' avatar size={64} place={place}/>
                                     </div>
                                     <div className='Place-Des'>
                                         <h2>{place.name}</h2>
-                                        <h4>{place._id}</h4>
+                                        <h3>{place._id}</h3>
                                         <hr/>
                                         <p>
                                             {place.description}
@@ -546,7 +669,118 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                             </Col>
                                         </Row>
                                     </div>
-                                </Row>
+                                </Row>}
+                                {this.state.editMode &&
+                                        <Row>
+                                            <Row className='place-picture' type='flex' align='middle'>
+                                                <PlaceAvatar avatar={place.pictureData}/>
+                                                <Upload
+                                                    name='avatar'
+                                                    action={uploadUrl}
+                                                    accept={'image/*'}
+                                                    showUploadList={false}
+                                                    onChange={this
+                                                        .pictureChange
+                                                        .bind(this)}
+                                                    beforeUpload={this
+                                                        .beforeUpload
+                                                        .bind(this)}>
+                                                    <Button type=' butn secondary'>
+                                                        Upload a Photo
+                                                    </Button>
+                                                    {place.pictureData && (
+                                                        <Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
+                                                            Remove Photo
+                                                        </Button>)}
+                                                    {(this.state.uploadPercent < 100 && this.state.uploadPercent > 0) &&
+                                                    <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/>
+                                                    }
+                                                </Upload>
+                                            </Row>
+                                            <Row className='input-row'>
+                                                <label htmlFor='name'>Name</label>
+                                                <Input
+                                                    id='name'
+                                                    size='large'
+                                                    className='nst-input'
+                                                    value={place.name}
+                                                    onChange={this
+                                                        .updatePlaceName
+                                                        .bind(this)}/>
+                                            </Row>
+                                            <Row className='input-row'>
+                                                <label htmlFor='description'>Description</label>
+                                                <Input id='description' size='large' className='nst-input' value={place.description}
+                                                    onChange={this.updatePlaceDescription.bind(this)}/>
+                                            </Row>
+                                            <Row className='input-row select-level'>
+                                                <label>Who can share posts with this Place?</label>
+                                                <SelectLevel
+                                                    index={C_PLACE_POST_POLICY.MANAGER}
+                                                    searchable={true}
+                                                    items={sharePostItems}
+                                                    onChangeLevel={this
+                                                        .updatePlacePostPolicy
+                                                        .bind(this)}
+                                                    onChangeSearch={this.updatePlaceSearchPolicy.bind(this)}
+                                                />
+                                            </Row>
+                                            <Row className='input-row select-level'>
+                                                <label>Who can create sub-places in this Place?</label>
+                                                <SelectLevel
+                                                    index={C_PLACE_POST_POLICY.MANAGER}
+                                                    items={createPlaceItems}
+                                                    onChangeLevel={this
+                                                        .updatePlaceCreateSubPlacePolicy
+                                                        .bind(this)}/>
+                                            </Row>
+                                            <Row className='input-row select-level'>
+                                                <label>Who can add member to this Place?</label>
+                                                <SelectLevel
+                                                    index={C_PLACE_POST_POLICY.MANAGER}
+                                                    items={createPlaceItems}
+                                                    onChangeLevel={this
+                                                        .updatePlaceAddMemberPolicy
+                                                        .bind(this)}/>
+                                            </Row>
+                                            <Row className='input-row' gutter={24}>
+                                                <Col span={12}>
+                                                    <label htmlFor='limitManager'>Max. Managers</label>
+                                                    <Input
+                                                        id='limitManager'
+                                                        size='large'
+                                                        className='nst-input'
+                                                        value={1}/>
+                                                </Col>
+                                                <Col span={12}>
+                                                    <label htmlFor='limitMember'>Max. Members</label>
+                                                    <Input
+                                                        id='limitMember'
+                                                        size='large'
+                                                        className='nst-input'
+                                                        value={0}/>
+                                                </Col>
+                                            </Row>
+                                            <Row className='input-row' gutter={24}>
+                                                <Col span={12}>
+                                                    <label htmlFor='limitSubPlaces'>Max. Sub-Places</label>
+                                                    <Input
+                                                        id='limitSubPlaces'
+                                                        size='large'
+                                                        className='nst-input'
+                                                        value={0}/>
+                                                </Col>
+                                                <Col span={12}>
+                                                    <label htmlFor='limitStorage'>Max. Storage</label>
+                                                    <Input
+                                                        id='limitStorage'
+                                                        size='large'
+                                                        className='nst-input'
+                                                        value={22}/>
+                                                </Col>
+                                            </Row>
+                                        </Row>
+                                }
                             </div>
                         </Col>
                         <Col span={8} className='modal-sidebar'>
