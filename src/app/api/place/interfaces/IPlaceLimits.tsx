@@ -1,8 +1,8 @@
 interface IPlaceLimits {
-    creators: Number;
-    key_holders: Number;
-    childs: Number;
-    size: Number;
+    creators: number;
+    key_holders: number;
+    childs: number;
+    size: number;
 }
 
 export default IPlaceLimits;

@@ -99,7 +99,6 @@ export default class PlacePolicy extends React.Component<IPlacePolicyProps, any>
   }
 
   create(place: IPlace) {
-    console.log(place);
     var icon, text;
     if (place.policy.add_place === C_PLACE_POLICY[C_PLACE_POLICY.everyone]) {
       icon = <IcoN size={16} name={'managerMember16'}/>;

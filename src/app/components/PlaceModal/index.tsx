@@ -533,6 +533,17 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     /{place.limits.childs}
                                                 </span>
                                             </Col>
+                                            <Col span={12}>
+                                                <label>Storage</label>
+                                                <span className='label-value power'>
+                                                    {this.convertSize(place.counters.size).toFixed(5) }
+                                                </span>
+                                                <span className='label-value not-assigned'>
+                                                    /
+                                                    {place.limits.size === 0 && 'Unlimited'}
+                                                    {place.limits.size > 0 && this.convertSize(place.limits.size) + ' GB'}
+                                                </span>
+                                            </Col>
                                         </Row>
                                     </div>
                                 </Row>
@@ -665,7 +676,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             return (<UserItem user={item} onClick={() => this.onItemClick(item)}
                                               manager={this.isManager(item)} key={item._id}/>);
                         })}
-                    </Row>
+                    </Row> */}
                     <Row>
                         <Modal
                             key={this.props.place._id}
@@ -683,7 +694,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         >
                             <EditForm ref={this.saveForm} {...placeClone} />
                         </Modal>
-                    </Row> */}
+                    </Row>
                 </Modal>
                 }
             </div>
