@@ -688,12 +688,11 @@ class View extends React.Component<IViewProps, IViewState> {
 
         const items = [
             {
-                key: 'password',
+                key: 'forcepassword',
                 name: 'Force Change Password',
                 icon: 'lock16',
                 switch: this.state.model.force_password,
                 switchChange: (data) => {
-                    console.log(data);
                     this.onFlagChange({force_password: data});
                 },
             },
@@ -714,7 +713,15 @@ class View extends React.Component<IViewProps, IViewState> {
                 switchChange: (data) => {
                     this.updateAdmin(data);
                 },
-            }
+            },
+            {
+                key: 'password',
+                name: 'Change Password',
+                icon: 'lock16',
+                action: (data) => {
+                    this.editField(EditableFields.pass);
+                },
+            },
         ];
         const header = (
             <Row className='account-bar' type='flex' align='middle'>
@@ -871,9 +878,18 @@ class View extends React.Component<IViewProps, IViewState> {
                                         </Col>
                                         <Col span={12}>
                                             <label>Email</label>
-                                            <span className='label-value'>
-                                                {this.state.account.email}
-                                            </span>
+                                            {
+                                                this.state.account.email &&
+                                                <span className='label-value'>
+                                                    {this.state.account.email}
+                                                </span>
+                                            }
+                                            {
+                                                !this.state.account.email &&
+                                                <span className='label-value not-assigned'>
+                                                    - Not Assigned -
+                                                </span>
+                                            }
                                         </Col>
                                     </Row>
                                 }
@@ -909,9 +925,14 @@ class View extends React.Component<IViewProps, IViewState> {
                                 <Row className='info-row' gutter={24}>
                                     <Col span={editMode ? 16 : 12}>
                                         <label>Birthday</label>
-                                        {!editMode &&
+                                        {(!editMode && this.state.account.dob) &&
                                             <span className='label-value'>
                                                 {this.state.account.dob}
+                                            </span>
+                                        }
+                                        {(!editMode && !this.state.account.dob) &&
+                                            <span className='label-value not-assigned'>
+                                                - Not Assigned -
                                             </span>
                                         }
                                         {editMode &&
@@ -1027,52 +1048,6 @@ class View extends React.Component<IViewProps, IViewState> {
                                         @{this.state.account._id}
                                     </Col>
                                     <Col span={2}></Col>
-                                </Row> */}
-                                {/* <Row>
-                                    <Col span={8}>
-                                        <label>Password</label>
-                                    </Col>
-                                    <Col span={14}>
-                                        <i>●●●●●●●●</i>
-                                    </Col>
-                                    <Col span={2}>
-                                        <Button type='toolkit nst-ico ic_more_solid_16'
-                                                onClick={() => this.editField(EditableFields.pass)}></Button>
-                                    </Col>
-                                </Row> */}
-                                {/* <Row>
-                                    <Col span={8}>
-                                        <label>Phone Number</label>
-                                    </Col>
-                                    <Col span={14}>
-                                        {this.state.account.phone}
-                                    </Col>
-                                    <Col span={2}>
-                                        <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                                onClick={() => this.editField(EditableFields.phone)}></Button>
-                                    </Col>
-                                </Row> */}
-                                {/* <Row>
-                                    <Col span={8}>
-                                        <label>Birthday</label>
-                                    </Col>
-                                    <Col span={14}>
-                                        {
-                                            this.state.account.dob &&
-                                            <span>{this.state.account.dob}</span>
-                                        }
-                                        {
-                                            !this.state.account.dob &&
-                                            <a onClick={() => this.editField(EditableFields.dob)}><i>-click to assign-</i></a>
-                                        }
-                                    </Col>
-                                    <Col span={2}>
-                                        {
-                                            this.state.account.dob &&
-                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                                    onClick={() => this.editField(EditableFields.dob)}></Button>
-                                        }
-                                    </Col>
                                 </Row> */}
                                 {/* <Row>
                                     <Col span={8}>
@@ -1207,7 +1182,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                     <Col span={24}>
                                         {managerInPlaces.map((place) => {
                                             return (
-                                                <div className='user-in-place-item'>
+                                                <div key={place._id} className='user-in-place-item'>
                                                     <PlaceItem onClick={this.showPlaceModal.bind(this)}
                                                             place={place}/>
                                                     <a className='promote'>Demote</a>
