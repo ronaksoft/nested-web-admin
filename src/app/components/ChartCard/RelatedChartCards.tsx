@@ -13,6 +13,8 @@ export interface IRelatedChartCardsProps {
     color: string[];
     measure: MeasureType[];
     syncId?: string;
+    direction?: string;
+    params?: any;
 }
 
 export interface IRelatedChartCardsState {
@@ -35,18 +37,26 @@ class RelatedChartCards extends React.Component <IRelatedChartCardsProps,
     }
 
     render() {
-        return (
-            <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
-                <Col span={12}>
-                    <ChartCard title={this.props.title[0]} measure={this.props.measure[0]} syncPeriod={this.updatePeriod.bind(this)}
-                                dataType={this.props.dataType[0]} color={this.props.color[0]} syncId={this.props.syncId} period={this.state.period}/>
-                </Col>
-                <Col span={12}>
-                    <ChartCard title={this.props.title[1]} measure={this.props.measure[1]} syncPeriod={this.updatePeriod.bind(this)}
-                                dataType={this.props.dataType[1]} color={this.props.color[1]} syncId={this.props.syncId} period={this.state.period}/>
-                </Col>
-            </Row>
-        );
+        const ch1 = <ChartCard title={this.props.title[0]} measure={this.props.measure[0]} syncPeriod={this.updatePeriod.bind(this)} params={this.props.params}
+            dataType={this.props.dataType[0]} color={this.props.color[0]} syncId={this.props.syncId} period={this.state.period}/>;
+        const ch2 = <ChartCard title={this.props.title[1]} measure={this.props.measure[1]} syncPeriod={this.updatePeriod.bind(this)} params={this.props.params}
+            dataType={this.props.dataType[1]} color={this.props.color[1]} syncId={this.props.syncId} period={this.state.period}/>;
+
+        if (this.props.direction === 'vertical') {
+            return (
+                <Row style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
+                    <Col span={24}>{ch1}</Col>
+                    <Col span={24}>{ch2}</Col>
+                </Row>
+            );
+        } else {
+            return (
+                <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
+                    <Col span={12}>{ch1}</Col>
+                    <Col span={12}>{ch2}</Col>
+                </Row>
+            );
+        }
     }
 }
 

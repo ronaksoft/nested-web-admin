@@ -32,7 +32,7 @@ import AAA from './../../../../services/classes/aaa/index';
 import PlaceModal from '../../../../components/PlaceModal/index';
 import IPlace from '../../../../api/place/interfaces/IPlace';
 
-import ChartCard from '../../../../components/ChartCard/index';
+import RelatedChartCards from '../../../../components/ChartCard/RelatedChartCards';
 import ReportType from '../../../../api/report/ReportType';
 import MeasureType from '../../../../components/ChartCard/MeasureType';
 import TimePeriod from '../../../../components/ChartCard/TimePeriod';
@@ -1272,7 +1272,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                         <Col span={24}>
                                             {managerInPlaces.map((place) => {
                                                 return (
-                                                    <div key={place._id} className='user-in-place-item'>
+                                                    <div key={place._id + '1'} className='user-in-place-item'>
                                                         <PlaceItem onClick={this.showPlaceModal.bind(this)}
                                                                 place={place}/>
                                                         {this.state.account._id !== place._id &&
@@ -1297,7 +1297,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                     <Row className='remove-margin'>
                                         <Col span={24}>
                                             {memberInPlaces.map((place) => {
-                                                return (<div className='user-in-place-item'>
+                                                return (<div key={place._id + '2'} className='user-in-place-item'>
                                                     <PlaceItem onClick={this.showPlaceModal.bind(this)}
                                                             place={place} key={place._id}/>
                                                     <a className='remove' title={'Remove From Place'} onClick={this.removeFromPlace.bind(this, place._id)}><IcoN size={16} name={'bin16'}/></a>
@@ -1312,10 +1312,14 @@ class View extends React.Component<IViewProps, IViewState> {
                     }
                     {this.state.reportTab &&
                         <div className='reports'>
-                            <ChartCard title='Posts' measure={MeasureType.NUMBER} dataType={[ReportType.AccountPost]}
-                                   color='#9b59b6' syncId='account' params={{id: this.state.model.account_id}}/>
-                            <ChartCard title='Comments' measure={MeasureType.NUMBER} dataType={[ReportType.AccountComment]}
-                                   color='#9b59b6' syncId='account' params={{id: this.state.model.account_id}}/>
+                            <RelatedChartCards
+                                title={['Posts', 'Comments']}
+                                direction='vertical'
+                                params={{id: this.state.model.account_id}}
+                                dataType={[[ReportType.AccountPost],[ReportType.AccountComment]]}
+                                syncId='account'
+                                color={['#e74c3c', '#f1c40f']}
+                                measure={[MeasureType.NUMBER, MeasureType.NUMBER]}/>
                         </div>
                     }
                     <Modal

@@ -19,7 +19,7 @@ import {IcoN} from '../icon/index';
 import MoreOption from '../Filter/MoreOption';
 import UserAvatar from '../avatar/index';
 import PlacePolicy from '../PlacePolicy/index';
-import ChartCard from '../ChartCard/index';
+import RelatedChartCards from '../ChartCard/RelatedChartCards';
 import ReportType from '../../api/report/ReportType';
 import MeasureType from '../ChartCard/MeasureType';
 import TimePeriod from '../ChartCard/TimePeriod';
@@ -566,10 +566,14 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     </Row>}
                     {this.state.reportTab &&
                         <div className='reports'>
-                            <ChartCard title='Posts' measure={MeasureType.NUMBER} dataType={[ReportType.PlacePost]}
-                                   color='#9b59b6' syncId='place' params={{id: place._id}}/>
-                            <ChartCard title='Comments' measure={MeasureType.NUMBER} dataType={[ReportType.PlaceComment]}
-                                   color='#9b59b6' syncId='place' params={{id: place._id}}/>
+                            <RelatedChartCards
+                                title={['Posts', 'Comments']}
+                                direction='vertical'
+                                params={{id: place._id}}
+                                dataType={[[ReportType.PlacePost],[ReportType.PlaceComment]]}
+                                syncId='place'
+                                color={['#e74c3c', '#f1c40f']}
+                                measure={[MeasureType.NUMBER, MeasureType.NUMBER]}/>
                         </div>
                     }
                     {/* <Row type='flex' align='middle'>
