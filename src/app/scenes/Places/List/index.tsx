@@ -16,6 +16,7 @@ import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
 import MoreOption from '../../../components/Filter/MoreOption';
 import FilterGroup from '../../Accounts/FilterGroup';
+import $ from 'jquery';
 
 let cachedTrees = [];
 
@@ -167,7 +168,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             this.updateQueryDeb(props.query);
         }
         if (props.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
-            var PlacesClone: IPlace[] = _.clone(this.state.places);
+            let PlacesClone: IPlace[] = _.clone(this.state.places);
             PlacesClone.forEach((user: IPlace) => {
                 user.isChecked = false;
             });
@@ -375,6 +376,42 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 });
             }
         };
+
+        const getId = (obj) => {
+            return obj.find('.PlaveView-detail span').eq(1).text().replace(/\s+/g, '');
+        };
+
+        const toggleExpand = (expand: any, event: any) => {
+            const obj = $(event).parents('.ant-table-row');
+            const classList = obj.attr('class').split(/\s+/);
+            let currentLevel = '';
+            classList.forEach((item) => {
+                if (item.indexOf('ant-table-row-level-') > -1) {
+                    currentLevel = parseInt(item.replace('ant-table-row-level-', ''));
+                    return;
+                }
+            });
+            const id = getId(obj);
+            let queryArr = [];
+            for (let i = 1 + currentLevel; i <= 5; i++) {
+                queryArr.push('.ant-table-row-level-' + i + ' ');
+                if (expand) {
+                    break;
+                }
+            }
+            const targetObj = obj.parent().find(queryArr.join(', '));
+            for (let i = 0; i < targetObj.length; i++) {
+                const rowObj = targetObj.eq(i);
+                if (getId(rowObj).indexOf(id) > -1) {
+                    if (expand) {
+                        rowObj.attr('style', 'display: table-row !important');
+                    } else {
+                        rowObj.attr('style', 'display: none !important');
+                    }
+                }
+            }
+        };
+
         return (
             <Row type='flex' align='middle'>
                 <Row type='flex' align='middle' onClick={this.preventer.bind(this)}>
@@ -385,6 +422,9 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                         {(record.counters.childs > 0 && this.state.viewMode === 'relation' && record.grand_parent_id === record._id ) &&
                             <Arrow rotate={record.children === undefined ? '0' : '180'} child={record.child}
                                 onClick={loadChildren.bind(this)}/>}
+                        {(record.counters.childs > 0 && this.state.viewMode === 'relation' && record.grand_parent_id !== record._id ) &&
+                            <Arrow rotate={'0'} child={record.child}
+                                onClick={(expand, elem) => {toggleExpand(!expand, elem);}}/>}
                     </div>
                 </Row>
                 <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>

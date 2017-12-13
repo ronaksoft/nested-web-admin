@@ -8,6 +8,7 @@
  *              Date of review:         -
  */
 import * as React from 'react';
+import ReactDOM from 'react-dom';
 import {IcoN} from '../icon/index';
 
 interface IArrowProps {
@@ -31,7 +32,7 @@ export default class Arrow extends React.Component<IArrowProps, IArrowStats> {
     constructor(props: any) {
         super(props);
         this.state = {
-            rotate: 0,
+            rotate: parseInt(this.props.rotate, 10),
         };
     }
 
@@ -67,11 +68,12 @@ export default class Arrow extends React.Component<IArrowProps, IArrowStats> {
                 });
                 open = true;
             }
-            this.props.onClick(open);
+            const elem = ReactDOM.findDOMNode(this.refs.elem);
+            this.props.onClick(open, elem);
         };
 
         return (
-            <div className='arrow' style={styles} onClick={click}>
+            <div ref='elem' className='arrow' style={styles} onClick={click}>
                 <IcoN size={16} name='arrow16'/>
             </div>
         );

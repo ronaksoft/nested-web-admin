@@ -100,13 +100,15 @@
                         left: @i * 32 + 104px;
                     }
                 }
-                
+
             }
             .iteration-helper-class(@i + 1);
         }
         .iteration-helper-class(@iterations);
         .ant-table-row {
-            display: table-row!important;
+            &.ant-table-row-level-1 {
+                display: table-row !important;
+            }
         }
         .search-cell {
             opacity: .72;
