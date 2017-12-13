@@ -63,7 +63,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 _os: 'android',
                 _dt: dt,
             }).then((user: IUser) => {
-                if (user && user.admin) {
+                if (user && user.authority.admin) {
                     aaa.setUser(user);
                     this.setState({
                         isReady: true,
