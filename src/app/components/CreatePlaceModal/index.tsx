@@ -456,6 +456,9 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         } else if (!this.state.idValidation.valid) {
             message.warning('Id is not valid!');
             return false;
+        } else if (model.members.length === 0) {
+            message.warning('Add a member!');
+            return false;
         }
         return true;
     }
