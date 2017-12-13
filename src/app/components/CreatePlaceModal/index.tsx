@@ -512,7 +512,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                         limits: {
                             key_holders: model.managerLimit,
                             creators: model.memberLimit,
-                            size: model.storageLimit,
+                            size: model.storageLimit*(1024*1024),
                             childs: model.subPlaceLimit,
                         }
                     })

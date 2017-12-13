@@ -1,5 +1,6 @@
 import IPlacePolicy from './IPlacePolicy';
 import IPlacePrivacy from './IPlacePrivacy';
+import IPlaceLimits from './IPlaceLimits';
 
 interface IPlaceCreateRequest {
     place_id: string;
@@ -8,6 +9,7 @@ interface IPlaceCreateRequest {
     picture: string;
     policy: IPlacePolicy;
     privacy: IPlacePrivacy;
+    limits?: IPlaceLimits;
 }
 
 export default IPlaceCreateRequest;

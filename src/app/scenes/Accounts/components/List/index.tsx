@@ -359,6 +359,42 @@ class List extends React.Component <IListProps,
         });
     }
 
+    private load(page?: Number, size?: Number, filter?: FilterGroup) {
+        this.setState({loading: true});
+        page = page || this.state.currentPage;
+        size = size || this.PAGE_SIZE;
+        const skip = (page - 1) * size;
+        let filterValue = null;
+        switch (filter) {
+            case FilterGroup.Active:
+                filterValue = 'users_enabled';
+                break;
+            case FilterGroup.Deactive:
+                filterValue = 'users_disabled';
+                break;
+            case FilterGroup.Searchable:
+            case FilterGroup.NonSearchable:
+            case FilterGroup.NotVerifiedPhone:
+            default:
+                filterValue = 'users';
+                break;
+
+        }
+
+        return this.accountApi.getAll({
+            skip: skip,
+            limit: size,
+            filter: filterValue,
+            keyword: this.state.query || '',
+            sort: (this.state.sortedInfo[this.state.sortKey] ? '-' : '') + this.state.sortKey,
+        }).then((result) => {
+            this.setState({accounts: result.accounts, loading: false, currentPage: page});
+        }).catch((error) => {
+            this.setState({loading: false, page: page});
+            notification.error('Accounts', 'An error has occured while trying to get ');
+        });
+    }
+
     render() {
         let sortedInfo = this.state.sortedInfo;
         const allColumns = [
@@ -500,42 +536,6 @@ class List extends React.Component <IListProps,
                 }
             </div>
         );
-    }
-
-    private load(page?: Number, size?: Number, filter?: FilterGroup) {
-        this.setState({loading: true});
-        page = page || this.state.currentPage;
-        size = size || this.PAGE_SIZE;
-        const skip = (page - 1) * size;
-        let filterValue = null;
-        switch (filter) {
-            case FilterGroup.Active:
-                filterValue = 'users_enabled';
-                break;
-            case FilterGroup.Deactive:
-                filterValue = 'users_disabled';
-                break;
-            case FilterGroup.Searchable:
-            case FilterGroup.NonSearchable:
-            case FilterGroup.NotVerifiedPhone:
-            default:
-                filterValue = 'users';
-                break;
-
-        }
-
-        return this.accountApi.getAll({
-            skip: skip,
-            limit: size,
-            filter: filterValue,
-            keyword: this.state.query || '',
-            sort: (this.state.sortedInfo[this.state.sortKey] ? '-' : '') + this.state.sortKey,
-        }).then((result) => {
-            this.setState({accounts: result.accounts, loading: false, currentPage: page});
-        }).catch((error) => {
-            this.setState({loading: false, page: page});
-            notification.error('Accounts', 'An error has occured while trying to get ');
-        });
     }
 }
 

@@ -51,11 +51,13 @@ interface IStates {
     sidebarTab: number;
     uploadPercent: number;
     token: string;
+    model: any;
 }
 
 
 export default class PlaceModal extends React.Component<IProps, IStates> {
     currentUser: IUser;
+    accountApi: any;
     placeApi: any;
 
     constructor(props: any) {
@@ -73,7 +75,23 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             viewAccount: false,
             token: '',
             creators: this.props.place.creators,
-            isGrandPlace: true
+            isGrandPlace: true,
+            model: {
+                id: this.props.place._id,
+                name: this.props.place.name,
+                description: this.props.place.description,
+                picture: null,
+                pictureData: this.props.place.picture,
+                addPostPolicy: this.transformAddPostPolicy(this.props.place.policy.add_post, this.props.place.privacy.receptive),
+                placeSearchPolicy: this.props.place.privacy.search,
+                addPlacePolicy: this.props.place.policy.add_place,
+                addMemberPolicy: this.props.place.policy.add_place,
+                managerLimit: this.props.place.limits.creators,
+                memberLimit: this.props.place.limits.key_holders,
+                subPlaceLimit: this.props.place.limits.childs,
+                storageLimit: this.props.place.limits.size/(1024*1024),
+                members: [],
+            }
         };
         this.changeSidebarTab = this.changeSidebarTab.bind(this);
         this.toggleReportTab = this.toggleReportTab.bind(this);
@@ -101,6 +119,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     }
 
     componentDidMount() {
+        this.accountApi = new AccountApi();
         this.placeApi = new PlaceApi();
         if (this.props.place) {
             this.setState({
@@ -110,6 +129,18 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             });
         }
         this.fetchUsers();
+        this.loadUploadToken();
+    }
+
+    loadUploadToken() {
+        this
+            .accountApi
+            .getUploadToken()
+            .then((result) => {
+                this.setState({token: result.token});
+            }, (error) => {
+                this.setState({token: null});
+            });
     }
 
     onItemClick = (account) => {
@@ -270,9 +301,32 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         // todo
     }
 
-    clearForm () {
+    clearForm() {
         // this.form.resetFields();
+        this.resetModel();
         this.toggleEditMode(false);
+    }
+
+    updateForm() {
+
+    }
+
+    resetModel () {
+        this.updateModel({
+            name: this.state.place.name,
+            description: this.state.place.description,
+            picture: null,
+            pictureData: this.state.place.picture,
+            addPostPolicy: this.transformAddPostPolicy(this.state.place.policy.add_post, this.state.place.privacy.receptive),
+            placeSearchPolicy: this.state.place.privacy.search,
+            addPlacePolicy: this.state.place.policy.add_place,
+            addMemberPolicy: this.state.place.policy.add_place,
+            managerLimit: this.state.place.limits.creators,
+            memberLimit: this.state.place.limits.key_holders,
+            subPlaceLimit: this.state.place.limits.childs,
+            storageLimit: this.state.place.limits.size/(1024*1024),
+            members: [],
+        });
     }
 
     getMembersItems() {
@@ -361,6 +415,18 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         return createPlaceItems;
     }
 
+    transformAddPostPolicy(addPost: any, receptive: any) {
+        if (receptive === 'off' && addPost === 'creators') {
+            return C_PLACE_POST_POLICY.MANAGER;
+        } else if (receptive === 'off' && addPost === 'everyone') {
+            return C_PLACE_POST_POLICY.MANGER_MEMBER;
+        } else if (receptive === 'internal' && addPost === 'everyone') {
+            return C_PLACE_POST_POLICY.TEAM;
+        } else if (receptive === 'external' && addPost === 'everyone') {
+            return C_PLACE_POST_POLICY.COMPANY;
+        }
+    }
+
     beforeUpload() {
         this.setState({
             uploadPercent: 0,
@@ -373,9 +439,11 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     }
 
     removePhoto(e: any) {
-        // todo remove photo from model
         e.preventDefault();
         e.stopPropagation();
+        this.updateModel({
+            pictureData: null,
+        });
     }
 
     updatePlaceName(event: any) {
@@ -388,30 +456,91 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 uploadPercent: parseInt(info.event.percent.toFixed(2)),
             });
         }
+        if (info.file.status === 'done') {
+            this.updateModel({
+                picture: info.file.response.data[0].universal_id,
+                pictureData: info.file.response.data[0].thumbs
+            });
+            this.setState({
+                uploadPercent: 0,
+                imageIsUploading: false,
+            });
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
+    }
+
+    updateModel(params: any, callback?: any) {
+        const model = this.state.model;
+        _.forEach(params, (val, index) => {
+            model[index] = val;
+        });
+        this.setState({model: model}, () => {
+            if (_.isFunction(callback)) {
+                callback();
+            }
+        });
+    }
+
+    extractNumber(text: any) {
+        return parseInt(text.replace(/[^0-9]/g, ''), 0);
+    }
+
+    updatePlaceName(event: any) {
+        const name = event.currentTarget.value;
+        this.updateModel({
+            name: name,
+        });
     }
 
     updatePlaceDescription(event: any) {
-        console.log('aaa');
+        this.updateModel({
+            description: event.currentTarget.value,
+        });
     }
 
     updatePlacePostPolicy(index: any) {
-        console.log('aaa');
-    }
-
-    updatePlaceCreateSubPlacePolicy(index: any) {
-        console.log('aaa');
-    }
-
-    updatePlaceAddMemberPolicy(index: any) {
-        console.log('aaa');
+        this.updateModel({addPostPolicy: index});
     }
 
     updatePlaceSearchPolicy(check: any) {
-        console.log('aaa');
+        this.updateModel({placeSearchPolicy: check});
+    }
+
+    updatePlaceCreateSubPlacePolicy(index: any) {
+        this.updateModel({addPlacePolicy: index});
+    }
+
+    updatePlaceAddMemberPolicy(index: any) {
+        this.updateModel({addMemberPolicy: index});
+    }
+
+    updatePlaceMangerLimit(event: any) {
+        this.updateModel({
+            managerLimit: this.extractNumber(event.currentTarget.value)
+        });
+    }
+
+    updatePlaceMemberLimit(event: any) {
+        this.updateModel({
+            memberLimit: this.extractNumber(event.currentTarget.value)
+        });
+    }
+
+    updatePlaceSubPlaceLimit(event: any) {
+        this.updateModel({
+            subPlaceLimit: this.extractNumber(event.currentTarget.value)
+        });
+    }
+
+    updatePlaceStorageLimit(event: any) {
+        this.updateModel({
+            storageLimit: this.extractNumber(event.currentTarget.value)
+        });
     }
 
     render() {
-        const {place, editMode} = this.state;
+        const {place, editMode, model} = this.state;
         const isPersonal = place.type === C_PLACE_TYPE[C_PLACE_TYPE.personal];
         const sharePostItems = this.getPostPolicyItem();
         const createPlaceItems = this.getPolicyItem();
@@ -565,6 +694,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     )}
                     {editMode && (
                         <Button
+                            onClick={this.updateForm.bind(this)}
                             type=' butn butn-green'>Save Changes</Button>
                     )}
                 </Row>
@@ -673,7 +803,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 {this.state.editMode &&
                                         <Row>
                                             <Row className='place-picture' type='flex' align='middle'>
-                                                <PlaceAvatar avatar={place.pictureData}/>
+                                                <PlaceAvatar avatar={model.pictureData}/>
                                                 <Upload
                                                     name='avatar'
                                                     action={uploadUrl}
@@ -688,7 +818,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     <Button type=' butn secondary'>
                                                         Upload a Photo
                                                     </Button>
-                                                    {place.pictureData && (
+                                                    {model.pictureData && (
                                                         <Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
                                                             Remove Photo
                                                         </Button>)}
@@ -703,21 +833,21 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     id='name'
                                                     size='large'
                                                     className='nst-input'
-                                                    value={place.name}
+                                                    value={model.name}
                                                     onChange={this
                                                         .updatePlaceName
                                                         .bind(this)}/>
                                             </Row>
                                             <Row className='input-row'>
                                                 <label htmlFor='description'>Description</label>
-                                                <Input id='description' size='large' className='nst-input' value={place.description}
+                                                <Input id='description' size='large' className='nst-input' value={model.description}
                                                     onChange={this.updatePlaceDescription.bind(this)}/>
                                             </Row>
                                             <Row className='input-row select-level'>
                                                 <label>Who can share posts with this Place?</label>
                                                 <SelectLevel
-                                                    index={C_PLACE_POST_POLICY.MANAGER}
-                                                    searchable={true}
+                                                    index={model.addPostPolicy}
+                                                    searchable={model.placeSearchPolicy}
                                                     items={sharePostItems}
                                                     onChangeLevel={this
                                                         .updatePlacePostPolicy
@@ -728,7 +858,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                             <Row className='input-row select-level'>
                                                 <label>Who can create sub-places in this Place?</label>
                                                 <SelectLevel
-                                                    index={C_PLACE_POST_POLICY.MANAGER}
+                                                    index={model.addPlacePolicy}
                                                     items={createPlaceItems}
                                                     onChangeLevel={this
                                                         .updatePlaceCreateSubPlacePolicy
@@ -737,7 +867,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                             <Row className='input-row select-level'>
                                                 <label>Who can add member to this Place?</label>
                                                 <SelectLevel
-                                                    index={C_PLACE_POST_POLICY.MANAGER}
+                                                    index={model.addMemberPolicy}
                                                     items={createPlaceItems}
                                                     onChangeLevel={this
                                                         .updatePlaceAddMemberPolicy
@@ -750,7 +880,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                         id='limitManager'
                                                         size='large'
                                                         className='nst-input'
-                                                        value={1}/>
+                                                        value={model.managerLimit}
+                                                        onChange={this
+                                                            .updatePlaceMangerLimit
+                                                            .bind(this)}/>
                                                 </Col>
                                                 <Col span={12}>
                                                     <label htmlFor='limitMember'>Max. Members</label>
@@ -758,7 +891,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                         id='limitMember'
                                                         size='large'
                                                         className='nst-input'
-                                                        value={0}/>
+                                                        value={model.memberLimit}
+                                                        onChange={this
+                                                            .updatePlaceMemberLimit
+                                                            .bind(this)}/>
                                                 </Col>
                                             </Row>
                                             <Row className='input-row' gutter={24}>
@@ -768,7 +904,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                         id='limitSubPlaces'
                                                         size='large'
                                                         className='nst-input'
-                                                        value={0}/>
+                                                        value={model.subPlaceLimit}
+                                                        onChange={this
+                                                            .updatePlaceSubPlaceLimit
+                                                            .bind(this)}/>
                                                 </Col>
                                                 <Col span={12}>
                                                     <label htmlFor='limitStorage'>Max. Storage</label>
@@ -776,7 +915,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                         id='limitStorage'
                                                         size='large'
                                                         className='nst-input'
-                                                        value={22}/>
+                                                        value={model.storageLimit}
+                                                        onChange={this
+                                                            .updatePlaceStorageLimit
+                                                            .bind(this)}/>
                                                 </Col>
                                             </Row>
                                         </Row>
