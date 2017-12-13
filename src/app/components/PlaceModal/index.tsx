@@ -27,6 +27,8 @@ import SelectLevel from '../SelectLevel/index';
 import C_PLACE_POST_POLICY from '../../api/consts/CPlacePostPolicy';
 import CONFIG from 'src/app/config';
 import PlaceAvatar from '../PlaceAvatar/index';
+import IPlaceCreateRequest from '../../api/place/interfaces/IPlaceCreateRequest';
+import AddMemberModal from '../AddMember/index';
 
 interface IProps {
     place?: IPlace;
@@ -38,6 +40,7 @@ interface IProps {
 interface IStates {
     editTarget: EditableFields | null;
     visible: boolean;
+    visibleAddMemberModal: boolean;
     place?: IPlace;
     members?: any;
     chosen ?: IUser;
@@ -46,6 +49,7 @@ interface IStates {
     isGrandPlace: boolean;
     showEdit: boolean;
     updateProgress: boolean;
+    imageIsUploading: boolean;
     editMode: boolean;
     reportTab: boolean;
     sidebarTab: number;
@@ -59,10 +63,11 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     currentUser: IUser;
     accountApi: any;
     placeApi: any;
-
+    updated: boolean;
     constructor(props: any) {
         super(props);
         this.state = {
+            visibleAddMemberModal: false,
             uploadPercent: 0,
             sidebarTab: 0,
             updateProgress: false,
@@ -76,26 +81,32 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             token: '',
             creators: this.props.place.creators,
             isGrandPlace: true,
-            model: {
-                id: this.props.place._id,
-                name: this.props.place.name,
-                description: this.props.place.description,
-                picture: null,
-                pictureData: this.props.place.picture,
-                addPostPolicy: this.transformAddPostPolicy(this.props.place.policy.add_post, this.props.place.privacy.receptive),
-                placeSearchPolicy: this.props.place.privacy.search,
-                addPlacePolicy: this.props.place.policy.add_place,
-                addMemberPolicy: this.props.place.policy.add_place,
-                managerLimit: this.props.place.limits.creators,
-                memberLimit: this.props.place.limits.key_holders,
-                subPlaceLimit: this.props.place.limits.childs,
-                storageLimit: this.props.place.limits.size/(1024*1024),
-                members: [],
-            }
+            model: this.getModelFromProps(this.props),
+            imageIsUploading: false,
         };
         this.changeSidebarTab = this.changeSidebarTab.bind(this);
         this.toggleReportTab = this.toggleReportTab.bind(this);
         this.currentUser = AAA.getInstance().getUser();
+        this.updated = false;
+    }
+
+    getModelFromProps(props: any) {
+        return {
+            id: props.place._id,
+            name: props.place.name,
+            description: props.place.description,
+            picture: '',
+            pictureData: props.place.picture,
+            addPostPolicy: this.transformAddPostPolicy(props.place.policy.add_post, props.place.privacy.receptive),
+            placeSearchPolicy: props.place.privacy.search,
+            addPlacePolicy: props.place.policy.add_place,
+            addMemberPolicy: props.place.policy.add_place,
+            managerLimit: props.place.limits.creators,
+            memberLimit: props.place.limits.key_holders,
+            subPlaceLimit: props.place.limits.childs,
+            storageLimit: props.place.limits.size/(1024*1024),
+            members: [],
+        };
     }
 
     componentWillReceiveProps(props: any) {
@@ -103,8 +114,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             place: props.place,
             creators: props.place.creators,
             visible: props.visible,
+            model: this.getModelFromProps(props),
         });
         this.fetchUsers();
+        this.updated = false;
     }
 
     fetchUsers() {
@@ -112,7 +125,26 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         placeApi.getPlaceListMemebers({
             place_id: this.props.place._id
         }).then((accounts) => {
+            const admins = _.map(this.state.place.creators, (item) => {
+                return {_id: item};
+            });
+            let managers = _.intersectionBy(accounts, admins, '_id');
+            managers = _.map(managers, (item) => {
+                return _.merge(item, {
+                    admin: true,
+                });
+            });
+            let members = _.differenceBy(accounts, admins, '_id');
+            members = _.map(members, (item) => {
+                return _.merge(item, {
+                    admin: false,
+                });
+            });
+            accounts = _.concat(managers, members);
             this.setState({
+                members: accounts,
+            });
+            this.updateModel({
                 members: accounts,
             });
         });
@@ -166,6 +198,9 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
 
 
     handleCancel() {
+        if (this.updated) {
+            this.broadcastUpdate();
+        }
         this.setState({
             visible: false,
         });
@@ -293,12 +328,99 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         });
     }
 
+    toggleAddMemberModal() {
+        this.setState({
+            visibleAddMemberModal: !this.state.visibleAddMemberModal
+        });
+    }
+
+    addMembers(members: any) {
+        let currentMembers = this.state.model.members;
+        const list = _.differenceBy(members, currentMembers, '_id');
+        currentMembers = currentMembers.concat(list);
+        const adminCount = _.filter(currentMembers, (item) => {
+            return item.admin === true;
+        }).length;
+        if (currentMembers.length > 0 && adminCount === 0) {
+            currentMembers[0].admin = true;
+        }
+        if (currentMembers.length > this.state.model.memberLimit) {
+            message.warning(`You cannot have more than ${this.state.model.memberLimit} members`);
+            return;
+        }
+        this.updateModel({
+            members: currentMembers,
+        });
+    }
+
     toggleAdmin(user: any) {
-        // todo
+        const index = _.findIndex(this.state.model.members, {
+            '_id': user._id,
+        });
+        let members = JSON.parse(JSON.stringify(this.state.model.members));
+        if (!_.some(this.state.members, {_id: user._id})) {
+            if (index > -1) {
+                members[index].admin = !members[index].admin;
+                const adminCount = _.filter(members, (item) => {
+                    return item.admin === true;
+                }).length;
+                if (adminCount > this.state.model.managerLimit) {
+                    message.warning(`You cannot have more than ${this.state.model.memberLimit} admins`);
+                    return;
+                }
+                this.updateModel({
+                    members: members,
+                });
+            }
+        } else {
+            if (!this.state.model.members[index].admin) {
+                members[index].admin = true;
+                this.placeApi.promoteMember({
+                    place_id: this.state.model.id,
+                    account_id: user._id,
+                }).then(() => {
+                    this.updated = true;
+                    this.updateModel({
+                        members: members,
+                    });
+                });
+            } else {
+                members[index].admin = false;
+                this.placeApi.demoteMember({
+                    place_id: this.state.model.id,
+                    account_id: user._id,
+                }).then(() => {
+                    this.updated = true;
+                    this.updateModel({
+                        members: members,
+                    });
+                });
+            }
+        }
     }
 
     removeMember(user: any) {
-        // todo
+        const index = _.findIndex(this.state.model.members, {
+            '_id': user._id,
+        });
+        let members = this.state.model.members;
+        if (!_.some(this.state.members, {_id: user._id})) {
+            members.splice(index, 1);
+            this.updateModel({
+                members: members,
+            });
+        } else {
+            this.placeApi.removeMember({
+                place_id: this.state.model.id,
+                account_id: user._id,
+            }).then(() => {
+                this.updated = true;
+                members.splice(index, 1);
+                this.updateModel({
+                    members: members,
+                });
+            });
+        }
     }
 
     clearForm() {
@@ -307,15 +429,96 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         this.toggleEditMode(false);
     }
 
-    updateForm() {
-
+    broadcastUpdate() {
+        const event = new Event('place_updated');
+        window.dispatchEvent(event);
+        console.log('place_updated');
     }
 
-    resetModel () {
+    updateForm() {
+        if (!this.validate()) {
+            return;
+        }
+        const model = this.state.model;
+        const addPostPolicy = this.getAddPostPolicy(model.addPostPolicy);
+        const params: IPlaceCreateRequest = {
+            place_id: model.id,
+            place_name: model.name,
+            place_description: model.description,
+            picture: model.pictureData,
+            policy: {
+                add_post: addPostPolicy.addPost,
+                add_place: model.addPlacePolicy,
+                add_member: model.addMemberPolicy,
+            },
+            privacy: {
+                locked: true,
+                search: model.placeSearchPolicy,
+                receptive: addPostPolicy.receptive,
+            },
+            limits: {
+                key_holders: model.managerLimit,
+                creators: model.memberLimit,
+                size: model.storageLimit*(1024*1024),
+                childs: model.subPlaceLimit,
+            }
+        };
+        const newMembers = _.differenceBy(model.members, this.state.members, '_id');
+        let members = _.map(newMembers, (user) => {
+            return user._id;
+        }).join(',');
+        this.placeApi.placeَUpdate(params).then((data) => {
+            this.toggleEditMode(false);
+            this.importToModel();
+            message.success('Place updated!');
+            if (model.picture === '-') {
+                this.placeApi.setPicture({
+                    place_id: model.id,
+                }).then(() => {
+                    console.log('picture removed');
+                });
+            } else if (model.picture !== null && model.picture !== '') {
+                this.placeApi.setPicture({
+                    place_id: model.id,
+                    universal_id: model.picture,
+                }).then(() => {
+                    console.log('picture added');
+                });
+            }
+            if (newMembers.length > 0) {
+                this.placeApi.placeAddMember({
+                    place_id: model.id,
+                    account_id: members
+                }).then((data) => {
+                    message.success('New Members have been added!');
+                    this.updated = true;
+                    const admins = _.map(_.filter(newMembers, (item: any) => {
+                        return item.admin === true;
+                    }), (item: any) => {
+                        return item._id;
+                    });
+                    if (admins.length > 0) {
+                        const adminPromises = [];
+                        _.forEach(admins, (item: string) => {
+                            adminPromises.push(this.placeApi.promoteMember({
+                                place_id: model.id,
+                                account_id: item,
+                            }));
+                        });
+                        Promise.all(adminPromises).then((data) => {
+                            message.success('New Managers have been added!');
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    resetModel() {
         this.updateModel({
             name: this.state.place.name,
             description: this.state.place.description,
-            picture: null,
+            picture: '',
             pictureData: this.state.place.picture,
             addPostPolicy: this.transformAddPostPolicy(this.state.place.policy.add_post, this.state.place.privacy.receptive),
             placeSearchPolicy: this.state.place.privacy.search,
@@ -325,12 +528,35 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             memberLimit: this.state.place.limits.key_holders,
             subPlaceLimit: this.state.place.limits.childs,
             storageLimit: this.state.place.limits.size/(1024*1024),
-            members: [],
+            members: this.state.members,
         });
     }
 
+    importToModel() {
+        const model = this.state.model;
+        const addPostPolicy = this.getAddPostPolicy(model.addPostPolicy);
+        let place: IPlace = this.state.place;
+        place.name = model.name;
+        place.description = model.description;
+        place.picture = model.pictureData;
+        place.policy.add_post = addPostPolicy.addPost;
+        place.policy.add_place = model.addPlacePolicy;
+        place.policy.add_member = model.addMemberPolicy;
+        place.privacy.search = model.placeSearchPolicy;
+        place.privacy.search = addPostPolicy.receptive;
+        place.limits.creators = model.managerLimit;
+        place.limits.key_holders = model.memberLimit;
+        place.limits.childs = model.subPlaceLimit;
+        place.limits.size = model.storageLimit;
+        this.setState({
+            place: place,
+            members: model.members,
+        });
+
+    }
+
     getMembersItems() {
-        var list = this.state.members.map((u: any) => {
+        var list = this.state.model.members.map((u: any) => {
             return (
                 <li key={u._id} className={'nst-opacity-hover-parent'}>
                     <Row type='flex' align='middle'>
@@ -349,12 +575,16 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         return (
             <ul>
                 {list}
+                {this.state.editMode &&
                 <li
                     key='addmember'
-                    className='addMemberItem'>
+                    className='addMemberItem'
+                    onClick={this
+                        .toggleAddMemberModal
+                        .bind(this)}>
                     <IcoN size={16} name={'cross16'}/>
                     Add member...
-                </li>
+                </li>}
             </ul>
         );
     }
@@ -415,6 +645,53 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         return createPlaceItems;
     }
 
+    getAddPostPolicy(policy: any) {
+        let addPost: any;
+        let receptive: any;
+        switch (policy) {
+            case C_PLACE_POST_POLICY.MANAGER:
+                addPost = 'off';
+                receptive = 'creators';
+                break;
+            case C_PLACE_POST_POLICY.MANGER_MEMBER:
+                addPost = 'off';
+                receptive = 'everyone';
+                break;
+            case C_PLACE_POST_POLICY.TEAM:
+                addPost = 'internal';
+                receptive = 'everyone';
+                break;
+            case C_PLACE_POST_POLICY.COMPANY:
+                addPost = 'external';
+                receptive = 'everyone';
+                break;
+            case C_PLACE_POST_POLICY.EMAIL:
+                addPost = 'external';
+                receptive = 'everyone';
+                break;
+            default:
+                addPost = 'off';
+                receptive = 'creators';
+                break;
+        }
+        return {
+            addPost: addPost,
+            receptive: receptive,
+        };
+    }
+
+    validate() {
+        const model = this.state.model;
+        if (this.state.imageIsUploading) {
+            message.warning('Wait till image uploads completely!');
+            return false;
+        } else if (_.trim(model.name).length === 0) {
+            message.warning('Choose a name!');
+            return false;
+        }
+        return true;
+    }
+
     transformAddPostPolicy(addPost: any, receptive: any) {
         if (receptive === 'off' && addPost === 'creators') {
             return C_PLACE_POST_POLICY.MANAGER;
@@ -442,12 +719,9 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         e.preventDefault();
         e.stopPropagation();
         this.updateModel({
-            pictureData: null,
+            pictureData: '',
+            picture: '-',
         });
-    }
-
-    updatePlaceName(event: any) {
-        const name = event.currentTarget.value;
     }
 
     pictureChange(info: any) {
@@ -763,7 +1037,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                 {place.counters.creators}
                                                 </span>
                                                 <span className='label-value not-assigned'>
-                                                    /{place.limits.creators}
+                                                    /{model.managerLimit}
                                                 </span>
                                             </Col>
                                             <Col span={12}>
@@ -772,7 +1046,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     {place.counters.key_holders}
                                                 </span>
                                                 <span className='label-value not-assigned'>
-                                                    /{place.limits.key_holders}
+                                                    /{model.memberLimit}
                                                 </span>
                                             </Col>
                                         </Row>}
@@ -783,18 +1057,18 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     {place.counters.childs}
                                                 </span>
                                                 <span className='label-value not-assigned'>
-                                                    /{place.limits.childs}
+                                                    /{model.subPlaceLimit}
                                                 </span>
                                             </Col>
                                             <Col span={12}>
                                                 <label>Storage</label>
                                                 <span className='label-value power'>
-                                                    {this.convertSize(place.counters.size).toFixed(5) }
+                                                    {this.convertSize(place.counters.size).toFixed(3) }
                                                 </span>
                                                 <span className='label-value not-assigned'>
                                                     /
-                                                    {place.limits.size === 0 && '∞'}
-                                                    {place.limits.size > 0 && this.convertSize(place.limits.size) + ' GB'}
+                                                    {model.storageLimit === 0 && '∞'}
+                                                    {model.storageLimit > 0 && model.storageLimit + ' MB'}
                                                 </span>
                                             </Col>
                                         </Row>
@@ -952,94 +1226,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 measure={[MeasureType.NUMBER, MeasureType.NUMBER]}/>
                         </div>
                     }
-                    {/* <Row type='flex' align='middle'>
-                        <Col span={6}>
-                            <PlaceView className='placemodal' avatar size={64} place={place}/>
-                        </Col>
-                        <Col span={18} className='Place-Des'>
-                            <p>{place.name}
-                                <br></br>
-                                <span>{place._id}</span>
-                            </p>
-                        </Col>
-                    </Row>
-                    {this.state.isGrandPlace &&
-                    <Row>
-                        <Row>
-                            <Col span={14}>
-                                <label>Maximum Managers</label>
-                            </Col>
-                            <Col span={8}>
-                                {place.limits.creators}
-                            </Col>
-                            <Col span={2}>
-                                <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                        onClick={() => this.editField(EditableFields.creators)}></Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={14}>
-                                <label>Maximum Members</label>
-                            </Col>
-                            <Col span={8}>
-                                {place.limits.key_holders}
-                            </Col>
-                            <Col span={2}>
-                                <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                        onClick={() => this.editField(EditableFields.key_holders)}></Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={14}>
-                                <label>Storage Limit</label>
-                            </Col>
-                            <Col span={8}>
-                                {place.limits.size === 0 && <span>Unlimited</span>}
-                                {place.limits.size > 0 && <span>{this.convertSize(place.limits.size)} GB</span>}
-                            </Col>
-                            <Col span={2}>
-                                <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                        onClick={() => this.editField(EditableFields.size)}></Button>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={14}>
-                                <label>Maximum Children Limit</label>
-                            </Col>
-                            <Col span={8}>
-                                {place.limits.childs}
-                            </Col>
-                            <Col span={2}>
-                                <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                        onClick={() => this.editField(EditableFields.childs)}></Button>
-                            </Col>
-                        </Row>
-                    </Row>
-                    }
-                    {place.counters.childs > 0 &&
-                    <div>
-                        <Row className='devide-row'>
-                            <Col span={24}>
-                                {place.counters.childs} Sub-places
-                            </Col>
-                        </Row>
-                        <Row className='remove-margin'>
-                            <PlaceItem place={place} key={place._id}/>
-                        </Row>
-                    </div>
-                    }
-                    <Row className='devide-row'>
-                        <Col span={24}>
-                            {place.counters.creators + place.counters.key_holders} Members
-                        </Col>
-                    </Row>
-                    <Row className='remove-margin'>
-                        {this.state.members &&
-                        this.state.members.map((item) => {
-                            return (<UserItem user={item} onClick={() => this.onItemClick(item)}
-                                              manager={this.isManager(item)} key={item._id}/>);
-                        })}
-                    </Row> */}
                     <Row>
                         <Modal
                             key={this.props.place._id}
@@ -1058,6 +1244,11 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             <EditForm ref={this.saveForm} {...placeClone} />
                         </Modal>
                     </Row>
+                    <AddMemberModal
+                        members={this.state.model.members}
+                        addMembers={this.addMembers.bind(this)}
+                        onClose={this.toggleAddMemberModal.bind(this)}
+                        visible={this.state.visibleAddMemberModal}/>
                 </Modal>
                 }
             </div>

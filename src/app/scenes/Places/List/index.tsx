@@ -15,6 +15,7 @@ import {IcoN} from '../../../components/icon/index';
 import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
 import MoreOption from '../../../components/Filter/MoreOption';
+import FilterGroup from '../../Accounts/FilterGroup';
 
 let cachedTrees = [];
 
@@ -79,7 +80,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     pageLimit: number = 10;
     selectedPlace: IPlace | null = null;
     updateQueryDeb = _.debounce(this.updateQuery, 512);
-
+    listRefresh: any;
     constructor(props: any) {
         super(props);
         const counter = props.counters;
@@ -101,6 +102,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             },
             sortKey: null,
         };
+
+        this.listRefresh = this.fetchPlaces.bind(this);
     }
 
     componentDidMount() {
@@ -111,7 +114,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             this.props.selectedFilter === CPlaceFilterTypes.ALL) {
             totalCounter = counter.grand_places;
         }
-
+        window.addEventListener('place_updated', this.listRefresh, false);
         this.setState({
             selectedFilter: CPlaceFilterTypes.ALL,
             pagination: {
@@ -121,6 +124,11 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             }
         });
     }
+
+    componentWillUnmount() {
+        window.removeEventListener('place_updated', this.listRefresh, false);
+    }
+
     updateQuery(q: string) {
         this.setState({
             query: q

@@ -5,6 +5,7 @@ import IPlaceListMembersRequest from './interfaces/IPlaceListMembersRequest';
 import IPlaceListMembersResponse from './interfaces/IPlaceListMembersResponse';
 import IAccountPlacesRequest from './interfaces/IAccountPlacesRequest';
 import IPlaceAddMembersRequest from './interfaces/IPlaceAddMembersRequest';
+import IPlaceSetPictureRequest from './interfaces/IPlaceSetPictureRequest';
 import IPlaceUpdate from './interfaces/IPlaceUpdate';
 import IPlaceCreateRequest from './interfaces/IPlaceCreateRequest';
 import IPlaceDeleteRequest from './interfaces/IPlaceDeleteRequest';
@@ -112,6 +113,13 @@ export default class PlaceApi {
     removeMember(params: IPlaceAddMembersRequest): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/place_remove_member',
+            data: params,
+        });
+    }
+
+    setPicture(params: IPlaceSetPictureRequest): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/place_set_picture',
             data: params,
         });
     }

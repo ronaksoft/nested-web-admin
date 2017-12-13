@@ -473,7 +473,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             place_id: model.id,
             place_name: model.name,
             place_description: model.description,
-            picture: model.pictureData,
+            picture: model.picture,
             policy: {
                 add_post: addPostPolicy.addPost,
                 add_place: model.addPlacePolicy,
@@ -485,7 +485,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 receptive: addPostPolicy.receptive,
             },
         };
-        let members = _.map(this.state.model.members, (user) => {
+        let members = _.map(model.members, (user) => {
             return user._id;
         }).join(',');
 
@@ -505,6 +505,14 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                     account_id: members
                 })
             );
+            if (model.picture && model.picture !== '') {
+                promises.push(
+                    this.placeApi.setPicture({
+                        place_id: placeId,
+                        universal_id: model.pictureData,
+                    })
+                );
+            }
             if (this.state.grandPlaceId === '') {
                 promises.push(
                     this.placeApi.placeLimitEdit({
