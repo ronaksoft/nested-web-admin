@@ -12,6 +12,15 @@
             span {
                 white-space: nowrap;
                 display: flex;
+                &.active {
+                    color: @primary-color;
+                    .arrow {
+                        opacity: 1
+                    }
+                    svg {
+                        fill: @primary-color;
+                    }
+                }
             }
         }
         .ant-table-column-sorter {

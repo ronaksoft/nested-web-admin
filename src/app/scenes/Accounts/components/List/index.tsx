@@ -396,7 +396,7 @@ class List extends React.Component <IListProps,
     }
 
     render() {
-        let sortedInfo = this.state.sortedInfo;
+        let {sortedInfo, sortKey} = this.state;
         const allColumns = [
             {
                 title: this.dataColumns.name,
@@ -406,7 +406,7 @@ class List extends React.Component <IListProps,
                 index: 0,
             }, {
                 title: (
-                    <span>{this.dataColumns._id}
+                    <span className={[sortKey === 'user_id' ? 'active' : ''].join(' ')}>{this.dataColumns._id}
                         <Arrow rotate={sortedInfo.user_id === false ? '0' : '180'}
                                onClick={this.onSortChanged.bind(this, 'user_id')}/>
                     </span>),
@@ -438,7 +438,7 @@ class List extends React.Component <IListProps,
                 width: 136,
             }, {
                 title: (
-                    <span>{this.dataColumns.joined_on}
+                    <span className={[sortKey === 'joined_on' ? 'active' : ''].join(' ')}>{this.dataColumns.joined_on}
                         <Arrow rotate={sortedInfo.joined_on === false ? '0' : '180'}
                                onClick={this.onSortChanged.bind(this, 'joined_on')}/>
                     </span>),

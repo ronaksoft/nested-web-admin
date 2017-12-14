@@ -554,7 +554,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     render() {
-        let sortedInfo = this.state.sortedInfo;
+        let {sortedInfo, sortKey} = this.state;
+        console.log(sortedInfo, sortKey);
         var columns = [
             {
                 key: 'name',
@@ -566,7 +567,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 key: 'creators',
                 index: 2,
                 title: (
-                    <span>Managers
+                    <span className={[sortKey === 'creators'? 'active' : ''].join(' ')}>Managers
                         <Arrow rotate={sortedInfo.creators === false ? '0' : '180'}
                                onClick={this.onSortChanged.bind(this, 'creators')}/>
                     </span>),
@@ -577,7 +578,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 key: 'counters.counters',
                 index: 3,
                 title: (
-                    <span>Members
+                    <span className={[sortKey === 'key_holders' ? 'active' : ''].join(' ')}>Members
                         <Arrow rotate={sortedInfo.key_holders === false ? '0' : '180'}
                                onClick={this.onSortChanged.bind(this, 'key_holders')}/>
                     </span>),
@@ -591,7 +592,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 renderer: 'placeType',
                 width: 128,
                 title: (
-                    <span>Place Type
+                    <span className={[sortKey === 'place_type' ? 'active' : ''].join(' ')}>Place Type
                         <Arrow rotate={sortedInfo.place_type === false ? '0' : '180'}
                                onClick={this.onSortChanged.bind(this, 'place_type')}/>
                     </span>)
@@ -600,7 +601,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 key: 'sub-places',
                 index: 4,
                 title: (
-                    <span>Sub-places
+                    <span className={[sortKey === 'children' ? 'active' : ''].join(' ')}>Sub-places
                         <Arrow rotate={sortedInfo.children === false ? '0' : '180'}
                                onClick={this.onSortChanged.bind(this, 'children')}/>
                     </span>),
