@@ -788,14 +788,14 @@ class View extends React.Component<IViewProps, IViewState> {
                     this.updateAdmin(data);
                 },
             },
-            {
-                key: 'password',
-                name: 'Change Password',
-                icon: 'lock16',
-                action: (data) => {
-                    this.editField(EditableFields.pass);
-                },
-            },
+            // {
+            //     key: 'password',
+            //     name: 'Change Password',
+            //     icon: 'lock16',
+            //     action: (data) => {
+            //         this.editField(EditableFields.pass);
+            //     },
+            // },
         ];
         if (this.state.reportTab) {
             const header = (

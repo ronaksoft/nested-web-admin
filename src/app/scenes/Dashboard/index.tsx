@@ -12,8 +12,8 @@ import {Link} from 'react-router';
 
 const data = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300},
     {name: 'Group C', value: 300}];
-const COLORS = ['#14D769', '#A9EFC7', '#CFF6E0'];
-const RED_COLORS = ['#ff6464', '#fbc4c4', '#CFF6E0'];
+const COLORS = ['#FF3344', '#323D47'];
+const RED_COLORS = ['#323D47', '#ADB1B5'];
 
 const RADIAN = Math.PI / 180;
 
@@ -21,6 +21,10 @@ export interface IDashboardProps {
 }
 
 export interface IDashboardState {
+    data: any;
+    loading: boolean;
+    activeIndex: number;
+    activityPeriod: string;
 }
 
 const card2Title = <h5>Company Chart</h5>;
@@ -63,7 +67,10 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         super(props);
         this.state = {
             loading: true,
-            data: {},
+            data: {
+                accounts: [],
+                places: [],
+            },
             activeIndex: 0,
             activityPeriod: 'week'
         };
@@ -84,18 +91,18 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
     GetData() {
 
         this.SystemApi.getSystemCounters().then((result) => {
+            console.log(result);
 
             this.setState({
                 system: result,
                 data: {
                     places: [
-                        {name: 'Grand', value: result.grand_places},
-                        {name: 'Private', value: result.locked_places},
-                        {name: 'Common', value: result.unlocked_places}
+                        {name: 'Shared Places', value: result.unlocked_places + result.locked_places + result.grand_places},
+                        {name: 'Individual Places', value: result.personal_places}
                     ],
                     accounts: [
-                        {name: 'Active', value: result.enabled_accounts},
-                        {name: 'Inactive', value: result.disabled_accounts},
+                        {name: 'Inactive Accounts', value: result.disabled_accounts},
+                        {name: 'Active Accounts', value: result.enabled_accounts},
                     ]
                 },
                 loading: false
@@ -131,11 +138,19 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
                     <Col span={12}>
-                        <Card loading={this.state.loading} title={card3Title} extra={card3Extra}>
+                        {this.state.data.accounts && <Card loading={this.state.loading} title={card4Title} extra={card4Extra}>
+                            {this.state.data.accounts[1] && <p className='chart-info' style={{color: COLORS[1]}}>
+                                <abbr>Active Accounts</abbr>
+                                <span>{this.state.data.accounts[1].value}</span>
+                            </p>}
+                            {this.state.data.accounts[0] && <p className='chart-info' style={{color: COLORS[0]}}>
+                                <abbr>Inactive Accounts</abbr>
+                                <span>{this.state.data.accounts[0].value}</span>
+                            </p>}
                             <ResponsiveContainer width='100%' height={200}>
                                 <PieChart onMouseEnter={this.onPieEnter}>
-                                    <Pie data={this.state.data.places} activeIndex={this.state.activeIndex}
-                                        label={renderCustomizedLabel} fill='#8884d8' innerRadius={40} outerRadius={66}
+                                    <Pie data={this.state.data.accounts} activeIndex={this.state.activeIndex}
+                                        label={renderCustomizedLabel} fill='#FFDFDF' innerRadius={40} outerRadius={66}
                                         paddingAngle={0}>
                                         {
                                             data.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)
@@ -143,14 +158,22 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                                     </Pie>
                                 </PieChart>
                             </ResponsiveContainer>
-                        </Card>
+                        </Card>}
                     </Col>
                     <Col span={12}>
-                        <Card loading={this.state.loading} title={card4Title} extra={card4Extra}>
+                        <Card loading={this.state.loading} title={card3Title} extra={card3Extra}>
+                            {this.state.data.places[0] && <p className='chart-info' style={{color: RED_COLORS[0]}}>
+                                <abbr>Shared Places</abbr>
+                                <span>{this.state.data.places[0].value}</span>
+                            </p>}
+                            {this.state.data.places[1] && <p className='chart-info' style={{color: RED_COLORS[1]}}>
+                                <abbr>Individual Places</abbr>
+                                <span>{this.state.data.places[1].value}</span>
+                            </p>}
                             <ResponsiveContainer width='100%' height={200}>
                                 <PieChart onMouseEnter={this.onPieEnter}>
-                                    <Pie data={this.state.data.accounts} activeIndex={this.state.activeIndex}
-                                        label={renderCustomizedLabel} fill='#FFDFDF' innerRadius={40} outerRadius={66}
+                                    <Pie data={this.state.data.places} activeIndex={this.state.activeIndex}
+                                        label={renderCustomizedLabel} fill='#8884d8' innerRadius={40} outerRadius={66}
                                         paddingAngle={0}>
                                         {
                                             data.map((entry, index) => <Cell key={index} fill={RED_COLORS[index % COLORS.length]}/>)

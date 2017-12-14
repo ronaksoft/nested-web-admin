@@ -957,11 +957,11 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             <span>Send a Message</span>
                         </Row>
                     )}
-                    {!editMode && (
+                    {/* {!editMode && (
                         <div className='modal-more'>
                             <MoreOption menus={items} deviders={[0]}/>
                         </div>
-                    )}
+                    )} */}
                     {editMode && (
                         <Button onClick={this.clearForm.bind(this)}
                             type=' butn butn-white'>Discard</Button>
@@ -1199,7 +1199,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                 }
                             </div>
                         </Col>
-                        <Col span={8} className='modal-sidebar'>
+                        {/* <Col span={8} className='modal-sidebar'>
                             {!isPersonal && <Row type='flex' className='box-tab'>
                                 <span onClick={() => this.changeSidebarTab(0)}
                                     className={this.state.sidebarTab === 0 ? 'active' : ''}>Members</span>
@@ -1212,6 +1212,12 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             {(this.state.sidebarTab === 1 || isPersonal) && <div className='place-members'>
                                 place subplaces
                             </div>}
+                        </Col> */}
+                        <Col span={8} className='modal-sidebar'>
+                        <span>Members</span>
+                            <div className='place-members'>
+                                {this.getMembersItems()}
+                            </div>
                         </Col>
                     </Row>}
                     {this.state.reportTab &&
