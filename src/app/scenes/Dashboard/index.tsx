@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {Row, Col, Popover, Button, Card, Dropdown, Menu, Icon} from 'antd';
 import SystemApi from '../../api/system/index';
 import ReportType from '../../api/report/ReportType';
+import MeasureType from '../../components/ChartCard/MeasureType';
 import ChartCard from '../../components/ChartCard/index';
 import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
 import {Link} from 'react-router';
@@ -118,7 +119,9 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 </Row>
                 <Row className='dashboardRow'>
                     <Col span={24}>
-                        <ChartCard dataType={[ReportType.AllRequests]} title='System Activities'/>
+                        <ChartCard title={['System Activities']} measure={MeasureType.NUMBER} height={320}
+                            dataType={[ReportType.AllRequests]}
+                                   color={['#8884d8']} syncId='nested'/>
                     </Col>
                     {/*<Col span={8}>
                         <Card loading={this.state.loading} title={card2Title} extra={card2Extra}>

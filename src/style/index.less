@@ -676,7 +676,30 @@ div.ant-modal-mask {
       }
     }
 }
-
+.charts-scene {
+}
+.chart-card {
+    .ant-card-body {
+        padding: 24px 8px;
+    }
+    .ant-card-head-title {
+        cursor: pointer;
+        span {
+            &::after {
+                content: '/';
+                text-decoration: unset!important;
+                opacity: .7;
+                margin: 0 2px;
+            }
+            &:last-of-type::after {
+                content: '';
+            }
+        }
+        .deactive {
+            text-decoration: line-through;
+        }
+    }
+}
 .scene-head {
     margin-bottom: 24px;
     height: 56px;

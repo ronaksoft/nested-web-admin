@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dropdown, Card, Menu, Icon, Button, Switch} from 'antd';
+import {Dropdown, Card, Menu, Icon, Button, Switch, Tooltip} from 'antd';
 import TimePeriod from './TimePeriod';
 import ActivityArea from './ActivityArea';
 import ReportType from '../../api/report/ReportType';
@@ -7,9 +7,10 @@ import MeasureType from './MeasureType';
 import _ from 'lodash';
 
 interface IChartCardProps {
-    title: string;
+    title: string[];
+    height: number;
     dataType: ReportType[];
-    color: string;
+    color: string[];
     measure: MeasureType;
     period?: TimePeriod;
     syncId?: string;
@@ -19,8 +20,10 @@ interface IChartCardProps {
 
 interface IChartCardState {
     activities: Array<any>;
+    dataType: ReportType[];
     comparePreviousPeriod: boolean;
     period: any;
+    titles: any[];
 }
 
 class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
@@ -30,10 +33,18 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
         this.state = {
             activities: [],
             comparePreviousPeriod: false,
-            period: TimePeriod.Week
+            period: TimePeriod.Week,
+            dataType: this.props.dataType,
+            titles: this.props.title.map((title, index) => {
+                return {
+                    title,
+                    active: true
+                };
+            })
         };
 
         this.reload = this.reload.bind(this);
+        this.toggleItem = this.toggleItem.bind(this);
         this.updatePeriod = this.updatePeriod.bind(this);
     }
 
@@ -45,6 +56,18 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
         this.setState({
             comparePreviousPeriod: checked,
         });
+    }
+
+    toggleItem(ind: number) {
+        let titles = this.state.titles.slice();
+        titles[ind].active =! titles[ind].active;
+        if(titles.some( t => t.active)) {
+            this.setState({
+                titles,
+            });
+        };
+        // todo array is not cloned properly !
+        // console.log(titles, this.state.titles);
     }
 
     componentWillReceiveProps(newProps: IChartCardProps) {
@@ -63,16 +86,29 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     }
 
     render() {
+        var titleDom = this.state.titles.map((title, index) => {
+            return <span key={index} className={title.active ? '' : 'deactive'}
+                onClick={() => {
+                    this.toggleItem(index);
+                }}>{title.title}</span>;
+        });
+        const activePropTypes = this.state.dataType.filter((dataType, index) => this.state.titles[index].active);
+        const activeColors = this.props.color.filter((color, index) => this.state.titles[index].active);
         return (
-            <Card title={this.props.title} extra={
+            <Card title={<div>{titleDom}</div>} extra={
                 <div>
-                    Compare with previous period ?!
+                    <Tooltip placement='top' title={'Compare with previous period ?!'}>
+                        {/* <Link to='/dashboard' activeClassName='active'>
+                            <IcoN size={24} name={'dashbooard24'}/>
+                        </Link> */}
+                        <Switch defaultChecked={this.state.comparePreviousPeriod}
+                            onChange={this.changeCompare.bind(this)} />
+                    </Tooltip>
                     &nbsp;
-                    <Switch defaultChecked={this.state.comparePreviousPeriod}
-                    onChange={this.changeCompare.bind(this)} />
                     &nbsp;
-                    &nbsp;
-                    <a rel='noopener noreferrer' onClick={this.reload}><Icon type='reload'/></a>
+                    <Tooltip placement='top' title={'reload'}>
+                        <a rel='noopener noreferrer' onClick={this.reload}><Icon type='reload'/></a>
+                    </Tooltip>
                     &nbsp;
                     &nbsp;
                     <Dropdown overlay={
@@ -98,10 +134,10 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
                         <a rel='noopener noreferrer'><Icon type='setting'/></a>
                     </Dropdown>
                 </div>
-            }>
-                <ActivityArea measure={this.props.measure} ref={(area) => {
+            } className='chart-card'>
+                <ActivityArea measure={this.props.measure} height={this.props.height} ref={(area) => {
                     this.area = area;
-                }} syncId={this.props.syncId} dataType={this.props.dataType} color={this.props.color} title={this.props.title}
+                }} syncId={this.props.syncId} dataType={activePropTypes} color={activeColors} title={this.props.title}
                               period={this.state.period} comparePreviousPeriod={this.state.comparePreviousPeriod} params={this.props.params}/>
             </Card>
         );
