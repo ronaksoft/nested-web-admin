@@ -9,6 +9,7 @@ import PlaceModal from '../../components/PlaceModal/index';
 import UserModal from '../../scenes/Accounts/components/View/index';
 import IAccount from '../../scenes/Accounts/interfaces';
 import {hashHistory} from 'react-router';
+import {IcoN} from '../icon/index';
 // import PlaceItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 // import UserItem from '../../scenes/Accounts/components/View/components/PlaceItem';
 
@@ -207,10 +208,11 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
                                 {/*icon='notification'></Button>*/}
                                 {/*<Button type='toolkit nst-ico ic_gear_solid_-1' shape='circle'></Button>*/}
                                 {/*<Button type='toolkit nst-ico ic_lock_solid_24' shape='circle' icon='setting'></Button>*/}
-                                <Button type='toolkit nst-ico ic_logout_solid_24' icon='signout' onClick={() => {
-                                    this.signOut();
-                                }}
-                                        shape='circle'></Button>
+                                {/* <Button type='toolkit nst-ico ic_logout_solid_24' icon='signout' onClick={() => {this.signOut();}}
+                                        shape='circle'></Button> */}
+                                        <div className='ant-btn ant-btn-circle nst-ico ant-btn-toolkit' onClick={() => {this.signOut();}}>
+                                            <IcoN size={16} name='exit16'/>
+                                        </div>
                                 <Button type='toolkit-user' shape='circle' className='oddcondi'>
 
                                     <UserAvatar size={24} user={this.loggedUser} avatar/>
