@@ -36,6 +36,9 @@ class Charts extends React.Component <IChartsProps,
     render() {
         return (
             <div className='charts-scene'>
+                <Row type='flex' align='middle' className='scene-head'>
+                    <h2>Charts</h2>
+                </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
                     <Col span={8}>
                         <ChartCard title={['Comments', 'Emails', 'Posts']} measure={MeasureType.NUMBER} height={240}
