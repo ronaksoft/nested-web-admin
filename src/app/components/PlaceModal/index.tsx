@@ -106,7 +106,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             addPostPolicy: this.transformAddPostPolicy(props.place.policy.add_post, props.place.privacy.receptive),
             placeSearchPolicy: props.place.privacy.search,
             addPlacePolicy: props.place.policy.add_place,
-            addMemberPolicy: props.place.policy.add_place,
+            addMemberPolicy: props.place.policy.add_member,
             managerLimit: props.place.limits.creators,
             memberLimit: props.place.limits.key_holders,
             subPlaceLimit: props.place.limits.childs,
@@ -181,11 +181,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             });
     }
 
-    onItemClick = (account) => {
-        this.setState({chosen: account, viewAccount: true, visible: false});
-    }
-
-    onCloseView = () => {
+    onCloseView() {
         this.setState({chosen: null, viewAccount: false, visible: true});
     }
 
@@ -213,48 +209,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         if (this.props.onClose && typeof this.props.onClose === 'function') {
             this.props.onClose();
         }
-    }
-
-    isManager(user: any) {
-        let creator = _.indexOf(this.state.creators, user._id);
-        if (creator > -1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    addAsManager() {
-        let placeApi = new PlaceApi();
-        placeApi.placeAddMember({
-            account_id: this.currentUser._id,
-            place_id: this.props.place._id,
-        }).then((res: any) => {
-            // fixme:: remove error handler
-            if (res.err_code && res.err_code === 1) {
-                message.error(`You must be a member of grand-place first.`);
-            } else if (res.err_code) {
-                message.error(`An error happened!`);
-            } else {
-                message.success(`You are added as admin in "${this.props.place.name}"`);
-                this.setState({
-                    creators: _.concat(this.state.creators, [this.currentUser._id])
-                });
-                this.fetchUsers();
-            }
-        }).catch((err: any) => {
-            message.error(`An error happened!`);
-            console.log(err);
-        });
-    }
-
-    editField(target: EditableFields) {
-        this.setState({
-            editTarget: target,
-            showEdit: true,
-            uniqueKey: _.uniqueId(),
-            updateProgress: false
-        });
     }
 
     applyChanges(form: any) {
@@ -529,7 +483,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             addPostPolicy: this.transformAddPostPolicy(this.state.place.policy.add_post, this.state.place.privacy.receptive),
             placeSearchPolicy: this.state.place.privacy.search,
             addPlacePolicy: this.state.place.policy.add_place,
-            addMemberPolicy: this.state.place.policy.add_place,
+            addMemberPolicy: this.state.place.policy.add_member,
             managerLimit: this.state.place.limits.creators,
             memberLimit: this.state.place.limits.key_holders,
             subPlaceLimit: this.state.place.limits.childs,
@@ -637,12 +591,12 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     getPolicyItem() {
         const createPlaceItems = [
             {
-                index: C_PLACE_POST_POLICY.MANAGER,
+                index: C_PLACE_POST_POLICY.CREATOR,
                 label: 'manager',
                 description: 'Managers Only',
                 searchProperty: false
             }, {
-                index: C_PLACE_POST_POLICY.MANGER_MEMBER,
+                index: C_PLACE_POST_POLICY.EVERYONE,
                 label: 'managerMember',
                 description: 'This Place Managers & Members',
                 searchProperty: false
@@ -1016,11 +970,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                             <span>Send a Message</span>
                         </Row>
                     )}
-                    {/* {!editMode && (
-                        <div className='modal-more'>
-                            <MoreOption menus={items} deviders={[0]}/>
-                        </div>
-                    )} */}
                     {editMode && (
                         <Button onClick={this.clearForm.bind(this)}
                             type=' butn butn-white'>Discard</Button>
@@ -1040,7 +989,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     this.state.viewAccount &&
                     <View account={this.state.chosen} visible={this.state.viewAccount}
                           onChange={this.handleChange.bind(this)}
-                          onClose={this.onCloseView}/>
+                          onClose={this.onCloseView.bind(this)}/>
                 }
                 {place &&
                 <Modal

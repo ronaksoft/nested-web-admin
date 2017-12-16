@@ -555,7 +555,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
     render() {
         let {sortedInfo, sortKey} = this.state;
-        // console.log(sortedInfo, sortKey);
         var columns = [
             {
                 key: 'name',

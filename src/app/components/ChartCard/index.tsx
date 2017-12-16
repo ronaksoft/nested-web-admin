@@ -61,11 +61,11 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     toggleItem(ind: number) {
         let titles = this.state.titles.slice();
         titles[ind].active =! titles[ind].active;
-        if(titles.some( t => t.active)) {
+        if (titles.some( t => t.active)) {
             this.setState({
                 titles,
             });
-        };
+        }
         // todo array is not cloned properly !
         // console.log(titles, this.state.titles);
     }

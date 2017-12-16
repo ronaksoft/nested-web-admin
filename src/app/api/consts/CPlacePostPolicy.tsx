@@ -4,6 +4,8 @@ const C_PLACE_POST_POLICY = {
     TEAM: 'team',
     COMPANY: 'company',
     EMAIL: 'email',
+    CREATOR: 'creator',
+    EVERYONE: 'everyone',
 };
 
 export default C_PLACE_POST_POLICY;

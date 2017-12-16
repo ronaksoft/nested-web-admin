@@ -41,7 +41,6 @@ export default class Api {
      * @returns {Promise<any>}
      */
     public reconfigEndPoints(domain: string): Promise<any> {
-        console.log(domain);
         const api = this;
         return new Promise((resolve, reject) => {
 

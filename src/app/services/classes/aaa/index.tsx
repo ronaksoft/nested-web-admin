@@ -38,7 +38,6 @@ export default class AAA {
     setUser(account: any): void {
         this.account = account;
         this.isAthenticated = true;
-        console.log(account, this);
     }
 
     getUser(): any {
