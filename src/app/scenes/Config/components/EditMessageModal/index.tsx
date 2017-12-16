@@ -21,7 +21,6 @@ import {
 // import FroalaEditor from 'react-froala-wysiwyg';
 import _ from 'lodash';
 import {IcoN} from '../../../../components/icon/index';
-
 interface IProps {
     visible: boolean;
     onClose?: () => {};
@@ -108,7 +107,7 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
                     <Input className='no-style' value={this.state.body} type='textarea' placeholder='Type something...'
                         onChange={this.changeBody.bind(this)}/>
                 </div>
-                <FroalaEditor tag='textarea'/>
+                {/* <FroalaEditor tag='textarea'/> */}
             </Modal>
         );
     }

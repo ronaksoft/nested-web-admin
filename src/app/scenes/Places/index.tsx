@@ -106,13 +106,14 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                     place_id: place._id
                 }).then( data => {
                     message.success(`"${place._id}" is deleted`);
-                    this.updateData();
                 }).catch((data) => {
                     if (data.err_code === 1) {
                         if (data.items.indexOf('remove_children_first') > -1) {
                             message.warning(`Remove children first`);
                         }
                     }
+                }).finally( () => {
+                    this.updateData();
                 });
             });
             this.unselectAll();

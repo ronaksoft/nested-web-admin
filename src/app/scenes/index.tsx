@@ -18,7 +18,11 @@ import Api from './../api/index';
 import {message} from 'antd';
 import SocketState from '../services/classes/socket/states';
 import Client from '../services/classes/client/index';
-
+// import '/jspm_packages/npm/froala-editor@2.7.3/css/froala_editor.pkgd.min.css';
+// import '/jspm_packages/npm/froala-editor@2.7.3/css/froala_style.min.css';
+// import '/jspm_packages/npm/froala-editor@2.7.3/js/froala_editor.pkgd.min.js';
+import $ from 'jquery';
+// import 'jquery-migrate';
 const {Header, Footer, Sider, Content} = Layout;
 
 interface IAppProps {
