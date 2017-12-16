@@ -641,7 +641,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
 
         const modalFooter = (
             <div className='modal-foot'>
-                {/* <Button
+                <Button
                     type=' butn butn-white'
                     onClick={this
                         .discard
@@ -650,7 +650,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                     type=' butn butn-green'
                     onClick={this
                         .create
-                        .bind(this)}>Create Place</Button> */}
+                        .bind(this)}>Create Place</Button>
             </div>
         );
 
