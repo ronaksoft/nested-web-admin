@@ -115,7 +115,11 @@ export default class Server {
 
 
         // resole request
-        this.queue[queueItem].resolve(response.data);
+        if (response.status === 'ok') {
+            this.queue[queueItem].resolve(response.data);
+        } else {
+            this.queue[queueItem].reject(response.data);
+        }
 
         // remove request from queue
         this.queue.splice(queueItem, 1);

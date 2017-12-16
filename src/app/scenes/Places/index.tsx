@@ -87,12 +87,18 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     deletePlaces = () => {
         let placeApi = new PlaceApi();
         // todo delete single place
-        if(this.state.focusPlace.length > 0 ) {
+        if (this.state.focusPlace.length > 0 ) {
             const action = placeApi.placeDelete({
                 place_id: this.state.focusPlace
             }).then( data => {
                 message.success(`"${this.state.focusPlace}" is deleted`);
                 this.updateData();
+            }).catch((data) => {
+                if (data.err_code === 1) {
+                    if (data.items.indexOf('remove_children_first') > -1) {
+                        message.warning(`Remove children first`);
+                    }
+                }
             });
         } else {
             this.state.selectedItems.forEach( place => {
@@ -101,6 +107,12 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 }).then( data => {
                     message.success(`"${place._id}" is deleted`);
                     this.updateData();
+                }).catch((data) => {
+                    if (data.err_code === 1) {
+                        if (data.items.indexOf('remove_children_first') > -1) {
+                            message.warning(`Remove children first`);
+                        }
+                    }
                 });
             });
             this.unselectAll();
