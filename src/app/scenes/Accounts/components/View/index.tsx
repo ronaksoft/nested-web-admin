@@ -905,7 +905,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                             <div className='filler'/>
                                             {!editMode &&
                                                 <Switch checkedChildren='Active' unCheckedChildren='Deactive' defaultChecked={!this.state.account.disabled}
-                                                onChange={this.onActiveChange}/>
+                                                onChange={this.onActiveChange} className='large-switch'/>
                                             }
                                         </Row>
                                         {!editMode &&

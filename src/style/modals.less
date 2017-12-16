@@ -428,26 +428,6 @@
             }
         }
     }
-    
-    .place-picture {
-        width: 100%;
-        flex-direction: column;
-        padding-bottom: 8px;
-        > span {
-            position: relative;
-        }
-        img {
-            width: 64px;
-            border: 1px solid rgba(50, 61, 71, 0.08);
-            box-sizing: border-box;
-            border-radius: 4px;
-            height: 64px;
-            margin-bottom: 6px;
-        }
-        button {
-            margin: 0 3px;
-        }
-    }
 }
 
 .ant-modal.create-place-modal {
@@ -576,5 +556,28 @@
         .remove {
             opacity: 1!important;
         }
+    }
+}
+
+
+.modal-template .place-picture,
+.modal-template-place .place-picture {
+    width: 100%;
+    flex-direction: column;
+    padding-bottom: 8px;
+    
+    > span {
+        position: relative;
+    }
+    img {
+        width: 64px;
+        border: 1px solid rgba(50, 61, 71, 0.08);
+        box-sizing: border-box;
+        border-radius: 4px;
+        height: 64px;
+        margin-bottom: 6px;
+    }
+    button {
+        margin: 0 3px;
     }
 }
