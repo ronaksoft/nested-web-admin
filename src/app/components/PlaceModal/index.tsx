@@ -2,6 +2,7 @@ import * as React from 'react';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
 import {Modal, Row, Col, Icon, Button, message, Form, Input, Select, notification, Upload} from 'antd';
+import reqwest from 'reqwest';
 
 let Option = Select.Option;
 import PlaceView from './../placeview/index';
@@ -29,6 +30,8 @@ import CONFIG from 'src/app/config';
 import PlaceAvatar from '../PlaceAvatar/index';
 import IPlaceCreateRequest from '../../api/place/interfaces/IPlaceCreateRequest';
 import AddMemberModal from '../AddMember/index';
+import NstCrop from '../Crop/index';
+import $ from 'jquery';
 
 interface IProps {
     place?: IPlace;
@@ -56,6 +59,7 @@ interface IStates {
     uploadPercent: number;
     token: string;
     model: any;
+    pickedImage: any;
 }
 
 
@@ -64,6 +68,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     accountApi: any;
     placeApi: any;
     updated: boolean;
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -78,6 +83,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             reportTab: false,
             editMode: false,
             viewAccount: false,
+            pickedImage: null,
             token: '',
             creators: this.props.place.creators,
             isGrandPlace: true,
@@ -560,7 +566,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             return (
                 <li key={u._id} className={'nst-opacity-hover-parent'}>
                     <Row type='flex' align='middle'>
-                        <UserAvatar user={u} borderRadius={'16'} size={24} avatar></UserAvatar>
+                        <UserAvatar user={u} borderRadius={'16px'} size={24} avatar></UserAvatar>
                         <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
                         <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.removeMember.bind(this, u)}>
                             <IcoN size={16 } name={'bin16'}/>
@@ -715,6 +721,31 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         }
     }
 
+    onCropped(file: any) {
+        console.log('onCropped file', file);
+        // el.onclick();
+        const formData = new FormData();
+        formData.append('files[]', file);
+        const credentials = AAA.getInstance().getCredentials();
+        const input = $('[accept="image/*"]');
+        console.log(input);
+        // input.files = [];
+        // input.files[0] = file;
+        // you can use any AJAX library you like
+        reqwest({
+          url: `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`,
+          method: 'post',
+          data: formData,
+          success: () => {
+            console.log(arguments);
+            message.success('upload successfully.');
+          },
+          error: () => {
+            message.error('upload failed.');
+          },
+        });
+    }
+
     removePhoto(e: any) {
         e.preventDefault();
         e.stopPropagation();
@@ -722,6 +753,11 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             pictureData: '',
             picture: '-',
         });
+    }
+
+    uploadPhotoButton(e: any) {
+        // e.preventDefault();
+        e.stopPropagation();
     }
 
     pictureChange(info: any) {
@@ -813,6 +849,28 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         });
     }
 
+    pickFile(e: any) {
+        const file = e.target.files.item(0);
+        const imageType = /^image\//;
+
+        if (!file || !imageType.test(file.type)) {
+            return;
+        }
+        console.log(file);
+        this.setState({
+            pickedImage: file
+        });
+        // const reader = new FileReader();
+
+        // reader.onload = (e2) => {
+        //     this.setState({
+        //         pickedImage: file
+        //     });
+        // };
+
+        // reader.readAsDataURL(file);
+    }
+
     render() {
         const {place, editMode, model} = this.state;
         const isPersonal = place.type === C_PLACE_TYPE[C_PLACE_TYPE.personal];
@@ -822,6 +880,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         .getInstance()
         .getCredentials();
         const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
+        console.log(uploadUrl);
         const iconStyle = {
             width: '16px',
             height: '16px',
@@ -974,6 +1033,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 </Row>
             );
         }
+        console.log(model.pictureData);
         return (
             <div>
                 {
@@ -1078,6 +1138,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                         <Row>
                                             <Row className='place-picture' type='flex' align='middle'>
                                                 <PlaceAvatar avatar={model.pictureData}/>
+                                                <input onChange={this.pickFile.bind(this)} style={{display: 'none'}} id='file' type='file'/>
                                                 <Upload
                                                     name='avatar'
                                                     action={uploadUrl}
@@ -1089,9 +1150,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     beforeUpload={this
                                                         .beforeUpload
                                                         .bind(this)}>
-                                                    <Button type=' butn secondary'>
-                                                        Upload a Photo
-                                                    </Button>
+                                                        {/* <button type='butn secondary'>
+                                                            Upload a Photo
+                                                        </button> */}
+                                                    <label onClick={this.uploadPhotoButton.bind(this)} className='butn secondary' htmlFor='file'><span>Upload a Photo</span></label>
                                                     {model.pictureData && (
                                                         <Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
                                                             Remove Photo
@@ -1100,6 +1162,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/>
                                                     }
                                                 </Upload>
+                                                <NstCrop avatar={this.state.pickedImage}
+                                                    onCropped={this.onCropped.bind(this)}/>
                                             </Row>
                                             <Row className='input-row'>
                                                 <label htmlFor='name'>Name</label>

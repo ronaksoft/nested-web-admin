@@ -19,7 +19,7 @@ class PlaceAvatar extends React.Component<IAvatarProps, IAvatarStates> {
         };
     }
 
-    getImage(avatar: any) {
+    public getImage(avatar: any) {
         if (avatar && avatar !== null) {
             if (_.isString(avatar)) {
                 return 'data:image/svg+xml;base64,' + avatar;

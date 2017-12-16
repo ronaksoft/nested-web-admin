@@ -14,6 +14,10 @@ import {
 } from 'antd';
 
 // import  './../../components/froala/froala_editor.pkgd.min.js';
+// import '/jspm_packages/npm/froala-editor@2.7.3/js/froala_editor.min.js';
+// import '/jspm_packages/npm/froala-editor@2.7.3/css/froala_editor.pkgd.min.css';
+// import '/jspm_packages/npm/froala-editor@2.7.3/css/froala_style.min.css';
+// import '/jspm_packages/npm/froala-editor@2.7.3/js/froala_editor.pkgd.min.js';
 // import FroalaEditor from 'react-froala-wysiwyg';
 import _ from 'lodash';
 import {IcoN} from '../../../../components/icon/index';
@@ -104,6 +108,7 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
                     <Input className='no-style' value={this.state.body} type='textarea' placeholder='Type something...'
                         onChange={this.changeBody.bind(this)}/>
                 </div>
+                <FroalaEditor tag='textarea'/>
             </Modal>
         );
     }

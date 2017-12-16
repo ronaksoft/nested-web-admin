@@ -79,6 +79,8 @@
       "loglevel": "npm:loglevel@^1.4.1",
       "md5": "npm:md5@^2.2.1",
       "moment": "npm:moment@^2.18.1",
+      "react-froala-wysiwyg": "npm:react-froala-wysiwyg@^2.7.3",
+      "react-image-crop": "npm:react-image-crop@^3.0.8",
       "react-inlinesvg": "npm:react-inlinesvg@^0.6.0",
       "react-json-tree": "npm:react-json-tree@^0.11.0",
       "react-platform-js": "npm:react-platform-js@^0.0.1",
@@ -87,6 +89,7 @@
       "react-redux": "npm:react-redux@^5.0.2",
       "es6-shim": "npm:es6-shim@^0.35.3",
       "recharts": "npm:recharts@^0.22.4",
+      "reqwest": "npm:reqwest@^2.0.5",
       "todomvc-app-css": "npm:todomvc-app-css@^2.0.6",
       "babel-polyfill": "npm:babel-polyfill@^6.23.0",
       "css": "github:systemjs/plugin-css@^0.1.32",
@@ -134,6 +137,14 @@
         },
         "map": {
           "_stream_transform": "readable-stream/transform"
+        }
+      },
+      "npm:font-awesome@4.7.0": {
+        "main": "css/font-awesome.css!",
+        "jspmNodeConversion": false,
+        "registry": "jspm",
+        "dependencies": {
+          "css": "0.1"
         }
       },
       "npm:inherits@2.0.3": {
@@ -200,4 +211,4 @@
     "platform": "^1.3.4",
     "react-platform-js": "0.0.1"
   }
-}
+}

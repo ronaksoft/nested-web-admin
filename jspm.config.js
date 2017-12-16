@@ -131,7 +131,7 @@ SystemJS.config({
     'cookies': 'npm:cookies@0.7.0',
     'cookies-js': 'npm:cookies-js@1.2.3',
     'crypto': 'github:jspm/nodelibs-crypto@0.2.0-alpha',
-    'css': 'github:systemjs/plugin-css@0.1.33',
+    'css': 'github:systemjs/plugin-css@0.1.36',
     'domain': 'github:jspm/nodelibs-domain@0.2.0-alpha',
     'es6-shim': 'npm:es6-shim@0.35.3',
     'events': 'github:jspm/nodelibs-events@0.2.2',
@@ -153,6 +153,8 @@ SystemJS.config({
     'prop-types': 'npm:prop-types@15.6.0',
     'react': 'npm:react@15.6.2',
     'react-dom': 'npm:react-dom@15.6.2',
+    'react-froala-wysiwyg': 'npm:react-froala-wysiwyg@2.7.3',
+    'react-image-crop': 'npm:react-image-crop@3.0.8',
     'react-inlinesvg': 'npm:react-inlinesvg@0.6.0',
     'react-json-tree': 'npm:react-json-tree@0.11.0',
     'react-platform-js': 'npm:react-platform-js@0.0.1',
@@ -161,6 +163,7 @@ SystemJS.config({
     'react-transition-group': 'npm:react-transition-group@1.1.3',
     'recharts': 'npm:recharts@0.22.4',
     'redux': 'npm:redux@3.6.0',
+    'reqwest': 'npm:reqwest@2.0.5',
     'stream': 'github:jspm/nodelibs-stream@0.2.0-alpha',
     'string_decoder': 'github:jspm/nodelibs-string_decoder@0.2.0-alpha',
     'todomvc-app-css': 'npm:todomvc-app-css@2.1.0',
@@ -859,7 +862,7 @@ SystemJS.config({
     },
     'npm:systemjs-less-plugin@2.0.0': {
       'map': {
-        'css': 'github:systemjs/plugin-css@0.1.33'
+        'css': 'github:systemjs/plugin-css@0.1.36'
       }
     },
     'npm:cookies@0.7.0': {
@@ -1214,6 +1217,23 @@ SystemJS.config({
       'map': {
         'regenerator-runtime': 'npm:regenerator-runtime@0.10.5',
         'core-js': 'npm:core-js@2.5.2'
+      }
+    },
+    'npm:react-froala-wysiwyg@2.7.3': {
+      'map': {
+        'create-react-class': 'npm:create-react-class@15.6.2',
+        'froala-editor': 'npm:froala-editor@2.7.3'
+      }
+    },
+    'npm:froala-editor@2.7.3': {
+      'map': {
+        'font-awesome': 'npm:font-awesome@4.7.0',
+        'jquery': 'npm:jquery@3.2.1'
+      }
+    },
+    'npm:font-awesome@4.7.0': {
+      'map': {
+        'css': 'github:systemjs/plugin-css@0.1.36'
       }
     }
   }

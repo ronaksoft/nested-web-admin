@@ -60,7 +60,6 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     placeApi: any;
     placeIdRegex: any;
     checkId: any;
-
     constructor(props: any) {
         super(props);
         this.placeIdRegex = new RegExp('^[A-Za-z][A-Za-z0-9-]*$');
