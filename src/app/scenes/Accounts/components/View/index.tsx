@@ -55,6 +55,8 @@ interface IViewState {
     reportTab: boolean;
     editMode: boolean;
     model: any;
+    visibleChangePassword: boolean;
+    newPassword: string;
 }
 
 class View extends React.Component<IViewProps, IViewState> {
@@ -71,6 +73,8 @@ class View extends React.Component<IViewProps, IViewState> {
             visiblePlaceModal: false,
             maskClosable: true,
             visible: true,
+            visibleChangePassword: false,
+            newPassword: '',
             model: {
                 account_id: this.props.account._id,
                 fname: this.props.account.fname,
@@ -90,7 +94,6 @@ class View extends React.Component<IViewProps, IViewState> {
         };
         this.updated = false;
         this.loadPlaces = this.loadPlaces.bind(this);
-        this.editField = this.editField.bind(this);
         this.applyChanges = this.applyChanges.bind(this);
         this.pictureChange = this.pictureChange.bind(this);
         this.loadUploadToken = this.loadUploadToken.bind(this);
@@ -171,12 +174,33 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
-    editField(target: EditableFields) {
+    toggleChangePasswordModal () {
         this.setState({
-            editTarget: target,
-            showEdit: true,
-            uniqueKey: _.uniqueId(),
-            updateProgress: false
+            newPassword: '',
+            visibleChangePassword: !this.state.visibleChangePassword,
+        });
+    }
+
+    changePassword() {
+        if (this.state.newPassword.length < 6) {
+            message.warning('User password must be at least 6 characters!');
+            return;
+        }
+        this.accountApi.setPassword({
+            account_id: this.state.model.account_id,
+            new_pass: md5(this.state.newPassword),
+        }).then(() => {
+            message.success('User password has been changed!');
+            this.toggleChangePasswordModal();
+        }).catch(() => {
+            message.error('User password has not been changed!');
+            this.toggleChangePasswordModal();
+        });
+    }
+
+    changePasswordHandler(event: any) {
+        this.setState({
+            newPassword: event.currentTarget.value,
         });
     }
 
@@ -647,118 +671,6 @@ class View extends React.Component<IViewProps, IViewState> {
         const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.access, 'C'));
         const memberInPlaces = _.differenceBy(this.state.places, managerInPlaces, '_id');
 
-        const EditForm = Form.create({
-            mapPropsToFields: (props: any) => {
-                return {
-                    fname: {
-                        value: props.fname
-                    },
-                    lname: {
-                        value: props.lname
-                    },
-                    phone: {
-                        value: props.phone
-                    },
-                    dob: {
-                        value: props.dob && props.dob !== '' ? moment(props.dob, this.DATE_FORMAT) : null
-                    },
-                    email: {
-                        value: props.email
-                    }
-                };
-            }
-        })((props: any) => {
-            const {getFieldDecorator} = props.form;
-            return (
-                <Form onSubmit={() => this.applyChanges(this.form)}>
-                    {
-                        this.state.editTarget === EditableFields.fname &&
-                        <Form.Item label='First Name'>
-                            {getFieldDecorator('fname', {
-                                initialValue: this.state.account.fname,
-                                rules: [{required: true, message: 'First name is required!'}],
-                            })(
-                                <Input placeholder='John'/>
-                            )}
-                        </Form.Item>
-                    }
-                    {
-                        this.state.editTarget === EditableFields.lname &&
-                        <Form.Item label='Last Name'>
-                            {getFieldDecorator('lname', {
-                                initialValue: this.state.account.lname,
-                                rules: [{required: true, message: 'Last name is required!'}],
-                            })(
-                                <Input placeholder='Doe'/>
-                            )}
-                        </Form.Item>
-                    }
-                    {
-                        this.state.editTarget === EditableFields.phone &&
-                        <Form.Item label='Phone'>
-                            {getFieldDecorator('phone', {
-                                initialValue: this.state.account.phone,
-                                rules: [{required: true, message: 'Phone number is required!'}],
-                            })(
-                                <Input placeholder='989876543210'/>
-                            )}
-                        </Form.Item>
-                    }
-                    {
-                        this.state.editTarget === EditableFields.dob &&
-                        <Form.Item label='Birthdate'>
-                            {getFieldDecorator('dob', {
-                                initialValue: this.state.account.dob,
-                                rules: [],
-                            })(
-                                <DatePicker format={this.DATE_FORMAT}/>
-                            )}
-                        </Form.Item>
-                    }
-                    {
-                        this.state.editTarget === EditableFields.email &&
-                        <Form.Item label='Email'>
-                            {getFieldDecorator('email', {
-                                initialValue: this.state.account.email,
-                                rules: [],
-                            })(
-                                <Input placeholder='example@company.com'/>
-                            )}
-                        </Form.Item>
-                    }
-                    {
-                        this.state.editTarget === EditableFields.pass &&
-                        <Form.Item label='Password'>
-                            {getFieldDecorator('pass', {
-                                rules: [
-                                    {required: true, message: 'Password is required!'},
-                                    {min: 6, message: 'Password must be more than 6 characters.'}
-                                ],
-                            })(
-                                <Input placeholder='New password'/>
-                            )}
-                        </Form.Item>
-                    }
-                    {
-                        this.state.editTarget === EditableFields['limits.grand_places'] &&
-                        <Form.Item label='Grand Places Limit'>
-                            {getFieldDecorator('grand_places', {
-                                initialValue: this.state.account.limits.grand_places,
-                                rules: [
-                                    {required: true, message: 'Grand Places Limit is required!'},
-                                    {min: 1, message: 'rand Places Limit is required!'}
-                                ],
-                            })(
-                                <Input placeholder='10' type='number'/>
-                            )}
-                        </Form.Item>
-                    }
-
-                </Form>
-            );
-        });
-
-        const accountClone = _.clone(this.state.account);
         const credentials = AAA.getInstance().getCredentials();
         const uploadUrl = `${CONFIG().STORE.URL}/upload/profile_pic/${credentials.sk}/${this.state.token}`;
 
@@ -790,14 +702,14 @@ class View extends React.Component<IViewProps, IViewState> {
                     this.updateAdmin(data);
                 },
             },
-            // {
-            //     key: 'password',
-            //     name: 'Change Password',
-            //     icon: 'lock16',
-            //     action: (data) => {
-            //         this.editField(EditableFields.pass);
-            //     },
-            // },
+            {
+                key: 'password',
+                name: 'Change Password',
+                icon: 'lock16',
+                action: (data) => {
+                    this.toggleChangePasswordModal();
+                },
+            },
         ];
         if (this.state.reportTab) {
             const header = (
@@ -1110,157 +1022,6 @@ class View extends React.Component<IViewProps, IViewState> {
                                             </span>
                                         </Col>
                                     </Row>}
-                                    {/* <Row>
-                                        <Col span={8}>
-                                            <label>First Name</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            <b>{this.state.account.fname}</b>
-                                        </Col>
-                                        <Col span={2}>
-                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                                    onClick={() => this.editField(EditableFields.fname)}></Button>
-                                        </Col>
-                                    </Row> */}
-                                    {/* <Row>
-                                        <Col span={8}>
-                                            <label>Last Name</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            <b>{this.state.account.lname}</b>
-                                        </Col>
-                                        <Col span={2}>
-                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                                    onClick={() => this.editField(EditableFields.lname)}></Button>
-                                        </Col>
-                                    </Row> */}
-                                    {/* <Row>
-                                        <Col span={8}>
-                                            <label>User ID</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            @{this.state.account._id}
-                                        </Col>
-                                        <Col span={2}></Col>
-                                    </Row> */}
-                                    {/* <Row>
-                                        <Col span={8}>
-                                            <label>Email</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            {
-                                                this.state.account.email &&
-                                                <span>{this.state.account.email}</span>
-                                            }
-                                            {
-                                                !this.state.account.email &&
-                                                <a onClick={() => this.editField(EditableFields.email)}><i>-click to assign-</i></a>
-                                            }
-                                        </Col>
-                                        <Col span={2}>
-                                            {
-                                                this.state.account.email &&
-                                                <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                                        onClick={() => this.editField(EditableFields.email)}></Button>
-                                            }
-                                        </Col>
-                                    </Row> */}
-                                    {/* <Row>
-                                        <Col span={8}>
-                                            <label>Searchable</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            <Switch
-                                                checkedChildren={<Icon type='check'/>}
-                                                unCheckedChildren={<Icon type='cross'/>}
-                                                defaultChecked={this.state.account.privacy.searchable}
-                                                onChange={(checked) => this.onPrivacyChange({searchable: checked})}
-                                            />
-                                        </Col>
-                                        <Col span={2}></Col>
-                                    </Row> */}
-                                    {/* <Row>
-                                        <Col span={8}>
-                                            <label>Grand Places Limit</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            {this.state.account.limits.grand_places}
-                                        </Col>
-                                        <Col span={2}>
-                                            <Button type='toolkit nst-ico ic_pencil_solid_16'
-                                                    onClick={() => this.editField(EditableFields['limits.grand_places'])}></Button>
-                                        </Col>
-                                    </Row> */}
-                                    {/* <Row>
-                                        <Col span={8}>
-                                            <label>Edit Profile</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            <Switch
-                                                checkedChildren={<Icon type='check'/>}
-                                                unCheckedChildren={<Icon type='cross'/>}
-                                                defaultChecked={this.state.account.privacy.change_profile}
-                                                onChange={(checked) => this.onPrivacyChange({change_profile: checked})}
-                                            />
-                                        </Col>
-                                        <Col span={2}></Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span={8}>
-                                            <label>Change Profile Picture</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            <Switch
-                                                checkedChildren={<Icon type='check'/>}
-                                                unCheckedChildren={<Icon type='cross'/>}
-                                                defaultChecked={this.state.account.privacy.change_picture}
-                                                onChange={(checked) => this.onPrivacyChange({change_picture: checked})}
-                                            />
-                                        </Col>
-                                        <Col span={2}></Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span={8}>
-                                            <label>Force Password Change</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            <Switch
-                                                checkedChildren={<Icon type='check'/>}
-                                                unCheckedChildren={<Icon type='cross'/>}
-                                                defaultChecked={this.state.account.flags.force_password_change}
-                                                onChange={(checked) => this.onFlagChange({force_password: checked})}
-                                            />
-                                        </Col>
-                                        <Col span={2}></Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span={8}>
-                                            <label>Administrator</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            <Switch
-                                                checkedChildren={<Icon type='check'/>}
-                                                unCheckedChildren={<Icon type='cross'/>}
-                                                defaultChecked={this.state.account.admin}
-                                                onChange={this.onAdminChange}
-                                            />
-                                        </Col>
-                                        <Col span={2}></Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span={8}>
-                                            <label>Label Manager</label>
-                                        </Col>
-                                        <Col span={14}>
-                                            <Switch
-                                                checkedChildren={<Icon type='check'/>}
-                                                unCheckedChildren={<Icon type='cross'/>}
-                                                defaultChecked={this.state.account.authority ? this.state.account.authority.label_editor : false}
-                                                onChange={(checked) => this.onAuthorityChange(checked)}
-                                            />
-                                        </Col>
-                                        <Col span={2}></Col>
-                                    </Row> */}
                                 </div>
                             </Col>
                             <Col span={8} className='modal-sidebar'>
@@ -1326,22 +1087,36 @@ class View extends React.Component<IViewProps, IViewState> {
                                 measure={[MeasureType.NUMBER, MeasureType.NUMBER]}/>
                         </div>
                     }
-                    <Modal
-                        key={this.props.account._id}
-                        title='Edit'
-                        width={360}
-                        visible={this.state.showEdit}
-                        onOk={this.saveEditForm}
-                        onCancel={() => this.setState({showEdit: false})}
-                        footer={[
-                            <Button key='cancel' size='large'
-                                    onClick={() => this.setState({showEdit: false})}>Cancel</Button>,
-                            <Button key='submit' type='primary' size='large' loading={this.state.updateProgress}
-                                    onClick={() => this.applyChanges(this.form)}>Save</Button>,
-                        ]}
-                    >
-                        <EditForm ref={this.saveForm.bind(this)} {...accountClone} />
-                    </Modal>
+                    {this.state.visibleChangePassword &&
+                        <Modal
+                            key={'_change_password_modal'}
+                            content='Some descriptions'
+                            title='Change Password'
+                            width={360}
+                            visible={true}
+                            onCancel={this.toggleChangePasswordModal.bind(this)}
+                            footer={[
+                                <Button key='cancel' type=' butn butn secondary' size='large'
+                                        onClick={this.toggleChangePasswordModal.bind(this)}>Cancel</Button>,
+                                <Button key='submit' type=' butn butn-red' size='large'
+                                        onClick={this.changePassword.bind(this)}>Change Password</Button>,
+                            ]}
+                        >
+                            <Row className='info-row' gutter={24}>
+                                <Col span={24}>
+                                    <label>New Password</label>
+                                    <Input
+                                        id='name'
+                                        size='large'
+                                        type='password'
+                                        className='nst-input'
+                                        value={this.state.newPassword}
+                                        onChange={this.changePasswordHandler.bind(this)}
+                                    />
+                                </Col>
+                            </Row>
+                        </Modal>
+                    }
                 </Modal>
             </Row>
         );
