@@ -317,6 +317,8 @@ class View extends React.Component<IViewProps, IViewState> {
     }
 
     beforeUpload(file: any, fileList: any) {
+        console.log(fileList);
+        fileList = [];
         if (!this.state.token) {
             notification.error({
                 message: 'Error',
@@ -658,7 +660,7 @@ class View extends React.Component<IViewProps, IViewState> {
                         value: props.phone
                     },
                     dob: {
-                        value: props.dob ? moment(props.dob, this.DATE_FORMAT) : null
+                        value: props.dob && props.dob !== '' ? moment(props.dob, this.DATE_FORMAT) : null
                     },
                     email: {
                         value: props.email
@@ -881,6 +883,8 @@ class View extends React.Component<IViewProps, IViewState> {
                                                     name='avatar'
                                                     action={uploadUrl}
                                                     accept='image/*'
+                                                    multiple={false}
+                                                    showUploadList={false}
                                                     onChange={this.pictureChange}
                                                     beforeUpload={this.beforeUpload}
                                                 >
@@ -1026,7 +1030,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 </span>
                                             }
                                             {editMode &&
-                                                <DatePicker value={moment(this.state.model.dob)} onChange={this.updateDOB.bind(this)}
+                                                <DatePicker value={this.state.model.dob && this.state.model.dob !== '' ? moment(this.state.model.dob) : null} onChange={this.updateDOB.bind(this)}
                                                     size='large' className='nst-input' format={this.DATE_FORMAT}/>
                                             }
                                         </Col>

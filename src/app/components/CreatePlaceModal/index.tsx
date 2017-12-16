@@ -77,8 +77,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 pictureData: '',
                 addPostPolicy: C_PLACE_POST_POLICY.MANAGER,
                 placeSearchPolicy: false,
-                addPlacePolicy: C_PLACE_POST_POLICY.MANAGER,
-                addMemberPolicy: C_PLACE_POST_POLICY.MANAGER,
+                addPlacePolicy: C_PLACE_POST_POLICY.CREATOR,
+                addMemberPolicy: C_PLACE_POST_POLICY.CREATOR,
                 managerLimit: 10,
                 memberLimit: 10,
                 subPlaceLimit: 10,
@@ -202,12 +202,12 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     getPolicyItem() {
         const createPlaceItems = [
             {
-                index: C_PLACE_POST_POLICY.MANAGER,
+                index: C_PLACE_POST_POLICY.CREATOR,
                 label: 'manager',
                 description: 'Managers Only',
                 searchProperty: false
             }, {
-                index: C_PLACE_POST_POLICY.MANGER_MEMBER,
+                index: C_PLACE_POST_POLICY.EVERYONE,
                 label: 'managerMember',
                 description: 'This Place Managers & Members',
                 searchProperty: false
