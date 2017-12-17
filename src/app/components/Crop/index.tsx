@@ -143,7 +143,6 @@ export default class NstCrop extends React.Component<IProps, IStates> {
                     visible={this.state.visible}
                     footer={modalFooter}
                     title='Crop Image'>
-                    
                 <ReactCrop src={src}
                     onImageLoaded={this.onImageLoaded.bind(this)}
                     onChange={this.onCropChange.bind(this)}
