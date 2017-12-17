@@ -65,7 +65,7 @@ interface IListState {
     places: Array<IPlace>;
     visibleAddMemberModal: boolean;
     loading: boolean;
-    pagination: {};
+    pagination: any;
     selectedFilter: string;
     visibelPlaceModal?: boolean;
     selectedPlace?: IPlace;
@@ -149,7 +149,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             } else {
                 totalCounter = counter[props.selectedFilter];
             }
-
             this.setState({
                 selectedFilter: props.selectedFilter,
                 selectedTab: props.selectedTab,
@@ -257,6 +256,24 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     pageSize: this.pageLimit,
                     current: 1,
                     total: places.length,
+                }
+            });
+        } else {
+            let totalCounter: number = 0;
+            const {counters, selectedFilter} = this.props;
+            if (this.props.selectedFilter === CPlaceFilterTypes.ABSOLUTE_VIEW) {
+                totalCounter = counters.grand_places + counters.locked_places + counters.unlocked_places + counters.personal_places;
+            } else if (selectedFilter === CPlaceFilterTypes.RELATION_VIEW ||
+                selectedFilter === CPlaceFilterTypes.ALL) {
+                totalCounter = counters.grand_places;
+            } else {
+                totalCounter = counters[selectedFilter];
+            }
+            this.setState({
+                pagination: {
+                    pageSize: this.pageLimit,
+                    current: this.state.pagination.current,
+                    total: totalCounter,
                 }
             });
         }
