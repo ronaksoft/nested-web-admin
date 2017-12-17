@@ -138,9 +138,9 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         const {onlineUsers} = this.state;
         const onlineUsersDom = onlineUsers.map( bundle => {
             const accountsDom = bundle.accounts.map(account => {
-                return <li>{account}</li>;
+                return <li key={account}>{account}</li>;
             });
-            return <ul><li>{bundle.bundle_id} :</li>{accountsDom}</ul>;
+            return <ul><li key={0}>{bundle.bundle_id} :</li>{accountsDom}</ul>;
         });
         return (
             <div className='dashboard'>

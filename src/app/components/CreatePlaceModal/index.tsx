@@ -654,7 +654,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         );
 
         let model = this.state.model;
-        console.log(model.placeSearchPolicy);
+        // console.log(model.placeSearchPolicy);
         return (
             <Modal
                 className='create-place-modal modal-template-place'

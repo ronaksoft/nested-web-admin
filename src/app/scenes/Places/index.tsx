@@ -75,6 +75,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
     updateDataMain() {
         this.setState({
             updates: this.state.updates + 1,
+            notifyChildrenUnselect: !this.state.notifyChildrenUnselect
         });
     }
 

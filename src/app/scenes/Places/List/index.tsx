@@ -170,9 +170,19 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             let PlacesClone: IPlace[] = _.clone(this.state.places);
             PlacesClone.forEach((user: IPlace) => {
                 user.isChecked = false;
+                this.unCheckChildren(user);
             });
             this.setState({
-                places: PlacesClone
+                places: PlacesClone,
+            });
+        }
+    }
+
+    unCheckChildren(place:IPlace) {
+        place.isChecked = false;
+        if (place.children && Array.isArray(place.children)) {
+            place.children.forEach((user: IPlace) => {
+                this.unCheckChildren(user);
             });
         }
     }
