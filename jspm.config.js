@@ -153,7 +153,6 @@ SystemJS.config({
     'prop-types': 'npm:prop-types@15.6.0',
     'react': 'npm:react@15.6.2',
     'react-dom': 'npm:react-dom@15.6.2',
-    'react-froala-wysiwyg': 'npm:react-froala-wysiwyg@2.7.3',
     'react-image-crop': 'npm:react-image-crop@3.0.8',
     'react-inlinesvg': 'npm:react-inlinesvg@0.6.0',
     'react-json-tree': 'npm:react-json-tree@0.11.0',
@@ -1217,18 +1216,6 @@ SystemJS.config({
       'map': {
         'regenerator-runtime': 'npm:regenerator-runtime@0.10.5',
         'core-js': 'npm:core-js@2.5.2'
-      }
-    },
-    'npm:react-froala-wysiwyg@2.7.3': {
-      'map': {
-        'create-react-class': 'npm:create-react-class@15.6.2',
-        'froala-editor': 'npm:froala-editor@2.7.3'
-      }
-    },
-    'npm:froala-editor@2.7.3': {
-      'map': {
-        'font-awesome': 'npm:font-awesome@4.7.0',
-        'jquery': 'npm:jquery@3.2.1'
       }
     },
     'npm:font-awesome@4.7.0': {

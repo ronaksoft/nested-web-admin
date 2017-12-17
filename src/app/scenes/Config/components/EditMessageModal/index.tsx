@@ -12,14 +12,10 @@ import {
     notification,
     Upload
 } from 'antd';
+import ReactDOM from 'react-dom';
 
-// import  './../../components/froala/froala_editor.pkgd.min.js';
-// import '/jspm_packages/npm/froala-editor@2.7.3/js/froala_editor.min.js';
-// import '/jspm_packages/npm/froala-editor@2.7.3/css/froala_editor.pkgd.min.css';
-// import '/jspm_packages/npm/froala-editor@2.7.3/css/froala_style.min.css';
-// import '/jspm_packages/npm/froala-editor@2.7.3/js/froala_editor.pkgd.min.js';
-// import FroalaEditor from 'react-froala-wysiwyg';
 import _ from 'lodash';
+// import FroalaEditor from 'react-froala-wysiwyg';
 import {IcoN} from '../../../../components/icon/index';
 interface IProps {
     visible: boolean;

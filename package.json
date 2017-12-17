@@ -74,13 +74,11 @@
       "cookies-js": "npm:cookies-js@^1.2.3",
       "immutable": "npm:immutable@^3.8.1",
       "jquery": "npm:jquery@3.2.1",
-      "jquery-migrate": "npm:jquery-migrate@1.4.1",
       "less": "npm:systemjs-less-plugin@^2.0.0",
       "lodash": "npm:lodash@^4.17.4",
       "loglevel": "npm:loglevel@^1.4.1",
       "md5": "npm:md5@^2.2.1",
       "moment": "npm:moment@^2.18.1",
-      "react-froala-wysiwyg": "npm:react-froala-wysiwyg@^2.7.3",
       "react-image-crop": "npm:react-image-crop@^3.0.8",
       "react-inlinesvg": "npm:react-inlinesvg@^0.6.0",
       "react-json-tree": "npm:react-json-tree@^0.11.0",
@@ -209,9 +207,7 @@
   },
   "dependencies": {
     "antd": "^2.9.3",
-    "froala-editor": "^2.7.3",
     "platform": "^1.3.4",
-    "react-froala-wysiwyg": "^2.7.3",
     "react-platform-js": "0.0.1"
   }
 }

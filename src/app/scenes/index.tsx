@@ -18,10 +18,16 @@ import Api from './../api/index';
 import {message} from 'antd';
 import SocketState from '../services/classes/socket/states';
 import Client from '../services/classes/client/index';
-// import '/jspm_packages/npm/froala-editor@2.7.3/css/froala_editor.pkgd.min.css';
-// import '/jspm_packages/npm/froala-editor@2.7.3/css/froala_style.min.css';
-// import '/jspm_packages/npm/froala-editor@2.7.3/js/froala_editor.pkgd.min.js';
+
+// require Editor JS files.
+// import 'froala-editor/js/froala_editor.pkgd.min.js';
+
+// require Editor CSS files.
+// import 'froala-editor/css/froala_style.min.css';
+// import 'froala-editor/css/froala_editor.pkgd.min.css';
+import _ from 'lodash';
 import $ from 'jquery';
+// window.$ = $;
 // import 'jquery-migrate';
 const {Header, Footer, Sider, Content} = Layout;
 
