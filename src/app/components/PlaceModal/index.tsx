@@ -1090,7 +1090,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     beforeUpload={this
                                                         .beforeUpload
                                                         .bind(this)}>
-                                                        <Button type='butn secondary'>
+                                                        <Button type=' butn secondary'>
                                                             Upload a Photo
                                                         </Button>
                                                     {/*<label onClick={this.uploadPhotoButton.bind(this)} className='butn secondary' htmlFor='file'><span>Upload a Photo</span></label>*/}
