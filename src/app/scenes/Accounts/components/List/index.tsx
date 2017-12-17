@@ -52,13 +52,17 @@ interface IListProps {
 interface IListState {
     users: IPerson[];
     accounts: IPerson[];
+    loading: boolean;
     viewAccount: boolean;
     chosen: IAccount;
     query: string;
     dataColumns: Array< any >;
     columns: Array< any >;
+    selectedRowKeys: Array< any >;
     sortedInfo: ISort;
+    filter: any;
     sortKey: any;
+    counters: any;
     currentPage: number;
 }
 
@@ -92,6 +96,7 @@ class List extends React.Component <IListProps,
 
         this.state = {
             users: [],
+            query: '',
             columns: [],
             dataColumns: [],
             selectedRowKeys: [],
@@ -505,6 +510,10 @@ class List extends React.Component <IListProps,
             default:
                 total = (this.props.counters.enabled_accounts || 0) + (this.props.counters.disabled_accounts || 0);
                 break;
+        }
+
+        if(this.state.query.length > 0) {
+            total = this.state.accounts.length > 9 ? 20 : 10;
         }
 
         if (total < this.PAGE_SIZE) {
