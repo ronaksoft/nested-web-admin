@@ -94,8 +94,6 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
     GetData() {
 
         this.SystemApi.getSystemCounters().then((result) => {
-            console.log(result);
-
             this.setState({
                 system: result,
                 data: {
@@ -118,7 +116,6 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
     GetOnlines() {
 
         this.SystemApi.getOnlineUsers().then((result) => {
-            console.log(result);
             this.setState({
                 onlineUsers: result,
             });
@@ -136,11 +133,11 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
 
     render() {
         const {onlineUsers} = this.state;
-        const onlineUsersDom = onlineUsers.map( bundle => {
+        const onlineUsersDom = onlineUsers.map( (bundle, ind) => {
             const accountsDom = bundle.accounts.map(account => {
                 return <li key={account}>{account}</li>;
             });
-            return <ul><li key={0}>{bundle.bundle_id} :</li>{accountsDom}</ul>;
+            return <ul key={ind}><li key={0}>{bundle.bundle_id} :</li>{accountsDom}</ul>;
         });
         return (
             <div className='dashboard'>
