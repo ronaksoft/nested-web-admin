@@ -146,12 +146,10 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
                     <Col span={8}>
-                        {onlineUsers.length > 0 &&
                         <Card loading={this.state.loading} title='Online Users' extra={card4Extra} className='online-users-card'
                             style={{height: '418px'}}>
-                            {onlineUsersDom}
+                            {onlineUsers.length > 0 && onlineUsersDom}
                         </Card>
-                        }
                     </Col>
                     <Col span={16}>
                         <ChartCard title={['System Activities']} measure={MeasureType.NUMBER} height={320}
