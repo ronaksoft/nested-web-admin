@@ -25,6 +25,7 @@ export interface IDashboardState {
     loading: boolean;
     activeIndex: number;
     activityPeriod: string;
+    onlineUsers: any[];
 }
 
 const card2Title = <h5>Company Chart</h5>;
@@ -67,6 +68,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         super(props);
         this.state = {
             loading: true,
+            onlineUsers: [],
             data: {
                 accounts: [],
                 places: [],
@@ -86,6 +88,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         }
         this.SystemApi = new SystemApi();
         this.GetData();
+        this.GetOnlines();
     }
 
     GetData() {
@@ -112,6 +115,19 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         });
     }
 
+    GetOnlines() {
+
+        this.SystemApi.getOnlineUsers().then((result) => {
+            console.log(result);
+            this.setState({
+                onlineUsers: result,
+            });
+
+        }).catch((error) => {
+            console.log('error', error);
+        });
+    }
+
     // onPieEnter (data : any, index : any) {
     //     this.setState({
     //         activeIndex : index,
@@ -119,13 +135,28 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
     // }
 
     render() {
+        const {onlineUsers} = this.state;
+        const onlineUsersDom = onlineUsers.map( bundle => {
+            const accountsDom = bundle.accounts.map(account => {
+                return <li>{account}</li>;
+            });
+            return <ul><li>{bundle.bundle_id} :</li>{accountsDom}</ul>;
+        });
         return (
             <div className='dashboard'>
                 <Row type='flex' className='scene-head'>
                     <h2>Company Name Dashboard</h2>
                 </Row>
-                <Row className='dashboardRow'>
-                    <Col span={24}>
+                <Row gutter={24} className='dashboardRow'>
+                    <Col span={8}>
+                        {onlineUsers.length > 0 &&
+                        <Card loading={this.state.loading} title='Online Users' extra={card4Extra} className='online-users-card'
+                            style={{height: '418px'}}>
+                            {onlineUsersDom}
+                        </Card>
+                        }
+                    </Col>
+                    <Col span={16}>
                         <ChartCard title={['System Activities']} measure={MeasureType.NUMBER} height={320}
                             dataType={[ReportType.AllRequests]}
                                    color={['#8884d8']} syncId='nested'/>

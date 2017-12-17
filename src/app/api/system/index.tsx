@@ -2,6 +2,7 @@ import Api from './../index';
 import IGetSystemCountersResponse from './interfaces/IGetSystemCountersResponse';
 import IGetConstantsResponse from './interfaces/IGetConstantsResponse';
 import IGetStatsResponse from './interfaces/IGetStatsResponse';
+import IGetOnlineUsers from './interfaces/IGetOnlineUsers';
 
 export default class SystemApi {
     private api;
@@ -29,6 +30,14 @@ export default class SystemApi {
     getStats() : Promise < any > {
         return this.api.server.request({cmd: 'system/stats', data: {}}).then((res : IGetStatsResponse) => {
             return res;
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    getOnlineUsers() : Promise < any > {
+        return this.api.server.request({cmd: 'system/online_users', data: {}}).then((res : IGetOnlineUsers) => {
+            return res.online_users;
         }).catch((err) => {
             console.log(err);
         });
