@@ -68,21 +68,21 @@ export default class PlaceApi {
         });
     }
 
-    placeCreate(params: IPlaceCreateRequest): Promise<any> {
+    placeCreate(params: any): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/create_grand_place',
             data: params,
         });
     }
 
-    placeSubCreate(params: IPlaceCreateRequest): Promise<any> {
+    placeSubCreate(params: any): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/create_place',
             data: params,
         });
     }
 
-    placeَUpdate(params: IPlaceCreateRequest): Promise<any> {
+    placeَUpdate(params: any): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/place_update',
             data: params,

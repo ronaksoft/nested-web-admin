@@ -411,28 +411,28 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         let receptive: any;
         switch (policy) {
             case C_PLACE_POST_POLICY.MANAGER:
-                addPost = 'off';
-                receptive = 'creators';
+                receptive = 'off';
+                addPost = 'creators';
                 break;
             case C_PLACE_POST_POLICY.MANGER_MEMBER:
-                addPost = 'off';
-                receptive = 'everyone';
+                receptive = 'off';
+                addPost = 'everyone';
                 break;
             case C_PLACE_POST_POLICY.TEAM:
-                addPost = 'internal';
-                receptive = 'everyone';
+                receptive = 'internal';
+                addPost = 'everyone';
                 break;
             case C_PLACE_POST_POLICY.COMPANY:
-                addPost = 'external';
-                receptive = 'everyone';
+                receptive = 'external';
+                addPost = 'everyone';
                 break;
             case C_PLACE_POST_POLICY.EMAIL:
-                addPost = 'external';
-                receptive = 'everyone';
+                receptive = 'external';
+                addPost = 'everyone';
                 break;
             default:
-                addPost = 'off';
-                receptive = 'creators';
+                receptive = 'off';
+                addPost = 'creators';
                 break;
         }
         return {
@@ -471,21 +471,17 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         if (this.state.grandPlaceId !== '') {
             model.id = this.state.grandPlaceId + '.' + model.id;
         }
-        let params: IPlaceCreateRequest = {
+        let params = {
             place_id: model.id,
             place_name: model.name,
             place_description: model.description,
             picture: model.picture,
-            policy: {
-                add_post: addPostPolicy.addPost,
-                add_place: model.addPlacePolicy,
-                add_member: model.addMemberPolicy,
-            },
-            privacy: {
-                locked: true,
-                search: model.placeSearchPolicy,
-                receptive: addPostPolicy.receptive,
-            },
+            'policy.add_post': addPostPolicy.addPost,
+            'policy.add_place': model.addPlacePolicy,
+            'policy.add_member': model.addMemberPolicy,
+            'privacy.locked': true,
+            'privacy.search': model.placeSearchPolicy,
+            'privacy.receptive': addPostPolicy.receptive,
         };
         let members = _.map(model.members, (user) => {
             return user._id;

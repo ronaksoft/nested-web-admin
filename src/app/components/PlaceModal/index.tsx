@@ -392,7 +392,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     broadcastUpdate() {
         const event = new Event('place_updated');
         window.dispatchEvent(event);
-        console.log('place_updated');
     }
 
     updateForm() {
@@ -401,27 +400,21 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         }
         const model = this.state.model;
         const addPostPolicy = this.getAddPostPolicy(model.addPostPolicy);
-        const params: IPlaceCreateRequest = {
+        const params = {
             place_id: model.id,
             place_name: model.name,
             place_description: model.description,
-            picture: model.pictureData,
-            policy: {
-                add_post: addPostPolicy.addPost,
-                add_place: model.addPlacePolicy,
-                add_member: model.addMemberPolicy,
-            },
-            privacy: {
-                locked: true,
-                search: model.placeSearchPolicy,
-                receptive: addPostPolicy.receptive,
-            },
-            limits: {
-                key_holders: model.managerLimit,
-                creators: model.memberLimit,
-                size: model.storageLimit*(1024*1024),
-                childs: model.subPlaceLimit,
-            }
+            picture: model.picture,
+            'policy.add_post': addPostPolicy.addPost,
+            'policy.add_place': model.addPlacePolicy,
+            'policy.add_member': model.addMemberPolicy,
+            'privacy.locked': true,
+            'privacy.search': model.placeSearchPolicy,
+            'privacy.receptive': addPostPolicy.receptive,
+            'limits.key_holders': model.managerLimit,
+            'limits.creators': model.memberLimit,
+            'limits.size': model.storageLimit*(1024*1024),
+            'limits.childs': model.subPlaceLimit
         };
         const newMembers = _.differenceBy(model.members, this.state.members, '_id');
         let members = _.map(newMembers, (user) => {
@@ -430,6 +423,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         this.placeApi.placeَUpdate(params).then((data) => {
             this.toggleEditMode(false);
             this.importToModel();
+            this.updated = true;
             message.success('Place updated!');
             if (model.picture === '-') {
                 this.placeApi.setPicture({
@@ -610,28 +604,28 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         let receptive: any;
         switch (policy) {
             case C_PLACE_POST_POLICY.MANAGER:
-                addPost = 'off';
-                receptive = 'creators';
+                receptive = 'off';
+                addPost = 'creators';
                 break;
             case C_PLACE_POST_POLICY.MANGER_MEMBER:
-                addPost = 'off';
-                receptive = 'everyone';
+                receptive = 'off';
+                addPost = 'everyone';
                 break;
             case C_PLACE_POST_POLICY.TEAM:
-                addPost = 'internal';
-                receptive = 'everyone';
+                receptive = 'internal';
+                addPost = 'everyone';
                 break;
             case C_PLACE_POST_POLICY.COMPANY:
-                addPost = 'external';
-                receptive = 'everyone';
+                receptive = 'external';
+                addPost = 'everyone';
                 break;
             case C_PLACE_POST_POLICY.EMAIL:
-                addPost = 'external';
-                receptive = 'everyone';
+                receptive = 'external';
+                addPost = 'everyone';
                 break;
             default:
-                addPost = 'off';
-                receptive = 'creators';
+                receptive = 'off';
+                addPost = 'creators';
                 break;
         }
         return {
@@ -675,17 +669,16 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         }
     }
 
+    blobToFile(blob: Blob) {
+        return new File([blob], blob.name, {type: blob.type, lastModified: Date.now()});
+    }
+
     onCropped(file: any) {
-        console.log('onCropped file', file);
         // el.onclick();
         const formData = new FormData();
-        formData.append('files[]', file);
+        formData.append('file', this.blobToFile(file));
         const credentials = AAA.getInstance().getCredentials();
-        const input = $('[accept="image/*"]');
-        console.log(input);
-        // input.files = [];
-        // input.files[0] = file;
-        // you can use any AJAX library you like
+
         reqwest({
           url: `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`,
           method: 'post',
@@ -834,7 +827,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         .getInstance()
         .getCredentials();
         const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
-        console.log(uploadUrl);
         const iconStyle = {
             width: '16px',
             height: '16px',
@@ -982,7 +974,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 </Row>
             );
         }
-        console.log(model.pictureData);
         return (
             <div>
                 {
@@ -1099,10 +1090,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     beforeUpload={this
                                                         .beforeUpload
                                                         .bind(this)}>
-                                                        {/* <button type='butn secondary'>
+                                                        <Button type='butn secondary'>
                                                             Upload a Photo
-                                                        </button> */}
-                                                    <label onClick={this.uploadPhotoButton.bind(this)} className='butn secondary' htmlFor='file'><span>Upload a Photo</span></label>
+                                                        </Button>
+                                                    {/*<label onClick={this.uploadPhotoButton.bind(this)} className='butn secondary' htmlFor='file'><span>Upload a Photo</span></label>*/}
                                                     {model.pictureData && (
                                                         <Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
                                                             Remove Photo
@@ -1111,8 +1102,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/>
                                                     }
                                                 </Upload>
-                                                <NstCrop avatar={this.state.pickedImage}
-                                                    onCropped={this.onCropped.bind(this)}/>
+                                                {/*<NstCrop avatar={this.state.pickedImage}*/}
+                                                    {/*onCropped={this.onCropped.bind(this)}/>*/}
                                             </Row>
                                             <Row className='input-row'>
                                                 <label htmlFor='name'>Name</label>
