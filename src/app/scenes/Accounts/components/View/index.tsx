@@ -587,12 +587,8 @@ class View extends React.Component<IViewProps, IViewState> {
             change_profile: this.state.model.change_profile,
             change_picture: this.state.model.change_picture,
             force_password: this.state.model.force_password,
-            limits: {
-                grand_places: this.state.model.grand_places_limit,
-            },
-            authority: {
-                label_editor: this.state.model.label_editor_authority,
-            }
+            'limits.grand_places': this.state.model.grand_places_limit,
+            'authority.label_editor': this.state.model.label_editor_authority
         }).then((data) => {
             this.updateViewModel();
             this.toggleEditMode(false);
