@@ -522,11 +522,11 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     <Row type='flex' align='middle'>
                         <UserAvatar user={u} borderRadius={'16px'} size={24} avatar></UserAvatar>
                         <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
-                        <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.removeMember.bind(this, u)}>
-                            <IcoN size={16 } name={'bin16'}/>
-                        </span>
                         <span className={['nst-opacity-hover', (u.admin ? 'no-hover': '')].join(' ')} onClick={this.toggleAdmin.bind(this, u)}>
                             <IcoN size={24} name={u.admin ? 'crown24' : 'crownWire24'}/>
+                        </span>
+                        <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.removeMember.bind(this, u)}>
+                            <IcoN size={16 } name={'bin16'}/>
                         </span>
                     </Row>
                 </li>

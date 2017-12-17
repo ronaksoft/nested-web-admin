@@ -1041,9 +1041,9 @@ class View extends React.Component<IViewProps, IViewState> {
                                                         <PlaceItem onClick={this.showPlaceModal.bind(this)}
                                                                 place={place}/>
                                                         {this.state.account._id !== place._id &&
-                                                        <a className='remove' title={'Remove From Place'} onClick={this.removeFromPlace.bind(this, place._id)}><IcoN size={16} name={'xcross16'}/></a> }
+                                                        <a className='remove' title={'Remove From Place'} onClick={this.removeFromPlace.bind(this, place._id)}><IcoN size={16} name={'bin16'}/></a> }
                                                         {this.state.account._id !== place._id &&
-                                                        <a className='promote' title={'Demote Member'} onClick={this.demoteInPlace.bind(this, place._id)}><IcoN size={24} name={'crownWire24'}/></a>}
+                                                        <a className='promote' title={'Demote Member'} onClick={this.demoteInPlace.bind(this, place._id)}><IcoN size={24} name={'crown24'}/></a>}
 
                                                     </div>
                                                 );
@@ -1066,7 +1066,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                                     <PlaceItem onClick={this.showPlaceModal.bind(this)}
                                                             place={place} key={place._id}/>
                                                     <a className='remove' title={'Remove From Place'} onClick={this.removeFromPlace.bind(this, place._id)}><IcoN size={16} name={'bin16'}/></a>
-                                                    <a className='promote' title={'Promote Member'}  onClick={this.promoteInPlace.bind(this, place._id)}><IcoN size={24} name={'crown24'}/></a>
+                                                    <a className='promote' title={'Promote Member'}  onClick={this.promoteInPlace.bind(this, place._id)}><IcoN size={24} name={'crownWire24'}/></a>
                                                 </div>);
                                             })}
                                         </Col>
