@@ -48,23 +48,31 @@ export default class NstCrop extends React.Component<IProps, IStates> {
     }
 
     componentWillReceiveProps (props: any) {
-        const file = props.avatar;
-        const imageType = /^image\//;
-
-        if (!file || !imageType.test(file.type)) {
-            return;
+        console.log(props, this.props);
+        let name;
+        if(!this.props.avatar) {
+            name = '';
+        } else {
+            name = this.props.avatar.name;
         }
-        const reader = new FileReader();
+        if(props.avatar && props.avatar.name && props.avatar.name !== name) {
+            const file = props.avatar;
+            const imageType = /^image\//;
 
-        reader.onload = (e2) => {
-            this.setState({
-                base64: e2.target.result,
-                file: props.avatar,
-                visible: true,
-            });
-        };
+            if (!file || !imageType.test(file.type)) {
+                return;
+            }
+            const reader = new FileReader();
 
-        reader.readAsDataURL(file);
+            reader.onload = (e2) => {
+                this.setState({
+                    base64: e2.target.result,
+                    file: props.avatar,
+                    visible: true,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
     }
 
     onCropChange = (crop) => {
