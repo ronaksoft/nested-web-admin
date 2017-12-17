@@ -48,7 +48,6 @@ export default class NstCrop extends React.Component<IProps, IStates> {
     }
 
     componentWillReceiveProps (props: any) {
-        console.log(props, this.props);
         let name;
         if(!this.props.avatar) {
             name = '';

@@ -11,7 +11,7 @@ import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import appConfig from '../../../app.config';
 import HealthCheck from './components/HealthCheck/index';
 import EditMessageModal from './components/EditMessageModal/index';
-
+const Option = Select.Option;
 const FormItem = Form.Item;
 
 export interface IConfigProps {
