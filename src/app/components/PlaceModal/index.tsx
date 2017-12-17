@@ -957,7 +957,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                     )}
                     {!editMode && (
-                        <Row className='account-control' type='flex' align='middle'>
+                        <Row className='account-control nst-disabled' type='flex' align='middle'>
                             <IcoN size={16} name={'compose16'}/>
                             <span>Send a Message</span>
                         </Row>
