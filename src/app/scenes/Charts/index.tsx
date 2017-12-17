@@ -28,6 +28,7 @@ class Charts extends React.Component <IChartsProps,
     }
 
     updatePeriod(period: TimePeriod) {
+        console.log(period);
         this.setState({
             period
         });
@@ -42,35 +43,35 @@ class Charts extends React.Component <IChartsProps,
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
                     <Col span={8}>
                         <ChartCard title={['Comments', 'Emails', 'Posts']} measure={MeasureType.NUMBER} height={240}
-                            dataType={[ReportType.AddComment, ReportType.AddEmail, ReportType.AddPost]}
+                            dataType={[ReportType.AddComment, ReportType.AddEmail, ReportType.AddPost]} period={this.state.period}
                                    color={['#8884d8', '#82ca9d', '#ffc658']} syncId='nested' syncPeriod={this.updatePeriod.bind(this)}/>
                     </Col>
                     <Col span={8}>
                         <ChartCard title={['Logins', 'Session Recalls']} measure={MeasureType.NUMBER} dataType={[ReportType.Login, ReportType.SessionRecall]}
-                                   color={['#8884d8', '#82ca9d']} syncId='nested' height={240} syncPeriod={this.updatePeriod.bind(this)}/>
+                                   color={['#8884d8', '#82ca9d']} syncId='nested' height={240} syncPeriod={this.updatePeriod.bind(this)} period={this.state.period}/>
                     </Col>
                     <Col span={8}>
                         <ChartCard title={['Traffic In', 'Out']} measure={MeasureType.FILE_SIZE} height={240} syncPeriod={this.updatePeriod.bind(this)}
-                                   dataType={[ReportType.dataIn, ReportType.dataOut]} color={['#8884d8', '#82ca9d']} syncId='nested'/>
+                                   dataType={[ReportType.dataIn, ReportType.dataOut]} color={['#8884d8', '#82ca9d']} syncId='nested' period={this.state.period}/>
                     </Col>
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
                     <Col span={6}>
                         <ChartCard title={['Attachments Size']} measure={MeasureType.FILE_SIZE}
-                            dataType={[ReportType.AttachmentSize]} height={152}
+                            dataType={[ReportType.AttachmentSize]} height={152} period={this.state.period}
                                    color={['#8884d8']} syncId='nested' syncPeriod={this.updatePeriod.bind(this)}/>
                     </Col>
                     <Col span={6}>
                         <ChartCard title={['Attachments Count']} measure={MeasureType.NUMBER} dataType={[ReportType.AttachmentCount]}
-                                   color={['#8884d8']} syncId='nested' height={152} syncPeriod={this.updatePeriod.bind(this)}/>
+                                   color={['#8884d8']} syncId='nested' height={152} syncPeriod={this.updatePeriod.bind(this)} period={this.state.period}/>
                     </Col>
                     <Col span={6}>
                         <ChartCard title={['All Requests']} measure={MeasureType.NUMBER} height={152} syncPeriod={this.updatePeriod.bind(this)}
-                                   dataType={[ReportType.AllRequests]} color={['#8884d8']} syncId='nested'/>
+                                   dataType={[ReportType.AllRequests]} color={['#8884d8']} syncId='nested' period={this.state.period}/>
                     </Col>
                     <Col span={6}>
                         <ChartCard title={['Average Response Time']} measure={MeasureType.TIME} height={152} syncPeriod={this.updatePeriod.bind(this)}
-                                   dataType={[ReportType.processTime]} color={['#8884d8']} syncId='nested'/>
+                                   dataType={[ReportType.processTime]} color={['#8884d8']} syncId='nested' period={this.state.period}/>
                     </Col>
                 </Row>
                 {/* <RelatedChartCards

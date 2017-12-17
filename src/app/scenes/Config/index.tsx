@@ -258,11 +258,11 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             )}
                                         </FormItem>
                                     </div>
-                                    <p>In this mode only you or another admin can create accounts.</p>
+                                    <p>In this mode only you or another admin could create accounts.</p>
                                 </li>
                                 <li>
                                     <div className='option'>
-                                        <label>Default Maximum Grand Places that each account can be create:</label>
+                                        <label>Default Maximum Grand Places that each account could create:</label>
                                         <FormItem>
                                             {getFieldDecorator('account_grandplaces_limit', {
                                                 initialValue: this.state.data.account_grandplaces_limit,
@@ -280,7 +280,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             )}
                                         </FormItem>
                                     </div>
-                                    <p>Changes will be apply for new accounts only.</p>
+                                    <p>Changes will be applied for new accounts only.</p>
                                 </li>
                             </ul>
                         </Card>
@@ -349,7 +349,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             )}
                                         </FormItem>
                                     </div>
-                                    <p>Changes will be apply for new places only. You can change it for each place seperatly in Place Settings.</p>
+                                    <p>Changes will be applied for new places only. You can change it for each place seperatly in Place Settings.</p>
                                 </li>
                                 <li>
                                     <div className='option'>
@@ -385,7 +385,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                         <Button type=' butn butn-green' size='large'
                                         onClick={this.editWelcomeMessage.bind(this)}>Edit</Button>
                                     </div>
-                                    <p>New accounts recive this message automatily in first login.</p>
+                                    <p>New accounts receive this message automatically at their first login.</p>
                                 </li>
                             </ul>
                         </Card>

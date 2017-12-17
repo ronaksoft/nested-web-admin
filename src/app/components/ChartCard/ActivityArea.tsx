@@ -5,6 +5,7 @@ import moment from 'moment';
 import {ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Line} from 'recharts';
 import ReportApi from '../../api/report/index';
 import ReportType from '../../api/report/ReportType';
+import ReportTypeLabel from '../../api/report/ReportTypeLabels';
 import TimePeriod from './TimePeriod';
 import Settings from './Settings';
 import IResolutionSetting from './IResolutionSetting';
@@ -87,7 +88,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
             return;
         }
         const Areas = dataTypes.map((dType, i) => {
-            return <Area key={i + 'a'} type='monotone' dataKey={dType} name={ReportType[dType]}
+            return <Area key={i + 'a'} type='monotone' dataKey={dType} name={ReportTypeLabel[ReportType[dType]]}
                     stroke={fills[i]} stackId='1' fill={fills[i]}/>;
         });
         if (this.state.comparePreviousPeriod) {
@@ -105,7 +106,7 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
                     <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
                     <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
                     <Tooltip formatter={(value) => this.formatValue(value, 3)}
-                             labelFormatter={settings.tooltipLabelFormatter}/>
+                            labelFormatter={settings.tooltipLabelFormatter}/>
                     {/* <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel}
                           stroke={settings.latestAreaColor} fill='url(#colorUv)'/>
                     <Area type='monotone' dataKey='second' name={settings.secondAreaLabel}
