@@ -6,6 +6,7 @@ import {Row, Col, Popover, Button, Card, Dropdown, Menu, Icon} from 'antd';
 import SystemApi from '../../api/system/index';
 import ReportType from '../../api/report/ReportType';
 import MeasureType from '../../components/ChartCard/MeasureType';
+import OnlineUsers from '../../components/onlineUsers/index';
 import ChartCard from '../../components/ChartCard/index';
 import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
 import {Link} from 'react-router';
@@ -25,7 +26,6 @@ export interface IDashboardState {
     loading: boolean;
     activeIndex: number;
     activityPeriod: string;
-    onlineUsers: any[];
 }
 
 const card2Title = <h5>Company Chart</h5>;
@@ -68,7 +68,6 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         super(props);
         this.state = {
             loading: true,
-            onlineUsers: [],
             data: {
                 accounts: [],
                 places: [],
@@ -88,7 +87,6 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         }
         this.SystemApi = new SystemApi();
         this.GetData();
-        this.GetOnlines();
     }
 
     GetData() {
@@ -113,17 +111,6 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         });
     }
 
-    GetOnlines() {
-
-        this.SystemApi.getOnlineUsers().then((result) => {
-            this.setState({
-                onlineUsers: result,
-            });
-
-        }).catch((error) => {
-            console.log('error', error);
-        });
-    }
 
     // onPieEnter (data : any, index : any) {
     //     this.setState({
@@ -132,13 +119,6 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
     // }
 
     render() {
-        const {onlineUsers} = this.state;
-        const onlineUsersDom = onlineUsers.map( (bundle, ind) => {
-            const accountsDom = bundle.accounts.map(account => {
-                return <li key={account}>{account}</li>;
-            });
-            return <ul key={ind}><li key={0}>{bundle.bundle_id} :</li>{accountsDom}</ul>;
-        });
         return (
             <div className='dashboard'>
                 <Row type='flex' className='scene-head'>
@@ -146,14 +126,11 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
                     <Col span={8}>
-                        <Card loading={this.state.loading} title='Online Users' extra={card4Extra} className='online-users-card'
-                            style={{height: '418px'}}>
-                            {onlineUsers.length > 0 && onlineUsersDom}
-                        </Card>
+                        <OnlineUsers/>
                     </Col>
                     <Col span={16}>
                         <ChartCard title={['System Activities']} measure={MeasureType.NUMBER} height={320}
-                            dataType={[ReportType.AllRequests]}
+                            dataType={[ReportType.AllRequests]}مخ
                                    color={['#8884d8']} syncId='nested'/>
                     </Col>
                     {/*<Col span={8}>

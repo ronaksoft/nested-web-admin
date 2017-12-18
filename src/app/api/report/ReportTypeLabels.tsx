@@ -1,9 +1,9 @@
 const ReportTypeLabel = {
-  AddPost: 'Add Post',
-  AddEmail: 'Add Email',
+  AddPost: 'Posts',
+  AddEmail: 'Emails',
   AttachmentSize: 'Attachment Size',
   AttachmentCount: 'Attachment Count',
-  AddComment: 'Add Comment',
+  AddComment: 'Comments',
   Login: 'Login',
   SessionRecall: 'Session Recall',
   AllRequests: 'All Requests',
