@@ -5,7 +5,7 @@ import CONFIG from 'src/app/config';
 import {IcoN} from '../icon/index';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
-import {browserHistory, Link, withRouter} from 'react-router';
+import {Link, withRouter, hashHistory} from 'react-router';
 
 import './style/style.less';
 
@@ -13,17 +13,30 @@ interface IHeaderProps {
     location : any;
 }
 
-interface IHeaderState {}
+interface IHeaderState {
+    location:any;
+}
 
 class Sidebar extends React.Component < IHeaderProps,
 IHeaderState > {
 
     constructor(props : any) {
         super(props);
+        this.state = {
+            location: null,
+        };
+    }
+
+    componentDidMount() {
+        hashHistory.listen((location, action) => {
+            this.setState({
+                location: location.pathname
+            });
+          });
     }
 
     render() {
-        let location = this.props.location.pathname;
+        let location = this.state.location || this.props.location.pathname;
         if (location === '/') {
             location = '/dashboard';
         }
@@ -33,8 +46,8 @@ IHeaderState > {
                     <div className='logo'></div>
                 </Link>
                 <Menu
-                    defaultSelectedKeys={[location]}
-                    defaultOpenKeys={[location]}
+                    selectedKeys={[location]}
+                    openKeys={[location]}
                     mode='inline'>
                     <Menu.Item key='/dashboard'>
                         <Tooltip placement='right' title={'Dashboard'}>
@@ -57,11 +70,6 @@ IHeaderState > {
                             </Link>
                         </Tooltip>
                     </Menu.Item>
-                    {/* <Menu.Item key='/config'>
-                        <Link to='/config' activeClassName='active'>
-                            <IcoN size={24} name={'hdd24'}/>
-                        </Link>
-                    </Menu.Item> */}
                     <Menu.Item key='/charts'>
                         <Tooltip placement='right' title={'Charts'}>
                             <Link to='/charts' activeClassName='active'>
