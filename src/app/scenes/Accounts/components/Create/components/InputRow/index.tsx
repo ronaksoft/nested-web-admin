@@ -25,7 +25,6 @@ interface IInputRowState {
 
 class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     constructor(props: IInputRowProps) {
-        console.log('constructor');
         super(props);
         this.state = {
             packet: props.account,
