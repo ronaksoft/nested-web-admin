@@ -23,15 +23,18 @@ interface IChartCardState {
     dataType: ReportType[];
     comparePreviousPeriod: boolean;
     period: any;
+    reloadLoop: boolean;
     titles: any[];
 }
 
 class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
+    inteval:any;
     constructor(props: IChartCardProps) {
         super(props);
 
         this.state = {
             activities: [],
+            reloadLoop: false,
             comparePreviousPeriod: false,
             period: TimePeriod.Week,
             dataType: this.props.dataType,
@@ -49,7 +52,18 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     }
 
     reload() {
-        this.area.reload();
+        this.setState({
+            reloadLoop: !this.state.reloadLoop
+        }, () => {
+            if (this.state.reloadLoop) {
+                this.area.reload();
+                this.inteval = setInterval(() => {
+                    this.area.reload();
+                }, 8000);
+            } else {
+                clearInterval(this.inteval);
+            }
+        });
     }
 
     changeCompare(checked: boolean) {
@@ -75,6 +89,12 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
             this.setState({
                 period: newProps.period,
             });
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.state.reloadLoop) {
+            clearInterval(this.inteval);
         }
     }
 
@@ -106,8 +126,10 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
                     </Tooltip>
                     &nbsp;
                     &nbsp;
-                    <Tooltip placement='top' title={'reload'}>
-                        <a rel='noopener noreferrer' onClick={this.reload}><Icon type='reload'/></a>
+                    <Tooltip placement='top' title={this.state.reloadLoop ? 'Auto Reloading' : 'Reload'}>
+                        <a rel='noopener noreferrer' className={[this.state.reloadLoop ? 'reloading' : ''].join(' ')} onClick={this.reload}>
+                            <Icon type='reload'/>
+                        </a>
                     </Tooltip>
                     &nbsp;
                     &nbsp;

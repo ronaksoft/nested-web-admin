@@ -9,14 +9,17 @@ interface IOnlineUsersProps {
 interface IOnlineUsersState {
     onlineUsers: any[];
     loading: boolean;
+    reloadLoop: boolean;
 }
 
 class OnlineUsers extends React.Component<IOnlineUsersProps, IOnlineUsersState> {
+    inteval:any;
     constructor(props: IOnlineUsersProps) {
         super(props);
 
         this.state = {
             loading: true,
+            reloadLoop: false,
             onlineUsers: [],
         };
 
@@ -28,11 +31,25 @@ class OnlineUsers extends React.Component<IOnlineUsersProps, IOnlineUsersState> 
         this.GetOnlines();
     }
 
+    componentWillUnmount() {
+        if (this.state.reloadLoop) {
+            clearInterval(this.inteval);
+        }
+    }
+
     reload() {
         this.setState({
-            loading: true
+            reloadLoop: !this.state.reloadLoop
+        }, () => {
+            if (this.state.reloadLoop) {
+                this.GetOnlines();
+                this.inteval = setInterval(() => {
+                    this.GetOnlines();
+                }, 8000);
+            } else {
+                clearInterval(this.inteval);
+            }
         });
-        this.GetOnlines();
     }
 
     // componentWillReceiveProps(newProps: IOnlineUsersProps) {
@@ -61,8 +78,8 @@ class OnlineUsers extends React.Component<IOnlineUsersProps, IOnlineUsersState> 
         return (
             <Card title='Online Users' loading={this.state.loading} extra={
                 <div>
-                    <Tooltip placement='top' title='reload'>
-                        <a rel='noopener noreferrer' onClick={this.reload}><Icon type='reload'/></a>
+                    <Tooltip placement='top' title={this.state.reloadLoop ? 'Auto Reloading' : 'Reload'}>
+                        <a rel='noopener noreferrer' className={[this.state.reloadLoop ? 'reloading' : ''].join(' ')} onClick={this.reload}><Icon type='reload'/></a>
                     </Tooltip>
                 </div>
             } className='chart-card online-users-card' style={{height: '418px'}}>
