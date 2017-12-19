@@ -36,6 +36,8 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
     }
 
     handleGroupChange(menu: any) {
+        menu.domEvent.preventDefault();
+        menu.domEvent.stopPropagation();
         this.selectedMenuIndex = parseInt(menu.key, 0);
         const item = this.state.menus[this.selectedMenuIndex];
         if (_.isFunction(item.action)) {
@@ -48,7 +50,6 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
             menus: newProps.menus
         });
     }
-
 
     render() {
         // console.log(this.state.menus);

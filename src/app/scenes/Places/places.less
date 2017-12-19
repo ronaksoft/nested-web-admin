@@ -50,8 +50,16 @@
 }
 .places-list {
     .PlaveView {
-        // width: 100%;
-        // display: inline-flex;
+        display: flex;
+        flex: 1;
+        .PlaceView--inner,
+        .PlaveView-detail {
+            flex: 1;
+            > span {
+                min-width: 100%;
+                max-width: 100%;
+            }
+        }
     }
     .place-indent {
         width: 32px;
