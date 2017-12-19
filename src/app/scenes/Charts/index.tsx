@@ -28,7 +28,6 @@ class Charts extends React.Component <IChartsProps,
     }
 
     updatePeriod(period: TimePeriod) {
-        console.log(period);
         this.setState({
             period
         });

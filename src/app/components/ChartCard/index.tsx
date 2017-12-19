@@ -71,7 +71,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     }
 
     componentWillReceiveProps(newProps: IChartCardProps) {
-        if(newProps.period && newProps.period !== this.state.period) {
+        if(newProps.period !== this.state.period) {
             this.setState({
                 period: newProps.period,
             });
