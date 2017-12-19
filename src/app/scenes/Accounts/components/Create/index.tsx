@@ -93,11 +93,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             return;
         }
         let accounts = this.state.accounts;
-
-        if (!params.password) {
-            model.pass = model._id;
-        }
-        console.log(model.password);
+        model.pass = params.password;
         accounts[packetIndex].status = params.status;
         accounts[packetIndex].model = model;
         this.setState({
@@ -342,6 +338,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
         setTimeout(() => {
             accounts.map((account, index) => {
+                console.log(account);
                 if (account.status === PacketState.Valid) {
                     this.handleChange({
                         key: account.key,

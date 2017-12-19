@@ -110,7 +110,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         this.props.onChange({
             key: this.props.refKey,
             model: this.props.form.getFieldsValue(),
-            password: this.state.manualPassword,
+            password: this.state.manualPassword ? this.props.form.getFieldsValue().pass : this.props.form.getFieldsValue()._id,
             status: null
         });
     }
@@ -122,7 +122,6 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         const pending = this.state.status === PacketState.Pending;
         const success = this.state.status === PacketState.Success;
         const manualPassword = this.state.manualPassword;
-        console.log('manualPassword', manualPassword);
         return (
             <Form layout='inline' className='account-row'
                   onChange={self.fromChange.bind(self)}>
