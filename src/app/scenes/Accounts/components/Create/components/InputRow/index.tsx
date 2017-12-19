@@ -25,7 +25,6 @@ interface IInputRowState {
 
 class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     constructor(props: IInputRowProps) {
-        console.log('constructor');
         super(props);
         this.state = {
             packet: props.account,
@@ -122,7 +121,6 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         const pending = this.state.status === PacketState.Pending;
         const success = this.state.status === PacketState.Success;
         const manualPassword = this.state.manualPassword;
-        console.log('manualPassword', manualPassword);
         return (
             <Form layout='inline' className='account-row'
                   onChange={self.fromChange.bind(self)}>

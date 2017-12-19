@@ -97,7 +97,6 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         if (!params.password) {
             model.pass = model._id;
         }
-        console.log(model.password);
         accounts[packetIndex].status = params.status;
         accounts[packetIndex].model = model;
         this.setState({
@@ -305,9 +304,11 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 fname: this.state.accounts[index].model.fname,
                 lname: this.state.accounts[index].model.lname,
                 phone: this.state.accounts[index].model.phone,
-                pass: md5(this.state.accounts[index].model.pass)
+                pass: null,
+                pass: this.state.accounts[index].model.pass !== ''? md5(this.state.accounts[index].model.pass): null,
             })
-                .then(() => {
+                .then((data) => {
+                    console.log(data);
                     const account = this.state.accounts[index];
                     this.handleChange({
                         key: account.key,
