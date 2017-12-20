@@ -6,6 +6,7 @@ import AAA from './../../../../services/classes/aaa/index';
 import AccountApi from './../../../../api/account/account';
 import {hashHistory} from 'react-router';
 import Api from './../../../../api/index';
+import CONFIG from 'src/app/config';
 
 import {Layout, Card, Form, InputNumber, Button, Input, message} from 'antd';
 
@@ -61,18 +62,18 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
             data.uid = usernameSplits[0];
             api.reconfigEndPoints(usernameSplits[1])
                 .then(() => {
-                    this.login(data);
+                    this.login(data, usernameSplits[1]);
                 });/*
                 .catch((r) => {
                     console.log(r);
                     message.warning(`Something wen't wrong`);
                 });*/
         } else {
-            this.login(data);
+            this.login(data, CONFIG().domain);
         }
     }
 
-    login = (data) => {
+    login = (data, domain) => {
         const did = Client.getDid();
         const dt = Client.getDt();
 
@@ -90,6 +91,9 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
                 Client.setDid(did);
                 Client.setDt(dt);
                 hashHistory.push('/dashboard');
+                if (domain !== undefined) {
+                    localStorage.setItem('nested.server.domain', domain);
+                }
             } else {
                 message.warning('You are not administrator');
             }
