@@ -302,7 +302,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 lname: this.state.accounts[index].model.lname,
                 phone: this.state.accounts[index].model.phone,
                 pass: null,
-                pass: this.state.accounts[index].model.pass !== ''? md5(this.state.accounts[index].model.pass): null,
+                pass: this.state.accounts[index].model.pass !== undefined? md5(this.state.accounts[index].model.pass): null,
             })
                 .then((data) => {
                     console.log(data);
