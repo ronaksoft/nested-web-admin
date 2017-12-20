@@ -109,7 +109,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         this.props.onChange({
             key: this.props.refKey,
             model: this.props.form.getFieldsValue(),
-            password: this.state.manualPassword ? this.props.form.getFieldsValue().pass : this.props.form.getFieldsValue()._id,
+            manualPassword: this.state.manualPassword,
             status: null
         });
     }

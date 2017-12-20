@@ -88,16 +88,18 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         const packetIndex = _.findIndex(this.state.accounts, (pocket) => {
             return (pocket.key === params.key + '');
         });
-        const model = params.model;
-        if (!params.model) {
+        const {model, manualPassword, status} = params;
+        if (!model) {
             return;
         }
         let accounts = this.state.accounts;
-        model.pass = params.password;
-        accounts[packetIndex].status = params.status;
+        model.pass = manualPassword === false ? model._id : model.pass;
+        accounts[packetIndex].status = status;
         accounts[packetIndex].model = model;
         this.setState({
             accounts: accounts,
+        }, () => {
+            console.log(this.state.accounts);
         });
         setTimeout(() => {
             this.renderRows();
@@ -279,6 +281,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     }
 
     private create() {
+        console.log(this.state.accounts);
         this.validatePockets();
         if (this.validRowsCount() > this.state.accounts.length) {
             notification.error({
@@ -301,8 +304,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 fname: this.state.accounts[index].model.fname,
                 lname: this.state.accounts[index].model.lname,
                 phone: this.state.accounts[index].model.phone,
-                pass: null,
-                pass: this.state.accounts[index].model.pass !== undefined? md5(this.state.accounts[index].model.pass): null,
+                pass: this.state.accounts[index].model.pass !== ''? md5(this.state.accounts[index].model.pass): null,
             })
                 .then((data) => {
                     console.log(data);
