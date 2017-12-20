@@ -85,15 +85,18 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     }
 
     handleChange(params: any) {
+        console.log(params);
         const packetIndex = _.findIndex(this.state.accounts, (pocket) => {
             return (pocket.key === params.key + '');
         });
-        const {model, manualPassword, status} = params;
+        const {model, manualPassword, status} = _.clone(params);
         if (!model) {
             return;
         }
         let accounts = this.state.accounts;
+        console.log(model.pass);
         model.pass = manualPassword === false ? model._id : model.pass;
+        console.log(manualPassword, model.pass);
         accounts[packetIndex].status = status;
         accounts[packetIndex].model = model;
         this.setState({

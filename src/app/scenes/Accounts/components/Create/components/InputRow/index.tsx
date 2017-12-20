@@ -103,6 +103,14 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         this.setState({
             manualPassword: true,
         });
+        const model = this.props.form.getFieldsValue();
+        model.pass = '';
+        this.props.onChange({
+            key: this.props.refKey,
+            model: model,
+            manualPassword: true,
+            status: null
+        });
     }
 
     fromChange () {
