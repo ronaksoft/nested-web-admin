@@ -31,6 +31,7 @@ import CONFIG from 'src/app/config';
 import AAA from './../../../../services/classes/aaa/index';
 import PlaceModal from '../../../../components/PlaceModal/index';
 import IPlace from '../../../../api/place/interfaces/IPlace';
+import SendMessageModal from '../../../../components/SendMessageModal/index';
 
 import RelatedChartCards from '../../../../components/ChartCard/RelatedChartCards';
 import ReportType from '../../../../api/report/ReportType';
@@ -55,6 +56,7 @@ interface IViewState {
     reportTab: boolean;
     editMode: boolean;
     model: any;
+    sendMessageVisible: boolean;
     visibleChangePassword: boolean;
     newPassword: string;
 }
@@ -70,6 +72,7 @@ class View extends React.Component<IViewProps, IViewState> {
             reportTab: false,
             setDateOfBirth: false,
             account: props.account,
+            sendMessageVisible: false,
             visiblePlaceModal: false,
             maskClosable: true,
             visible: true,
@@ -95,13 +98,14 @@ class View extends React.Component<IViewProps, IViewState> {
         this.updated = false;
         this.loadPlaces = this.loadPlaces.bind(this);
         this.applyChanges = this.applyChanges.bind(this);
-        this.pictureChange = this.pictureChange.bind(this);
-        this.loadUploadToken = this.loadUploadToken.bind(this);
         this.beforeUpload = this.beforeUpload.bind(this);
+        this.pictureChange = this.pictureChange.bind(this);
         this.removePicture = this.removePicture.bind(this);
         this.onActiveChange = this.onActiveChange.bind(this);
         this.onPrivacyChange = this.onPrivacyChange.bind(this);
         this.toggleReportTab = this.toggleReportTab.bind(this);
+        this.loadUploadToken = this.loadUploadToken.bind(this);
+        this.sendMessageToggle = this.sendMessageToggle.bind(this);
     }
 
     componentDidMount() {
@@ -131,6 +135,12 @@ class View extends React.Component<IViewProps, IViewState> {
             selectedPlace: record,
             visiblePlaceModal: true,
             visible: false,
+        });
+    }
+
+    sendMessageToggle() {
+        this.setState({
+            sendMessageVisible: !this.state.sendMessageVisible,
         });
     }
 
@@ -740,7 +750,7 @@ class View extends React.Component<IViewProps, IViewState> {
                         </Row>
                     )}
                     {!editMode && (
-                        <Row className='account-control nst-disabled' type='flex' align='middle'>
+                        <Row className='account-control' type='flex' align='middle' onClick={this.sendMessageToggle}>
                             <IcoN size={16} name={'compose16'}/>
                             <span>Send a Message</span>
                         </Row>
@@ -770,6 +780,10 @@ class View extends React.Component<IViewProps, IViewState> {
                 <PlaceModal visible={this.state.visiblePlaceModal} place={this.selectedPlace}
                             onClose={this.closePlaceModal.bind(this)}/>
                 }
+                <SendMessageModal
+                    onClose={this.sendMessageToggle}
+                    visible={this.state.sendMessageVisible}
+                    target={this.state.model.account_id}/>
                 <Modal key={this.state.account._id} visible={this.state.visible} onCancel={this.onClose.bind(this)}
                        footer={null} title={header} maskClosable={this.state.maskClosable}
                        afterClose={this.cleanup} width={800}

@@ -32,6 +32,7 @@ import IPlaceCreateRequest from '../../api/place/interfaces/IPlaceCreateRequest'
 import AddMemberModal from '../AddMember/index';
 import NstCrop from '../Crop/index';
 import $ from 'jquery';
+import SendMessageModal from '../SendMessageModal/index';
 
 interface IProps {
     place?: IPlace;
@@ -43,6 +44,7 @@ interface IProps {
 interface IStates {
     editTarget: EditableFields | null;
     visible: boolean;
+    sendMessageVisible: boolean;
     visibleAddMemberModal: boolean;
     place?: IPlace;
     members?: any;
@@ -73,6 +75,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         super(props);
         this.state = {
             visibleAddMemberModal: false,
+            sendMessageVisible: false,
             uploadPercent: 0,
             sidebarTab: 0,
             updateProgress: false,
@@ -92,6 +95,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         };
         this.changeSidebarTab = this.changeSidebarTab.bind(this);
         this.toggleReportTab = this.toggleReportTab.bind(this);
+        this.sendMessageToggle = this.sendMessageToggle.bind(this);
         this.currentUser = AAA.getInstance().getUser();
         this.updated = false;
     }
@@ -796,6 +800,12 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         });
     }
 
+    sendMessageToggle() {
+        this.setState({
+            sendMessageVisible: !this.state.sendMessageVisible,
+        });
+    }
+
     pickFile(e: any) {
         const file = e.target.files.item(0);
         const imageType = /^image\//;
@@ -957,7 +967,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         </Row>
                     )}
                     {!editMode && (
-                        <Row className='account-control nst-disabled' type='flex' align='middle'>
+                        <Row className='account-control' type='flex' align='middle' onClick={this.sendMessageToggle}>
                             <IcoN size={16} name={'compose16'}/>
                             <span>Send a Message</span>
                         </Row>
@@ -1259,6 +1269,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         addMembers={this.addMembers.bind(this)}
                         onClose={this.toggleAddMemberModal.bind(this)}
                         visible={this.state.visibleAddMemberModal}/>
+                    <SendMessageModal
+                        onClose={this.sendMessageToggle}
+                        visible={this.state.sendMessageVisible}
+                        target={this.state.place._id}/>
                 </Modal>
                 }
             </div>

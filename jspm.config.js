@@ -8,7 +8,9 @@ SystemJS.config({
   devConfig: {
     'map': {
       'react-addons-test-utils': 'npm:react-addons-test-utils@15.5.1',
-      'babel-preset-react': 'npm:babel-preset-react@6.24.1'
+      'babel-preset-react': 'npm:babel-preset-react@6.24.1',
+      'core-js': 'npm:core-js@1.2.7',
+      'babel': 'npm:babel-core@5.8.38'
     },
     'packages': {
       'npm:react-addons-test-utils@15.5.1': {
@@ -108,6 +110,9 @@ SystemJS.config({
     '*.css': {
       'loader': 'css'
     }
+  },
+  map: {
+    'jquery-migrate': 'npm:jquery-migrate@1.4.1'
   }
 });
 
@@ -118,6 +123,8 @@ SystemJS.config({
     'github:*/*.json'
   ],
   map: {
+    'draft-js-export-html': 'npm:draft-js-export-html@1.2.0',
+    'draft-js': 'npm:draft-js@0.10.0',
     'ant': 'npm:ant@0.2.0',
     'antd': 'npm:antd@2.9.3',
     'assert': 'github:jspm/nodelibs-assert@0.2.0-alpha',
@@ -140,7 +147,6 @@ SystemJS.config({
     'https': 'github:jspm/nodelibs-https@0.2.0-alpha',
     'immutable': 'npm:immutable@3.8.1',
     'jquery': 'npm:jquery@3.2.1',
-    'jquery-migrate': 'npm:jquery-migrate@1.4.1',
     'less': 'npm:systemjs-less-plugin@2.0.0',
     'lodash': 'npm:lodash@4.17.4',
     'loglevel': 'npm:loglevel@1.4.1',
@@ -798,7 +804,7 @@ SystemJS.config({
       'map': {
         'immutable': 'npm:immutable@3.7.6',
         'object-assign': 'npm:object-assign@4.1.1',
-        'fbjs': 'npm:fbjs@0.8.12'
+        'fbjs': 'npm:fbjs@0.8.16'
       }
     },
     'npm:rc-touchable@1.1.0': {
@@ -1183,13 +1189,25 @@ SystemJS.config({
         'to-arraybuffer': 'npm:to-arraybuffer@1.0.1'
       }
     },
+    'npm:prop-types@15.5.10': {
+      'map': {
+        'loose-envify': 'npm:loose-envify@1.3.1',
+        'fbjs': 'npm:fbjs@0.8.16'
+      }
+    },
+    'npm:babel-runtime@6.23.0': {
+      'map': {
+        'regenerator-runtime': 'npm:regenerator-runtime@0.10.5',
+        'core-js': 'npm:core-js@2.5.2'
+      }
+    },
     'npm:react@15.6.2': {
       'map': {
         'fbjs': 'npm:fbjs@0.8.16',
         'loose-envify': 'npm:loose-envify@1.3.1',
         'object-assign': 'npm:object-assign@4.1.1',
-        'prop-types': 'npm:prop-types@15.6.0',
-        'create-react-class': 'npm:create-react-class@15.6.2'
+        'create-react-class': 'npm:create-react-class@15.6.2',
+        'prop-types': 'npm:prop-types@15.6.0'
       }
     },
     'npm:create-react-class@15.6.2': {
@@ -1207,21 +1225,9 @@ SystemJS.config({
         'prop-types': 'npm:prop-types@15.6.0'
       }
     },
-    'npm:prop-types@15.5.10': {
+    'npm:draft-js-export-html@1.2.0': {
       'map': {
-        'loose-envify': 'npm:loose-envify@1.3.1',
-        'fbjs': 'npm:fbjs@0.8.16'
-      }
-    },
-    'npm:babel-runtime@6.23.0': {
-      'map': {
-        'regenerator-runtime': 'npm:regenerator-runtime@0.10.5',
-        'core-js': 'npm:core-js@2.5.2'
-      }
-    },
-    'npm:font-awesome@4.7.0': {
-      'map': {
-        'css': 'github:systemjs/plugin-css@0.1.36'
+        'draft-js-utils': 'npm:draft-js-utils@1.2.0'
       }
     }
   }

@@ -59,7 +59,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
                 this.area.reload();
                 this.inteval = setInterval(() => {
                     this.area.reload();
-                }, 8000);
+                }, 60000);
             } else {
                 clearInterval(this.inteval);
             }

@@ -498,15 +498,15 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
     renderOptionsCell(text: string, record: IPlace, index: any) {
         let visibleAddMemberModal = true;
-        // {
-        //     key: 'message',
-        //     name: 'Post a Message',
-        //     icon: 'message16',
-        //     action: () => {
-        //         this.props.actionOnPlace(record._id, 'message');
-        //     },
-        // },
         const items = [
+            {
+                key: 'message',
+                name: 'Post a Message',
+                icon: 'message16',
+                action: () => {
+                    this.props.actionOnPlace(record._id, 'message');
+                },
+            },
             {
                 key: 'create',
                 name: 'Create a Private Subplace',
@@ -516,7 +516,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 },
             }
         ];
-        const deviders = [];
+        const deviders = [0];
         if (record.type !== C_PLACE_TYPE['0']) {
             items.push({
                 key: 'person16',

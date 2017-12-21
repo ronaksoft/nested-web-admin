@@ -3,6 +3,8 @@ import ISetMessageTemplateRequest from './ISetMessageTemplateRequest';
 import ISetMessageTemplateResponse from './ISetMessageTemplateResponse';
 import IGetMessageTemplateRequest from './IGetMessageTemplateRequest';
 import IGetMessageTemplateResponse from './IGetMessageTemplateResponse';
+import ICreatePostRequest from './ICreatePostRequest';
+import ICreatePostResponse from './ICreatePostResponse';
 
 export default class FileApi {
   private api;
@@ -30,6 +32,17 @@ export default class FileApi {
         data: setMessageTemplateRequest,
     }).then((res: IGetMessageTemplateResponse) => {
         return res.message_templates;
+    }).catch((err) => {
+        console.log(err);
+    });
+  }
+
+  createPost(createPostRequest: ICreatePostRequest): Promise<any> {
+    return this.api.server.request({
+        cmd: 'admin/create_post',
+        data: createPostRequest,
+    }).then((res: ICreatePostResponse) => {
+        return res;
     }).catch((err) => {
         console.log(err);
     });

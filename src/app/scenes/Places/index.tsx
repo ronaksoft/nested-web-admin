@@ -15,6 +15,7 @@ import CreatePlaceModal from '../../components/CreatePlaceModal/index';
 import _ from 'lodash';
 import AddMemberModal from '../../components/AddMember/index';
 import IUser from '../../api/account/interfaces/IUser';
+import SendMessageModal from '../../components/SendMessageModal/index';
 
 // import './places.less';
 const TabPane = Tabs.TabPane;
@@ -26,6 +27,7 @@ export interface IAccountsState {
     counters: IGetSystemCountersResponse;
     notifyChildrenUnselect: boolean;
     loadCounters: boolean;
+    sendMessageVisible: boolean;
     visibleAddMemberModal: boolean;
     visibleCreatePlaceModal: boolean;
     createGrandPlace: boolean;
@@ -50,6 +52,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             counters: {},
             updates: 0,
             selectedItems: [],
+            sendMessageVisible: false,
             notifyChildrenUnselect: false,
             loadCounters: false,
             visibleAddMemberModal: false,
@@ -58,6 +61,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             visibleDeletePlace: false,
             selectedTab: CPlaceFilterTypes.TAB_SHARED,
         };
+        this.sendMessageToggle = this.sendMessageToggle.bind(this);
     }
 
     componentDidMount() {
@@ -76,6 +80,12 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         this.setState({
             updates: this.state.updates + 1,
             notifyChildrenUnselect: !this.state.notifyChildrenUnselect
+        });
+    }
+
+    sendMessageToggle() {
+        this.setState({
+            sendMessageVisible: !this.state.sendMessageVisible,
         });
     }
 
@@ -220,6 +230,13 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 this.toggleCreatePlaceModal(false);
             });
         }
+        if (action === 'message') {
+            this.setState({
+                focusPlace: placeId
+            }, () => {
+                this.sendMessageToggle();
+            });
+        }
         if (action === 'delete') {
             this.setState({
                 focusPlace: placeId
@@ -306,6 +323,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                     addMembers={this.addMembers.bind(this)}
                     onClose={this.toggleAddMemberModal.bind(this)}
                     visible={this.state.visibleAddMemberModal}/>
+                <SendMessageModal
+                    onClose={this.sendMessageToggle}
+                    visible={this.state.sendMessageVisible}
+                    target={this.state.focusPlace}/>
                 <Modal
                     key={this.state.focusPlace}
                     content='Some descriptions'
