@@ -297,7 +297,7 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                 onCancel={this.handleCancel.bind(this)}
                 visible={this.state.visible}
                 footer={modalFooter}
-                title='Welcome Message'>
+                title={'Send a Message to ' + this.state.target}>
                 <div>
                     <Input className='no-style' value={this.state.subject}
                         placeholder='Add a Title...' onChange={this.handleSubjectChange.bind(this)}/>

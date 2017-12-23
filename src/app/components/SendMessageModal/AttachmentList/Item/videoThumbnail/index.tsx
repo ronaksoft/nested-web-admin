@@ -11,8 +11,7 @@
 import * as React from 'react';
 import FileUtil from '../../../../../services/classes/utils/file';
 import IAttachmentItem from '../IAttachmentItem';
-// import style from '../composeAttachment.css';
-const style = {};
+import '../composeAttachment.css';
 
 /**
  * @name IProps
@@ -76,9 +75,9 @@ export default class VideoThumbnail extends React.Component<IProps, IState> {
           />
         ) :
         (
-          <div key={item.id} className={style.imageContainer}>
-            <div className={style.filesTypesImages}>
-              <div className={style.fileBadge + ' ' + style.fileBadgeVid}>
+          <div key={item.id} className='imageContainer'>
+            <div className='filesTypesImages'>
+              <div className='fileBadge fileBadgeVid'>
                 VID
               </div>
             </div>

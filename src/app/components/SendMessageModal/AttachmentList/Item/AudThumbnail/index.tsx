@@ -11,8 +11,8 @@
 import * as React from 'react';
 import IAttachmentItem from '../IAttachmentItem';
 import FileUtil from '../../../../../services/classes/utils/file';
-// import style from '../composeAttachment.css';
-const style = {};
+import '../composeAttachment.css';
+
 /**
  * @name IProps
  * @interface IProps for component initials data
@@ -74,9 +74,9 @@ export default class AudioThumbnail extends React.Component<IProps, IState> {
                 style={{width: 40, height: 40}}/>
           ) :
           (
-            <div key={item.id} className={style.imageContainer}>
-              <div className={style.filesTypesImages}>
-                <div className={style.fileBadge + ' ' + style.fileBadgeAud}>
+            <div key={item.id} className={'imageContainer'}>
+              <div className={'filesTypesImages'}>
+                <div className='fileBadge fileBadgeAud'>
                   AUD
                 </div>
               </div>

@@ -11,8 +11,8 @@
 import * as React from 'react';
 import FileUtil from '../../../../../services/classes/utils/file';
 import IAttachmentItem from '../IAttachmentItem';
-// import style from '../composeAttachment.css';
-const style = {};
+import '../composeAttachment.css';
+
 import Mode from '../mode';
 
 /**
@@ -82,8 +82,8 @@ export default class ImageThumbnail extends React.Component<IProps, IState> {
             />
           ) :
           (
-            <div key={item.id} className={style.imageContainer}>
-              <div className={style.fileBadge + ' ' + style.fileBadgeImg}>
+            <div key={item.id} className='imageContainer'>
+              <div className='fileBadge fileBadgeImg'>
                 IMG
               </div>
             </div>

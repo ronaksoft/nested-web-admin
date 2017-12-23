@@ -11,8 +11,7 @@
 import * as React from 'react';
 import IAttachmentItem from '../IAttachmentItem';
 // import FileUtil from 'services/utils/file';
-// import style from '../composeAttachment.css';
-const style = {};
+import '../composeAttachment.css';
 
 /**
  * @name IProps
@@ -67,9 +66,9 @@ export default class PdfThumbnail extends React.Component<IProps, IState> {
     const {item} = this.props;
     return (
       <div key={item.id}>
-        <div key={item.id} className={style.imageContainer}>
-          <div className={style.filesTypesImages}>
-            <div className={style.fileBadge + ' ' + style.fileBadgePdf}>
+        <div key={item.id} className='imageContainer'>
+          <div className='filesTypesImages'>
+            <div className='fileBadge fileBadgePdf'>
               PDF
             </div>
           </div>

@@ -25,7 +25,6 @@ import Picture from '../../../services/classes/utils/picture';
 import IProgress from './IProgress';
 import './attachmentList.css';
 import FileUtil from '../../../services/classes/utils/file';
-const style = {};
 /**
  * @interface IProps
  * @desc The component properties contract
@@ -494,9 +493,9 @@ class AttachmentList extends React.Component<IProps, IState> {
     }
 
     return (
-      <div className={style.AttachmentList}>
-        <div className={style.AttachmentListTop}>
-          <div className={style.totallProgress}>
+      <div className='AttachmentList'>
+        <div className='AttachmentListTop'>
+          <div className={'totallProgress'}>
             <Progress percent={totalProgress} strokeWidth={3} showInfo={false} />
           </div>
           {
@@ -513,7 +512,7 @@ class AttachmentList extends React.Component<IProps, IState> {
               </span>
             )
           }
-          <div className={[style.attachListAnchor, this.state.isExpanded ? style.expanded : null].join(' ')}
+          <div className={['attachListAnchor', this.state.isExpanded ? 'expanded' : null].join(' ')}
                onClick={this.toggleView}
           >
             <IcoN size={24} name='arrow16' />

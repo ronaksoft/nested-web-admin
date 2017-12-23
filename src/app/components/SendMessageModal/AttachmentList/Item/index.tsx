@@ -11,8 +11,7 @@
 
 import * as React from 'react';
 // import FileUtil from 'services/utils/file';
-// import style from './style.css';
-const style = {};
+import './style.css';
 import IAttachmentItem from './IAttachmentItem';
 import OtherThumbnail from './otherThumbnail/index';
 import ArchiveThumbnail from './ArchiveThumbnail/index';
@@ -174,14 +173,14 @@ class AttachmentItem extends React.Component<IProps, IState> {
       }
     };
     return (
-      <div className={style.item}>
-        <span className={style.thumb}>
+      <div className='attach-item'>
+        <span className='attach-thumb'>
                {
             this.renderThumbnail()
                }
         </span>
-        <div className={style.atachmentDetail}>
-          <span className={style.name}>
+        <div className='attach-atachmentDetail'>
+          <span className='attach-name'>
             {
               this.props.item.mode === Mode.UPLOAD
                 ? this.props.item.name
@@ -191,17 +190,17 @@ class AttachmentItem extends React.Component<IProps, IState> {
           {
             this.props.item.mode === Mode.UPLOAD &&
             (
-              <div className={style.progress}>
+              <div className='attach-progress'>
                 <Progress percent={this.state.progress}
                           strokeWidth={3}
                           showInfo={false}
-                          className={style.progressLine}
+                          className='progressLine'
                           status={this.props.item.failed || this.props.item.aborted ? 'exception' : 'active'}
                 />
               </div>
             )
           }
-          <div className={style.remove} onClick={handleRemoveClick}>
+          <div className='attach-remove' onClick={handleRemoveClick}>
             <IcoN size={24} name='xcross24'/>
           </div>
         </div>

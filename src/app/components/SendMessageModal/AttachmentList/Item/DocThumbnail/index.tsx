@@ -11,8 +11,8 @@
 import * as React from 'react';
 import IAttachmentItem from '../IAttachmentItem';
 import FileUtil from '../../../../../services/classes/utils/file';
-// import style from '../composeAttachment.css';
-const style = {};
+import '../composeAttachment.css';
+
 /**
  * @name IProps
  * @interface IProps for component initials data
@@ -67,9 +67,9 @@ export default class DocThumbnail extends React.Component<IProps, IState> {
     const name = item.model ? item.model.name : item.name;
     return (
       <div key={item.id}>
-        <div key={item.id} className={style.imageContainer}>
-          <div className={style.filesTypesImages}>
-            <div className={style.fileBadge + ' ' + style.fileBadgeDoc}>
+        <div key={item.id} className='imageContainer'>
+          <div className='filesTypesImages'>
+            <div className='fileBadge fileBadgeDoc'>
               {FileUtil.getSuffix(name).toUpperCase()}
             </div>
           </div>
