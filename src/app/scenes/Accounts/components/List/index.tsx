@@ -21,6 +21,7 @@ import {IAccount} from '../../interfaces/IAccount';
 import IUnique from '../../interfaces/IUnique';
 import IPerson from '../../interfaces/IPerson';
 import AccountApi from '../../../../api/account/account';
+import Loading from '../../../../components/Loading/index';
 import UserAvatar from '../../../../components/avatar/index';
 import IEnableRequest from '../../../../api/account/interfaces/IEnableRequest';
 import IDisableRequest from '../../../../api/account/interfaces/IDisableRequest';
@@ -537,12 +538,13 @@ class List extends React.Component <IListProps,
                     onChange={this.handleSortChange.bind(this)}
                     size='middle nst-table' scroll={{
                     x: 960
-                }} loading={this.state.loading}/>
+                }}/>
                 {
                     this.state.viewAccount &&
                     <View account={this.state.chosen} visible={this.state.viewAccount} onChange={this.handleChange}
                           onClose={this.onCloseView}/>
                 }
+                <Loading active={this.state.loading} position='absolute'/>
             </div>
         );
     }

@@ -15,7 +15,7 @@ interface IState {
  * @class Loading
  * @extends {React.Component<IProps, IState>}
  */
-class Loading extends React.Component<IProps, IState> {
+export default class Loading extends React.Component<IProps, IState> {
 
   /**
    * Constructor
@@ -62,17 +62,10 @@ class Loading extends React.Component<IProps, IState> {
   public render() {
     return (
       <div>
-        {/* chck the visibility condition for rendering */}
-        { this.state.active && (
-          <div className={[
-            'nst-loading',
-            this.props.size || '',
-            this.props.position || '',
-          ].join(' ')}></div>
-        )}
+        {this.state.active && <div className={['nst-loading', this.props.size || '', this.props.position || ''].join(' ')}>
+          {/* chck the visibility condition for rendering */}
+        </div>}
       </div>
     );
   }
 }
-
-export {Loading};

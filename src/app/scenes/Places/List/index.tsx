@@ -12,6 +12,7 @@ import IGetSystemCountersResponse from '../../../api/system/interfaces/IGetSyste
 import CPlaceFilterTypes from '../../../api/consts/CPlaceFilterTypes';
 import C_PLACE_TYPE from '../../../api/consts/CPlaceType';
 import {IcoN} from '../../../components/icon/index';
+import Loading from '../../../components/Loading/index';
 import Arrow from '../../../components/Arrow/index';
 import PlacePolicy from '../../../components/PlacePolicy/index';
 import MoreOption from '../../../components/Filter/MoreOption';
@@ -699,12 +700,12 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     rowKey='_id'
                     onRowClick={this.showPlaceModal.bind(this)}
                     columns={columns}
-                    loading={this.state.loading}
                     dataSource={this.state.places}
                     size='middle nst-table'
                     className='nst-table'
                     scroll={{x: 960}}
                 />
+                <Loading active={this.state.loading} position='absolute'/>
             </div>
         );
     }

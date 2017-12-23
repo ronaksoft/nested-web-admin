@@ -10,6 +10,7 @@ import TimePeriod from './TimePeriod';
 import Settings from './Settings';
 import IResolutionSetting from './IResolutionSetting';
 import {IFilterProps} from '../Filter/index';
+import Loading from '../Loading/index';
 import MeasureType, {MeasureTypeValues} from './MeasureType';
 
 
@@ -97,28 +98,26 @@ class ActivityArea extends React.Component<IActivityAreaProps, IActivityAreaStat
                         stroke={fills[i]} stackId='2' fill={fills[i]} fillOpacity={.16} strokeOpacity={.32}/>);
             });
         }
-        const content = (
-            <ResponsiveContainer width='100%' height={this.props.height}>
-                <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}} onMouseMove={this.info.bind(this)}
-                    syncId={this.props.syncId}>
-                    <XAxis dataKey='label' tickLine={false} axisLine={false} tickFormatter={settings.tickFormatter}
-                           minTickGap={1}/>
-                    <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
-                    <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
-                    <Tooltip formatter={(value) => this.formatValue(value, 3)}
-                            labelFormatter={settings.tooltipLabelFormatter}/>
-                    {/* <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel}
-                          stroke={settings.latestAreaColor} fill='url(#colorUv)'/>
-                    <Area type='monotone' dataKey='second' name={settings.secondAreaLabel}
-                          stroke={settings.secondAreaColor} fill='url(#colorPv)'/> */}
-                    {Areas}
-                </AreaChart>
-            </ResponsiveContainer>
-        );
         return (
-            <Spin spinning={this.state.loading}>
-                {content}
-            </Spin>
+            <div>
+                <ResponsiveContainer width='100%' height={this.props.height}>
+                    <AreaChart data={days} margin={{top: 10, right: 30, left: 0, bottom: 0}} onMouseMove={this.info.bind(this)}
+                        syncId={this.props.syncId}>
+                        <XAxis dataKey='label' tickLine={false} axisLine={false} tickFormatter={settings.tickFormatter}
+                            minTickGap={1}/>
+                        <YAxis tickFormatter={(value) => this.formatValue(value, 1)}/>
+                        <CartesianGrid strokeDasharray='1 1' stroke='#eee'/>
+                        <Tooltip formatter={(value) => this.formatValue(value, 3)}
+                                labelFormatter={settings.tooltipLabelFormatter}/>
+                        {/* <Area type='monotone' dataKey='latest' name={settings.latestAreaLabel}
+                            stroke={settings.latestAreaColor} fill='url(#colorUv)'/>
+                        <Area type='monotone' dataKey='second' name={settings.secondAreaLabel}
+                            stroke={settings.secondAreaColor} fill='url(#colorPv)'/> */}
+                        {Areas}
+                    </AreaChart>
+                </ResponsiveContainer>
+                <Loading active={this.state.loading} position='absolute'/>
+            </div>
         );
     }
 
