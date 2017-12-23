@@ -263,6 +263,8 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
     }
 
     render() {
+        var body = stateToHTML(this.state.editorState.getCurrentContent()).replace('<br>', '');
+        const haveContent = body.length > 7 || this.state.subject.length > 0 || this.state.attachments.length > 0;
         const styleMap = {
             CODE: {
               backgroundColor: 'rgba(0, 0, 0, 0.05)',
@@ -285,14 +287,14 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                         this.addAttachment(false);
                     }}>Add File</Button>
                 <Button
-                    type=' butn butn-green'
+                    type=' butn butn-green' disabled={!haveContent}
                     onClick={this.sendMessage.bind(this)}>Send</Button>
             </div>
         );
         return (
             <Modal
                 className='message-modal'
-                maskClosable={true}
+                maskClosable={!haveContent}
                 width={664}
                 onCancel={this.handleCancel.bind(this)}
                 visible={this.state.visible}
