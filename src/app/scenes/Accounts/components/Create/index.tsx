@@ -85,7 +85,6 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     }
 
     handleChange(params: any) {
-        console.log(params);
         const packetIndex = _.findIndex(this.state.accounts, (pocket) => {
             return (pocket.key === params.key + '');
         });
@@ -94,15 +93,11 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             return;
         }
         let accounts = this.state.accounts;
-        console.log(model.pass);
         model.pass = manualPassword === false ? model._id : model.pass;
-        console.log(manualPassword, model.pass);
         accounts[packetIndex].status = status;
         accounts[packetIndex].model = model;
         this.setState({
             accounts: accounts,
-        }, () => {
-            console.log(this.state.accounts);
         });
         setTimeout(() => {
             this.renderRows();
@@ -115,7 +110,6 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         let accounts = this.state.accounts;
 
         _.remove(accounts, (pocket: IPacket) => {
-            console.log(pocket.key, key, (pocket.key === key + ''));
             return pocket.key === key + '';
         });
 
@@ -284,7 +278,6 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     }
 
     private create() {
-        console.log(this.state.accounts);
         this.validatePockets();
         if (this.validRowsCount() > this.state.accounts.length) {
             notification.error({
