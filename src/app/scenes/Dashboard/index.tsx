@@ -26,6 +26,7 @@ export interface IDashboardState {
     loading: boolean;
     activeIndex: number;
     activityPeriod: string;
+    companyName: string;
 }
 
 const card2Title = <h5>Company Chart</h5>;
@@ -73,8 +74,12 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                 places: [],
             },
             activeIndex: 0,
-            activityPeriod: 'week'
+            activityPeriod: 'week',
+            companyName: 'Company Name',
         };
+        if (window.companyDetails) {
+            this.state.companyName = window.companyDetails.company_name;
+        }
     }
 
     componentDidMount() {
@@ -86,6 +91,14 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
             });
         }
         this.SystemApi = new SystemApi();
+        if (!window.companyDetails) {
+            this.SystemApi.getCompanyInfo().then((data) => {
+                window.companyDetails = data;
+                this.setState({
+                    companyName: data.company_name,
+                });
+            });
+        }
         this.GetData();
     }
 
@@ -122,7 +135,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
         return (
             <div className='dashboard'>
                 <Row type='flex' className='scene-head'>
-                    <h2>Company Name Dashboard</h2>
+                    <h2>{this.state.companyName} Dashboard</h2>
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
                     <Col span={8}>
