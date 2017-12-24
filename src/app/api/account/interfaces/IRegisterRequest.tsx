@@ -3,6 +3,8 @@ interface IRegisterRequest {
   name: string;
   fname: string;
   lname: string;
+  phone?: string;
+  send_sms?: boolean;
 }
 
 export default IRegisterRequest;

@@ -28,7 +28,10 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
     constructor(props: ICreateProps) {
         super(props);
-        this.state = {accounts: [], sendSms: true};
+        this.state = {
+            accounts: [],
+            sendSms: true
+        };
         this.accountApi = new AccountApi();
         this.handleRemove = this.handleRemove.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -198,9 +201,9 @@ class Create extends React.Component<ICreateProps, ICreateState> {
         this.setState({accounts});
     }
 
-    switchSms() {
+    switchSms(data: any) {
         this.setState({
-            sendSms: !this.state.sendSms,
+            sendSms: data,
         });
     }
 
@@ -210,7 +213,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             <div>
                 <IcoN size={16} name={'gear16'}/>
                 <label>
-                    Send a login link to Phone Numbers via SMS ?
+                    Send a login link to Phone Numbers via SMS?
                 </label>
                 <Switch defaultChecked={this.state.sendSms} onChange={this.switchSms.bind(this)}/>
                 <div className='filler'></div>
@@ -301,6 +304,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 lname: this.state.accounts[index].model.lname,
                 phone: this.state.accounts[index].model.phone,
                 pass: this.state.accounts[index].model.pass !== ''? md5(this.state.accounts[index].model.pass): null,
+                send_sms: this.state.sendSms
             })
                 .then((data) => {
                     console.log(data);

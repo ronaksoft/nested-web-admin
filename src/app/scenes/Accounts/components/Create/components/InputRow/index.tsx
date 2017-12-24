@@ -24,6 +24,9 @@ interface IInputRowState {
 }
 
 class InputRow extends React.Component<IInputRowProps, IInputRowState> {
+
+    checkPhoneAvailableDebounce: any;
+    checkUsernameAvailableDebounce: any;
     constructor(props: IInputRowProps) {
         super(props);
         this.state = {
@@ -32,6 +35,8 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
             manualPassword: false,
         };
         this.insertManualPassword = this.insertManualPassword.bind(this);
+        this.checkPhoneAvailableDebounce = _.debounce(this.checkPhoneAvailable, 512);
+        this.checkUsernameAvailableDebounce = _.debounce(this.checkUsernameAvailable, 512);
     }
 
     handleFormChange = (changedFields) => {
@@ -163,7 +168,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                                 pattern: /^[0-9]*$/g,
                                 message: 'It is not a number'
                             },
-                            _.debounce(this.checkPhoneAvailable, 100)
+                            this.checkPhoneAvailableDebounce
                         ]
                     })(
                         <Input
@@ -218,7 +223,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                                 min: 5,
                                 message: 'The user ID is too short!'
                             },
-                            _.debounce(this.checkUsernameAvailable, 1000)
+                            this.checkUsernameAvailableDebounce
                         ]
                     })(
                         <Input
