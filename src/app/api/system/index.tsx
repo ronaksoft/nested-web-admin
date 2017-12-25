@@ -79,4 +79,12 @@ export default class SystemApi {
         });
     }
 
+    getCompanyInfo() {
+        return this.api.server.request({
+            cmd: 'system/get_string_constants',
+            data: {},
+            withoutQueue: true,
+        });
+    }
+
 }

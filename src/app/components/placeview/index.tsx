@@ -14,19 +14,25 @@ const settings = {
 
 
 export interface IPlaceViewProps {
-    borderRadius : string;
-    place : IPlace;
-    size : any;
+    borderRadius: string;
+    place: IPlace;
+    size: any;
     style: string;
     className: string;
-    avatar : boolean;
-    name : boolean;
-    id : boolean;
+    avatar: boolean;
+    name: boolean;
+    id: boolean;
+    onClick?: () => {};
 }
 
 export interface IPlaceViewStates {}
 
 class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
+    clickHandler() {
+        if (typeof this.props.onClick === 'function') {
+            this.props.onClick(this.props.place);
+        }
+    }
   render() {
     let {
       borderRadius,
@@ -116,12 +122,8 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
       idDOM = <span style={textIdStyle}>{`${place._id}`}</span>;
     }
 
-
-
-
-
     return (
-      <div aria-label={placeName} className={classes.join(' ')} style={style}>
+      <div aria-label={placeName} className={classes.join(' ')} style={style} onClick={this.clickHandler.bind(this)}>
         <div className='PlaceView--inner' style={innerStyle}>
           <div className={placeAvatar ? '' : 'ImageHolder-place'} style={ImageHolder}>
             {avatar && imgDOM}

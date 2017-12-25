@@ -325,7 +325,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     getChildren(place: IPlace, places: IPlace[], depth: number) {
-        return _.chain(places).sortBy(['id']).reduce((stack, item) => {
+        return _.chain(places).sortBy(['_id']).reduce((stack, item) => {
             if (!this.isChild(place._id, item)) {
                 return stack;
             }
@@ -369,39 +369,42 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 _id: record._id
             });
             let places = this.state.places;
-            if (!cachedTrees.hasOwnProperty(record._id)) {
-                this.setState({
-                    loading: true
-                });
-                const placeApi = new PlaceApi();
-                placeApi.placeList({
-                    grand_parent_id: record._id
-                }).then((data) => {
-                    let tempTree = this.createTree(data);
-                    places[index] = _.merge(tempTree[0], {
-                        expanded: true,
+            if (index > -1) {
+                if (!cachedTrees.hasOwnProperty(record._id)) {
+                    this.setState({
+                        loading: true,
                     });
-                    places[index].expanded = true;
-                    places[index].children = tempTree[0].children;
-                    cachedTrees[record._id] = tempTree[0].children;
+                    const placeApi = new PlaceApi();
+                    placeApi.placeList({
+                        grand_parent_id: record._id
+                    }).then((data) => {
+                        let tempTree = this.createTree(data);
+                        places[index] = _.merge(tempTree[0], {
+                            expanded: true,
+                            isChecked: places[index].isChecked,
+                        });
+                        places[index].expanded = true;
+                        places[index].children = tempTree[0].children;
+                        cachedTrees[record._id] = tempTree[0].children;
+                        this.setState({
+                            places: places,
+                            loading: false,
+                        });
+                    });
+                } else {
+                    if (!places[index].children) {
+                        places[index].children = cachedTrees[record._id];
+                    } else {
+                        try {
+                            delete places[index].children;
+                        } catch (e) {
+                            console.log('can\'t delete property');
+                        }
+                    }
                     this.setState({
                         places: places,
-                        loading: false,
                     });
-                });
-            } else {
-                if (!places[index].children) {
-                    places[index].children = cachedTrees[record._id];
-                } else {
-                    try {
-                        delete places[index].children;
-                    } catch (e) {
-                        console.log('can\'t delete property');
-                    }
                 }
-                this.setState({
-                    places: places,
-                });
             }
         };
 
@@ -442,7 +445,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
         return (
             <Row type='flex' align='middle'>
-                <Row type='flex' align='middle' onClick={this.preventer.bind(this)}>
+                <Row type='flex' align='middle'>
                     <Checkbox onChange={(event) => this.onCheckboxChange(event, record)}
                               checked={record.isChecked}/>
                     {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
@@ -455,7 +458,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                                 onClick={(expand, elem) => {toggleExpand(!expand, elem);}}/>}
                     </div>
                 </Row>
-                <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
+                <PlaceView borderRadius={4} place={record} size={32} avatar name id onClick={this.showPlaceModal.bind(this)}></PlaceView>
             </Row>
         );
     }
@@ -698,7 +701,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     pagination={this.state.pagination}
                     onChange={this.handleTableChange.bind(this)}
                     rowKey='_id'
-                    onRowClick={this.showPlaceModal.bind(this)}
                     columns={columns}
                     dataSource={this.state.places}
                     size='middle nst-table'

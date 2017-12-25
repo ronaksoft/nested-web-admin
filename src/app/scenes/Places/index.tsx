@@ -28,6 +28,7 @@ export interface IAccountsState {
     notifyChildrenUnselect: boolean;
     loadCounters: boolean;
     sendMessageVisible: boolean;
+    sendManyMessage: boolean;
     visibleAddMemberModal: boolean;
     visibleCreatePlaceModal: boolean;
     createGrandPlace: boolean;
@@ -53,6 +54,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             updates: 0,
             selectedItems: [],
             sendMessageVisible: false,
+            sendManyMessage: false,
             notifyChildrenUnselect: false,
             loadCounters: false,
             visibleAddMemberModal: false,
@@ -83,8 +85,9 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
 
-    sendMessageToggle() {
+    sendMessageToggle(many?: boolean) {
         this.setState({
+            sendManyMessage: (many === true),
             sendMessageVisible: !this.state.sendMessageVisible,
         });
     }
@@ -200,6 +203,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
         });
     }
 
+    sendManyMessage() {
+        this.sendMessageToggle(true);
+    }
+
     addMembers (members: IUser[]) {
         if (members.length === 0) {
             return;
@@ -311,6 +318,15 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             // }
         ];
 
+        let messageTarget;
+        if (this.state.sendManyMessage) {
+            messageTarget = _.unionBy(this.state.selectedItems, '_id');
+            messageTarget = _.map(messageTarget, (item) => {
+                return item._id;
+            }).join(',');
+        } else {
+            messageTarget = this.state.focusPlace;
+        }
 
         return (
             <div className='places'>
@@ -326,7 +342,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                 <SendMessageModal
                     onClose={this.sendMessageToggle}
                     visible={this.state.sendMessageVisible}
-                    target={this.state.focusPlace}/>
+                    target={messageTarget}/>
                 <Modal
                     key={this.state.focusPlace}
                     content='Some descriptions'
@@ -373,6 +389,12 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                             <span className='bar-item'><b> {isSelected} Places Selected</b></span>
                         )}
                         <div className='filler'></div>
+                        {isSelected && (
+                            <BarMenu menus={[{
+                                key: 'post-message',
+                                name: 'Post Message',
+                                icon: 'message16'}]} onChange={this.sendManyMessage.bind(this)}/>
+                        )}
                         {isSelected && (
                             <BarMenu menus={[{
                                 key: 'delete',

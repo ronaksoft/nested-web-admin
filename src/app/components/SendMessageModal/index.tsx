@@ -144,6 +144,12 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         this.MessageApi.createPost(req).then((result) => {
             message.success('Sent');
             this.props.onClose();
+            this.setState({
+                subject: '',
+                attachments: [],
+                body: '',
+                editorState: EditorState.createEmpty(),
+            });
         }).catch((error) => {
             console.log(error);
             message.error('Can\'nt send');
@@ -291,6 +297,16 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                     onClick={this.sendMessage.bind(this)}>Send</Button>
             </div>
         );
+        let targetName;
+        targetName = this.state.target.split(',');
+        targetName = targetName.map((str) => {
+            return '\'' + str + '\'';
+        });
+        targetName = targetName.join(', ');
+        const lastIndex = targetName.lastIndexOf(',');
+        if (lastIndex > -1) {
+            targetName = targetName.substr(0, lastIndex) + ' &' + targetName.substr(lastIndex + 1);
+        }
         return (
             <Modal
                 className='message-modal'
@@ -299,7 +315,7 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                 onCancel={this.handleCancel.bind(this)}
                 visible={this.state.visible}
                 footer={modalFooter}
-                title={'Send a Message to ' + this.state.target}>
+                title={'Send a Message to ' + targetName}>
                 <div>
                     <Input className='no-style' value={this.state.subject}
                         placeholder='Add a Title...' onChange={this.handleSubjectChange.bind(this)}/>
