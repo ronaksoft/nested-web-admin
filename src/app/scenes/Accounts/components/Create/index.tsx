@@ -384,18 +384,18 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
         [
             {model : {
-                phone : '+989123456789',
+                phone : '989123456789',
                 _id : 'username1',
                 fname : 'First Name 1',
                 lname : 'Last Name 1',
                 pass : 'password1',
             }},
             {model : {
-                phone : '+989123456788',
+                phone : '989123456788',
                 _id : 'username2',
                 fname : 'First Name 2',
                 lname : 'Last Name 2',
-                pass : 'password1',
+                pass : 'password2',
             }},
         ].forEach((row) => {
             data.push([
