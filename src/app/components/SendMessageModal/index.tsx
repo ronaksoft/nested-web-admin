@@ -144,6 +144,12 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         this.MessageApi.createPost(req).then((result) => {
             message.success('Sent');
             this.props.onClose();
+            this.setState({
+                subject: '',
+                attachments: [],
+                body: '',
+                editorState: EditorState.createEmpty(),
+            });
         }).catch((error) => {
             console.log(error);
             message.error('Can\'nt send');

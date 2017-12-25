@@ -442,7 +442,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
 
         return (
             <Row type='flex' align='middle'>
-                <Row type='flex' align='middle' onClick={this.preventer.bind(this)}>
+                <Row type='flex' align='middle'>
                     <Checkbox onChange={(event) => this.onCheckboxChange(event, record)}
                               checked={record.isChecked}/>
                     {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
@@ -455,7 +455,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                                 onClick={(expand, elem) => {toggleExpand(!expand, elem);}}/>}
                     </div>
                 </Row>
-                <PlaceView borderRadius={4} place={record} size={32} avatar name id></PlaceView>
+                <PlaceView borderRadius={4} place={record} size={32} avatar name id onClick={this.showPlaceModal.bind(this)}></PlaceView>
             </Row>
         );
     }
@@ -698,7 +698,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     pagination={this.state.pagination}
                     onChange={this.handleTableChange.bind(this)}
                     rowKey='_id'
-                    onRowClick={this.showPlaceModal.bind(this)}
                     columns={columns}
                     dataSource={this.state.places}
                     size='middle nst-table'
