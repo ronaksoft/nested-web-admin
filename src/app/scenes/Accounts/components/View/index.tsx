@@ -31,7 +31,7 @@ import CONFIG from 'src/app/config';
 import AAA from './../../../../services/classes/aaa/index';
 import PlaceModal from '../../../../components/PlaceModal/index';
 import IPlace from '../../../../api/place/interfaces/IPlace';
-// import SendMessageModal from '../../../../components/SendMessageModal/index';
+import SendMessageModal from '../../../../components/SendMessageModal/index';
 
 import RelatedChartCards from '../../../../components/ChartCard/RelatedChartCards';
 import ReportType from '../../../../api/report/ReportType';
@@ -780,10 +780,10 @@ class View extends React.Component<IViewProps, IViewState> {
                 <PlaceModal visible={this.state.visiblePlaceModal} place={this.selectedPlace}
                             onClose={this.closePlaceModal.bind(this)}/>
                 }
-                {/* <SendMessageModal
+                <SendMessageModal
                     onClose={this.sendMessageToggle}
                     visible={this.state.sendMessageVisible}
-                    target={this.state.model.account_id}/> */}
+                    target={this.state.model.account_id}/>
                 <Modal key={this.state.account._id} visible={this.state.visible} onCancel={this.onClose.bind(this)}
                        footer={null} title={header} maskClosable={this.state.maskClosable}
                        afterClose={this.cleanup} width={800}

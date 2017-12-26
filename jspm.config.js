@@ -121,6 +121,8 @@ SystemJS.config({
     'github:*/*.json'
   ],
   map: {
+    'draft-js-export-html': 'npm:draft-js-export-html@1.2.0',
+    'draft-js': 'npm:draft-js@0.10.2',
     'ant': 'npm:ant@0.2.0',
     'antd': 'npm:antd@2.9.3',
     'assert': 'github:jspm/nodelibs-assert@0.2.0-alpha',
@@ -1219,6 +1221,18 @@ SystemJS.config({
       'map': {
         'regenerator-runtime': 'npm:regenerator-runtime@0.10.5',
         'core-js': 'npm:core-js@2.5.2'
+      }
+    },
+    'npm:draft-js@0.10.2': {
+      'map': {
+        'object-assign': 'npm:object-assign@4.1.1',
+        'fbjs': 'npm:fbjs@0.8.16',
+        'immutable': 'npm:immutable@3.7.6'
+      }
+    },
+    'npm:draft-js-export-html@1.2.0': {
+      'map': {
+        'draft-js-utils': 'npm:draft-js-utils@1.2.0'
       }
     }
   }
