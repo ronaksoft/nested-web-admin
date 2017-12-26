@@ -15,7 +15,7 @@ import CreatePlaceModal from '../../components/CreatePlaceModal/index';
 import _ from 'lodash';
 import AddMemberModal from '../../components/AddMember/index';
 import IUser from '../../api/account/interfaces/IUser';
-import SendMessageModal from '../../components/SendMessageModal/index';
+// import SendMessageModal from '../../components/SendMessageModal/index';
 
 // import './places.less';
 const TabPane = Tabs.TabPane;
@@ -339,10 +339,10 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
                     addMembers={this.addMembers.bind(this)}
                     onClose={this.toggleAddMemberModal.bind(this)}
                     visible={this.state.visibleAddMemberModal}/>
-                <SendMessageModal
+                {/* <SendMessageModal
                     onClose={this.sendMessageToggle}
                     visible={this.state.sendMessageVisible}
-                    target={messageTarget}/>
+                    target={messageTarget}/> */}
                 <Modal
                     key={this.state.focusPlace}
                     content='Some descriptions'

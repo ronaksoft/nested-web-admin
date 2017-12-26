@@ -32,7 +32,7 @@ import IPlaceCreateRequest from '../../api/place/interfaces/IPlaceCreateRequest'
 import AddMemberModal from '../AddMember/index';
 import NstCrop from '../Crop/index';
 import $ from 'jquery';
-import SendMessageModal from '../SendMessageModal/index';
+// import SendMessageModal from '../SendMessageModal/index';
 
 interface IProps {
     place?: IPlace;
@@ -1269,10 +1269,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         addMembers={this.addMembers.bind(this)}
                         onClose={this.toggleAddMemberModal.bind(this)}
                         visible={this.state.visibleAddMemberModal}/>
-                    <SendMessageModal
+                    {/* <SendMessageModal
                         onClose={this.sendMessageToggle}
                         visible={this.state.sendMessageVisible}
-                        target={this.state.place._id}/>
+                        target={this.state.place._id}/> */}
                 </Modal>
                 }
             </div>

@@ -535,6 +535,9 @@ System.config({
     "npm:immutable@3.7.6": {
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
+    "npm:immutable@3.8.2": {
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2"
+    },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
@@ -560,7 +563,8 @@ System.config({
     },
     "npm:keygrip@1.0.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
-      "crypto": "github:jspm/nodelibs-crypto@0.1.0"
+      "crypto": "github:jspm/nodelibs-crypto@0.1.0",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
     "npm:lodash.curry@4.1.1": {
       "process": "github:jspm/nodelibs-process@0.1.2"
@@ -699,7 +703,8 @@ System.config({
     },
     "npm:raf@3.4.0": {
       "performance-now": "npm:performance-now@2.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
     "npm:randombytes@2.0.5": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
