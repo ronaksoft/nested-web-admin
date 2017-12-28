@@ -9,7 +9,7 @@ import VerifyPhone from './steps/02-verify-phone';
 import AccountDetails from './steps/03-account-details';
 import CompanyInformation from './steps/04-company-information';
 import SetupDomain from './steps/05-setup-domain';
-import WarmUp from './steps/06-warm-up';
+// import WarmUp from './steps/06-warm-up';
 import PlatformReady from './steps/07-platform-ready';
 import './nested-start.less';
 

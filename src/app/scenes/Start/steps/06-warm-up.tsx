@@ -19,7 +19,7 @@ IActivityState > {
     render() {
         return (
             <div className='boxPage-content'>
-                <h2>Warm-up “{this.props.domain}” Nested Platform</h2>
+                {/* <h2>Warm-up “{this.props.domain}” Nested Platform</h2> */}
                 <p>
                     Drink some coffee or beer! It's maybe took up 5 minutes!
                 </p>
