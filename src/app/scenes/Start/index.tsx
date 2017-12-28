@@ -4,13 +4,13 @@ import {connect} from 'react-redux';
 import {IcoN} from '../../components/icon/index';
 
 import {Row, Input, Button} from 'antd';
-import GetStart from './steps/01-get-start';
-import VerifyPhone from './steps/02-verify-phone';
-import AccountDetails from './steps/03-account-details';
-import CompanyInformation from './steps/04-company-information';
-import SetupDomain from './steps/05-setup-domain';
+// import GetStart from './steps/01-get-start';
+// import VerifyPhone from './steps/02-verify-phone';
+// import AccountDetails from './steps/03-account-details';
+// import CompanyInformation from './steps/04-company-information';
+// import SetupDomain from './steps/05-setup-domain';
 // import WarmUp from './steps/06-warm-up';
-import PlatformReady from './steps/07-platform-ready';
+// import PlatformReady from './steps/07-platform-ready';
 import './nested-start.less';
 
 
@@ -175,7 +175,7 @@ class Start extends React.Component<IStartProps, IStartState> {
         return (
             <div className='nested-start introduction'>
                 <div className='boxPage-container'>
-                    {this.state.step === 1 &&
+                    {/* {this.state.step === 1 &&
                         <GetStart onChangePhoneNumber={this.onChangePhoneNumber} onComplete={this.nextPage}/>
                     }
                     {this.state.step === 2 &&
@@ -201,7 +201,7 @@ class Start extends React.Component<IStartProps, IStartState> {
                     {this.state.step === 7 &&
                         <PlatformReady onComplete={this.goIntro}
                             domain={this.state.domain}/>
-                    }
+                    } */}
                 </div>
                 { this.state.step === 7 && (
                     <div className='boxPage-note' onClick={this.finish}>
