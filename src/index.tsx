@@ -39,10 +39,10 @@ ReactDOM.render(
                     <Route path='/charts' component={Charts}/>
                     <Route path='/stats' component={Stats}/>
                 </Route>
-                <Route component={BoxPages}>
+                {/* <Route component={BoxPages}>
                     <Route path='/intro' component={Introduction}/>
                     <Route path='/start' component={Start}/>
-                </Route>
+                </Route> */}
                 <Route component={StaticPages}>
                     <Route path='/404' component={ForbiddenPage}/>
                     <Route path='/signin' component={SignInPage}/>
