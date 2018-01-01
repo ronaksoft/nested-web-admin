@@ -82,7 +82,7 @@ export default class PlaceApi {
         });
     }
 
-    placeَUpdate(params: any): Promise<any> {
+    placeUpdate(params: any): Promise<any> {
         return this.api.server.request({
             cmd: 'admin/place_update',
             data: params,

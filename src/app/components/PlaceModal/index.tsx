@@ -415,8 +415,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             'privacy.locked': true,
             'privacy.search': model.placeSearchPolicy,
             'privacy.receptive': addPostPolicy.receptive,
-            'limits.key_holders': model.managerLimit,
-            'limits.creators': model.memberLimit,
+            'limits.key_holders': model.memberLimit,
+            'limits.creators': model.managerLimit,
             'limits.size': model.storageLimit*(1024*1024),
             'limits.childs': model.subPlaceLimit
         };
@@ -424,7 +424,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         let members = _.map(newMembers, (user) => {
             return user._id;
         }).join(',');
-        this.placeApi.placeَUpdate(params).then((data) => {
+        this.placeApi.placeUpdate(params).then((data) => {
             this.toggleEditMode(false);
             this.importToModel();
             this.updated = true;
