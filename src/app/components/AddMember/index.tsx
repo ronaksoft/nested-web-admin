@@ -18,6 +18,7 @@ import _ from 'lodash';
 import {IcoN} from '../icon/index';
 import UserAvatar from '../avatar/index';
 import AccountApi from '../../api/account/account';
+import C_USER_SEARCH_AREA from '../../api/consts/CUserSearchArea';
 
 interface IProps {
     visible: boolean;
@@ -66,7 +67,7 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
     }
 
     searchAccounts(keyword: string) {
-        this.accountApi.search(keyword, 10).then((data) => {
+        this.accountApi.search(keyword, 10, C_USER_SEARCH_AREA.ADMIN).then((data) => {
             this.updateSuggestions(data.accounts);
         });
     }
