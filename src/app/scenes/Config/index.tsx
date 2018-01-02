@@ -36,6 +36,7 @@ export interface IConfigState {
 }
 
 class Config extends React.Component<IConfigProps, IConfigState> {
+    submitForms: number = 0;
     constructor(props: IConfigProps) {
         super(props);
         this.state = {
@@ -74,7 +75,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     }
     GetData() {
         this.SystemApi.getConstants().then((result) => {
-            // console.log(result);
             this.setState({
                 data: result
             });
@@ -104,28 +104,36 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
     SetData(req: any) {
         this.SystemApi.setConstants(req).then((result) => {
-            message.success('Your new configs is set');
-            this.setState({
-                disableBtn: true
-            });
-            this.GetData();
+            this.saveRespons(true);
         }).catch((error) => {
-            console.log(error);
-            message.error('Your config not updated !');
+            this.saveRespons(false, error);
         });
     }
 
     SetStringConstants(req: any) {
         this.SystemApi.setStringConstants(req).then((result) => {
+            this.saveRespons(true);
+        }).catch((error) => {
+            this.saveRespons(false, error);
+        });
+    }
+
+    saveRespons(successful: boolean, error?: string) {
+        this.submitForms++;
+        if(this.submitForms !== 2) {
+            return;
+        }
+        if (successful) {
             message.success('Your new configs is set');
             this.setState({
                 disableBtn: true
             });
             this.GetData();
-        }).catch((error) => {
+        } else {
             console.log(error);
             message.error('Your config not updated !');
-        });
+        }
+        this.submitForms = 0;
     }
 
     beforeUpload() {
@@ -142,6 +150,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         const stringConstants = _.clone(this.state.stringConstants);
         stringConstants.company_logo = '';
         this.setState({
+            disableBtn: false,
             stringConstants
         });
     }
@@ -168,6 +177,8 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                 }
                 if (typeof strModel.company_logo === 'object') {
                     strModel.company_logo = this.state.company_logo_universal_id;
+                } else {
+                    strModel.company_logo = this.state.stringConstants.company_logo;
                 }
                 this.SetData(intModel);
                 this.SetStringConstants(strModel);
