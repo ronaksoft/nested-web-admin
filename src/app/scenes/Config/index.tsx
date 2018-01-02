@@ -128,6 +128,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     }
 
     beforeUpload() {
+        console.log('beforeUpload ');
         this.setState({
             uploadPercent: 0,
             imageIsUploading: true,
@@ -139,6 +140,10 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        console.log(this.state.imageIsUploading);
+        if(this.state.imageIsUploading) {
+            return message.warning('Wait for uploading finish');
+        }
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 const model = this.props.form.getFieldsValue();
@@ -285,14 +290,19 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     }
 
     pictureChange(info: any) {
+        console.log('pictureChange');
         if (info.event && info.event.percent) {
-            // parseInt(info.event.percent.toFixed(2))
+            this.setState({
+                uploadPercent: parseInt(info.event.percent.toFixed(2)),
+            });
         }
         if (info.file.status === 'done') {
+            console.log('done upload');
             this.setState({
-                company_logo_universal_id: info.file.response.data[0].universal_id
+                company_logo_universal_id: info.file.response.data[0].universal_id,
+                imageIsUploading: false,
+                uploadPercent: 0,
             });
-            // info.file.response.data[0].universal_id
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
@@ -307,6 +317,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
           const uploadProps = {
               action: uploadUrl,
               onChange: this.pictureChange.bind(this),
+              beforeUpload: this.beforeUpload.bind(this),
               multiple: false,
               accept: 'image/*',
               showUploadList: false,
@@ -667,7 +678,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             })(
                                                 <Upload {...uploadProps}>
                                                     <Button> Select image </Button>
-                                                    {/* <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/> */}
+                                                    <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/>
                                                 </Upload>
                                             )}
                                         </FormItem>
