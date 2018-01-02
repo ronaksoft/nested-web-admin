@@ -128,7 +128,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     }
 
     beforeUpload() {
-        console.log('beforeUpload ');
         this.setState({
             uploadPercent: 0,
             imageIsUploading: true,
@@ -140,7 +139,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        console.log(this.state.imageIsUploading);
         if(this.state.imageIsUploading) {
             return message.warning('Wait for uploading finish');
         }
@@ -290,14 +288,12 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     }
 
     pictureChange(info: any) {
-        console.log('pictureChange');
         if (info.event && info.event.percent) {
             this.setState({
                 uploadPercent: parseInt(info.event.percent.toFixed(2)),
             });
         }
         if (info.file.status === 'done') {
-            console.log('done upload');
             this.setState({
                 company_logo_universal_id: info.file.response.data[0].universal_id,
                 imageIsUploading: false,
@@ -313,6 +309,8 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         const {getFieldDecorator} = this.props.form;
           const credentials = AAA.getInstance().getCredentials();
           const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
+          const logo = this.state.company_logo_universal_id.length > 0 ? this.state.company_logo_universal_id : this.state.stringConstants.company_logo;
+          const imageUrl = `${CONFIG().STORE.URL}/pic/${logo}`;
           // TOOD upload image
           const uploadProps = {
               action: uploadUrl,
@@ -666,7 +664,8 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 <li>
                                     <div className='option'>
                                         <label>Logo</label>
-
+                                        {(this.state.stringConstants.company_logo && this.state.stringConstants.company_logo !== '') &&
+                                        <img className='comapny-logo' src={imageUrl} width={40} height={40}/> }
                                         <FormItem>
                                             {getFieldDecorator('company_logo', {
                                                 initialValue: this.state.stringConstants.company_logo,
