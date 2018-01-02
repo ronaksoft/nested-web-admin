@@ -206,6 +206,15 @@ select {
             height: 32px;
             text-align: center;
         }
+        .ant-select-lg .ant-select-selection--single,
+        .ant-select-lg .ant-select-selection__rendered {
+            height: 32px;
+            line-height: 32px;
+        }
+        button {
+            width: 128px;
+            height: 32px;
+        }
         .ant-form-explain {
             white-space: nowrap;
         }
@@ -213,6 +222,12 @@ select {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
+        }
+        &.string {
+            input, textarea {
+                width: 256px;
+                text-align: left;
+            }
         }
     }
     p {

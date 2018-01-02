@@ -1,4 +1,5 @@
 import Api from './../index';
+import IGetStringConstantsResponse from './interfaces/IGetStringConstantsResponse';
 import IGetSystemCountersResponse from './interfaces/IGetSystemCountersResponse';
 import IGetConstantsResponse from './interfaces/IGetConstantsResponse';
 import IGetStatsResponse from './interfaces/IGetStatsResponse';
@@ -21,6 +22,14 @@ export default class SystemApi {
 
     getConstants() : Promise < any > {
         return this.api.server.request({cmd: 'system/get_int_constants', data: {}}).then((res : IGetConstantsResponse) => {
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    getStringConstants() : Promise < any > {
+        return this.api.server.request({cmd: 'system/get_string_constants', data: {}}).then((res : IGetStringConstantsResponse) => {
             return res;
         }).catch((err) => {
             console.log(err);
@@ -51,7 +60,15 @@ export default class SystemApi {
         });
 
         return this.api.server.request({cmd: 'system/set_int_constants', data: requestDate}).then((res) => {
-            console.log(res);
+            return res;
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    setStringConstants(req : IGetStringConstantsResponse) : Promise < any > {
+
+        return this.api.server.request({cmd: 'system/set_string_constants', data: req}).then((res) => {
             return res;
         }).catch((err) => {
             console.log(err);

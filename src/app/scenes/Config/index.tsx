@@ -3,14 +3,19 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 
 import Filter from './../../components/Filter/index';
-import {Form, Row, Col, InputNumber, Button, Card, Input, Select, message} from 'antd';
+import {Form, Row, Col, InputNumber, Button, Card, Input, Select, message, Upload} from 'antd';
 import SystemApi from '../../api/system/index';
 import MessageApi from '../../api/message/index';
 import IGetConstantsResponse from '../../api/system/interfaces/IGetConstantsResponse';
+import IGetStringConstantsResponse from '../../api/system/interfaces/IGetStringConstantsResponse';
 import CPlaceFilterTypes from '../../api/consts/CPlaceFilterTypes';
 import appConfig from '../../../app.config';
 import HealthCheck from './components/HealthCheck/index';
 import EditMessageModal from './components/EditMessageModal/index';
+import AAA from '../../services/classes/aaa/index';
+import CONFIG from 'src/app/config';
+import AccountApi from '../../api/account/account';
+const { TextArea } = Input;
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -20,7 +25,12 @@ export interface IConfigProps {
 export interface IConfigState {
     editMessageModal: boolean;
     data: any;
+    stringConstants: any;
+    company_logo_universal_id: string;
+    token: string;
     disableBtn: boolean;
+    imageIsUploading: boolean;
+    uploadPercent: number;
     welcomeMessage: any;
 }
 
@@ -29,11 +39,16 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         super(props);
         this.state = {
             data: {},
+            uploadPercent: 0,
+            stringConstants: {},
             welcomeMessage: {
                 subject: '',
                 body: '',
             },
+            token: '',
+            company_logo_universal_id: '',
             disableBtn: true,
+            imageIsUploading: false,
             editMessageModal: false
         };
     }
@@ -41,14 +56,33 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     componentDidMount() {
         this.SystemApi = new SystemApi();
         this.MessageApi = new MessageApi();
+        this.accountApi = new AccountApi();
         this.GetData();
+        this.loadUploadToken();
     }
 
+    loadUploadToken() {
+        this
+            .accountApi
+            .getUploadToken()
+            .then((result) => {
+                this.setState({token: result.token});
+            }, (error) => {
+                this.setState({token: null});
+            });
+    }
     GetData() {
         this.SystemApi.getConstants().then((result) => {
             // console.log(result);
             this.setState({
                 data: result
+            });
+        }).catch((error) => {
+            console.log('error', error);
+        });
+        this.SystemApi.getStringConstants().then((result) => {
+            this.setState({
+                stringConstants: result
             });
         }).catch((error) => {
             console.log('error', error);
@@ -67,7 +101,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         });
     }
 
-    SetData(req: IGetConstantsResponse) {
+    SetData(req: any) {
         this.SystemApi.setConstants(req).then((result) => {
             message.success('Your new configs is set');
             this.setState({
@@ -80,12 +114,51 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         });
     }
 
+    SetStringConstants(req: any) {
+        this.SystemApi.setStringConstants(req).then((result) => {
+            message.success('Your new configs is set');
+            this.setState({
+                disableBtn: true
+            });
+            this.GetData();
+        }).catch((error) => {
+            console.log(error);
+            message.error('Your config not updated !');
+        });
+    }
+
+    beforeUpload() {
+        this.setState({
+            uploadPercent: 0,
+            imageIsUploading: true,
+        });
+        if (!this.state.token) {
+            return false;
+        }
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 const model = this.props.form.getFieldsValue();
-                this.SetData(model);
+                let intModel: any = {};
+                let strModel: any = {};
+                for(let k in this.state.data) {
+                    if(model[k]) {
+                        intModel[k] = model[k];
+                    }
+                }
+                for(let k in this.state.stringConstants) {
+                    if(model[k]) {
+                        strModel[k] = model[k];
+                    }
+                }
+                if (typeof strModel.company_logo === 'object') {
+                    strModel.company_logo = this.state.company_logo_universal_id;
+                }
+                this.SetData(intModel);
+                this.SetStringConstants(strModel);
             }
         });
     }
@@ -211,10 +284,33 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         }
     }
 
-    saveForm = (form) => this.form = form;
+    pictureChange(info: any) {
+        if (info.event && info.event.percent) {
+            // parseInt(info.event.percent.toFixed(2))
+        }
+        if (info.file.status === 'done') {
+            this.setState({
+                company_logo_universal_id: info.file.response.data[0].universal_id
+            });
+            // info.file.response.data[0].universal_id
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
+    }
+    // saveForm = (form) => this.form = form;
 
     render() {
         const {getFieldDecorator} = this.props.form;
+          const credentials = AAA.getInstance().getCredentials();
+          const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
+          // TOOD upload image
+          const uploadProps = {
+              action: uploadUrl,
+              onChange: this.pictureChange.bind(this),
+              multiple: false,
+              accept: 'image/*',
+              showUploadList: false,
+            };
         return (
             <Form onSubmit={this.handleSubmit.bind(this)} className='system-config' onChange={this.handleChange.bind(this)}>
                 <EditMessageModal
@@ -224,7 +320,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                     message={this.state.welcomeMessage}/>
                 <Row type='flex' className='scene-head' align='middle'>
                     <h2>System</h2>
-                    {this.state.activeBtn}
                     <Button disabled={this.state.disableBtn} type='discard' size='large' onClick={this.handleReset}>Discard</Button>
                     <Button disabled={this.state.disableBtn} type='apply' size='large'
                         onClick={this.handleSubmit.bind(this)} htmlType='submit'>Apply</Button>
@@ -512,6 +607,120 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                             )}
                                         </FormItem>
                                     </div>
+                                </li>
+                            </ul>
+                        </Card>
+                        <Card className='optionCard' title='Company information'>
+                            <ul>
+                                <li>
+                                    <div className='option string'>
+                                        <label>Company name</label>
+
+                                        <FormItem>
+                                            {getFieldDecorator('company_name', {
+                                                initialValue: this.state.stringConstants.company_name,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: 'Required!'
+                                                    },
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className='option string'>
+                                        <label>Company description</label>
+
+                                        <FormItem>
+                                            {getFieldDecorator('company_desc', {
+                                                initialValue: this.state.stringConstants.company_desc,
+                                                rules: [
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Input type='textarea' placeholder='Your Company'/>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className='option'>
+                                        <label>Logo</label>
+
+                                        <FormItem>
+                                            {getFieldDecorator('company_logo', {
+                                                initialValue: this.state.stringConstants.company_logo,
+                                                rules: [
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Upload {...uploadProps}>
+                                                    <Button> Select image </Button>
+                                                    {/* <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/> */}
+                                                </Upload>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className='option'>
+                                        <label>System default language</label>
+
+                                        <FormItem>
+                                            {getFieldDecorator('system_lang', {
+                                                initialValue: this.state.stringConstants.system_lang,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: 'Required!'
+                                                    },
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Select
+                                                    placeholder={this.state.stringConstants.system_lang}
+                                                    style={{width: 128}} onChange={this.handleChange}>
+                                                    <Option value='en'>EN</Option>
+                                                    <Option value='fa'>FA</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className='option'>
+                                        <label>Magic number</label>
+                                        <FormItem>
+                                            {getFieldDecorator('magic_number', {
+                                                initialValue: this.state.stringConstants.magic_number,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: 'Required!'
+                                                    },
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                    <p>You can register with this number more than once.</p>
                                 </li>
                             </ul>
                         </Card>
