@@ -157,23 +157,22 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        if(this.state.imageIsUploading) {
+        if (this.state.imageIsUploading) {
             return message.warning('Wait for uploading finish');
         }
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 const model = this.props.form.getFieldsValue();
+                console.log(model);
                 let intModel: any = {};
                 let strModel: any = {};
-                for(let k in this.state.data) {
-                    if(model[k]) {
+                for (let k in this.state.data) {
+                    if (model[k] !== null) {
                         intModel[k] = model[k];
                     }
                 }
-                for(let k in this.state.stringConstants) {
-                    if(model[k]) {
-                        strModel[k] = model[k];
-                    }
+                for (const k in this.state.stringConstants) {
+                    strModel[k] = model[k];
                 }
                 if (typeof strModel.company_logo === 'object') {
                     strModel.company_logo = this.state.company_logo_universal_id;
@@ -643,20 +642,11 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                             <ul>
                                 <li>
                                     <div className='option string'>
-                                        <label>Company name</label>
+                                        <label>Name</label>
 
                                         <FormItem>
                                             {getFieldDecorator('company_name', {
                                                 initialValue: this.state.stringConstants.company_name,
-                                                rules: [
-                                                    {
-                                                        required: true,
-                                                        message: 'Required!'
-                                                    },
-                                                    {
-                                                        validator: this.checkConfirm,
-                                                    }
-                                                ]
                                             })(
                                                 <Input/>
                                             )}
@@ -665,7 +655,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 </li>
                                 <li>
                                     <div className='option string'>
-                                        <label>Company description</label>
+                                        <label>Description</label>
 
                                         <FormItem>
                                             {getFieldDecorator('company_desc', {
@@ -676,7 +666,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                     }
                                                 ]
                                             })(
-                                                <Input type='textarea' placeholder='Your Company'/>
+                                                <Input type='textarea' placeholder='Your Company Description'/>
                                             )}
                                         </FormItem>
                                     </div>
@@ -713,15 +703,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                         <FormItem>
                                             {getFieldDecorator('system_lang', {
                                                 initialValue: this.state.stringConstants.system_lang,
-                                                rules: [
-                                                    {
-                                                        required: true,
-                                                        message: 'Required!'
-                                                    },
-                                                    {
-                                                        validator: this.checkConfirm,
-                                                    }
-                                                ]
                                             })(
                                                 <Select
                                                     placeholder={this.state.stringConstants.system_lang}
@@ -739,15 +720,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                         <FormItem>
                                             {getFieldDecorator('magic_number', {
                                                 initialValue: this.state.stringConstants.magic_number,
-                                                rules: [
-                                                    {
-                                                        required: true,
-                                                        message: 'Required!'
-                                                    },
-                                                    {
-                                                        validator: this.checkConfirm,
-                                                    }
-                                                ]
                                             })(
                                                 <Input/>
                                             )}
