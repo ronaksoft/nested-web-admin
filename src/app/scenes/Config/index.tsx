@@ -15,6 +15,7 @@ import EditMessageModal from './components/EditMessageModal/index';
 import AAA from '../../services/classes/aaa/index';
 import CONFIG from 'src/app/config';
 import AccountApi from '../../api/account/account';
+import _ from 'lodash';
 const { TextArea } = Input;
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -135,6 +136,14 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         if (!this.state.token) {
             return false;
         }
+    }
+
+    removeLogo() {
+        const stringConstants = _.clone(this.state.stringConstants);
+        stringConstants.company_logo = '';
+        this.setState({
+            stringConstants
+        });
     }
 
     handleSubmit = (e) => {
@@ -664,6 +673,9 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 <li>
                                     <div className='option'>
                                         <label>Logo</label>
+                                        {(this.state.stringConstants.company_logo && this.state.stringConstants.company_logo !== '') &&
+                                            <Button type=' butn butn-red secondary' onClick={this.removeLogo.bind(this)}> remove image </Button>
+                                        }
                                         {(this.state.stringConstants.company_logo && this.state.stringConstants.company_logo !== '') &&
                                         <img className='comapny-logo' src={imageUrl} width={40} height={40}/> }
                                         <FormItem>
