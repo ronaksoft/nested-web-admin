@@ -61,9 +61,13 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
     }
 
     saveMessage() {
+        const body = ReactDOM.findDOMNode(this.refs.body).innerHTML;
+        this.setState({
+            body
+        });
         this.props.messageChange({
             subject: this.state.subject,
-            body: this.state.body
+            body
         });
         this.props.onClose();
     }
@@ -100,8 +104,9 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
                 title='Welcome Message'>
                 <div>
                     <Input className='no-style' value={this.state.subject} placeholder='Add a title' onChange={this.changeSubj.bind(this)}/>
-                    <Input className='no-style' value={this.state.body} type='textarea' placeholder='Type something...'
-                        onChange={this.changeBody.bind(this)}/>
+                    {/* <Input className='no-style' value={this.state.body} type='textarea' placeholder='Type something...'
+                        onChange={this.changeBody.bind(this)}/> */}
+                    <div contentEditable={true} ref='body' dangerouslySetInnerHTML={{__html: this.state.body}}/>
                 </div>
                 {/* <FroalaEditor tag='textarea'/> */}
             </Modal>
