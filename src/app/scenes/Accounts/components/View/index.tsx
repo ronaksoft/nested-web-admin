@@ -184,6 +184,17 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+    getGenderStr(gender: string) {
+        switch (gender) {
+            case 'm':
+                return 'Male';
+            case 'f':
+                return 'Female';
+            case 'o':
+            default:
+                return 'Other';
+        }
+    }
     toggleChangePasswordModal () {
         this.setState({
             newPassword: '',
@@ -959,7 +970,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                             <label>Gender</label>
                                             {!editMode &&
                                                 <span className='label-value'>
-                                                {this.state.account.gender === 'm' ? 'Male' : 'Female'}
+                                                {this.getGenderStr(this.state.account.gender)}
                                                 </span>
                                             }
                                             {editMode &&
