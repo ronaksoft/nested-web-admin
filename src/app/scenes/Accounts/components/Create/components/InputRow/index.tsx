@@ -220,7 +220,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                                 message: 'User ID is required!'
                             },
                             {
-                                min: 5,
+                                min: 3,
                                 message: 'The user ID is too short!'
                             },
                             this.checkUsernameAvailableDebounce

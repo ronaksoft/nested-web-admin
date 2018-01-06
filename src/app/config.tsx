@@ -21,7 +21,7 @@ function generateConfig(): any {
                     URL: '_HTTP_CYRUS_URL_CONF_',
                 },
             },
-            GRAND_PLACE_REGEX: /^[a-zA-Z][a-zA-Z0-9-]{3,30}[a-zA-Z0-9]$/,
+            GRAND_PLACE_REGEX: /^[a-zA-Z][a-zA-Z0-9-]{1,30}[a-zA-Z0-9]$/,
             GOOGLE_ANALYTICS_TOKEN: 'UA-92612481-1',
             UPLOAD_SIZE_LIMIT: 209715200,
         };

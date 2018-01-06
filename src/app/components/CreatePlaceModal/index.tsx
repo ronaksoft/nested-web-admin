@@ -449,7 +449,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         } else if (_.trim(model.name).length === 0) {
             message.warning('Choose a name!');
             return false;
-        } else if (model.id > 3) {
+        } else if (model.id.length < 3) {
             message.warning('Id must be more than 3 characters!');
             return false;
         } else if (!this.state.idValidation.valid) {
