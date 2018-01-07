@@ -9,6 +9,7 @@ import {
     Form,
     Input,
     Select,
+    Switch,
     notification,
     Upload
 } from 'antd';
@@ -44,8 +45,10 @@ interface IAttachment {
 interface IStates {
     sending: boolean;
     visible: boolean;
+    iframe: boolean;
     subject: string;
     target: string;
+    iframeUrl: string;
     body: string;
     attachments: IAttachment[];
     editorState: any;
@@ -59,11 +62,13 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
     constructor(props: any) {
         super(props);
         this.state = {
+            iframe: false,
             sending: false,
-            contentType: 'text/plain',
             visible: false,
             composeOption: false,
+            contentType: 'text/plain',
             target: this.props.target,
+            iframeUrl: '',
             subject: '',
             attachments: [],
             body: '',
@@ -128,18 +133,25 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         this.props.onClose();
     }
 
-    sendMessage = (msg: any) => {
-        const req = {
-            subject: this.state.subject,
-            targets: this.state.target,
-            body: stateToHTML(this.state.editorState.getCurrentContent()),
-            attaches: this.state.attachments.map((i) => i.universal_id).join(','),
-            content_type: 'text/html'
-        };
-
-        if (this.attachments.isUploading()) {
-            return message.error('Upload is in progress');
+    sendMessage = () => {
+        if ( !this.state.iframe ) {
+            const req = {
+                subject: this.state.subject,
+                targets: this.state.target,
+                body: stateToHTML(this.state.editorState.getCurrentContent()),
+                attaches: this.state.attachments.map((i) => i.universal_id).join(','),
+                content_type: 'text/html'
+            };
+            if (this.attachments.isUploading()) {
+                return message.error('Upload is in progress');
+            }
+        } else {
+            const req = {
+                iframe_url: this.state.iframeUrl,
+                targets: this.state.target,
+            };
         }
+
 
         this.MessageApi.createPost(req).then((result) => {
             message.success('Sent');
@@ -148,6 +160,8 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                 subject: '',
                 attachments: [],
                 body: '',
+                iframeUrl: '',
+                iframe: false,
                 editorState: EditorState.createEmpty(),
             });
         }).catch((error) => {
@@ -173,6 +187,12 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
     handleSubjectChange(e: any) {
         this.setState({
             subject: e.target.value || '',
+        });
+    }
+
+    handleIframeChange(e: any) {
+        this.setState({
+            iframeUrl: e.target.value || '',
         });
     }
 
@@ -253,7 +273,13 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
      */
     private handleAttachmentsChange = (items: IAttachment[]) => {
         this.setState({
-        attachments: items,
+            attachments: items,
+        });
+    }
+
+    toggleIframe = () => {
+        this.setState({
+            iframe: !this.state.iframe,
         });
     }
 
@@ -270,7 +296,7 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
 
     render() {
         var body = stateToHTML(this.state.editorState.getCurrentContent()).replace('<br>', '');
-        const haveContent = body.length > 7 || this.state.subject.length > 0 || this.state.attachments.length > 0;
+        const haveContent = (!this.state.iframe && body.length > 7 || this.state.subject.length > 0 || this.state.attachments.length > 0) || (this.state.iframe && this.state.iframeUrl.length > 0);
         const styleMap = {
             CODE: {
               backgroundColor: 'rgba(0, 0, 0, 0.05)',
@@ -281,20 +307,22 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         };
         const modalFooter = (
             <div className='modal-foot'>
-                <Button
+                <Switch defaultChecked={this.state.iframe}
+                    onChange={this.toggleIframe} style={{float: 'left'}}/>
+                {!this.state.iframe && <Button
                     type=' butn secondary'
                     onClick={() => {
                         this.addAttachment(true);
-                    }}>Add Media</Button>
-                <Button
+                    }}>Add Media</Button>}
+                {!this.state.iframe && <Button
                     type=' butn secondary'
                     onClick={() => {
                         console.log('add file');
                         this.addAttachment(false);
-                    }}>Add File</Button>
+                    }}>Add File</Button>}
                 <Button
                     type=' butn butn-green' disabled={!haveContent}
-                    onClick={this.sendMessage.bind(this)}>Send</Button>
+                    onClick={this.sendMessage}>Send</Button>
             </div>
         );
         let targetName;
@@ -315,8 +343,8 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                 onCancel={this.handleCancel.bind(this)}
                 visible={this.state.visible}
                 footer={modalFooter}
-                title={'Send a Message to ' + targetName}>
-                <div>
+                title={`Send ${this.state.iframe ? 'an iframe' : 'a Message'} to ` + targetName}>
+                {!this.state.iframe && <div>
                     <Input className='no-style' value={this.state.subject}
                         placeholder='Add a Title...' onChange={this.handleSubjectChange.bind(this)}/>
                     <Editor
@@ -329,9 +357,9 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                         ref='editor'
                         spellCheck={true}
                     />
-                    {/* <Input className='no-style' value={this.state.body} type='textarea' placeholder='Type something...'
-                        onChange={this.changeBody.bind(this)}/> */}
-                </div>
+                </div>}
+                {this.state.iframe && <Input className='no-style' value={this.state.iframeUrl}
+                        placeholder='Insert a URL...' onChange={this.handleIframeChange.bind(this)}/>}
                 <AttachmentList
                     onItemsChanged={this.handleAttachmentsChange}
                     ref={this.referenceAttachments}
