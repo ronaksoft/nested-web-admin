@@ -22,6 +22,8 @@ import AttachmentList from './AttachmentList/index';
 import _ from 'lodash';
 // import FroalaEditor from 'react-froala-wysiwyg';
 import {IcoN} from '../icon/index';
+import CONFIG from 'src/app/config';
+
 interface IProps {
     visible?: boolean;
     onClose?: any;
@@ -69,6 +71,7 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
             contentType: 'text/plain',
             target: this.props.target,
             iframeUrl: '',
+            iframeEnable: (CONFIG().IFRAME_ENABLE === 'true'),
             subject: '',
             attachments: [],
             body: '',
@@ -307,8 +310,9 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         };
         const modalFooter = (
             <div className='modal-foot'>
+                {this.state.iframeEnable &&
                 <Switch defaultChecked={this.state.iframe}
-                    onChange={this.toggleIframe} style={{float: 'left'}}/>
+                    onChange={this.toggleIframe} style={{float: 'left'}}/>}
                 {!this.state.iframe && <Button
                     type=' butn secondary'
                     onClick={() => {
