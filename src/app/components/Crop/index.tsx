@@ -37,7 +37,6 @@ export default class NstCrop extends React.Component<IProps, IStates> {
     }
 
     onCropComplete = () => {
-        // console.log('onCropComplete, pixelCrop:', crop, pixelCrop, this.props.avatar);
         var imgDom = $('.ReactCrop__image')[0];
         this.getCroppedImg(imgDom, this.state.crop, 'pic.jpg').then(file => {
             if (file) {
@@ -92,25 +91,34 @@ export default class NstCrop extends React.Component<IProps, IStates> {
 
     getCroppedImg = (image: any, pixelCrop: any, fileName: string) => {
         const canvas = document.createElement('canvas');
-        canvas.width = pixelCrop.width;
-        canvas.height = pixelCrop.height;
+        const naturalWidth = image.naturalWidth;
+        const naturalHeight = image.naturalHeight;
+        canvas.width = pixelCrop.width * naturalWidth / 100;
+        canvas.height = pixelCrop.height * naturalHeight / 100;
         const ctx = canvas.getContext('2d');
+        const frame = this.refs.crop.componentRef;
+
+        image.style.width = naturalWidth;
+        image.style.height = naturalHeight;
 
         ctx.drawImage(
             image,
-            pixelCrop.x,
-            pixelCrop.y,
-            pixelCrop.width,
-            pixelCrop.height,
+            pixelCrop.x * naturalWidth / 100,
+            pixelCrop.y * naturalHeight / 100,
+            pixelCrop.width * naturalWidth / 100,
+            pixelCrop.height * naturalHeight / 100,
             0,
             0,
-            pixelCrop.width,
-            pixelCrop.height,
+            pixelCrop.width * naturalWidth / 100,
+            pixelCrop.height * naturalHeight / 100
         );
         // as Base64 string
         // const base64Image = canvas.toDataURL('image/jpeg');
         // as a blob
+        // var fileObj = new File([base64Image], fileName, {type: 'image/jpeg'});
         return new Promise((resolve, reject) => {
+            // console.log(this.state.file, fileObj);
+            // resolve(fileObj);
             canvas.toBlob(file => {
                 file.name = fileName;
                 return resolve(file);
@@ -151,6 +159,7 @@ export default class NstCrop extends React.Component<IProps, IStates> {
                     footer={modalFooter}
                     title='Crop Image'>
                 <ReactCrop src={src}
+                    ref='crop'
                     onImageLoaded={this.onImageLoaded.bind(this)}
                     onChange={this.onCropChange.bind(this)}
                     {...this.state}

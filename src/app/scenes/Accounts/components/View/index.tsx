@@ -32,6 +32,7 @@ import AAA from './../../../../services/classes/aaa/index';
 import PlaceModal from '../../../../components/PlaceModal/index';
 import IPlace from '../../../../api/place/interfaces/IPlace';
 import SendMessageModal from '../../../../components/SendMessageModal/index';
+import NstCrop from '../../../../components//Crop/index';
 
 import RelatedChartCards from '../../../../components/ChartCard/RelatedChartCards';
 import ReportType from '../../../../api/report/ReportType';
@@ -56,9 +57,12 @@ interface IViewState {
     reportTab: boolean;
     editMode: boolean;
     model: any;
+    imageIsUploading: boolean;
     sendMessageVisible: boolean;
     visibleChangePassword: boolean;
     newPassword: string;
+    uploadPercent: number;
+    pickedImage: any;
 }
 
 class View extends React.Component<IViewProps, IViewState> {
@@ -74,8 +78,10 @@ class View extends React.Component<IViewProps, IViewState> {
             account: props.account,
             sendMessageVisible: false,
             visiblePlaceModal: false,
+            imageIsUploading: false,
             maskClosable: true,
             visible: true,
+            uploadPercent: 0,
             visibleChangePassword: false,
             newPassword: '',
             model: {
@@ -593,6 +599,18 @@ class View extends React.Component<IViewProps, IViewState> {
         window.dispatchEvent(event);
     }
 
+    pickFile(e: any) {
+        const file = e.target.files.item(0);
+        const imageType = /^image\//;
+
+        if (!file || !imageType.test(file.type)) {
+            return;
+        }
+        this.setState({
+            pickedImage: file
+        });
+    }
+
     saveForm () {
         // return this.form = form;
         this.accountApi.edit({
@@ -614,6 +632,10 @@ class View extends React.Component<IViewProps, IViewState> {
             this.toggleEditMode(false);
             this.updated = true;
         });
+    }
+
+    stopPropagate = (e: any) => {
+        e.stopPropagation();
     }
 
     clearForm () {
@@ -680,6 +702,50 @@ class View extends React.Component<IViewProps, IViewState> {
                 });
             });
         }
+    }
+
+    onCropped(file: any) {
+        const that = this;
+        const formData = new FormData();
+        formData.append('blob', file, file.name);
+        const credentials = AAA.getInstance().getCredentials();
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', `${CONFIG().STORE.URL}/upload/profile_pic/${credentials.sk}/${this.state.token}`, true);
+        this.setState({
+            uploadPercent: 0,
+            imageIsUploading: true,
+        });
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        // xhr.setRequestHeader('Access-Control-Allow-Origin', location.host);
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                const resp = JSON.parse(xhr.response);
+                message.success(`user avatar uploaded successfully`);
+
+                that.accountApi.setPicture({
+                    account_id: that.state.account._id,
+                    universal_id: resp.data[0].universal_id
+                }).then((result) => {
+                    let editedAccount = _.clone(that.state.account);
+                    editedAccount.picture = resp.data[0].thumbs;
+                    that.setState({
+                        account: editedAccount,
+                        uploadPercent: 0,
+                        imageIsUploading: false,
+                    });
+                    if (that.props.onChange) {
+                        that.props.onChange(editedAccount);
+                    }
+                }, (error) => {
+                    notification.error({
+                        message: 'Update Error',
+                        description: 'We were not able to set the picture!'
+                    });
+                });
+            }
+        };
+        xhr.send(formData);
+
     }
 
     render() {
@@ -809,6 +875,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                             <div className='account-avatar'>
                                                 <UserAvatar avatar size={64} user={this.state.account}/>
                                             </div>
+                                            <input onChange={this.pickFile.bind(this)} style={{display: 'none'}} id='file' type='file'/>
                                             {
                                                 (this.state.token && editMode) &&
                                                 <Upload
@@ -820,9 +887,10 @@ class View extends React.Component<IViewProps, IViewState> {
                                                     onChange={this.pictureChange}
                                                     beforeUpload={this.beforeUpload}
                                                 >
-                                                <Button
+                                                {/* <Button
                                                     type=' butn butn-green secondary'
-                                                    onClick={this.changePhoto}>Upload Photo</Button>
+                                                    onClick={this.changePhoto}>Upload Photo</Button> */}
+                                                <label onClick={this.stopPropagate} className='butn butn-green secondary' htmlFor='file'><span>Upload a Photo</span></label>
                                                 <Button type=' butn butn-red secondary'>
                                                     Remove Photo
                                                 </Button>
@@ -1137,6 +1205,8 @@ class View extends React.Component<IViewProps, IViewState> {
                             </Row>
                         </Modal>
                     }
+                    <NstCrop avatar={this.state.pickedImage}
+                        onCropped={this.onCropped.bind(this)}/>
                 </Modal>
             </Row>
         );

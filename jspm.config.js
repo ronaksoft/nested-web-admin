@@ -108,9 +108,6 @@ SystemJS.config({
     '*.css': {
       'loader': 'css'
     }
-  },
-  map: {
-    'jquery-migrate': 'npm:jquery-migrate@1.4.1'
   }
 });
 

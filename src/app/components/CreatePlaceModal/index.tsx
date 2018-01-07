@@ -30,6 +30,7 @@ import _ from 'lodash';
 import {IcoN} from '../icon/index';
 import IPlaceCreateRequest from '../../api/place/interfaces/IPlaceCreateRequest';
 import UserAvatar from '../avatar/index';
+import NstCrop from '../Crop/index';
 
 interface IProps {
     place?: IPlace;
@@ -51,6 +52,7 @@ interface IStates {
     uploadPercent: number;
     imageIsUploading: boolean;
     grandPlaceId: string;
+    pickedImage: any;
 }
 
 
@@ -91,6 +93,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             formValid: false,
             showError: false,
             imageIsUploading: false,
+            pickedImage: null,
             grandPlaceId: this.props.grandPlaceId,
         };
         if (this.props.place) {
@@ -146,6 +149,18 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
             .props
             .onClose();
         this.setState({visible: false});
+    }
+
+    pickFile(e: any) {
+        const file = e.target.files.item(0);
+        const imageType = /^image\//;
+
+        if (!file || !imageType.test(file.type)) {
+            return;
+        }
+        this.setState({
+            pickedImage: file
+        });
     }
 
     loadUploadToken() {
@@ -616,6 +631,40 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
         );
     }
 
+    stopPropagate = (e: any) => {
+        e.stopPropagation();
+    }
+
+    onCropped(file: any) {
+        const that = this;
+        const formData = new FormData();
+        formData.append('blob', file, file.name);
+        const credentials = AAA.getInstance().getCredentials();
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`, true);
+        this.setState({
+            uploadPercent: 0,
+            imageIsUploading: true,
+        });
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        // xhr.setRequestHeader('Access-Control-Allow-Origin', location.host);
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                const resp = JSON.parse(xhr.response);
+                that.updateModel({
+                    picture: resp.data[0].universal_id,
+                    pictureData: resp.data[0].thumbs
+                });
+                that.setState({
+                    uploadPercent: 0,
+                    imageIsUploading: false,
+                });
+            }
+        };
+        xhr.send(formData);
+
+    }
+
     removePhoto(e: any) {
         // todo remove photo from model
         e.preventDefault();
@@ -667,6 +716,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                     <Col className='place-info' span={16}>
                         <Row className='place-picture' type='flex' align='middle'>
                             <PlaceAvatar avatar={model.pictureData}/>
+                            <input onChange={this.pickFile.bind(this)} style={{display: 'none'}} id='file' type='file'/>
                             <Upload
                                 name='avatar'
                                 action={uploadUrl}
@@ -678,9 +728,10 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                                 beforeUpload={this
                                     .beforeUpload
                                     .bind(this)}>
-                                <Button type=' butn secondary'>
+                                {/* <Button type=' butn secondary'>
                                     Upload a Photo
-                                </Button>
+                                </Button> */}
+                                <label onClick={this.stopPropagate} className='butn secondary' htmlFor='file'><span>Upload a Photo</span></label>
                                 {model.pictureData && (
                                     <Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
                                         Remove Photo
@@ -806,6 +857,8 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                     addMembers={this.addMembers.bind(this)}
                     onClose={this.toggleAddMemberModal.bind(this)}
                     visible={this.state.visibleAddMemberModal}/>
+                <NstCrop avatar={this.state.pickedImage}
+                    onCropped={this.onCropped.bind(this)}/>
             </Modal>
         );
     }

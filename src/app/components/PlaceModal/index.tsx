@@ -2,7 +2,6 @@ import * as React from 'react';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
 import {Modal, Row, Col, Icon, Button, message, Form, Input, Select, notification, Upload} from 'antd';
-import reqwest from 'reqwest';
 
 let Option = Select.Option;
 import PlaceView from './../placeview/index';
@@ -678,23 +677,30 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     }
 
     onCropped(file: any) {
-        // el.onclick();
+        const that = this;
         const formData = new FormData();
-        formData.append('file', this.blobToFile(file));
+        formData.append('blob', file, file.name);
         const credentials = AAA.getInstance().getCredentials();
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`, true);
 
-        reqwest({
-          url: `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`,
-          method: 'post',
-          data: formData,
-          success: () => {
-            console.log(arguments);
-            message.success('upload successfully.');
-          },
-          error: () => {
-            message.error('upload failed.');
-          },
-        });
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        // xhr.setRequestHeader('Access-Control-Allow-Origin', location.host);
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                const resp = JSON.parse(xhr.response);
+                that.updateModel({
+                    picture: resp.data[0].universal_id,
+                    pictureData: resp.data[0].thumbs
+                });
+                that.setState({
+                    uploadPercent: 0,
+                    imageIsUploading: false,
+                });
+            }
+        };
+        xhr.send(formData);
+
     }
 
     removePhoto(e: any) {
@@ -813,7 +819,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         if (!file || !imageType.test(file.type)) {
             return;
         }
-        console.log(file);
         this.setState({
             pickedImage: file
         });
@@ -1100,10 +1105,10 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     beforeUpload={this
                                                         .beforeUpload
                                                         .bind(this)}>
-                                                        <Button type=' butn secondary'>
+                                                        {/* <Button type=' butn secondary'>
                                                             Upload a Photo
-                                                        </Button>
-                                                    {/*<label onClick={this.uploadPhotoButton.bind(this)} className='butn secondary' htmlFor='file'><span>Upload a Photo</span></label>*/}
+                                                        </Button> */}
+                                                    <label onClick={this.uploadPhotoButton.bind(this)} className='butn secondary' htmlFor='file'><span>Upload a Photo</span></label>
                                                     {model.pictureData && (
                                                         <Button type=' butn butn-red secondary' onClick={this.removePhoto.bind(this)}>
                                                             Remove Photo
@@ -1112,8 +1117,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     <div className='progress-bar' style={{width: this.state.uploadPercent + '%'}}/>
                                                     }
                                                 </Upload>
-                                                {/*<NstCrop avatar={this.state.pickedImage}*/}
-                                                    {/*onCropped={this.onCropped.bind(this)}/>*/}
+                                                <NstCrop avatar={this.state.pickedImage}
+                                                    onCropped={this.onCropped.bind(this)}/>
                                             </Row>
                                             <Row className='input-row'>
                                                 <label htmlFor='name'>Name</label>
