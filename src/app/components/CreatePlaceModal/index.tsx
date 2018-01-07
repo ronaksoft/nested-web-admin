@@ -711,7 +711,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                     .bind(this)}
                 visible={true}
                 footer={modalFooter}
-                title='Create a Private Place'>
+                title={this.props.grandPlaceId === '' ? 'Create Grand Place' : 'Create a Private Place'}>
                 <Row>
                     <Col className='place-info' span={16}>
                         <Row className='place-picture' type='flex' align='middle'>

@@ -513,7 +513,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             },
             {
                 key: 'create',
-                name: 'Create a Private Subplace',
+                name: 'Create a Private Place',
                 icon: 'brickWall16',
                 action: () => {
                     this.props.actionOnPlace(record._id, 'create');
