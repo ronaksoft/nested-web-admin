@@ -11,7 +11,8 @@ import {
     Select,
     Switch,
     notification,
-    Upload
+    Upload,
+    Tooltip
 } from 'antd';
 import ReactDOM from 'react-dom';
 import {Editor, EditorState, RichUtils} from 'draft-js';
@@ -307,8 +308,11 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         };
         const modalFooter = (
             <div className='modal-foot'>
-                <Switch defaultChecked={this.state.iframe}
-                    onChange={this.toggleIframe} style={{float: 'left'}}/>
+                <Tooltip placement='top' title='for experts only ( unsecure channel )'>
+                    <Switch defaultChecked={this.state.iframe} className='large-switch'
+                        checkedChildren='iframe' unCheckedChildren='iframe'
+                        onChange={this.toggleIframe} style={{float: 'left'}}/>
+                </Tooltip>
                 {!this.state.iframe && <Button
                     type=' butn secondary'
                     onClick={() => {
