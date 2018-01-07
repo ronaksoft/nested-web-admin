@@ -298,6 +298,13 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                     callback('it must be grather than ' + appConfig.DEFAULT_POST_MIN_LABELS + ' and lower than ' + appConfig.DEFAULT_POST_MAX_LABELS);
                 }
                 break;
+            case 'label_max_members':
+                if (value >= appConfig.DEFAULT_LABEL_MIN_MEMBERS && value <= appConfig.DEFAULT_LABEL_MAX_MEMBERS) {
+                    callback();
+                } else {
+                    callback('it must be grather than ' + appConfig.DEFAULT_LABEL_MIN_MEMBERS + ' and lower than ' + appConfig.DEFAULT_LABEL_MAX_MEMBERS);
+                }
+                break;
             case 'attach_max_size':
                 callback();
                 break;
@@ -491,6 +498,32 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                 ]
                                             })(
                                                 <Input/>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </li>
+                            </ul>
+                        </Card>
+                        <Card className='optionCard' loading={false} title='Label Policies'>
+                            <ul>
+                                <li>
+                                    <div className='option'>
+                                        <label>Maximum Label Members</label>
+
+                                        <FormItem>
+                                            {getFieldDecorator('label_max_members', {
+                                                initialValue: this.state.data.label_max_members,
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: 'Required'
+                                                    },
+                                                    {
+                                                        validator: this.checkConfirm,
+                                                    }
+                                                ]
+                                            })(
+                                                <Input />
                                             )}
                                         </FormItem>
                                     </div>
