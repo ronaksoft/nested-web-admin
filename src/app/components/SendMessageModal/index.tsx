@@ -11,7 +11,8 @@ import {
     Select,
     Switch,
     notification,
-    Upload
+    Upload,
+    Tooltip
 } from 'antd';
 import ReactDOM from 'react-dom';
 import {Editor, EditorState, RichUtils} from 'draft-js';
@@ -137,8 +138,9 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
     }
 
     sendMessage = () => {
+        let req;
         if ( !this.state.iframe ) {
-            const req = {
+            req = {
                 subject: this.state.subject,
                 targets: this.state.target,
                 body: stateToHTML(this.state.editorState.getCurrentContent()),
@@ -149,12 +151,12 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                 return message.error('Upload is in progress');
             }
         } else {
-            const req = {
+            req = {
                 iframe_url: this.state.iframeUrl,
                 targets: this.state.target,
+                subject: this.state.subject,
             };
         }
-
 
         this.MessageApi.createPost(req).then((result) => {
             message.success('Sent');
@@ -280,7 +282,7 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         });
     }
 
-    toggleIframe = () => {
+    toggleIframe() {
         this.setState({
             iframe: !this.state.iframe,
         });
@@ -297,9 +299,18 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         this.attachments = value;
     }
 
+    isUrlValid(url: string) {
+        if (url && url.length > 0) {
+            if (url.indexOf('https://') > -1 || url.indexOf('https://') > -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     render() {
         var body = stateToHTML(this.state.editorState.getCurrentContent()).replace('<br>', '');
-        const haveContent = (!this.state.iframe && body.length > 7 || this.state.subject.length > 0 || this.state.attachments.length > 0) || (this.state.iframe && this.state.iframeUrl.length > 0);
+        const haveContent = (!this.state.iframe && (body.length > 7 || this.state.subject.length > 0 || this.state.attachments.length > 0)) || (this.state.iframe && this.isUrlValid(this.state.iframeUrl) && this.state.subject.length > 0);
         const styleMap = {
             CODE: {
               backgroundColor: 'rgba(0, 0, 0, 0.05)',
@@ -310,9 +321,12 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         };
         const modalFooter = (
             <div className='modal-foot'>
-                {this.state.iframeEnable &&
-                <Switch defaultChecked={this.state.iframe}
-                    onChange={this.toggleIframe} style={{float: 'left'}}/>}
+                {true &&
+                <Tooltip placement='top' title='for experts only ( unsecure channel )'>
+                    <Switch defaultChecked={this.state.iframe} className='large-switch'
+                        checkedChildren='iframe' unCheckedChildren='iframe'
+                        onChange={this.toggleIframe.bind(this)} style={{float: 'left'}}/>
+                </Tooltip>}
                 {!this.state.iframe && <Button
                     type=' butn secondary'
                     onClick={() => {
@@ -348,9 +362,10 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                 visible={this.state.visible}
                 footer={modalFooter}
                 title={`Send ${this.state.iframe ? 'an iframe' : 'a Message'} to ` + targetName}>
-                {!this.state.iframe && <div>
+                 <div>
                     <Input className='no-style' value={this.state.subject}
                         placeholder='Add a Title...' onChange={this.handleSubjectChange.bind(this)}/>
+                     {!this.state.iframe &&
                     <Editor
                         blockStyleFn={this.getBlockStyle}
                         customStyleMap={styleMap}
@@ -360,8 +375,8 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                         placeholder='Write something...'
                         ref='editor'
                         spellCheck={true}
-                    />
-                </div>}
+                    />}
+                </div>
                 {this.state.iframe && <Input className='no-style' value={this.state.iframeUrl}
                         placeholder='Insert a URL...' onChange={this.handleIframeChange.bind(this)}/>}
                 <AttachmentList
