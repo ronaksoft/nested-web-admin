@@ -15,7 +15,9 @@ import {
     Tooltip
 } from 'antd';
 import ReactDOM from 'react-dom';
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import {EditorState, RichUtils} from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'draft-js/dist/Draft.css';
 import {stateToHTML} from 'draft-js-export-html';
 import MessageApi from '../../api/message/index';
@@ -24,6 +26,7 @@ import _ from 'lodash';
 // import FroalaEditor from 'react-froala-wysiwyg';
 import {IcoN} from '../icon/index';
 import CONFIG from 'src/app/config';
+import './style.less';
 
 interface IProps {
     visible?: boolean;
@@ -58,6 +61,7 @@ interface IStates {
     contentType: string;
     unselectSelectedRecipient?: number;
     composeOption: boolean;
+    iframeEnable: boolean;
 }
 
 export default class SendMessageModal extends React.Component <IProps, IStates> {
@@ -129,6 +133,7 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
     componentWillReceiveProps(props: IProps) {
         this.setState({
             visible: props.visible,
+            iframe: false,
             target: props.target,
         });
     }
@@ -282,7 +287,7 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         });
     }
 
-    toggleIframe() {
+    toggleIframe = () => {
         this.setState({
             iframe: !this.state.iframe,
         });
@@ -300,15 +305,18 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
     }
 
     isUrlValid(url: string) {
-        if (url && url.length > 0) {
-            if (url.indexOf('https://') > -1 || url.indexOf('https://') > -1) {
-                return true;
-            }
-        }
-        return false;
+        return url && url.length > 0 && url.indexOf('http') === 0;
     }
 
     render() {
+        const {iframeEnable} = this.state;
+        const options = {
+            inline: { inDropdown: true },
+            list: { inDropdown: true },
+            textAlign: { inDropdown: true },
+            link: { inDropdown: true },
+            history: { inDropdown: true },
+          };
         var body = stateToHTML(this.state.editorState.getCurrentContent()).replace('<br>', '');
         const haveContent = (!this.state.iframe && (body.length > 7 || this.state.subject.length > 0 || this.state.attachments.length > 0)) || (this.state.iframe && this.isUrlValid(this.state.iframeUrl) && this.state.subject.length > 0);
         const styleMap = {
@@ -323,9 +331,9 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
             <div className='modal-foot'>
                 {true &&
                 <Tooltip placement='top' title='for experts only ( unsecure channel )'>
-                    <Switch defaultChecked={this.state.iframe} className='large-switch'
+                    <Switch defaultChecked={false} checked={this.state.iframe} className='large-switch'
                         checkedChildren='iframe' unCheckedChildren='iframe'
-                        onChange={this.toggleIframe.bind(this)} style={{float: 'left'}}/>
+                        onChange={this.toggleIframe} style={{float: 'left'}}/>
                 </Tooltip>}
                 {!this.state.iframe && <Button
                     type=' butn secondary'
@@ -367,13 +375,13 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                         placeholder='Add a Title...' onChange={this.handleSubjectChange.bind(this)}/>
                      {!this.state.iframe &&
                     <Editor
-                        blockStyleFn={this.getBlockStyle}
                         customStyleMap={styleMap}
                         editorState={this.state.editorState}
-                        onChange={this.onChange}
-                        onTab={this.onTab}
+                        onEditorStateChange={this.onChange}
                         placeholder='Write something...'
                         ref='editor'
+                        wrapperClassName='demo-wrapper'
+                        editorClassName='demo-editor'
                         spellCheck={true}
                     />}
                 </div>

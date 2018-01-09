@@ -140,7 +140,7 @@ SystemJS.config({
     'fs': 'github:jspm/nodelibs-fs@0.2.0-alpha',
     'http': 'github:jspm/nodelibs-http@0.2.0-alpha',
     'https': 'github:jspm/nodelibs-https@0.2.0-alpha',
-    'immutable': 'npm:immutable@3.8.1',
+    'immutable': 'npm:immutable@3.8.2',
     'jquery': 'npm:jquery@3.2.1',
     'less': 'npm:systemjs-less-plugin@2.0.0',
     'lodash': 'npm:lodash@4.17.4',
@@ -155,6 +155,7 @@ SystemJS.config({
     'prop-types': 'npm:prop-types@15.6.0',
     'react': 'npm:react@15.6.2',
     'react-dom': 'npm:react-dom@15.6.2',
+    'react-draft-wysiwyg': 'npm:react-draft-wysiwyg@1.12.4',
     'react-image-crop': 'npm:react-image-crop@3.0.8',
     'react-inlinesvg': 'npm:react-inlinesvg@0.6.0',
     'react-json-tree': 'npm:react-json-tree@0.11.0',
@@ -527,7 +528,7 @@ SystemJS.config({
         'dom-scroll-into-view': 'npm:dom-scroll-into-view@1.2.1',
         'rc-editor-core': 'npm:rc-editor-core@0.6.19',
         'draft-js': 'npm:draft-js@0.10.0',
-        'immutable': 'npm:immutable@3.8.1'
+        'immutable': 'npm:immutable@3.8.2'
       }
     },
     'npm:rc-dropdown@1.4.11': {
@@ -790,7 +791,7 @@ SystemJS.config({
     'npm:rc-editor-core@0.6.19': {
       'map': {
         'draft-js': 'npm:draft-js@0.10.0',
-        'immutable': 'npm:immutable@3.8.1',
+        'immutable': 'npm:immutable@3.8.2',
         'fbjs': 'npm:fbjs@0.8.12',
         'lodash': 'npm:lodash@4.17.4'
       }
@@ -1230,6 +1231,19 @@ SystemJS.config({
     'npm:draft-js-export-html@1.2.0': {
       'map': {
         'draft-js-utils': 'npm:draft-js-utils@1.2.0'
+      }
+    },
+    'npm:react-draft-wysiwyg@1.12.4': {
+      'map': {
+        'draftjs-utils': 'npm:draftjs-utils@0.8.8',
+        'classnames': 'npm:classnames@2.2.5',
+        'linkify-it': 'npm:linkify-it@2.0.3',
+        'prop-types': 'npm:prop-types@15.6.0'
+      }
+    },
+    'npm:linkify-it@2.0.3': {
+      'map': {
+        'uc.micro': 'npm:uc.micro@1.0.3'
       }
     }
   }

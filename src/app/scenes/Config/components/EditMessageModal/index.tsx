@@ -108,7 +108,6 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
                         onChange={this.changeBody.bind(this)}/> */}
                     <div contentEditable={true} ref='body' dangerouslySetInnerHTML={{__html: this.state.body}}/>
                 </div>
-                {/* <FroalaEditor tag='textarea'/> */}
             </Modal>
         );
     }
