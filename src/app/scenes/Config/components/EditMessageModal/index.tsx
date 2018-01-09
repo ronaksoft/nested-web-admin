@@ -14,6 +14,11 @@ import {
 } from 'antd';
 import ReactDOM from 'react-dom';
 
+import {EditorState, RichUtils, convertFromHTML, ContentState} from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import {stateToHTML} from 'draft-js-export-html';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'draft-js/dist/Draft.css';
 import _ from 'lodash';
 // import FroalaEditor from 'react-froala-wysiwyg';
 import {IcoN} from '../../../../components/icon/index';
@@ -28,6 +33,7 @@ interface IStates {
     visible: boolean;
     subject: string;
     body: string;
+    editorState: any;
 }
 
 export default class EditMessageModal extends React.Component <IProps, IStates> {
@@ -38,7 +44,8 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
         this.state = {
             visible: false,
             subject: '',
-            body: ''
+            body: '',
+            editorState: EditorState.createEmpty()
         };
     }
 
@@ -52,7 +59,11 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
         this.setState({
             visible: props.visible,
             subject: props.message.subject,
-            body: props.message.body
+            body: props.message.body,
+            editorState: EditorState.createWithContent(ContentState.createFromBlockArray(
+                convertFromHTML(props.message.body).contentBlocks,
+                convertFromHTML(props.message.body).entityMap
+            ))
         });
     }
 
@@ -61,7 +72,8 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
     }
 
     saveMessage() {
-        const body = ReactDOM.findDOMNode(this.refs.body).innerHTML;
+        // const body = ReactDOM.findDOMNode(this.refs.body).innerHTML;
+        const body = stateToHTML(this.state.editorState.getCurrentContent());
         this.setState({
             body
         });
@@ -84,8 +96,19 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
         });
     }
 
-    render() {
+    onChange = (editorState: any) => {
+        this.setState({editorState});
+    }
 
+    render() {
+        const styleMap = {
+            CODE: {
+              backgroundColor: 'rgba(0, 0, 0, 0.05)',
+              fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+              fontSize: 16,
+              padding: 2,
+            },
+        };
         const modalFooter = (
             <div className='modal-foot'>
                 <Button
@@ -96,7 +119,7 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
         return (
             <Modal
                 className='message-modal'
-                maskClosable={true}
+                maskClosable={false}
                 width={664}
                 onCancel={this.handleCancel.bind(this)}
                 visible={this.state.visible}
@@ -106,7 +129,15 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
                     <Input className='no-style' value={this.state.subject} placeholder='Add a title' onChange={this.changeSubj.bind(this)}/>
                     {/* <Input className='no-style' value={this.state.body} type='textarea' placeholder='Type something...'
                         onChange={this.changeBody.bind(this)}/> */}
-                    <div contentEditable={true} ref='body' dangerouslySetInnerHTML={{__html: this.state.body}}/>
+                    {/* <div contentEditable={true} ref='body' dangerouslySetInnerHTML={{__html: this.state.body}}/> */}
+                    <Editor
+                        customStyleMap={styleMap}
+                        editorState={this.state.editorState}
+                        onEditorStateChange={this.onChange}
+                        placeholder='Write something...'
+                        ref='editor'
+                        spellCheck={true}
+                    />
                 </div>
             </Modal>
         );

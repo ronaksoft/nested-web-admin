@@ -83,38 +83,8 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
             editorState: EditorState.createEmpty(),
         };
         this.addAttachment = this.addAttachment.bind(this);
-        this.handleKeyCommand = this.handleKeyCommand.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onTab = this.onTab.bind(this);
-        this.toggleBlockType = this.toggleBlockType.bind(this);
-        this.toggleInlineStyle = this.toggleInlineStyle.bind(this);
-    }
-
-    handleKeyCommand(command: any, editorState: any) {
-        const newState = RichUtils.handleKeyCommand(editorState, command);
-        if (newState) {
-          this.onChange(newState);
-          return true;
-        }
-        return false;
-    }
-
-    toggleBlockType(blockType: any) {
-        this.onChange(
-          RichUtils.toggleBlockType(
-            this.state.editorState,
-            blockType
-          )
-        );
-    }
-
-    toggleInlineStyle(inlineStyle: any) {
-        this.onChange(
-          RichUtils.toggleInlineStyle(
-            this.state.editorState,
-            inlineStyle
-          )
-        );
     }
 
     onTab(e: any) {
@@ -380,8 +350,6 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                         onEditorStateChange={this.onChange}
                         placeholder='Write something...'
                         ref='editor'
-                        wrapperClassName='demo-wrapper'
-                        editorClassName='demo-editor'
                         spellCheck={true}
                     />}
                 </div>

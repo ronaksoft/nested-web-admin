@@ -89,11 +89,11 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             console.log('error', error);
         });
         this.MessageApi.getMessageTemplate().then((result) => {
-            if(result.WELCOME_MSG) {
+            if(result.message_templates.WELCOME_MSG) {
                 this.setState({
                     welcomeMessage: {
-                        body: result.WELCOME_MSG.body,
-                        subject: result.WELCOME_MSG.subject
+                        body: result.message_templates.WELCOME_MSG.body,
+                        subject: result.message_templates.WELCOME_MSG.subject
                     }
                 });
             }
@@ -333,19 +333,19 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-          const credentials = AAA.getInstance().getCredentials();
-          const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
-          const logo = this.state.company_logo_universal_id.length > 0 ? this.state.company_logo_universal_id : this.state.stringConstants.company_logo;
-          const imageUrl = `${CONFIG().STORE.URL}/pic/${logo}`;
-          // TOOD upload image
-          const uploadProps = {
-              action: uploadUrl,
-              onChange: this.pictureChange.bind(this),
-              beforeUpload: this.beforeUpload.bind(this),
-              multiple: false,
-              accept: 'image/*',
-              showUploadList: false,
-            };
+        const credentials = AAA.getInstance().getCredentials();
+        const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
+        const logo = this.state.company_logo_universal_id.length > 0 ? this.state.company_logo_universal_id : this.state.stringConstants.company_logo;
+        const imageUrl = `${CONFIG().STORE.URL}/pic/${logo}`;
+        // TOOD upload image
+        const uploadProps = {
+            action: uploadUrl,
+            onChange: this.pictureChange.bind(this),
+            beforeUpload: this.beforeUpload.bind(this),
+            multiple: false,
+            accept: 'image/*',
+            showUploadList: false,
+        };
         return (
             <Form onSubmit={this.handleSubmit.bind(this)} className='system-config' onChange={this.handleChange.bind(this)}>
                 <EditMessageModal
