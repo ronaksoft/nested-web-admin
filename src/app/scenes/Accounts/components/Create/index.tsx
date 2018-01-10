@@ -309,10 +309,10 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 .then((data) => {
                     console.log(data);
                     const account = this.state.accounts[index];
-                    if (this.state.accounts[index].model.pass === this.state.accounts[index].model._id) {
+                    if (this.state.accounts[index].model.pass !== this.state.accounts[index].model._id) {
                         this.accountApi.edit({
                             account_id: this.state.accounts[index].model._id,
-                            force_password: true,
+                            force_password: false,
                         });
                     }
                     this.handleChange({
