@@ -140,7 +140,7 @@ SystemJS.config({
     'fs': 'github:jspm/nodelibs-fs@0.2.0-alpha',
     'http': 'github:jspm/nodelibs-http@0.2.0-alpha',
     'https': 'github:jspm/nodelibs-https@0.2.0-alpha',
-    'immutable': 'npm:immutable@3.8.2',
+    'immutable': 'npm:immutable@3.8.1',
     'jquery': 'npm:jquery@3.2.1',
     'less': 'npm:systemjs-less-plugin@2.0.0',
     'lodash': 'npm:lodash@4.17.4',
@@ -528,7 +528,7 @@ SystemJS.config({
         'dom-scroll-into-view': 'npm:dom-scroll-into-view@1.2.1',
         'rc-editor-core': 'npm:rc-editor-core@0.6.19',
         'draft-js': 'npm:draft-js@0.10.0',
-        'immutable': 'npm:immutable@3.8.2'
+        'immutable': 'npm:immutable@3.8.1'
       }
     },
     'npm:rc-dropdown@1.4.11': {
@@ -791,14 +791,14 @@ SystemJS.config({
     'npm:rc-editor-core@0.6.19': {
       'map': {
         'draft-js': 'npm:draft-js@0.10.0',
-        'immutable': 'npm:immutable@3.8.2',
+        'immutable': 'npm:immutable@3.8.1',
         'fbjs': 'npm:fbjs@0.8.12',
         'lodash': 'npm:lodash@4.17.4'
       }
     },
     'npm:draft-js@0.10.0': {
       'map': {
-        'immutable': 'npm:immutable@3.7.6',
+        'immutable': 'npm:immutable@3.8.1',
         'object-assign': 'npm:object-assign@4.1.1',
         'fbjs': 'npm:fbjs@0.8.12'
       }
@@ -1225,7 +1225,7 @@ SystemJS.config({
       'map': {
         'object-assign': 'npm:object-assign@4.1.1',
         'fbjs': 'npm:fbjs@0.8.16',
-        'immutable': 'npm:immutable@3.7.6'
+        'immutable': 'npm:immutable@3.8.1'
       }
     },
     'npm:draft-js-export-html@1.2.0': {
