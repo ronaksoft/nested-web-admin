@@ -26,7 +26,7 @@ System.config({
     "core-js": "npm:core-js@1.2.7",
     "css": "github:systemjs/plugin-css@0.1.36",
     "es6-shim": "npm:es6-shim@0.35.3",
-    "immutable": "npm:immutable@3.8.2",
+    "immutable": "npm:immutable@3.8.1",
     "jquery": "npm:jquery@3.2.1",
     "less": "npm:systemjs-less-plugin@2.2.2",
     "lodash": "npm:lodash@4.17.4",
@@ -535,7 +535,7 @@ System.config({
     "npm:immutable@3.7.6": {
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
-    "npm:immutable@3.8.2": {
+    "npm:immutable@3.8.1": {
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
     "npm:inherits@2.0.1": {
@@ -773,7 +773,7 @@ System.config({
     },
     "npm:rc-editor-core@0.7.9": {
       "draft-js": "npm:draft-js@0.10.4",
-      "immutable": "npm:immutable@3.8.2",
+      "immutable": "npm:immutable@3.8.1",
       "lodash": "npm:lodash@4.17.4",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "prop-types": "npm:prop-types@15.6.0",
