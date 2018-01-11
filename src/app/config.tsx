@@ -3,7 +3,10 @@ function generateConfig(): any {
     const windowObj: any = window;
     if (!window.hasOwnProperty('__NESTED_CONFIG__')) {
         window.__NESTED_CONFIG__ = {
+            APP_CLIENT_ID: 'WEBAPP_DEVELOPMENT',
+            APP_VERSION: 353,
             DOMAIN: '_DOMAIN_',
+            SIGN_OUT_TARGET: 'https://nested.me',
             WEBSOCKET: {
                 URL: '_WS_CYRUS_CYRUS_URL_CONF_',
                 TIMEOUT: 60000,
@@ -19,6 +22,9 @@ function generateConfig(): any {
                 },
             },
             IFRAME_ENABLE: '_IFRAME_ENABLE_',
+            GRAND_PLACE_REGEX: /^[a-zA-Z][a-zA-Z0-9-]{1,30}[a-zA-Z0-9]$/,
+            GOOGLE_ANALYTICS_TOKEN: 'UA-92612481-1',
+            UPLOAD_SIZE_LIMIT: 209715200,
         };
     }
     if (windowObj.__NESTED_CONFIG__.WEBSOCKET.URL.indexOf('://') === -1) {
