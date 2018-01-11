@@ -15,7 +15,7 @@ import {
     Tooltip
 } from 'antd';
 import ReactDOM from 'react-dom';
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import {EditorState} from 'draft-js';
 // import { Editor } from 'react-draft-wysiwyg';
 // import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'draft-js/dist/Draft.css';
@@ -27,7 +27,7 @@ import _ from 'lodash';
 import {IcoN} from '../icon/index';
 import CONFIG from 'src/app/config';
 import './style.less';
-
+import {RichEditor} from '../Editor/index';
 interface IProps {
     visible?: boolean;
     onClose?: any;
@@ -84,12 +84,6 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
         };
         this.addAttachment = this.addAttachment.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.onTab = this.onTab.bind(this);
-    }
-
-    onTab(e: any) {
-        const maxDepth = 4;
-        this.onChange(RichUtils.onTab(e, this.state.editorState, maxDepth));
     }
 
     onChange(editorState: any) {
@@ -280,13 +274,6 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
 
     render() {
         const {iframeEnable} = this.state;
-        const options = {
-            inline: { inDropdown: true },
-            list: { inDropdown: true },
-            textAlign: { inDropdown: true },
-            link: { inDropdown: true },
-            history: { inDropdown: true },
-          };
         var body = stateToHTML(this.state.editorState.getCurrentContent()).replace('<br>', '');
         const haveContent = (!this.state.iframe && (body.length > 7 || this.state.subject.length > 0 || this.state.attachments.length > 0)) || (this.state.iframe && this.isUrlValid(this.state.iframeUrl) && this.state.subject.length > 0);
         const styleMap = {
@@ -343,24 +330,9 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                  <div>
                     <Input className='no-style' value={this.state.subject}
                         placeholder='Add a Title...' onChange={this.handleSubjectChange.bind(this)}/>
-                    {/* <Editor
-                        customStyleMap={styleMap}
-                        editorState={this.state.editorState}
-                        onEditorStateChange={this.onChange}
-                        placeholder='Write something...'
-                        ref='editor'
-                        spellCheck={true}
-                    /> */}
-                     {!this.state.iframe &&
-                        <Editor
-                            customStyleMap={styleMap}
-                            editorState={this.state.editorState}
-                            onChange={this.onChange}
-                            onTab={this.onTab}
-                            placeholder='Write something...'
-                            ref='editor'
-                            spellCheck={true}
-                        />}
+                        {!this.state.iframe &&
+                            <RichEditor initialState={EditorState.createEmpty()} onStateChange={this.onChange}/>
+                        }
                 </div>
                 {this.state.iframe && <Input className='no-style' value={this.state.iframeUrl}
                         placeholder='Insert a URL...' onChange={this.handleIframeChange.bind(this)}/>}
