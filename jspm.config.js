@@ -155,7 +155,6 @@ SystemJS.config({
     'prop-types': 'npm:prop-types@15.6.0',
     'react': 'npm:react@15.6.2',
     'react-dom': 'npm:react-dom@15.6.2',
-    'react-draft-wysiwyg': 'npm:react-draft-wysiwyg@1.12.4',
     'react-image-crop': 'npm:react-image-crop@3.0.8',
     'react-inlinesvg': 'npm:react-inlinesvg@0.6.0',
     'react-json-tree': 'npm:react-json-tree@0.11.0',
@@ -1231,14 +1230,6 @@ SystemJS.config({
     'npm:draft-js-export-html@1.2.0': {
       'map': {
         'draft-js-utils': 'npm:draft-js-utils@1.2.0'
-      }
-    },
-    'npm:react-draft-wysiwyg@1.12.4': {
-      'map': {
-        'draftjs-utils': 'npm:draftjs-utils@0.8.8',
-        'classnames': 'npm:classnames@2.2.5',
-        'linkify-it': 'npm:linkify-it@2.0.3',
-        'prop-types': 'npm:prop-types@15.6.0'
       }
     },
     'npm:linkify-it@2.0.3': {

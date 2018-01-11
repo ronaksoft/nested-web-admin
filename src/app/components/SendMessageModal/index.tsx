@@ -15,9 +15,9 @@ import {
     Tooltip
 } from 'antd';
 import ReactDOM from 'react-dom';
-import {EditorState, RichUtils} from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import {Editor, EditorState, RichUtils} from 'draft-js';
+// import { Editor } from 'react-draft-wysiwyg';
+// import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'draft-js/dist/Draft.css';
 import {stateToHTML} from 'draft-js-export-html';
 import MessageApi from '../../api/message/index';
@@ -343,15 +343,24 @@ export default class SendMessageModal extends React.Component <IProps, IStates> 
                  <div>
                     <Input className='no-style' value={this.state.subject}
                         placeholder='Add a Title...' onChange={this.handleSubjectChange.bind(this)}/>
-                     {!this.state.iframe &&
-                    <Editor
+                    {/* <Editor
                         customStyleMap={styleMap}
                         editorState={this.state.editorState}
                         onEditorStateChange={this.onChange}
                         placeholder='Write something...'
                         ref='editor'
                         spellCheck={true}
-                    />}
+                    /> */}
+                     {!this.state.iframe &&
+                        <Editor
+                            customStyleMap={styleMap}
+                            editorState={this.state.editorState}
+                            onChange={this.onChange}
+                            onTab={this.onTab}
+                            placeholder='Write something...'
+                            ref='editor'
+                            spellCheck={true}
+                        />}
                 </div>
                 {this.state.iframe && <Input className='no-style' value={this.state.iframeUrl}
                         placeholder='Insert a URL...' onChange={this.handleIframeChange.bind(this)}/>}

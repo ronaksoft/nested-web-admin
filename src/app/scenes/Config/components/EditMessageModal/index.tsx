@@ -14,10 +14,10 @@ import {
 } from 'antd';
 import ReactDOM from 'react-dom';
 
-import {EditorState, RichUtils, convertFromHTML, ContentState} from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import {stateToHTML} from 'draft-js-export-html';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import {Editor, EditorState, RichUtils, convertFromHTML, ContentState} from 'draft-js';
+// import { Editor } from 'react-draft-wysiwyg';
+// import {stateToHTML} from 'draft-js-export-html';
+// import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'draft-js/dist/Draft.css';
 import _ from 'lodash';
 // import FroalaEditor from 'react-froala-wysiwyg';
@@ -130,10 +130,18 @@ export default class EditMessageModal extends React.Component <IProps, IStates> 
                     {/* <Input className='no-style' value={this.state.body} type='textarea' placeholder='Type something...'
                         onChange={this.changeBody.bind(this)}/> */}
                     {/* <div contentEditable={true} ref='body' dangerouslySetInnerHTML={{__html: this.state.body}}/> */}
-                    <Editor
+                    {/* <Editor
                         customStyleMap={styleMap}
                         editorState={this.state.editorState}
                         onEditorStateChange={this.onChange}
+                        placeholder='Write something...'
+                        ref='editor'
+                        spellCheck={true}
+                    /> */}
+                    <Editor
+                        customStyleMap={styleMap}
+                        editorState={this.state.editorState}
+                        onChange={this.onChange}
                         placeholder='Write something...'
                         ref='editor'
                         spellCheck={true}
