@@ -16,7 +16,7 @@ import ReactDOM from 'react-dom';
 
 import {Editor, EditorState, RichUtils, convertFromHTML, ContentState} from 'draft-js';
 // import { Editor } from 'react-draft-wysiwyg';
-// import {stateToHTML} from 'draft-js-export-html';
+import {stateToHTML} from 'draft-js-export-html';
 // import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'draft-js/dist/Draft.css';
 import _ from 'lodash';
