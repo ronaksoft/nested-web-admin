@@ -61,6 +61,8 @@ interface IStates {
     token: string;
     model: any;
     pickedImage: any;
+    visibleRemoveMember: boolean;
+    removeMemberUserRef: any;
 }
 
 
@@ -69,7 +71,6 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     accountApi: any;
     placeApi: any;
     updated: boolean;
-
     constructor(props: any) {
         super(props);
         this.state = {
@@ -91,6 +92,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             isGrandPlace: true,
             model: this.getModelFromProps(this.props),
             imageIsUploading: false,
+            visibleRemoveMember: false,
+            removeMemberUserRef: null,
         };
         this.changeSidebarTab = this.changeSidebarTab.bind(this);
         this.toggleReportTab = this.toggleReportTab.bind(this);
@@ -384,6 +387,9 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 });
             });
         }
+        this.setState({
+            visibleRemoveMember: false,
+        });
     }
 
     clearForm() {
@@ -522,7 +528,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         <span className={['nst-opacity-hover', (u.admin ? 'no-hover': '')].join(' ')} onClick={this.toggleAdmin.bind(this, u)}>
                             <IcoN size={24} name={u.admin ? 'crown24' : 'crownWire24'}/>
                         </span>
-                        <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.removeMember.bind(this, u)}>
+                        <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.toggleRemoveMemberModal.bind(this, u)}>
                             <IcoN size={16 } name={'bin16'}/>
                         </span>
                     </Row>
@@ -831,6 +837,17 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         // };
 
         // reader.readAsDataURL(file);
+    }
+
+    toggleRemoveMemberModal (ref: any) {
+        if (ref) {
+            this.setState({
+                removeMemberUserRef: ref,
+            });
+        }
+        this.setState({
+            visibleRemoveMember: !this.state.visibleRemoveMember,
+        });
     }
 
     render() {
@@ -1278,6 +1295,22 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                         onClose={this.sendMessageToggle}
                         visible={this.state.sendMessageVisible}
                         target={this.state.place._id}/>
+                    <Modal
+                        key={'remove_member'}
+                        content='Remove member prompt'
+                        title='Remove Member'
+                        width={360}
+                        visible={this.state.visibleRemoveMember}
+                        onCancel={this.toggleRemoveMemberModal.bind(this)}
+                        footer={[
+                            <Button key='cancel' type=' butn butn secondary' size='large'
+                                    onClick={this.toggleRemoveMemberModal.bind(this)}>Cancel</Button>,
+                            <Button key='submit' type=' butn butn-red' size='large'
+                                    onClick={this.removeMember.bind(this, this.state.removeMemberUserRef)}>Delete</Button>,
+                        ]}
+                    >
+                        Do you want to remove this user from "<b>{this.state.place.name}</b>" Place?
+                    </Modal>
                 </Modal>
                 }
             </div>
