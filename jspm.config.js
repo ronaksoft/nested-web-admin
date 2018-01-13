@@ -1231,11 +1231,6 @@ SystemJS.config({
       'map': {
         'draft-js-utils': 'npm:draft-js-utils@1.2.0'
       }
-    },
-    'npm:linkify-it@2.0.3': {
-      'map': {
-        'uc.micro': 'npm:uc.micro@1.0.3'
-      }
     }
   }
 });
