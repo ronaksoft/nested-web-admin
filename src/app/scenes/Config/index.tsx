@@ -380,6 +380,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                 ]
                                             })(
                                                 <Select
+                                                    key={'register_mode_select'}
                                                     placeholder={this.state.data.register_mode === 2 ? 'Admin only' : 'Everyone'}
                                                     style={{width: 128}} onChange={this.handleChange}>
                                                     <Option value={2}>Admin only</Option>
@@ -659,7 +660,11 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                 ]
                                             })(
                                                 // <Input />
-                                                <Select style={{ width: 128 }} onChange={this.handleChange}>
+                                                <Select
+                                                    key={'retract_time_select'}
+                                                    style={{ width: 128 }}
+                                                    onChange={this.handleChange}
+                                                >
                                                   <Option value={3600000}>1</Option>
                                                   <Option value={21600000}>6</Option>
                                                   <Option value={43200000}>12</Option>
@@ -738,6 +743,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                                 initialValue: this.state.stringConstants.system_lang,
                                             })(
                                                 <Select
+                                                    key={'rsystem_lang_select'}
                                                     placeholder={this.state.stringConstants.system_lang}
                                                     style={{width: 128}} onChange={this.handleChange}>
                                                     <Option value='en'>EN</Option>

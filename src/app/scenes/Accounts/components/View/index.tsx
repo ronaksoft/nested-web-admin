@@ -63,6 +63,8 @@ interface IViewState {
     newPassword: string;
     uploadPercent: number;
     pickedImage: any;
+    visibleRemoveMember: boolean;
+    removeMemberPlaceRef: any;
 }
 
 class View extends React.Component<IViewProps, IViewState> {
@@ -100,6 +102,8 @@ class View extends React.Component<IViewProps, IViewState> {
                 label_editor_authority: this.props.account.authority.label_editor,
                 admin_authority: this.props.account.authority.admin,
             },
+            visibleRemoveMember: false,
+
         };
         this.updated = false;
         this.loadPlaces = this.loadPlaces.bind(this);
@@ -447,21 +451,6 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
-    xonFlagChange(props: any) {
-        let editedAccount = _.clone(this.state.account);
-        _.merge(editedAccount.flags, props);
-        console.log(_.merge(props, {account_id: editedAccount._id}));
-        this.accountApi.edit(_.merge(props, {account_id: editedAccount._id})).then((result) => {
-            if (this.props.onChange) {
-                this.props.onChange(editedAccount);
-            }
-
-            message.success('The field has been updated.');
-        }, (error) => {
-            message.error('We were not able to update the field!');
-        });
-    }
-
     onActiveChange(checked: boolean) {
         let editedAccount = _.clone(this.state.account);
         _.merge(editedAccount, {disabled: !checked});
@@ -660,6 +649,9 @@ class View extends React.Component<IViewProps, IViewState> {
                 });
             });
         }
+        this.setState({
+            visibleRemoveMember: false,
+        });
     }
 
     demoteInPlace(id: string) {
@@ -745,7 +737,17 @@ class View extends React.Component<IViewProps, IViewState> {
             }
         };
         xhr.send(formData);
+    }
 
+    toggleRemoveMemberModal (ref: any) {
+        if (ref) {
+            this.setState({
+                removeMemberPlaceRef: ref,
+            });
+        }
+        this.setState({
+            visibleRemoveMember: !this.state.visibleRemoveMember,
+        });
     }
 
     render() {
@@ -793,8 +795,9 @@ class View extends React.Component<IViewProps, IViewState> {
                 },
             },
         ];
+        let header = null;
         if (this.state.reportTab) {
-            const header = (
+            header = (
                 <Row className='modal-head reports-head' type='flex' align='middle'>
                     {/* Top bar */}
                     <div className='modal-close' onClick={this.toggleReportTab}>
@@ -805,7 +808,7 @@ class View extends React.Component<IViewProps, IViewState> {
                 </Row>
             );
         } else {
-            const header = (
+            header = (
                 <Row className='modal-head' type='flex' align='middle'>
                     {/* Top bar */}
                     <div className='modal-close' onClick={this.onClose.bind(this)}>
@@ -1129,7 +1132,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                                         <PlaceItem onClick={this.showPlaceModal.bind(this)}
                                                                 place={place}/>
                                                         {this.state.account._id !== place._id &&
-                                                        <a className='remove' title={'Remove From Place'} onClick={this.removeFromPlace.bind(this, place._id)}><IcoN size={16} name={'bin16'}/></a> }
+                                                        <a className='remove' title={'Remove From Place'} onClick={this.toggleRemoveMemberModal.bind(this, place._id)}><IcoN size={16} name={'bin16'}/></a> }
                                                         {this.state.account._id !== place._id &&
                                                         <a className='promote' title={'Demote Member'} onClick={this.demoteInPlace.bind(this, place._id)}><IcoN size={24} name={'crown24'}/></a>}
 
@@ -1153,7 +1156,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                                 return (<div key={place._id + '2'} className='user-in-place-item'>
                                                     <PlaceItem onClick={this.showPlaceModal.bind(this)}
                                                             place={place} key={place._id}/>
-                                                    <a className='remove' title={'Remove From Place'} onClick={this.removeFromPlace.bind(this, place._id)}><IcoN size={16} name={'bin16'}/></a>
+                                                    <a className='remove' title={'Remove From Place'} onClick={this.toggleRemoveMemberModal.bind(this, place._id)}><IcoN size={16} name={'bin16'}/></a>
                                                     <a className='promote' title={'Promote Member'}  onClick={this.promoteInPlace.bind(this, place._id)}><IcoN size={24} name={'crownWire24'}/></a>
                                                 </div>);
                                             })}
@@ -1207,6 +1210,22 @@ class View extends React.Component<IViewProps, IViewState> {
                     }
                     <NstCrop avatar={this.state.pickedImage}
                         onCropped={this.onCropped.bind(this)}/>
+                    <Modal
+                        key={'remove_member'}
+                        content='Remove member prompt'
+                        title='Remove Member'
+                        width={360}
+                        visible={this.state.visibleRemoveMember}
+                        onCancel={this.toggleRemoveMemberModal.bind(this)}
+                        footer={[
+                            <Button key='cancel' type=' butn butn secondary' size='large'
+                                    onClick={this.toggleRemoveMemberModal.bind(this)}>Cancel</Button>,
+                            <Button key='submit' type=' butn butn-red' size='large'
+                                    onClick={this.removeFromPlace.bind(this, this.state.removeMemberPlaceRef)}>Delete</Button>,
+                        ]}
+                    >
+                        Do you want to remove "<b>{this.state.account._id}</b>" from this Place?
+                    </Modal>
                 </Modal>
             </Row>
         );
