@@ -1075,7 +1075,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     /{model.subPlaceLimit}
                                                 </span>
                                             </Col>
-                                            <Col span={12}>
+                                            {/*<Col span={12}>
                                                 <label>Storage</label>
                                                 <span className='label-value power'>
                                                     {this.convertSize(place.counters.size).toFixed(3) }
@@ -1085,7 +1085,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     {model.storageLimit === 0 && '∞'}
                                                     {model.storageLimit > 0 && model.storageLimit + ' MB'}
                                                 </span>
-                                            </Col>
+                                            </Col>*/}
                                         </Row>
                                     </div>
                                 </Row>}
@@ -1202,7 +1202,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                             .updatePlaceSubPlaceLimit
                                                             .bind(this)}/>
                                                 </Col>
-                                                <Col span={12}>
+                                                {/*<Col span={12}>
                                                     <label htmlFor='limitStorage'>Max. Storage</label>
                                                     <Input
                                                         id='limitStorage'
@@ -1212,7 +1212,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                         onChange={this
                                                             .updatePlaceStorageLimit
                                                             .bind(this)}/>
-                                                </Col>
+                                                </Col>*/}
                                             </Row>
                                         </Row>
                                 }
