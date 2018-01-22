@@ -519,18 +519,21 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
     }
 
     getMembersItems() {
+        const isPersonal = this.state.place.type === C_PLACE_TYPE[C_PLACE_TYPE.personal];
         var list = this.state.model.members.map((u: any) => {
             return (
                 <li key={u._id} className={'nst-opacity-hover-parent'}>
                     <Row type='flex' align='middle'>
                         <UserAvatar user={u} borderRadius={'16px'} size={24} avatar></UserAvatar>
                         <UserAvatar user={u} name size={22} className='uname'></UserAvatar>
+                        {!isPersonal &&
                         <span className={['nst-opacity-hover', (u.admin ? 'no-hover': '')].join(' ')} onClick={this.toggleAdmin.bind(this, u)}>
                             <IcoN size={24} name={u.admin ? 'crown24' : 'crownWire24'}/>
-                        </span>
+                        </span>}
+                        {!isPersonal &&
                         <span className={['nst-opacity-hover', 'fill-force'].join(' ')} onClick={this.toggleRemoveMemberModal.bind(this, u)}>
                             <IcoN size={16 } name={'bin16'}/>
-                        </span>
+                        </span>}
                     </Row>
                 </li>
             );
