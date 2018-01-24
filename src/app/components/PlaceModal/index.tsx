@@ -784,19 +784,19 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
 
     updatePlaceMangerLimit(event: any) {
         this.updateModel({
-            managerLimit: this.extractNumber(event.currentTarget.value)
+            managerLimit: this.extractNumber(event.currentTarget.value || 0)
         });
     }
 
     updatePlaceMemberLimit(event: any) {
         this.updateModel({
-            memberLimit: this.extractNumber(event.currentTarget.value)
+            memberLimit: this.extractNumber(event.currentTarget.value || 0)
         });
     }
 
     updatePlaceSubPlaceLimit(event: any) {
         this.updateModel({
-            subPlaceLimit: this.extractNumber(event.currentTarget.value)
+            subPlaceLimit: this.extractNumber(event.currentTarget.value || 0)
         });
     }
 

@@ -231,6 +231,9 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+    extractNumber(text: any) {
+        return parseInt(text.replace(/[^0-9]/g, ''), 0);
+    }
     toggleReportTab(reportTab: boolean) {
         this.setState({
             reportTab: !this.state.reportTab,
@@ -541,7 +544,7 @@ class View extends React.Component<IViewProps, IViewState> {
 
     updateGrandPlaceLimit(event: any) {
         this.updateModel({
-            grand_places_limit: event.currentTarget.value,
+            grand_places_limit: this.extractNumber(event.currentTarget.value || 0),
         });
     }
 
