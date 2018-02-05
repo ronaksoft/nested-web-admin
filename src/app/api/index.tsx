@@ -128,7 +128,7 @@ export default class Api {
 
         return {
             websocket: cyrusWsUrl + '/api',
-            register: cyrusHttpUrl,
+            register: cyrusHttpUrl + '/api',
             store: cyrusHttpUrl + '/file',
         };
     }
