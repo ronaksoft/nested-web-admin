@@ -699,8 +699,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
             if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 const resp = JSON.parse(xhr.response);
                 that.updateModel({
-                    picture: resp.data[0].universal_id,
-                    pictureData: resp.data[0].thumbs
+                    picture: resp.data.files[0].universal_id,
+                    pictureData: resp.data.files[0].thumbs
                 });
                 that.setState({
                     uploadPercent: 0,
@@ -734,8 +734,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         }
         if (info.file.status === 'done') {
             this.updateModel({
-                picture: info.file.response.data[0].universal_id,
-                pictureData: info.file.response.data[0].thumbs
+                picture: info.file.response.data.files[0].universal_id,
+                pictureData: info.file.response.data.files[0].thumbs
             });
             this.setState({
                 uploadPercent: 0,

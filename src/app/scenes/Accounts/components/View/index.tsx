@@ -351,10 +351,10 @@ class View extends React.Component<IViewProps, IViewState> {
 
             this.accountApi.setPicture({
                 account_id: this.state.account._id,
-                universal_id: info.file.response.data[0].universal_id
+                universal_id: info.file.response.data.files[0].universal_id
             }).then((result) => {
                 let editedAccount = _.clone(this.state.account);
-                editedAccount.picture = info.file.response.data[0].thumbs;
+                editedAccount.picture = info.file.response.data.files[0].thumbs;
                 this.setState({
                     account: editedAccount
                 });
@@ -716,10 +716,10 @@ class View extends React.Component<IViewProps, IViewState> {
 
                 that.accountApi.setPicture({
                     account_id: that.state.account._id,
-                    universal_id: resp.data[0].universal_id
+                    universal_id: resp.data.files[0].universal_id
                 }).then((result) => {
                     let editedAccount = _.clone(that.state.account);
-                    editedAccount.picture = resp.data[0].thumbs;
+                    editedAccount.picture = resp.data.files[0].thumbs;
                     that.setState({
                         account: editedAccount,
                         uploadPercent: 0,

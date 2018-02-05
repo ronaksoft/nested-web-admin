@@ -321,7 +321,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         }
         if (info.file.status === 'done') {
             this.setState({
-                company_logo_universal_id: info.file.response.data[0].universal_id,
+                company_logo_universal_id: info.file.response.data.files[0].universal_id,
                 imageIsUploading: false,
                 uploadPercent: 0,
             });

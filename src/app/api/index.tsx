@@ -127,9 +127,9 @@ export default class Api {
         xerxesUrl = this.getCompleteUrl(this.parseConfigData(xerxes[0]));
 
         return {
-            websocket: cyrusWsUrl,
+            websocket: cyrusWsUrl + '/api',
             register: cyrusHttpUrl,
-            store: xerxesUrl,
+            store: cyrusHttpUrl + '/file',
         };
     }
 
