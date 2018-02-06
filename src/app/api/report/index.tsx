@@ -46,6 +46,15 @@ export default class PlaceApi {
       case ReportType.processTime:
         key = 'process_time';
         break;
+      case ReportType.taskAdd:
+        key = 'task_add';
+        break;
+      case ReportType.taskComment:
+        key = 'task_comment';
+        break;
+      case ReportType.taskCompleted:
+        key = 'task_completed';
+        break;
       case ReportType.PlaceComment:
         key = `place_${id}_comments`;
         break;
@@ -57,6 +66,18 @@ export default class PlaceApi {
         break;
       case ReportType.AccountPost:
         key = `account_${id}_posts`;
+        break;
+      case ReportType.AccountTaskAdd:
+        key = `account_${id}_task_add`;
+        break;
+      case ReportType.AccountTaskComment:
+        key = `account_${id}_task_comment`;
+        break;
+      case ReportType.AccountTaskCommpleted:
+        key = `account_${id}_task_completed`;
+        break;
+      case ReportType.AccountTaskAssigned:
+        key = `account_${id}_task_assigned`;
         break;
       default:
         key = 'data_in';

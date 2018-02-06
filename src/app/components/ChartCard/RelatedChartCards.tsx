@@ -8,9 +8,9 @@ import MeasureType from './MeasureType';
 import TimePeriod from './TimePeriod';
 
 export interface IRelatedChartCardsProps {
-    title: string[];
+    title: string[] | string[][];
     dataType: ReportType[][];
-    color: string[];
+    color: string[][];
     measure: MeasureType[];
     syncId?: string;
     direction?: string;
@@ -37,16 +37,15 @@ class RelatedChartCards extends React.Component <IRelatedChartCardsProps,
     }
 
     render() {
-        const ch1 = <ChartCard title={[this.props.title[0]]} measure={this.props.measure[0]} syncPeriod={this.updatePeriod.bind(this)} params={this.props.params}
-            dataType={this.props.dataType[0]} color={[this.props.color[0]]} syncId={this.props.syncId} period={this.state.period} height={300}/>;
-        const ch2 = <ChartCard title={[this.props.title[1]]} measure={this.props.measure[1]} syncPeriod={this.updatePeriod.bind(this)} params={this.props.params}
-            dataType={this.props.dataType[1]} color={[this.props.color[1]]} syncId={this.props.syncId} period={this.state.period} height={300}/>;
+        var DOMS = this.props.dataType.map((t, index) =>
+            <ChartCard title={this.props.title[index]} measure={this.props.measure[index]} syncPeriod={this.updatePeriod.bind(this)} params={this.props.params}
+                dataType={this.props.dataType[index]} color={this.props.color[index]} syncId={this.props.syncId} period={this.state.period} height={300}/>
+        );
 
         if (this.props.direction === 'vertical') {
             return (
                 <Row style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
-                    <Col span={24} style={{marginBottom: 24}}>{ch1}</Col>
-                    <Col span={24}>{ch2}</Col>
+                    {DOMS.map(DOM => <Col span={24} style={{marginBottom: 24}}>{DOM}</Col>)}
                 </Row>
             );
         } else {
