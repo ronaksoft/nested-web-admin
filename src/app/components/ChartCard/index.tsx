@@ -106,6 +106,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     }
 
     render() {
+        console.log(this.state.titles, this.props.title);
         var titleDom = this.state.titles.map((title, index) => {
             return <span key={index} className={title.active ? '' : 'deactive'}
                 onClick={() => {

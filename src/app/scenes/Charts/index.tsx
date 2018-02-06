@@ -40,18 +40,25 @@ class Charts extends React.Component <IChartsProps,
                     <h2>Charts</h2>
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
-                    <Col span={8}>
+                    <Col span={12}>
                         <ChartCard title={['Comments', 'Emails', 'Posts']} measure={MeasureType.NUMBER} height={240}
                             dataType={[ReportType.AddComment, ReportType.AddEmail, ReportType.AddPost]} period={this.state.period}
                                    color={['#8884d8', '#82ca9d', '#ffc658']} syncId='nested' syncPeriod={this.updatePeriod.bind(this)}/>
                     </Col>
-                    <Col span={8}>
-                        <ChartCard title={['Logins', 'Session Recalls']} measure={MeasureType.NUMBER} dataType={[ReportType.Login, ReportType.SessionRecall]}
-                                   color={['#8884d8', '#82ca9d']} syncId='nested' height={240} syncPeriod={this.updatePeriod.bind(this)} period={this.state.period}/>
+                    <Col span={12}>
+                        <ChartCard title={['Added Tasks', 'Commnets on Task', 'Completed Tasks']} measure={MeasureType.NUMBER}
+                            dataType={[ReportType.taskAdd, ReportType.taskComment, ReportType.taskCompleted]} height={240} period={this.state.period}
+                                   color={['#8884d8']} syncId='nested' syncPeriod={this.updatePeriod.bind(this)}/>
                     </Col>
-                    <Col span={8}>
-                        <ChartCard title={['Traffic In', 'Out']} measure={MeasureType.FILE_SIZE} height={240} syncPeriod={this.updatePeriod.bind(this)}
-                                   dataType={[ReportType.dataIn, ReportType.dataOut]} color={['#8884d8', '#82ca9d']} syncId='nested' period={this.state.period}/>
+                </Row>
+                <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
+                    <Col span={12}>
+                        <ChartCard title={['Logins', 'Session Recalls']} measure={MeasureType.NUMBER} dataType={[ReportType.Login, ReportType.SessionRecall]}
+                                color={['#8884d8', '#82ca9d']} syncId='nested' height={224} syncPeriod={this.updatePeriod.bind(this)} period={this.state.period}/>
+                    </Col>
+                    <Col span={12}>
+                        <ChartCard title={['Traffic In', 'Out']} measure={MeasureType.FILE_SIZE} height={224} syncPeriod={this.updatePeriod.bind(this)}
+                                dataType={[ReportType.dataIn, ReportType.dataOut]} color={['#8884d8', '#82ca9d']} syncId='nested' period={this.state.period}/>
                     </Col>
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>

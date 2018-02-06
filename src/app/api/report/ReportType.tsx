@@ -13,7 +13,14 @@ enum ReportType {
   PlacePost,
   AccountComment,
   PlaceComment,
-  processTime
+  processTime,
+  taskAdd,
+  taskComment,
+  taskCompleted,
+  AccountTaskAdd,
+  AccountTaskComment,
+  AccountTaskCommpleted,
+  AccountTaskAssigned,
 }
 
 export default ReportType;

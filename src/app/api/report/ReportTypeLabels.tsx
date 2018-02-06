@@ -13,7 +13,14 @@ const ReportTypeLabel = {
   PlacePost: 'Place Post',
   AccountComment: 'Account Comment',
   PlaceComment: 'Place Comment',
-  processTime: 'Process Time'
+  processTime: 'Process Time',
+  taskAdd: 'Added Tasks',
+  taskComment: 'Comments on Tasks',
+  taskCompleted: 'Completed Tasks',
+  AccountTaskAdd: 'Account Added Tasks',
+  AccountTaskComment: 'Account Comments on Tasks',
+  AccountTaskCommpleted: 'Account Completed Tasks',
+  AccountTaskAssigned: 'Account Assigned Tasks',
 };
 
 export default ReportTypeLabel;

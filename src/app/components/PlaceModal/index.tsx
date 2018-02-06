@@ -793,19 +793,19 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
 
     updatePlaceMangerLimit(event: any) {
         this.updateModel({
-            managerLimit: this.extractNumber(event.currentTarget.value)
+            managerLimit: this.extractNumber(event.currentTarget.value || 0)
         });
     }
 
     updatePlaceMemberLimit(event: any) {
         this.updateModel({
-            memberLimit: this.extractNumber(event.currentTarget.value)
+            memberLimit: this.extractNumber(event.currentTarget.value || 0)
         });
     }
 
     updatePlaceSubPlaceLimit(event: any) {
         this.updateModel({
-            subPlaceLimit: this.extractNumber(event.currentTarget.value)
+            subPlaceLimit: this.extractNumber(event.currentTarget.value || 0)
         });
     }
 
@@ -1262,12 +1262,12 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     {this.state.reportTab &&
                         <div className='reports'>
                             <RelatedChartCards
-                                title={['Posts', 'Comments']}
+                                title={[['Posts'], ['Comments']]}
                                 direction='vertical'
                                 params={{id: place._id}}
                                 dataType={[[ReportType.PlacePost],[ReportType.PlaceComment]]}
                                 syncId='place'
-                                color={['#e74c3c', '#f1c40f']}
+                                color={[['#e74c3c'], ['#f1c40f']]}
                                 measure={[MeasureType.NUMBER, MeasureType.NUMBER]}/>
                         </div>
                     }
