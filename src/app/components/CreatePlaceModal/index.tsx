@@ -530,12 +530,10 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
                 promises.push(
                     this.placeApi.placeLimitEdit({
                         place_id: placeId,
-                        limits: {
-                            key_holders: model.managerLimit,
-                            creators: model.memberLimit,
-                            size: model.storageLimit*(1024*1024),
-                            childs: model.subPlaceLimit,
-                        }
+                        'limits.key_holders': model.memberLimit,
+                        'limits.creators': model.managerLimit,
+                        'limits.size': model.storageLimit*(1024*1024),
+                        'limits.childs': model.subPlaceLimit,
                     })
                 );
             }
