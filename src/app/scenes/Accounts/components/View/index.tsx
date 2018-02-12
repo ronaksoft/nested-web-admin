@@ -1172,17 +1172,16 @@ class View extends React.Component<IViewProps, IViewState> {
                     {this.state.reportTab &&
                         <div className='reports'>
                             <RelatedChartCards
-                                title={[['Posts'], ['Comments'], ['Added tasks', 'Assigned tasks', 'Comments on task', 'Completed tasks']]}
+                                title={[['Posts', 'Comments'], ['Created tasks', 'Assigned tasks', 'Comments', 'Completed tasks']]}
                                 direction='vertical'
                                 params={{id: this.state.model.account_id}}
                                 dataType={[
-                                    [ReportType.AccountPost],
-                                    [ReportType.AccountComment],
+                                    [ReportType.AccountPost, ReportType.AccountComment],
                                     [ReportType.AccountTaskAdd, ReportType.AccountTaskAssigned, ReportType.AccountTaskComment, ReportType.AccountTaskCommpleted]
                                 ]}
                                 syncId='account'
-                                color={[['#e74c3c'], ['#f1c40f'], ['#6494e0', '#3e337a', '#7c452e', '#1d6d54']]}
-                                measure={[MeasureType.NUMBER, MeasureType.NUMBER, MeasureType.NUMBER]}/>
+                                color={[['#e74c3c', '#f1c40f'], ['#6494e0', '#3e337a', '#7c452e', '#1d6d54']]}
+                                measure={[MeasureType.NUMBER, MeasureType.NUMBER]}/>
                         </div>
                     }
                     {this.state.visibleChangePassword &&

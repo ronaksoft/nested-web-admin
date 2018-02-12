@@ -46,9 +46,9 @@ class Charts extends React.Component <IChartsProps,
                                    color={['#8884d8', '#82ca9d', '#ffc658']} syncId='nested' syncPeriod={this.updatePeriod.bind(this)}/>
                     </Col>
                     <Col span={12}>
-                        <ChartCard title={['Added Tasks', 'Commnets on Task', 'Completed Tasks']} measure={MeasureType.NUMBER}
+                        <ChartCard title={['New Tasks', 'Commnets', 'Completed Tasks']} measure={MeasureType.NUMBER}
                             dataType={[ReportType.taskAdd, ReportType.taskComment, ReportType.taskCompleted]} height={240} period={this.state.period}
-                                   color={['#8884d8']} syncId='nested' syncPeriod={this.updatePeriod.bind(this)}/>
+                                   color={['#8884d8', '#82ca9d', '#ffc658']} syncId='nested' syncPeriod={this.updatePeriod.bind(this)}/>
                     </Col>
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
