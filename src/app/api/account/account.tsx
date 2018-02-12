@@ -249,7 +249,7 @@ export default class AccountApi {
         });
     }
 
-    search(keyword: string, limit: number, area: string): Promise<any> {
+    search(keyword: string, limit: number, area: string, skip: number): Promise<any> {
         if (area === undefined) {
             area = C_USER_SEARCH_AREA.ACCOUNTS;
         }
@@ -258,6 +258,7 @@ export default class AccountApi {
             data: {
                 keyword: keyword,
                 limit: limit,
+                skip: skip
             }
         });
     }

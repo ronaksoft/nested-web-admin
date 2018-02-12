@@ -33,11 +33,13 @@ interface IStates {
     suggests: Array<IUser>;
     selectedUsers: Array<IUser>;
     query: string;
+    hasMore: boolean;
 }
 
 export default class AddMemberModal extends React.Component <IProps, IStates> {
     accountApi: any;
     searchIt: any;
+    searchSetting: any;
     constructor(props: any) {
         super(props);
         this.searchIt = _.debounce(this.searchAccounts, 512);
@@ -46,7 +48,13 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
             members: this.props.members || [],
             suggests: [],
             selectedUsers: [],
-            query: ''
+            query: '',
+            hasMore: false,
+        };
+        this.searchSetting = {
+            skip: 0,
+            limit: 10,
+            keyword: '',
         };
     }
 
@@ -55,20 +63,52 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
         this.searchAccounts('');
     }
 
-    updateSuggestions(users?: IUser[]) {
+    updateSuggestions(users?: IUser[], callback?: any) {
         if (users === undefined) {
             users = this.state.suggests;
         }
         let list = _.differenceBy(users, this.state.selectedUsers, '_id');
         list = _.differenceBy(list, this.state.members, '_id');
+        list = _.uniqBy(list, '_id');
+        if (_.isFunction(callback)) {
+            callback(list);
+        }
         this.setState({
             suggests: list,
         });
     }
 
+    fullFillList(accounts: any[], list: any[]) {
+        if (accounts.length >= this.searchSetting.limit) {
+            this.setState({
+                hasMore: true,
+            });
+            if (list.length === 0) {
+                this.loadEvenMore();
+            }
+        } else {
+            this.setState({
+                hasMore: false,
+            });
+        }
+    }
+
+    loadEvenMore() {
+        this.searchSetting.skip += this.searchSetting.limit;
+        this.accountApi.search(this.searchSetting.keyword, this.searchSetting.limit, C_USER_SEARCH_AREA.ADMIN, this.searchSetting.skip).then((data: any) => {
+            this.updateSuggestions(this.state.suggests.concat(data.accounts), (list: any) => {
+                this.fullFillList(data.accounts, list);
+            });
+        });
+    }
+
     searchAccounts(keyword: string) {
-        this.accountApi.search(keyword, 10, C_USER_SEARCH_AREA.ADMIN).then((data) => {
-            this.updateSuggestions(data.accounts);
+        this.searchSetting.skip = 0;
+        this.accountApi.search(keyword, this.searchSetting.limit, C_USER_SEARCH_AREA.ADMIN, this.searchSetting.skip).then((data) => {
+            this.searchSetting.keyword = keyword;
+            this.updateSuggestions(data.accounts, (list: any) => {
+                this.fullFillList(data.accounts, list);
+            });
         });
     }
 
@@ -98,7 +138,7 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
             this.setState({
                 selectedUsers: selectedUsers,
             }, () => {
-                this.updateSuggestions();
+                this.updateSuggestions(this.state.suggests);
             });
         }
     }
@@ -142,6 +182,11 @@ export default class AddMemberModal extends React.Component <IProps, IStates> {
         return (
             <ul className='suggests'>
                 {list}
+                <li key={'add_member_load_more'}>
+                    <Button className='butn butn-white full-width' onClick={this.loadEvenMore.bind(this)}>
+                        Load More...
+                    </Button>
+                </li>
             </ul>
         );
     }
