@@ -348,7 +348,6 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
         setTimeout(() => {
             accounts.map((account, index) => {
-                console.log(account);
                 if (account.status === PacketState.Valid) {
                     this.handleChange({
                         key: account.key,

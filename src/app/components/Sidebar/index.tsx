@@ -84,6 +84,13 @@ IHeaderState > {
                             </Link>
                         </Tooltip>
                     </Menu.Item>
+                    <Menu.Item key='/apps'>
+                        <Tooltip placement='right' title={'Integrations'}>
+                            <Link to='/apps' activeClassName='active'>
+                                <IcoN size={24} name={'integrate24'}/>
+                            </Link>
+                        </Tooltip>
+                    </Menu.Item>
                 </Menu>
                 <small
                     style={{
