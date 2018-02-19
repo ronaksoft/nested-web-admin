@@ -73,7 +73,6 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
 
     fetchApps = () => {
         this.AppApi.search({
-            keywoard: '',
             limit: this.pageLimit,
             skip: (this.state.pagination.current - 1) * this.pageLimit,
             keyword: this.state.searchKeyword,
@@ -187,14 +186,21 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
                 index: 3,
                 title: (<span>Homepage</span>),
                 renderer: 'homepage',
-                width: 140,
+                width: 320,
+            },
+            {
+                key: 'logo',
+                index: 3,
+                title: (<span>Logo</span>),
+                renderer: 'logo',
+                width: 32,
             },
         ].map((column) => {
             let renderer: (text: string, record: IApp, index: any) => {};
             switch (column.renderer) {
                 case 'id':
                     renderer = (text: string, record: IApp, index: any) => {
-                        console.log(text, record);
+                        // console.log(text, record);
                         return <Row type='flex' align='middle'>
                                     <Row type='flex' align='middle'>
                                         <Checkbox onChange={(event) => this.onCheckboxChange(event, record)}
@@ -203,6 +209,12 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
                                     </Row>
                                 </Row>;
                     };
+                    break;
+                case 'logo':
+                    renderer = (text: string, record: IApp, index: any) => {
+                        return (<Row type='flex' align='middle'>
+                                    <img width='32' height='32' alt={text} src={record.icon_small_url}/>
+                                </Row>);};
                     break;
                 case 'name':
                 case 'developer':

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Modal, Button, Row, Col, Card, Icon, notification, Form, Switch, Input} from 'antd';
 import _ from 'lodash';
+import AppApi from '../../../api/app/index';
 
 interface ICreateProps {
     visible: Boolean;
@@ -13,8 +14,7 @@ interface ICreateState {
 }
 
 class Create extends React.Component<ICreateProps, ICreateState> {
-
-    checkPhoneAvailableDebounce: () => void = _.debounce(this.checkPhoneAvailable, 512);
+    AppApi: any;
     renderedRows = [];
     rowsRefs = {};
 
@@ -24,22 +24,38 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             accounts: [],
             sendSms: true
         };
+        this.AppApi = new AppApi();
     }
 
-    checkPhoneAvailable(rule: any, value: string, callback: any) {
-        callback();
-        // let accountApi = new AccountApi();
-        // accountApi.phoneAvailable({phone: value})
-        //     .then((isAvailable) => {
-        //         if (isAvailable) {
-        //             callback();
-        //         } else {
-        //             callback(new Error('Not available!'));
-        //         }
-        //     })
-        //     .catch(() => {
-        //         callback(new Error('Not available!'));
-        //     });
+    checkIdAvailable = (rule: any, value: string, callback: any) => {
+        // callback();
+        this.AppApi.search({
+            keywoard: value,
+        }).then((apps) => {
+            callback();
+            if (apps[0]._id === value) {
+                callback(new Error('Not available!'));
+            } else {
+                callback();
+            }
+        })
+        .catch(() => {
+            callback(new Error('Not available!'));
+        });
+    }
+
+    checkIdAvailableDebounce: () => void = _.debounce(this.checkIdAvailable, 512);
+
+    isUrlValid(rule: any, value: string, callback: any) {
+        if (value.length > 0) {
+            if (value.indexOf('http') === 0) {
+                callback();
+            } else {
+                callback(new Error('Invalid!'));
+            }
+        } else {
+            return callback();
+        }
     }
 
     initModal() {
@@ -88,7 +104,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                                         required: true,
                                         message: 'Id is required!'
                                     },
-                                    this.checkPhoneAvailableDebounce
+                                    this.checkIdAvailableDebounce
                                 ]
                             })(
                                 <Input/>
@@ -114,7 +130,8 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                                     {
                                         required: true,
                                         message: 'homepage is required!'
-                                    }
+                                    },
+                                    this.isUrlValid
                                 ]
                             })(
                                 <Input
@@ -138,7 +155,9 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                         <label>Logo url:</label>
                         <Form.Item>
                             {getFieldDecorator('logoUrl', {
-                                rules: []
+                                rules: [
+                                    this.isUrlValid
+                                ]
                             })(
                                 <Input/>
                             )}
@@ -146,7 +165,9 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                         <label>Thumbnail url:</label>
                         <Form.Item>
                             {getFieldDecorator('thumbnailUrl', {
-                                rules: []
+                                rules: [
+                                    this.isUrlValid
+                                ]
                             })(
                                 <Input/>
                             )}
