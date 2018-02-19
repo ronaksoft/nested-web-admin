@@ -29,11 +29,8 @@ class Create extends React.Component<ICreateProps, ICreateState> {
 
     checkIdAvailable = (rule: any, value: string, callback: any) => {
         // callback();
-        this.AppApi.search({
-            keywoard: value,
-        }).then((apps) => {
-            callback();
-            if (apps[0]._id === value) {
+        this.AppApi.exists(value).then((res) => {
+            if (res.exists) {
                 callback(new Error('Not available!'));
             } else {
                 callback();

@@ -11,6 +11,15 @@ export default class AppApi {
     this.api = Api.getInstance();
   }
 
+  exists(app_id: string): Promise<any> {
+    return this.api.server.request({
+      cmd: 'app/register',
+      data: {
+        app_id
+      }
+    });
+  }
+
   register(params: IRegisterRequest): Promise<any> {
     return this.api.server.request({
       cmd: 'app/register',
