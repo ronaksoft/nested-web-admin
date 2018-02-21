@@ -64,21 +64,6 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
         return parseInt(text.replace(/[^0-9]/g, ''), 0);
     }
 
-    checkPhoneAvailable(rule: any, value: string, callback: any) {
-        // callback();
-        let accountApi = new AccountApi();
-        accountApi.phoneAvailable({phone: value})
-            .then((isAvailable) => {
-                if (isAvailable) {
-                    callback();
-                } else {
-                    callback(new Error('Not available!'));
-                }
-            })
-            .catch(() => {
-                callback(new Error('Not available!'));
-            });
-    }
 
     checkUsernameAvailable(rule: any, value: string, callback: any) {
 
