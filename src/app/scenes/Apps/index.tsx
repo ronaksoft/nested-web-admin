@@ -121,7 +121,7 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
     }
 
     removeApp = (app_id?: string) => {
-        if(!app_id) {
+        if(!app_id && app_id !== '') {
             this.state.selectedItems.forEach( (app: IApp) => {
                 this.removeApp(app._id);
             });
