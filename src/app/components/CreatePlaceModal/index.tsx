@@ -64,7 +64,7 @@ export default class CreatePlaceModal extends React.Component<IProps, IStates> {
     checkId: any;
     constructor(props: any) {
         super(props);
-        this.placeIdRegex = new RegExp('^[A-Za-z][A-Za-z0-9-]*$');
+        this.placeIdRegex = new RegExp('^[a-zA-Z](?!.*([-_])\1{1})(?!.*-_)(?!.*_-)[a-zA-Z0-9-_]{0,30}[a-zA-Z0-9]$');
         this.checkId = _.debounce(this.checkIdAvailability, 512);
         this.state = {
             visible: false,
