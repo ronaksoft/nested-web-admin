@@ -22,7 +22,6 @@ body {
     min-width: 1024px;
     color: @color-solid;
     fill: @color-solid;
-    font-family: 'YekanBakh', 'OpenSans';
 }
 
 ._df {
@@ -1234,7 +1233,21 @@ div.ant-modal-mask {
         }
     }
 }
-
+.license-card {
+    .ant-card-body {
+        display: flex;
+        flex-direction: column;
+        span{
+            margin: 4px 0;
+            &.good {
+                color: @primary-color-rev ;
+            }
+            &.warn {
+                color: @force-color;
+            }
+        }
+    }
+}
 .online-users-card {
     overflow: auto;
     ul {

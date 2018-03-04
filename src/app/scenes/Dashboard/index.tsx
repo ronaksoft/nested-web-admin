@@ -7,6 +7,7 @@ import SystemApi from '../../api/system/index';
 import ReportType from '../../api/report/ReportType';
 import MeasureType from '../../components/ChartCard/MeasureType';
 import OnlineUsers from '../../components/onlineUsers/index';
+import Licence from '../../components/licenseHandler/index';
 import ChartCard from '../../components/ChartCard/index';
 import {PieChart, Pie, Legend, Sector, Tooltip, Cell, ResponsiveContainer} from 'recharts';
 import {Link} from 'react-router';
@@ -143,17 +144,15 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                     </Col>
                     <Col span={16}>
                         <ChartCard title={['System Activities']} measure={MeasureType.NUMBER} height={320}
-                            dataType={[ReportType.AllRequests]}مخ
+                            dataType={[ReportType.AllRequests]}
                                    color={['#8884d8']} syncId='nested'/>
                     </Col>
-                    {/*<Col span={8}>
-                        <Card loading={this.state.loading} title={card2Title} extra={card2Extra}>
-                            Whatever content
-                        </Card>
-                    </Col>*/}
                 </Row>
                 <Row gutter={24} className='dashboardRow'>
-                    <Col span={12}>
+                    <Col span={8}>
+                        <Licence/>
+                    </Col>
+                    <Col span={8}>
                         {this.state.data.accounts && <Card loading={this.state.loading} title={card4Title} extra={card4Extra}>
                             {this.state.data.accounts[1] && <p className='chart-info' style={{color: COLORS[1]}}>
                                 <abbr>Active Accounts</abbr>
@@ -176,7 +175,7 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                             </ResponsiveContainer>
                         </Card>}
                     </Col>
-                    <Col span={12}>
+                    <Col span={8}>
                         <Card loading={this.state.loading} title={card3Title} extra={card3Extra}>
                             {this.state.data.places[0] && <p className='chart-info' style={{color: RED_COLORS[0]}}>
                                 <abbr>Shared Places</abbr>
@@ -199,11 +198,6 @@ class DashboardComponent extends React.Component<IDashboardProps, IDashboardStat
                             </ResponsiveContainer>
                         </Card>
                     </Col>
-                    {/*<Col span={8}>
-                        <Card loading={this.state.loading} title={card5Title} extra={card5Extra}>
-                            Whatever content
-                        </Card>
-                    </Col>*/}
                 </Row>
             </div>
         );

@@ -104,4 +104,18 @@ export default class SystemApi {
         });
     }
 
+    getLicense() {
+        return this.api.server.request({
+            cmd: 'system/get_license',
+            data: {}
+        });
+    }
+
+    setLicense(license_key: string) {
+        return this.api.server.request({
+            cmd: 'system/set_license',
+            data: {license_key}
+        });
+    }
+
 }
