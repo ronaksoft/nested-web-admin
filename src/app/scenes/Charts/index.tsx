@@ -57,8 +57,10 @@ class Charts extends React.Component <IChartsProps,
                                 color={['#8884d8', '#82ca9d']} syncId='nested' height={224} syncPeriod={this.updatePeriod.bind(this)} period={this.state.period}/>
                     </Col>
                     <Col span={12}>
-                        <ChartCard title={['Traffic In', 'Out']} measure={MeasureType.FILE_SIZE} height={224} syncPeriod={this.updatePeriod.bind(this)}
-                                dataType={[ReportType.dataIn, ReportType.dataOut]} color={['#8884d8', '#82ca9d']} syncId='nested' period={this.state.period}/>
+                        <ChartCard title={['Traffic Out']} measure={MeasureType.FILE_SIZE} height={224} syncPeriod={this.updatePeriod.bind(this)}
+                                dataType={[ ReportType.dataOut]} color={['#82ca9d']} syncId='nested' period={this.state.period}/>
+                        {/* <ChartCard title={['Traffic In', 'Out']} measure={MeasureType.FILE_SIZE} height={224} syncPeriod={this.updatePeriod.bind(this)}
+                                dataType={[ReportType.dataIn, ReportType.dataOut]} color={['#8884d8', '#82ca9d']} syncId='nested' period={this.state.period}/> */}
                     </Col>
                 </Row>
                 <Row gutter={32} style={{marginBottom: 32, marginLeft: 0, marginRight: 0}}>
