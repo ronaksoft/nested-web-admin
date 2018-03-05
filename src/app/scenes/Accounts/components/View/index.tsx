@@ -482,7 +482,7 @@ class View extends React.Component<IViewProps, IViewState> {
                 account: unEditedAccount,
             });
             if (error.err_code === 6) {
-                message.error('You have reached the limit active members of you license');
+                message.error('You have reached the active members of nested service limit!');
             } else {
                 message.error('We were not able to update the field!');
             }

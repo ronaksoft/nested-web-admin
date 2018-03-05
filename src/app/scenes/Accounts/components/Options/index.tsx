@@ -87,7 +87,7 @@ export default class Options extends React.Component<IOptionsProps, IOptionsStat
         <Button.Group size='large'>
           {!cantCreate && <Button type=' butn butn-green secondary' onClick={this.openCreate}>Create Accounts</Button>}
           {cantCreate && (
-            <Tooltip placement='top' title='You have reached maximum nested license active user limit.'>
+            <Tooltip placement='top' title='You have reached the active members of nested service limit!'>
               <Button type=' butn butn-green secondary' onClick={this.openCreate} disabled>Create Accounts</Button>
             </Tooltip>
           )}
