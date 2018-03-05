@@ -1,6 +1,5 @@
 import {link} from 'fs';
 import * as React from 'react';
-import _ from 'lodash';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../api/place/interfaces/IPlace';
 import {

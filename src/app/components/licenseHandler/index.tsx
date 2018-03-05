@@ -51,7 +51,6 @@ class Licence extends React.Component<ILicenceProps, ILicenceState> {
             return;
         }
         this.SystemApi.setLicense(this.state.hash).then((result) => {
-            console.log(result);
             message.success(`Congratulations, your license is updated.`);
             this.GetLicense();
             this.toggleSetLicenseModal();
@@ -79,7 +78,7 @@ class Licence extends React.Component<ILicenceProps, ILicenceState> {
         const {license} = this.state;
         const remainLicense = license.expire_date ? moment.duration(moment(license.expire_date).diff(moment(new Date()))).asDays().toFixed() : 0;
         return (
-            <Card title='License' loading={this.state.loading} extra={
+            <Card title='Nested Service License' loading={this.state.loading} extra={
                 <div>
                     <Tooltip placement='top' title='Set License'>
                         <a rel='noopener noreferrer' onClick={this.toggleSetLicenseModal}><IcoN size={16} name='cross16'/></a>
@@ -91,7 +90,7 @@ class Licence extends React.Component<ILicenceProps, ILicenceState> {
             <span><b>License Owner: </b>{license.owner_name} {'<' + license.owner_email + '>'}</span>
             <span><b>License id: </b>{license.license_id}</span>
             <span><b>License signature: </b>{license.signature}</span>
-            <span><b>Max active users: </b>{license.max_active_users}</span>
+            <span><b>Max active users: </b>{license.max_active_users ? license.max_active_users : 'unlimited'}</span>
             <Modal
                 title='Set License'
                 width={360}

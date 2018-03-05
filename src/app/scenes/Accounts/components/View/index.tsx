@@ -463,6 +463,9 @@ class View extends React.Component<IViewProps, IViewState> {
             : this.accountApi.disable({account_id: editedAccount._id});
 
         action.then((result) => {
+            this.setState({
+                account: editedAccount,
+            });
             if (this.props.onChange) {
                 this.props.onChange(editedAccount);
             }
@@ -473,7 +476,16 @@ class View extends React.Component<IViewProps, IViewState> {
                 message.success(`"${editedAccount._id}" is not active now.`);
             }
         }, (error) => {
-            message.error('We were not able to update the field!');
+            let unEditedAccount = _.clone(this.state.account);
+            _.merge(unEditedAccount, {disabled: checked});
+            this.setState({
+                account: unEditedAccount,
+            });
+            if (error.err_code === 6) {
+                message.error('You have reached the limit active members of you license');
+            } else {
+                message.error('We were not able to update the field!');
+            }
         });
     }
 
@@ -915,7 +927,7 @@ class View extends React.Component<IViewProps, IViewState> {
                                             <div className='filler'/>
                                             {!editMode &&
                                                 <Switch checkedChildren='Active' unCheckedChildren='Deactive' defaultChecked={!this.state.account.disabled}
-                                                onChange={this.onActiveChange} className='large-switch'/>
+                                                onChange={this.onActiveChange} checked={!this.state.account.disabled}  className='large-switch'/>
                                             }
                                         </Row>
                                         {!editMode &&

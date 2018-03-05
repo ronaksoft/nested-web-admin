@@ -310,7 +310,7 @@ class Accounts extends React.Component<IAccountsProps, IAccountsState> {
             <div className='accounts'>
                 <Row type='flex' align='middle' className='scene-head'>
                     <h2>Accounts</h2>
-                    <Options/>
+                    <Options changeData={this.state.updates}/>
                 </Row>
                 <div className='white-block-container'>
                     <Row className={[
