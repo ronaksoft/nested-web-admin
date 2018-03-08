@@ -81,7 +81,7 @@ export default class Options extends React.Component<IOptionsProps, IOptionsStat
         </Menu.Item>
       </Menu>
     );
-    const cantCreate = this.state.accounts >= this.state.licenseMaxUsers || this.state.licenseMaxUsers === 0;
+    const cantCreate = this.state.accounts >= this.state.licenseMaxUsers || this.state.licenseMaxUsers === 0 || !this.state.licenseMaxUsers;
     return (
       <div>
         <Button.Group size='large'>
