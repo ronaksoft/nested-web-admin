@@ -85,7 +85,7 @@ class Licence extends React.Component<ILicenceProps, ILicenceState> {
                     </Tooltip>
                 </div>
             } className='chart-card license-card' style={{height: '334px'}}>
-            <span className={remainLicense < 30 ? 'warn' : 'good'}><b>Remaining License time: </b>{remainLicense} days</span>
+            <span className={remainLicense < 30 ? 'warn' : 'good'}><b>Remaining License Time: </b>{remainLicense} days</span>
             <span><b>License organization: </b>{license.owner_organization}</span>
             <span><b>License Owner: </b>{license.owner_name} {'<' + license.owner_email + '>'}</span>
             <span><b>License id: </b>{license.license_id}</span>
