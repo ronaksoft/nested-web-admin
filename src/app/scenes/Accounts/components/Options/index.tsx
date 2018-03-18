@@ -81,13 +81,12 @@ export default class Options extends React.Component<IOptionsProps, IOptionsStat
         </Menu.Item>
       </Menu>
     );
-    const cantCreate = this.state.accounts >= this.state.licenseMaxUsers ||
-      this.state.licenseMaxUsers === 0 || !this.state.licenseMaxUsers;
+    const canCreate = this.state.accounts < this.state.licenseMaxUsers || this.state.licenseMaxUsers === 0;
     return (
       <div>
         <Button.Group size='large'>
-          {!cantCreate && <Button type=' butn butn-green secondary' onClick={this.openCreate}>Create Accounts</Button>}
-          {cantCreate && (
+          {canCreate && <Button type=' butn butn-green secondary' onClick={this.openCreate}>Create Accounts</Button>}
+          {!canCreate && (
             <Tooltip placement='top' title='You have reached the active members of nested service limit!'>
               <Button type=' butn butn-green secondary' onClick={this.openCreate} disabled>Create Accounts</Button>
             </Tooltip>
