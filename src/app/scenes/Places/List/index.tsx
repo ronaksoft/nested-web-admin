@@ -83,6 +83,9 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     selectedPlace: IPlace | null = null;
     updateQueryDeb = _.debounce(this.updateQuery, 512);
     listRefresh: any;
+    expandedPlaces: any;
+    expandedSubPlaces: any;
+
     constructor(props: any) {
         super(props);
         const counter = props.counters;
@@ -106,6 +109,8 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         };
 
         this.listRefresh = this.fetchPlaces.bind(this);
+        this.expandedPlaces = [];
+        this.expandedSubPlaces = [];
     }
 
     componentDidMount() {
@@ -116,7 +121,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
             this.props.selectedFilter === CPlaceFilterTypes.ALL) {
             totalCounter = counter.grand_places;
         }
-        window.addEventListener('place_updated', this.listRefresh, false);
+        // window.addEventListener('place_updated', this.listRefresh, false);
         this.setState({
             selectedFilter: CPlaceFilterTypes.ALL,
             pagination: {
@@ -128,16 +133,17 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     componentWillUnmount() {
-        window.removeEventListener('place_updated', this.listRefresh, false);
+        // window.removeEventListener('place_updated', this.listRefresh, false);
     }
 
     updateQuery(q: string) {
         this.setState({
             query: q
-        },  () => {
+        }, () => {
             this.fetchPlaces();
         });
     }
+
     componentWillReceiveProps(props: IListProps) {
         const counter = props.counters;
         if (props.selectedFilter !== this.state.selectedFilter || props.selectedTab !== this.state.selectedTab) {
@@ -179,7 +185,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         }
     }
 
-    unCheckChildren(place:IPlace) {
+    unCheckChildren(place: IPlace) {
         place.isChecked = false;
         if (place.children && Array.isArray(place.children)) {
             place.children.forEach((user: IPlace) => {
@@ -314,7 +320,6 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
     }
 
     handleGroupChange(menu: any) {
-
         if (typeof menu.onClick === 'function') {
             menu.onClick();
         }
@@ -363,13 +368,31 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
         }).value();
     }
 
-    renderPlaceCell(text: string, record: IPlace, index: any) {
+    private toggleExpandList(id: string, event: any) {
+        if (event === null) {
+            const index = this.expandedPlaces.indexOf(id);
+            if (index > -1) {
+                this.expandedPlaces.slice(index, 1);
+            } else {
+                this.expandedPlaces.push(id);
+            }
+        } else {
+            if (!this.expandedSubPlaces.hasOwnProperty(id)) {
+                this.expandedSubPlaces[id] = event;
+            } else {
+                delete this.expandedSubPlaces[id];
+            }
+        }
+    }
+
+    renderPlaceCell(text: string, record: IPlace) {
+        const index = _.findIndex(this.state.places, {
+            _id: record._id
+        });
         const loadChildren = (expand: any) => {
-            const index = _.findIndex(this.state.places, {
-                _id: record._id
-            });
             let places = this.state.places;
             if (index > -1) {
+                this.toggleExpandList(record._id, null);
                 if (!cachedTrees.hasOwnProperty(record._id)) {
                     this.setState({
                         loading: true,
@@ -423,6 +446,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 }
             });
             const id = getId(obj);
+            this.toggleExpandList(id, event);
             let queryArr = [];
             for (let i = 1 + currentLevel; i <= 5; i++) {
                 queryArr.push('.ant-table-row-level-' + i + ' ');
@@ -450,15 +474,18 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                               checked={record.isChecked}/>
                     {record.child === true && <div className={['place-indent', record.level].join('-')}></div>}
                     <div className='arrow-holder'>
-                        {(record.counters.childs > 0 && this.state.viewMode === 'relation' && record.grand_parent_id === record._id ) &&
-                            <Arrow rotate={record.children === undefined ? '0' : '180'} child={record.child}
-                                onClick={loadChildren.bind(this)}/>}
-                        {(record.counters.childs > 0 && this.state.viewMode === 'relation' && record.grand_parent_id !== record._id ) &&
-                            <Arrow rotate={'0'} child={record.child}
-                                onClick={(expand, elem) => {toggleExpand(!expand, elem);}}/>}
+                        {(record.counters.childs > 0 && this.state.viewMode === 'relation' && record.grand_parent_id === record._id) &&
+                        <Arrow rotate={record.children === undefined ? '0' : '180'} child={record.child}
+                               onClick={loadChildren.bind(this)}/>}
+                        {(record.counters.childs > 0 && this.state.viewMode === 'relation' && record.grand_parent_id !== record._id) &&
+                        <Arrow rotate={'0'} child={record.child}
+                               onClick={(expand, elem) => {
+                                   toggleExpand(!expand, elem);
+                               }}/>}
                     </div>
                 </Row>
-                <PlaceView borderRadius={4} place={record} size={32} avatar name id onClick={this.showPlaceModal.bind(this)}></PlaceView>
+                <PlaceView borderRadius={4} place={record} size={32} avatar name id
+                           onClick={this.showPlaceModal.bind(this)}></PlaceView>
             </Row>
         );
     }
@@ -597,7 +624,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                 key: 'creators',
                 index: 2,
                 title: (
-                    <span className={[sortKey === 'creators'? 'active' : ''].join(' ')}>Managers
+                    <span className={[sortKey === 'creators' ? 'active' : ''].join(' ')}>Managers
                         <Arrow rotate={sortedInfo.creators === false ? '0' : '180'}
                                onClick={this.onSortChanged.bind(this, 'creators')}/>
                     </span>),
