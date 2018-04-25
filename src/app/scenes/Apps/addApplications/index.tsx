@@ -36,7 +36,10 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                 callback();
             }
         })
-        .catch(() => {
+        .catch((e) => {
+            if (e.err_code === 2) {
+                return callback();
+            }
             callback(new Error('Not available!'));
         });
     }
