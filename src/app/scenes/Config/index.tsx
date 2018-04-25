@@ -336,7 +336,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         const credentials = AAA.getInstance().getCredentials();
         const uploadUrl = `${CONFIG().STORE.URL}/upload/place_pic/${credentials.sk}/${this.state.token}`;
         const logo = this.state.company_logo_universal_id.length > 0 ? this.state.company_logo_universal_id : this.state.stringConstants.company_logo;
-        const imageUrl = `${CONFIG().STORE.URL}/pic/${logo}`;
+        const imageUrl = `${CONFIG().STORE.URL}/view/x/${logo}`;
         // TOOD upload image
         const uploadProps = {
             action: uploadUrl,
