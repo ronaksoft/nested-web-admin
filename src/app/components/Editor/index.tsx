@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Editor, EditorState, RichUtils, convertFromHTML, ContentState} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromHTML} from 'draft-js';
 import './style.less';
 interface IProps {
   initialState: any;

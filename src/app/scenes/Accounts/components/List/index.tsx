@@ -125,7 +125,8 @@ class List extends React.Component <IListProps,
 
     componentDidMount() {
         this.accountApi = new AccountApi();
-        window.addEventListener('account_updated', this.listRefresh, false);
+        window.addEventListener('account_updated',
+            () => this.load(this.state.currentPage, this.PAGE_SIZE, FilterGroup.Total), false);
         this.load(1, this.PAGE_SIZE, FilterGroup.Total);
     }
 

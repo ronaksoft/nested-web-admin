@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Modal, Row, Col, Icon, Button, message, Form, Input, Select, notification, Upload} from 'antd';
+import {Modal, Icon, Button, Select} from 'antd';
 import ReactCrop, { makeAspectCrop } from 'react-image-crop';
 
 import _ from 'lodash';
@@ -85,7 +85,6 @@ export default class NstCrop extends React.Component<IProps, IStates> {
             aspect: 1,
             width: 50,
           }, image.naturalWidth / image.naturalHeight),
-          image,
         });
     }
 
