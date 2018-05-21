@@ -765,6 +765,19 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+    onFlagChange(props: any) {
+        let editedAccount = _.clone(this.state.account);
+        _.merge(editedAccount.flags, props);
+        this.accountApi.edit(_.merge(props, {account_id: editedAccount._id})).then((result) => {
+            if (this.props.onChange) {
+                this.props.onChange(editedAccount);
+            }
+
+            message.success('The field has been updated.');
+        }, (error) => {
+            message.error('We were not able to update the field!');
+        });
+    }
     render() {
         const {editMode} = this.state;
         const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.access, 'C'));
