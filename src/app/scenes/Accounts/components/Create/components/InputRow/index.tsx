@@ -46,11 +46,11 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     }
 
     componentWillReceiveProps(newProps: IInputRowProps) {
-        this.state = {
+        this.setState({
             packet: newProps.account,
             status: newProps.status,
-            manualPassword: this.state.manualPassword,
-        };
+            manualPassword: newProps.account.pass !== newProps.account._id && newProps.account.pass !== '',
+        });
         // setTimeout(() => {
         //     this.props.onChange({
         //         key: this.props.refKey,
@@ -233,34 +233,54 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                     )}
 
                 </Form.Item>
-                <Form.Item>
-                    {getFieldDecorator('pass', {
-                        initialValue: this.props.account.pass,
-                        rules: [
-                            {
-                                required: manualPassword,
-                                message: 'Password is required!',
-                            },
-                            {
-                                type: 'string',
-                                min: 6,
-                                message: 'Password must be at least 6 characters.'
-                            }
-                        ]
-                    })(
-                        <div>
-                            {!manualPassword &&
-                                (<Button type=' form-input-button' onClick={this.insertManualPassword}
-                                    disabled={disabled}>- same as username -</Button>)
-                            }
-                            {manualPassword && (<Input
+                {!manualPassword &&(
+                    <Form.Item>
+                        {getFieldDecorator('pass', {
+                            initialValue: this.props.account.pass,
+                            rules: [
+                                {
+                                    required: manualPassword,
+                                    message: 'Password is required!',
+                                },
+                                {
+                                    type: 'string',
+                                    min: 6,
+                                    message: 'Password must be at least 6 characters.'
+                                }
+                            ]
+                        })(
+                            <div>
+                                <Button type=' form-input-button' onClick={this.insertManualPassword}
+                                    disabled={disabled}>- same as username -</Button>
+                            </div>
+                        )}
+
+                    </Form.Item>
+                )}
+                {manualPassword &&(
+                    <Form.Item>
+                        {getFieldDecorator('pass', {
+                            initialValue: this.props.account.pass,
+                            rules: [
+                                {
+                                    required: manualPassword,
+                                    message: 'Password is required!',
+                                },
+                                {
+                                    type: 'string',
+                                    min: 6,
+                                    message: 'Password must be at least 6 characters.'
+                                }
+                            ]
+                        })(
+                            <Input
                                 placeholder='Password'
                                 disabled={disabled}
-                            />)}
-                        </div>
-                    )}
+                            />
+                        )}
 
-                </Form.Item>
+                    </Form.Item>
+                )}
             </Form>
         );
     }

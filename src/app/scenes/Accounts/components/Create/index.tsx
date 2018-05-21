@@ -485,7 +485,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
                         _id: row[1],
                         fname: row[2],
                         lname: row[3],
-                        pass: row[4] ? row[4] : makeid(),
+                        pass: row[4] ? row[4] : row[1],
                     },
                     messages: []
                 };

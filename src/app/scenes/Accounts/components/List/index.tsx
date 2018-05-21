@@ -464,20 +464,6 @@ class List extends React.Component <IListProps,
             }
         ];
 
-        // {
-        //     title: this.dataColumns.gender,
-        //     dataIndex: 'gender',
-        //     key: 'gender',
-        //     render: this.genderRender,
-        //     index: 7
-        // }, {
-        //     title: this.dataColumns.dob,
-        //     dataIndex: 'dob',
-        //     key: 'dob',
-        //     render: this.dobRender,
-        //     index: 8
-        // }
-
         const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
         const storedColumnsList = storedColumns
             ? _.split(storedColumns, ',')
