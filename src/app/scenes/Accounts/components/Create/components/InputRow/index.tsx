@@ -46,18 +46,12 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     }
 
     componentWillReceiveProps(newProps: IInputRowProps) {
+        console.log('componentWillReceiveProps');
         this.setState({
             packet: newProps.account,
             status: newProps.status,
-            manualPassword: newProps.account.pass !== newProps.account._id && newProps.account.pass !== '',
+            manualPassword: this.state.manualPassword || (newProps.account.pass !== newProps.account._id && newProps.account.pass !== ''),
         });
-        // setTimeout(() => {
-        //     this.props.onChange({
-        //         key: this.props.refKey,
-        //         modal: this.props.form.getFieldsValue(),
-        //         status: this.props.form.getFieldsError()
-        //     });
-        // }, 200);
     }
 
     extractNumber(text: any) {
@@ -233,31 +227,17 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                     )}
 
                 </Form.Item>
-                {!manualPassword &&(
-                    <Form.Item>
-                        {getFieldDecorator('pass', {
-                            initialValue: this.props.account.pass,
-                            rules: [
-                                {
-                                    required: manualPassword,
-                                    message: 'Password is required!',
-                                },
-                                {
-                                    type: 'string',
-                                    min: 6,
-                                    message: 'Password must be at least 6 characters.'
-                                }
-                            ]
-                        })(
-                            <div>
+                {!manualPassword && (
+                    <div className='ant-row ant-form-item'>
+                        <div className='ant-form-item-control-wrapper'>
+                            <div className='ant-form-item-control'>
                                 <Button type=' form-input-button' onClick={this.insertManualPassword}
                                     disabled={disabled}>- same as username -</Button>
                             </div>
-                        )}
-
-                    </Form.Item>
+                        </div>
+                    </div>
                 )}
-                {manualPassword &&(
+                {manualPassword && (
                     <Form.Item>
                         {getFieldDecorator('pass', {
                             initialValue: this.props.account.pass,
