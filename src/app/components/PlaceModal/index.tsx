@@ -65,7 +65,6 @@ interface IStates {
     removeMemberUserRef: any;
 }
 
-
 export default class PlaceModal extends React.Component<IProps, IStates> {
     currentUser: IUser;
     accountApi: any;
@@ -979,7 +978,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                     </div>
                     <h3>Place Info</h3>
                     <div className='filler'></div>
-                    {(!editMode && !isPersonal) && (
+                    {(!editMode) && (
                         <Row className='account-control' type='flex' align='middle' onClick={this.toggleEditMode.bind(this)}>
                             <IcoN size={16} name={'pencil16'}/>
                             <span>Edit</span>
@@ -1168,7 +1167,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     onChangeSearch={this.updatePlaceSearchPolicy.bind(this)}
                                                 />
                                             </Row>
-                                            <Row className='input-row select-level'>
+                                            {!isPersonal && <Row className='input-row select-level'>
                                                 <label>Who can create sub-places in this Place?</label>
                                                 <SelectLevel
                                                     index={model.addPlacePolicy}
@@ -1176,8 +1175,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     onChangeLevel={this
                                                         .updatePlaceCreateSubPlacePolicy
                                                         .bind(this)}/>
-                                            </Row>
-                                            <Row className='input-row select-level'>
+                                            </Row>}
+                                            {!isPersonal && <Row className='input-row select-level'>
                                                 <label>Who can add member to this Place?</label>
                                                 <SelectLevel
                                                     index={model.addMemberPolicy}
@@ -1185,8 +1184,8 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                     onChangeLevel={this
                                                         .updatePlaceAddMemberPolicy
                                                         .bind(this)}/>
-                                            </Row>
-                                            <Row className='input-row' gutter={24}>
+                                            </Row>}
+                                            {!isPersonal && <Row className='input-row' gutter={24}>
                                                 <Col span={12}>
                                                     <label htmlFor='limitManager'>Max. Managers</label>
                                                     <Input
@@ -1209,7 +1208,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                                                             .updatePlaceMemberLimit
                                                             .bind(this)}/>
                                                 </Col>
-                                            </Row>
+                                            </Row>}
                                             <Row className='input-row' gutter={24}>
                                                 <Col span={12}>
                                                     <label htmlFor='limitSubPlaces'>Max. Sub-Places</label>
