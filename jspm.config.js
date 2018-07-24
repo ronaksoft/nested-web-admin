@@ -135,7 +135,6 @@ SystemJS.config({
     'crypto': 'github:jspm/nodelibs-crypto@0.2.0-alpha',
     'css': 'github:systemjs/plugin-css@0.1.36',
     'domain': 'github:jspm/nodelibs-domain@0.2.0-alpha',
-    'react-draft-wysiwyg': 'npm:react-draft-wysiwyg@1.12.13',
     'es6-shim': 'npm:es6-shim@0.35.3',
     'events': 'github:jspm/nodelibs-events@0.2.2',
     'fs': 'github:jspm/nodelibs-fs@0.2.0-alpha',
@@ -1162,15 +1161,6 @@ SystemJS.config({
         'minimalistic-assert': 'npm:minimalistic-assert@1.0.0',
         'bn.js': 'npm:bn.js@4.11.8',
         'inherits': 'npm:inherits@2.0.3'
-      }
-    },
-    'npm:react-draft-wysiwyg@1.12.13': {
-      'map': {
-        'html-to-draftjs': 'npm:html-to-draftjs@1.4.0',
-        'draftjs-utils': 'npm:draftjs-utils@0.9.4',
-        'linkify-it': 'npm:linkify-it@2.0.3',
-        'prop-types': 'npm:prop-types@15.6.0',
-        'classnames': 'npm:classnames@2.2.5'
       }
     },
     'npm:hash-base@3.0.4': {
