@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Modal, Icon, Button, Select} from 'antd';
+import {Modal, Button} from 'antd';
 import ReactCrop, { makeAspectCrop } from 'react-image-crop';
 
 import _ from 'lodash';
