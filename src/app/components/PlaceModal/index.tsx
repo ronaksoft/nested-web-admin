@@ -578,11 +578,11 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
                 description: 'All Grand Place Members',
                 searchProperty: true
             }, {
-                index: C_PLACE_POST_POLICY.COMPANY,
-                label: 'building',
-                description: 'All Company Members',
-                searchProperty: true
-            }, {
+            //     index: C_PLACE_POST_POLICY.COMPANY,
+            //     label: 'building',
+            //     description: 'All Company Members',
+            //     searchProperty: true
+            // }, {
                 index: C_PLACE_POST_POLICY.EMAIL,
                 label: 'atsign',
                 description: `All Company Members + Everyone via Email: <br> <a href="mailto:${placeId}">${placeId}</a>`,
@@ -665,7 +665,7 @@ export default class PlaceModal extends React.Component<IProps, IStates> {
         } else if (receptive === 'internal' && addPost === 'everyone') {
             return C_PLACE_POST_POLICY.TEAM;
         } else if (receptive === 'external' && addPost === 'everyone') {
-            return C_PLACE_POST_POLICY.COMPANY;
+            return C_PLACE_POST_POLICY.EMAIL;
         }
     }
 
