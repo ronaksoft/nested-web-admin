@@ -13,7 +13,7 @@ export default class AppApi {
 
   exists(app_id: string): Promise<any> {
     return this.api.server.request({
-      cmd: 'app/register',
+      cmd: 'app/exists',
       data: {
         app_id
       }

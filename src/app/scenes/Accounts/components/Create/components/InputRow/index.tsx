@@ -46,18 +46,12 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     }
 
     componentWillReceiveProps(newProps: IInputRowProps) {
-        this.state = {
+        console.log('componentWillReceiveProps');
+        this.setState({
             packet: newProps.account,
             status: newProps.status,
-            manualPassword: this.state.manualPassword,
-        };
-        // setTimeout(() => {
-        //     this.props.onChange({
-        //         key: this.props.refKey,
-        //         modal: this.props.form.getFieldsValue(),
-        //         status: this.props.form.getFieldsError()
-        //     });
-        // }, 200);
+            manualPassword: this.state.manualPassword || (newProps.account.pass !== newProps.account._id && newProps.account.pass !== ''),
+        });
     }
 
     extractNumber(text: any) {
@@ -233,34 +227,40 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
                     )}
 
                 </Form.Item>
-                <Form.Item>
-                    {getFieldDecorator('pass', {
-                        initialValue: this.props.account.pass,
-                        rules: [
-                            {
-                                required: manualPassword,
-                                message: 'Password is required!',
-                            },
-                            {
-                                type: 'string',
-                                min: 6,
-                                message: 'Password must be at least 6 characters.'
-                            }
-                        ]
-                    })(
-                        <div>
-                            {!manualPassword &&
-                                (<Button type=' form-input-button' onClick={this.insertManualPassword}
-                                    disabled={disabled}>- same as username -</Button>)
-                            }
-                            {manualPassword && (<Input
+                {!manualPassword && (
+                    <div className='ant-row ant-form-item'>
+                        <div className='ant-form-item-control-wrapper'>
+                            <div className='ant-form-item-control'>
+                                <Button type=' form-input-button' onClick={this.insertManualPassword}
+                                    disabled={disabled}>- same as username -</Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {manualPassword && (
+                    <Form.Item>
+                        {getFieldDecorator('pass', {
+                            initialValue: this.props.account.pass,
+                            rules: [
+                                {
+                                    required: manualPassword,
+                                    message: 'Password is required!',
+                                },
+                                {
+                                    type: 'string',
+                                    min: 6,
+                                    message: 'Password must be at least 6 characters.'
+                                }
+                            ]
+                        })(
+                            <Input
                                 placeholder='Password'
                                 disabled={disabled}
-                            />)}
-                        </div>
-                    )}
+                            />
+                        )}
 
-                </Form.Item>
+                    </Form.Item>
+                )}
             </Form>
         );
     }

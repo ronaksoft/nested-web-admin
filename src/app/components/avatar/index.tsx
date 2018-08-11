@@ -146,7 +146,7 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      maxWidth: '135px',
+      maxWidth: '133px',
       fontSize: '14px',
       lineHeight: size,
       color: 'black',

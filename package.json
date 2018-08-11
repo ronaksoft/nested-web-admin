@@ -79,6 +79,7 @@
       "loglevel": "npm:loglevel@^1.4.1",
       "md5": "npm:md5@^2.2.1",
       "moment": "npm:moment@^2.18.1",
+      "react-draft-wysiwyg": "npm:react-draft-wysiwyg@1.7.7",
       "react-image-crop": "npm:react-image-crop@^3.0.8",
       "react-inlinesvg": "npm:react-inlinesvg@^0.6.0",
       "react-json-tree": "npm:react-json-tree@^0.11.0",
@@ -162,10 +163,10 @@
       "npm:moment@2.18.1": {
         "jspmNodeConversion": false
       },
-      "npm:pbkdf2@3.0.14": {
+      "npm:pbkdf2@3.0.16": {
         "main": "browser.js"
       },
-      "npm:safe-buffer@5.1.1": {
+      "npm:safe-buffer@5.1.2": {
         "browser": "index.js"
       },
       "npm:typescript@2.3.2": {
@@ -205,4 +206,3 @@
     "react-platform-js": "0.0.1"
   }
 }
-

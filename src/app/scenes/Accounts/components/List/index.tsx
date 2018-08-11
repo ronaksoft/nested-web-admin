@@ -125,7 +125,8 @@ class List extends React.Component <IListProps,
 
     componentDidMount() {
         this.accountApi = new AccountApi();
-        window.addEventListener('account_updated', this.listRefresh, false);
+        window.addEventListener('account_updated',
+            () => this.load(this.state.currentPage, this.PAGE_SIZE, FilterGroup.Total), false);
         this.load(1, this.PAGE_SIZE, FilterGroup.Total);
     }
 
@@ -462,20 +463,6 @@ class List extends React.Component <IListProps,
                 width: 116,
             }
         ];
-
-        // {
-        //     title: this.dataColumns.gender,
-        //     dataIndex: 'gender',
-        //     key: 'gender',
-        //     render: this.genderRender,
-        //     index: 7
-        // }, {
-        //     title: this.dataColumns.dob,
-        //     dataIndex: 'dob',
-        //     key: 'dob',
-        //     render: this.dobRender,
-        //     index: 8
-        // }
 
         const storedColumns = window.localStorage.getItem(this.COLUMNS_STORAGE_KEY);
         const storedColumnsList = storedColumns

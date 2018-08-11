@@ -323,7 +323,9 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
-    removePicture() {
+    removePicture(e: Event) {
+        e.preventDefault();
+        e.stopPropagation();
         this.accountApi.removePicture({
             account_id: this.state.account._id
         }).then((result) => {
@@ -669,6 +671,7 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+
     demoteInPlace(id: string) {
         const index = _.findIndex(this.state.places, {
             _id: id,
@@ -765,6 +768,20 @@ class View extends React.Component<IViewProps, IViewState> {
         });
     }
 
+    onFlagChange(props: any) {
+        let editedAccount = _.clone(this.state.account);
+        _.merge(editedAccount.flags, props);
+        this.accountApi.edit(_.merge(props, {account_id: editedAccount._id})).then((result) => {
+            if (this.props.onChange) {
+                this.props.onChange(editedAccount);
+            }
+
+            this.updated = true;
+            message.success('The field has been updated.');
+        }, (error) => {
+            message.error('We were not able to update the field!');
+        });
+    }
     render() {
         const {editMode} = this.state;
         const managerInPlaces = _.filter(this.state.places, (place) => _.includes(place.access, 'C'));
@@ -909,9 +926,11 @@ class View extends React.Component<IViewProps, IViewState> {
                                                     type=' butn butn-green secondary'
                                                     onClick={this.changePhoto}>Upload Photo</Button> */}
                                                 <label onClick={this.stopPropagate} className='butn butn-green secondary' htmlFor='file'><span>Upload a Photo</span></label>
-                                                <Button type=' butn butn-red secondary'>
-                                                    Remove Photo
-                                                </Button>
+                                                {this.state.account.picture && this.state.account.picture.org && (
+                                                    <Button type=' butn butn-red secondary' onClick={this.removePicture}>
+                                                        Remove Photo
+                                                    </Button>
+                                                )}
                                                 </Upload>
                                             }
                                             {!editMode &&
