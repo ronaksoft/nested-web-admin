@@ -56,6 +56,7 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
     }
 
     beforeLogin(data: any) {
+        const localDomain = localStorage.getItem('nested.server.domain');
         if (data.uid.indexOf('@') > -1) {
             const usernameSplits = data.uid.split('@');
             const api = Api.getInstance();
@@ -63,11 +64,18 @@ class SignIn extends React.Component<ISignInProps, ISignInState> {
             api.reconfigEndPoints(usernameSplits[1])
                 .then(() => {
                     this.login(data, usernameSplits[1]);
-                });/*
-                .catch((r) => {
-                    console.log(r);
-                    message.warning(`Something wen't wrong`);
-                });*/
+                });
+            /*
+                            .catch((r) => {
+                                console.log(r);
+                                message.warning(`Something wen't wrong`);
+                            });*/
+        } else if (localDomain && CONFIG().DOMAIN !== localDomain) {
+            const api = Api.getInstance();
+            api.reconfigEndPoints(localDomain)
+                .then(() => {
+                    this.login(data, localDomain);
+                });
         } else {
             this.login(data, CONFIG().domain);
         }
