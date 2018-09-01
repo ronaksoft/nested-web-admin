@@ -162,9 +162,9 @@ class List extends React.Component <IListProps,
     placesRender = (text, user, index) => {
         return (
             <div className='user-member-place'>
-                {user.bookmarked_places.length > 0 && <IcoN size={16} name={'placesRelation16'}/>}
-                {user.bookmarked_places.length  > 0
-                ? user.bookmarked_places.length
+                {user.access_place_ids.length > 0 && <IcoN size={16} name={'placesRelation16'}/>}
+                {user.access_place_ids.length  > 0
+                ? user.access_place_ids.length
                 : '-'}
             </div>
         );
