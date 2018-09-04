@@ -47,7 +47,7 @@ interface IListProps {
     onChange: any;
     query: string;
     updatedAccounts: number;
-    toggleSelected: (user:IPerson) => {};
+    toggleSelected: (user: IPerson) => {};
 }
 
 interface IListState {
@@ -57,9 +57,9 @@ interface IListState {
     viewAccount: boolean;
     chosen: IAccount;
     query: string;
-    dataColumns: Array< any >;
-    columns: Array< any >;
-    selectedRowKeys: Array< any >;
+    dataColumns: Array<any>;
+    columns: Array<any>;
+    selectedRowKeys: Array<any>;
     sortedInfo: ISort;
     filter: any;
     sortKey: any;
@@ -139,7 +139,7 @@ class List extends React.Component <IListProps,
         event.stopPropagation();
     }
 
-    onCheckboxChange  = (user: IPerson) => {
+    onCheckboxChange = (user: IPerson) => {
         user.isChecked = !user.isChecked;
         this.props.toggleSelected(user);
     }
@@ -150,7 +150,7 @@ class List extends React.Component <IListProps,
             <Row type='flex' align='middle'>
                 <div className='item-selector' onClick={this.checkboxClick.bind(this)}>
                     <Checkbox onChange={() => this.onCheckboxChange(user)}
-                        checked={user.isChecked}/>
+                              checked={user.isChecked}/>
                 </div>
                 <UserAvatar avatar name size='24' user={user}/>
             </Row>
@@ -162,10 +162,12 @@ class List extends React.Component <IListProps,
     placesRender = (text, user, index) => {
         return (
             <div className='user-member-place'>
-                {user.access_place_ids.length > 0 && <IcoN size={16} name={'placesRelation16'}/>}
-                {user.access_place_ids.length  > 0
-                ? user.access_place_ids.length
-                : '-'}
+                {user.access_place_ids !== undefined && user.access_place_ids.length > 0 ?
+                    <IcoN size={16} name={'placesRelation16'}/> : null}
+                {user.access_place_ids !== undefined && user.access_place_ids.length > 0 ? user.access_place_ids.length : '-'}
+                {user.access_place_ids === undefined && user.bookmarked_places.length > 0 &&
+                <IcoN size={16} name={'placesRelation16'}/>}
+                {user.access_place_ids === undefined && user.bookmarked_places.length > 0 ? user.bookmarked_places.length : '-'}
             </div>
         );
     }
@@ -301,7 +303,7 @@ class List extends React.Component <IListProps,
     updateQuery(q: string) {
         this.setState({
             query: q
-        },  () => {
+        }, () => {
             this.load(1, this.PAGE_SIZE, this.props.filter);
         });
     }
@@ -315,10 +317,10 @@ class List extends React.Component <IListProps,
         } else if (nextProps.query !== this.props.query) {
             this.updateQueryDeb(nextProps.query);
         }
-        if(nextProps.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
+        if (nextProps.notifyChildrenUnselect !== this.props.notifyChildrenUnselect) {
             var accountsClone: IPerson[] = _.clone(this.state.accounts);
             accountsClone.forEach((user: IPerson) => {
-               user.isChecked = false;
+                user.isChecked = false;
             });
             this.setState({
                 accounts: accountsClone
@@ -331,7 +333,7 @@ class List extends React.Component <IListProps,
     }
 
     handleSortChange(pagination: any, filters: any, sorter: any) {
-        if(sorter.columnKey) {
+        if (sorter.columnKey) {
             this.setState({
                 sortedInfo: {
                     order: sorter.order,
@@ -500,7 +502,7 @@ class List extends React.Component <IListProps,
                 break;
         }
 
-        if(this.state.query.length > 0) {
+        if (this.state.query.length > 0) {
             total = this.state.accounts.length > 9 ? 20 : 10;
         }
 
