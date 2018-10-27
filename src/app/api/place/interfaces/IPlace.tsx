@@ -18,7 +18,7 @@ interface IPlace {
     picture: IPicture;
     policy: IPlacePolicy;
     privacy: IPlacePrivacy;
-    type: C_PLACE_TYPE;
+    type: any;
     unlocked_childs: Array<any>;
     isChecked?: boolean;
 }

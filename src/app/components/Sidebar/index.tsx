@@ -91,6 +91,13 @@ IHeaderState > {
                             </Link>
                         </Tooltip>
                     </Menu.Item>
+                    <Menu.Item key='/default_places'>
+                        <Tooltip placement='right' title={'Default Places'}>
+                            <Link to='/default_places' activeClassName='active'>
+                                <IcoN size={24} name={'hdd24'}/>
+                            </Link>
+                        </Tooltip>
+                    </Menu.Item>
                 </Menu>
                 <small
                     style={{

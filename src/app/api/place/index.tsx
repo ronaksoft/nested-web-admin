@@ -124,4 +124,25 @@ export default class PlaceApi {
         });
     }
 
+    getDefaultPlace(params: any): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/default_places_get',
+            data: params,
+        });
+    }
+
+    addDefaultPlace(params: any): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/default_places_add',
+            data: params,
+        });
+    }
+
+    removeDefaultPlace(params: any): Promise<any> {
+        return this.api.server.request({
+            cmd: 'admin/default_places_remove',
+            data: params,
+        });
+    }
+
 }

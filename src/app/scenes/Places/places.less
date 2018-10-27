@@ -13,7 +13,7 @@
                     opacity: .4;
                     color: @color-solid;
                 }
-                .ant-tabs-tab + .ant-tabs-tab{
+                .ant-tabs-tab + .ant-tabs-tab {
                     width: 184px;
                 }
                 .ant-tabs-tab-active {
@@ -42,12 +42,14 @@
         }
     }
 }
+
 .white-block-container {
     padding: 8px 0;
     background-color: #ffffff;
     box-shadow: 0px 2px 4px rgba(50, 61, 71, 0.16);
     border-radius: 4px;
 }
+
 .places-list {
     .PlaveView {
         display: flex;
@@ -58,6 +60,11 @@
             > span {
                 min-width: 100%;
                 max-width: 100%;
+            }
+        }
+        &.indent-left {
+            .PlaceView--inner {
+                margin-left: 30px;
             }
         }
     }

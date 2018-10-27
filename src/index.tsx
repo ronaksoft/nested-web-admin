@@ -24,6 +24,7 @@ import Config from './app/scenes/Config/index';
 import Charts from './app/scenes/Charts/index';
 import Stats from './app/scenes/Stats/index';
 import Apps from './app/scenes/Apps/index';
+import DefaultPlaces from './app/scenes/Places/Default/index';
 
 const store: IStore<any> = configureStore({});
 
@@ -40,6 +41,7 @@ ReactDOM.render(
                     <Route path='/charts' component={Charts}/>
                     <Route path='/stats' component={Stats}/>
                     <Route path='/apps' component={Apps}/>
+                    <Route path='/default_places' component={DefaultPlaces}/>
                 </Route>
                 {/* <Route component={BoxPages}>
                     <Route path='/intro' component={Introduction}/>
