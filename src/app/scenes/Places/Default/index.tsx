@@ -341,14 +341,12 @@ class DefaultPlaces extends React.Component<IProps, IState> {
                 >
                     Remove <b>"{this.state.selectedPlace}"</b>?
                 </Modal>}
+                <Row type='flex' align='middle' className='scene-head'>
+                    <h2>Default places</h2>
+                    <Button type=' butn butn-green secondary' onClick={this.toggleAddDefaultPlaceModal}>Add Default
+                        Place</Button>
+                </Row>
                 <div className='white-block-container'>
-                    <Row>
-                        <Col span={20}/>
-                        <Col span={4}>
-                            <Button type=' butn butn-green secondary' onClick={this.toggleAddDefaultPlaceModal}>Add
-                                Default Place</Button>
-                        </Col>
-                    </Row>
                     <Row>
                         <Col span={24}>
                             <div className='places-list'>
