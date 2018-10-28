@@ -34,6 +34,7 @@ export interface IAppsState {
 class Apps extends React.Component <IAppsProps, IAppsState> {
     AppApi: any;
     pageLimit: number = 10;
+
     constructor(props: IAppsProps) {
         super(props);
         this.state = {
@@ -53,7 +54,7 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
         }, this.fetchApps);
     }
 
-    clearQuery () {
+    clearQuery() {
         this.setState({
             searchKeyword: '',
         });
@@ -109,7 +110,7 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
         });
     }
 
-    unselectAll () {
+    unselectAll() {
         this.setState({
             selectedItems: []
         });
@@ -121,13 +122,13 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
     }
 
     removeApp = (app_id?: string) => {
-        if(!app_id && app_id !== '') {
-            this.state.selectedItems.forEach( (app: IApp) => {
+        if (!app_id && app_id !== '') {
+            this.state.selectedItems.forEach((app: IApp) => {
                 this.removeApp(app._id);
             });
         } else {
             this.AppApi.remove({app_id})
-            .then(this.fetchApps);
+                .then(this.fetchApps);
         }
         this.unselectAll();
     }
@@ -202,19 +203,20 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
                     renderer = (text: string, record: IApp, index: any) => {
                         // console.log(text, record);
                         return <Row type='flex' align='middle'>
-                                    <Row type='flex' align='middle'>
-                                        <Checkbox onChange={(event) => this.onCheckboxChange(event, record)}
-                                                checked={record.isChecked}/>
-                                        <span>{text}</span>
-                                    </Row>
-                                </Row>;
+                            <Row type='flex' align='middle'>
+                                <Checkbox onChange={(event) => this.onCheckboxChange(event, record)}
+                                          checked={record.isChecked}/>
+                                <span>{text}</span>
+                            </Row>
+                        </Row>;
                     };
                     break;
                 case 'logo':
                     renderer = (text: string, record: IApp, index: any) => {
                         return (<Row type='flex' align='middle'>
-                                    <img width='32' height='32' alt={text} src={record.icon_small_url}/>
-                                </Row>);};
+                            <img width='32' height='32' alt={text} src={record.icon_small_url}/>
+                        </Row>);
+                    };
                     break;
                 case 'name':
                 case 'developer':
@@ -236,19 +238,22 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
             <div className='charts-scene'>
                 <Row type='flex' align='middle' className='scene-head'>
                     <h2>Apps</h2>
-                    <Button type=' butn butn-green secondary' onClick={this.toggleCreateApp}>Add application</Button>
+                    <a href='https://store.nested.me/' target='_blank'><Button type='butn butn-green secondary'>Add
+                        Application</Button></a>
                 </Row>
                 <div className='white-block-container'>
                     <Row className={[
-                            'toolbar',
-                            isSelected ? 'selcted-mode' : '',
-                        ].join(' ')} type='flex'>
+                        'toolbar',
+                        isSelected ? 'selcted-mode' : '',
+                    ].join(' ')} type='flex'>
                         {!isSelected && (<div className='filter-search'>
-                            <Input className='filter-search' value={this.state.searchKeyword} placeholder='type to search...'
+                            <Input className='filter-search' value={this.state.searchKeyword}
+                                   placeholder='type to search...'
                                    onChange={this.searchKeyDown.bind(this)}/>
-                            { this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
-                            { this.state.searchKeyword.length > 0 &&
-                                <div className='_cp' onClick={this.clearQuery.bind(this)}><IcoN size={16} name={'xcross16'}/></div>
+                            {this.state.searchKeyword.length === 0 && <IcoN size={16} name={'search16'}/>}
+                            {this.state.searchKeyword.length > 0 &&
+                            <div className='_cp' onClick={this.clearQuery.bind(this)}><IcoN size={16}
+                                                                                            name={'xcross16'}/></div>
                             }
                         </div>)}
                         {isSelected && (
@@ -264,9 +269,10 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
                             <BarMenu menus={[{
                                 key: 'remove',
                                 name: 'Delete',
-                                icon: 'bin16'}]} onChange={() => {
-                                    this.removeApp();
-                                }}/>
+                                icon: 'bin16'
+                            }]} onChange={() => {
+                                this.removeApp();
+                            }}/>
                         )}
                         {/* {isSelected && (
                             <BarMenu menus={[{
@@ -303,7 +309,10 @@ class Apps extends React.Component <IAppsProps, IAppsState> {
                         </ul>
                     </Card>
                 </Row> */}
-                <Create visible={this.state.createAppVisible} handleClose={this.toggleCreateApp} handleCreate={this.create}/>
+                <Create visible={this.state.createAppVisible} handleClose={this.toggleCreateApp}
+                        handleCreate={this.create}/>
+                <Button type=' butn butn-white secondary margin-top-10' onClick={this.toggleCreateApp}>Add Custom
+                    Application</Button>
             </div>
         );
     }
