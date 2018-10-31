@@ -89,7 +89,7 @@ export default class AddPlaceModal extends React.Component <IProps, IStates> {
 
     loadEvenMore() {
         this.searchSetting.skip += this.searchSetting.limit;
-        const filter = 'all';
+        const filter = 'shared_places';
         this.placeApi.placeList({
             filter,
             keyword: this.searchSetting.keyword,
@@ -104,7 +104,7 @@ export default class AddPlaceModal extends React.Component <IProps, IStates> {
 
     searchPlaces(keyword: string) {
         this.searchSetting.skip = 0;
-        const filter = 'all';
+        const filter = 'shared_places';
         this.placeApi.placeList({
             filter,
             keyword: this.searchSetting.keyword,
@@ -250,7 +250,7 @@ export default class AddPlaceModal extends React.Component <IProps, IStates> {
                 onCancel={this.handleCancel.bind(this)}
                 visible={this.state.visible}
                 footer={modalFooter}
-                title='Place Member'>
+                title='Add Place'>
                 <Row className='input-area' type='flex'>
                     {this.getSelectedPlaces()}
                     <Input
