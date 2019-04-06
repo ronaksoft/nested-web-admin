@@ -398,10 +398,9 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                         loading: true,
                     });
                     const placeApi = new PlaceApi();
-                    placeApi.placeList({
-                        grand_parent_id: record._id
-                    }).then((data) => {
-                        let tempTree = this.createTree(data);
+                    let placesFromServer = [];
+                    const allPlacesGot = function() {
+                        let tempTree = this.createTree(placesFromServer);
                         places[index] = _.merge(tempTree[0], {
                             expanded: true,
                             isChecked: places[index].isChecked,
@@ -413,7 +412,21 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                             places: places,
                             loading: false,
                         });
-                    });
+                    };
+                    const getPlaces = function() {
+                        placeApi.placeList({
+                            grand_parent_id: record._id,
+                            skip: placesFromServer.length,
+                        }).then((data) => {
+                            placesFromServer.concat(data);
+                            if (data.length === 100) {
+                                getPlaces();
+                            } else {
+                                allPlacesGot();
+                            }
+                        });
+                    };
+                    getPlaces();
                 } else {
                     if (!places[index].children) {
                         places[index].children = cachedTrees[record._id];
