@@ -418,7 +418,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                             grand_parent_id: record._id,
                             skip: placesFromServer.length,
                         }).then((data) => {
-                            placesFromServer.concat(data);
+                            placesFromServer = placesFromServer.concat(data);
                             if (data.length === 100) {
                                 getPlaces();
                             } else {
