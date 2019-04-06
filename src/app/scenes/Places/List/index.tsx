@@ -399,7 +399,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                     });
                     const placeApi = new PlaceApi();
                     let placesFromServer = [];
-                    const allPlacesGot = function() {
+                    const allPlacesGot = () => {
                         let tempTree = this.createTree(placesFromServer);
                         places[index] = _.merge(tempTree[0], {
                             expanded: true,
@@ -413,7 +413,7 @@ export default class PlaceList extends React.Component<IListProps, IListState> {
                             loading: false,
                         });
                     };
-                    const getPlaces = function() {
+                    const getPlaces = () => {
                         placeApi.placeList({
                             grand_parent_id: record._id,
                             skip: placesFromServer.length,
