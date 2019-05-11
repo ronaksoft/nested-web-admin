@@ -52,7 +52,7 @@
     "lazypipe": "^1.0.1",
     "phantomjs-prebuilt": "^2.1.14",
     "systemjs-builder": "0.15.23",
-    "tslint": "^5.8.0",
+    "tslint": "^5.16.0",
     "typescript": "^3.4.5",
     "uglify-save-license": "^0.4.1"
   },
