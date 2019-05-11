@@ -339,8 +339,7 @@ class DefaultPlaces extends React.Component<IProps, IState> {
                                 onClick={this.removePlace}>Remove</Button>,
                     ]}
                 >
-                    Remove <b>"{this.state.selectedPlace}"</b> from default places,<br/>
-                    Are you sure?
+                    Remove <b>"{this.state.selectedPlace}"</b>?
                 </Modal>}
                 <Row type='flex' align='middle' className='scene-head'>
                     <h2>Default places</h2>
