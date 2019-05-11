@@ -70,6 +70,7 @@
       "antd": "npm:antd@^2.9.3",
       "babel-plugin-import": "npm:babel-plugin-import@^1.1.1",
       "babel-runtime": "npm:babel-runtime@^6.23.0",
+      "@babel/code-frame": "npm:@babel/code-frame@^7.0.0",
       "cookies": "npm:cookies@^0.7.0",
       "cookies-js": "npm:cookies-js@^1.2.3",
       "draft-js-export-html": "npm:draft-js-export-html@^1.2.0",
