@@ -97,28 +97,27 @@ export default class NstCrop extends React.Component<IProps, IStates> {
 
   getCroppedImg = (image: any, pixelCrop: any, fileName: string = 'pic.jpg') => {
     const canvas = document.createElement('canvas');
-    const naturalWidth = image.naturalWidth;
-    const naturalHeight = image.naturalHeight;
-    canvas.width = (pixelCrop.width * naturalWidth) / 100;
-    canvas.height = (pixelCrop.height * naturalHeight) / 100;
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = pixelCrop.width;
+    canvas.height = pixelCrop.height;
     const ctx = canvas.getContext('2d');
 
-    image.style.width = naturalWidth;
-    image.style.height = naturalHeight;
+    // image.style.width = naturalWidth;
+    // image.style.height = naturalHeight;
     if (ctx) {
       ctx.drawImage(
         image,
-        (pixelCrop.x * naturalWidth) / 100,
-        (pixelCrop.y * naturalHeight) / 100,
-        (pixelCrop.width * naturalWidth) / 100,
-        (pixelCrop.height * naturalHeight) / 100,
+        pixelCrop.x * scaleX,
+        pixelCrop.y * scaleY,
+        pixelCrop.width * scaleX,
+        pixelCrop.height * scaleY,
         0,
         0,
-        (pixelCrop.width * naturalWidth) / 100,
-        (pixelCrop.height * naturalHeight) / 100
+        pixelCrop.width,
+        pixelCrop.height
       );
     }
-    document.body.appendChild(canvas);
     return new Promise((resolve, reject) => {
       canvas.toBlob((file: any) => {
         file.name = fileName;
