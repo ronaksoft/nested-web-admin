@@ -82,7 +82,7 @@ export default class EditMessageModal extends React.Component<IProps, IStates> {
     this.setState({
       subject: e.target.value || '',
     });
-  }
+  };
 
   onChange = (editorState: any) => {
     this.setState({ editorState });
@@ -114,10 +114,17 @@ export default class EditMessageModal extends React.Component<IProps, IStates> {
         </DialogContent>
         <DialogActions>
           <div className="modal-foot">
-            <Button onClick={this.handleCancel} variant="outlined" color="secondary">
+            <Button
+              onClick={this.handleCancel}
+              className="button-margin"
+              variant="outlined"
+              color="secondary"
+            >
               Close
             </Button>
-            <Button variant="contained" color="primary" onClick={this.saveMessage}>Save</Button>
+            <Button variant="contained" color="primary" onClick={this.saveMessage}>
+              Save
+            </Button>
           </div>
         </DialogActions>
       </Dialog>

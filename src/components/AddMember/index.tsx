@@ -198,7 +198,7 @@ class AddMemberModal extends React.Component<IProps, IStates> {
       <ul className="suggests">
         {list}
         <li key={'add_member_load_more'}>
-          <Button variant="outlined" color="secondary" onClick={this.loadEvenMore}>
+          <Button variant="outlined" color="secondary" onClick={this.loadEvenMore} fullWidth={true}>
             Load More...
           </Button>
         </li>
