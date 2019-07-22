@@ -929,7 +929,7 @@ class View extends React.Component<IViewProps, IViewState> {
             </div>
           )}
           {editMode && (
-            <Button onClick={this.clearForm} variant="outlined" color="secondary">
+            <Button className="button-margin" onClick={this.clearForm} variant="outlined" color="secondary">
               Discard
             </Button>
           )}
