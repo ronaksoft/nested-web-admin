@@ -90,7 +90,7 @@ class OnlineUsers extends React.Component<IOnlineUsersProps, IOnlineUsersState> 
           <h2>Online Users</h2>
           <Tooltip placement="top" title={this.state.reloadLoop ? 'Auto Reloading' : 'Reload'}>
             <div
-              className={['_cp', this.state.reloadLoop ? 'reloading' : ''].join(' ')}
+              className={['_df', '_cp', this.state.reloadLoop ? 'reloading' : ''].join(' ')}
               onClick={this.reload}
             >
               <ReloadIcon />

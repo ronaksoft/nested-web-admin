@@ -82,14 +82,14 @@ class ChartCardHead extends React.Component<IChartCardProps, IChartCardState> {
         &nbsp; &nbsp;
         <Tooltip placement="top" title={this.state.reloadLoop ? 'Auto Reloading' : 'Reload'}>
           <div
-            className={['_cp', this.state.reloadLoop ? 'reloading' : ''].join(' ')}
+            className={['_cp', '_df', this.state.reloadLoop ? 'reloading' : ''].join(' ')}
             onClick={this.props.reload}
           >
             <RefreshIcon />
           </div>
         </Tooltip>
         &nbsp; &nbsp;
-        <div className="_cp" onClick={this.handleOpenMenu}>
+        <div className="_cp _df" onClick={this.handleOpenMenu}>
           <SettingsIcon />
         </div>
         <Menu

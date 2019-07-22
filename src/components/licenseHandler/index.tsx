@@ -73,12 +73,13 @@ class Licence extends React.Component<ILicenceProps, ILicenceState> {
         this.toggleSetLicenseModal();
       })
       .catch((error: any) => {
-        if (error.err_code === 4) {
+        if (error.err_code === 4 || error.err_code === 3) {
           this.props.enqueueSnackbar(`You hash code is wrong!`, {
-            variant: 'warning',
+            variant: 'error',
           });
+        } else {
+          console.log('error', error);
         }
-        console.log('error', error);
       });
   };
 
@@ -154,14 +155,24 @@ class Licence extends React.Component<ILicenceProps, ILicenceState> {
               value={this.state.hash}
               className={classes.hashInsert}
               onChange={this.updateHash}
+              fullWidth={true}
               label="License hash code."
             />
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined" color="secondary" size="large" onClick={() => this.setState({ licenseModal: false })}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => this.setState({ licenseModal: false })}
+            >
               Cancel
             </Button>
-            <Button variant="contained" color="primary" size="large" onClick={this.setLicense}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.setLicense}
+              disabled={this.state.hash.length === 0}
+            >
               Save
             </Button>
           </DialogActions>
@@ -191,4 +202,3 @@ export default withStyles((theme: Theme) =>
     },
   })
 )(withSnackbar(Licence));
-

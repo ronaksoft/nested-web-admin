@@ -11,15 +11,7 @@ import AAA from '../../services/classes/aaa/index';
 import CONFIG from '../../config';
 import AccountApi from '../../api/account';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-import {
-  Button,
-  Grid,
-  Paper,
-  Select,
-  MenuItem,
-  Typography,
-  FormControl,
-} from '@material-ui/core';
+import { Button, Grid, Paper, Select, MenuItem, Typography, FormControl } from '@material-ui/core';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { withSnackbar } from 'notistack';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
@@ -383,7 +375,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                           <Select
                             id={'register_mode'}
                             value={this.state.data.register_mode}
-                            style={{ width: 128 }}
+                            style={{ width: 200 }}
                             onChange={this.checkConfirm('register_mode')}
                           >
                             <MenuItem value="" disabled={true}>
@@ -670,7 +662,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                           <Select
                             id={'retract_time_select'}
                             value={this.state.data.post_retract_time}
-                            style={{ width: 128 }}
+                            style={{ width: 200 }}
                             onChange={this.checkConfirm('post_retract_time')}
                           >
                             <MenuItem value={3600000}>1</MenuItem>
@@ -739,33 +731,23 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                                 remove image{' '}
                               </Button>
                             )}
-                          <Button variant="contained" color="primary" className="button-margin">
-                            <label htmlFor="file">Select image</label>
-                            <div
+                          {/* <div
                               className="progress-bar"
                               style={{ width: this.state.uploadPercent + '%' }}
-                            />
+                            /> */}
+                          <Button variant="contained" color="primary" className="button-margin">
+                            <label htmlFor="file">Select image</label>
                           </Button>
                           {this.state.stringConstants.company_logo &&
                             this.state.stringConstants.company_logo !== '' && (
-                              <img className="comapny-logo" alt="logo" src={imageUrl} width={40} height={40} />
+                              <img
+                                className="comapny-logo"
+                                alt="logo"
+                                src={imageUrl}
+                                width={40}
+                                height={40}
+                              />
                             )}
-                          {/* {getFieldDecorator('company_logo', {
-                          initialValue: this.state.stringConstants.company_logo,
-                          rules: [
-                            {
-                              validator: this.checkConfirm,
-                            },
-                          ],
-                        })(
-                          <Upload {...uploadProps}>
-                            <Button> Select image </Button>
-                            <div
-                              className="progress-bar"
-                              style={{ width: this.state.uploadPercent + '%' }}
-                            />
-                          </Upload>
-                        )} */}
                         </div>
                       </li>
                       <li>
@@ -775,7 +757,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
                           <Select
                             id={'system_lang'}
                             value={this.state.stringConstants.system_lang}
-                            style={{ width: 128 }}
+                            style={{ width: 200 }}
                             onChange={this.checkConfirm('system_lang', 'stringConstants')}
                           >
                             <MenuItem value="en">EN</MenuItem>
@@ -835,7 +817,7 @@ export default withStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      '& label': {
+      '& > label': {
         display: 'flex',
         flex: 'none',
         paddingRight: theme.spacing(2),
