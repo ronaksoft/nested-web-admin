@@ -11,6 +11,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import Switch from '@material-ui/core/Switch';
 import TimePeriod from './TimePeriod';
 import Tooltip from '@material-ui/core/Tooltip';
+import ChartCardHead from './ChartCardHead';
 
 interface IChartCardProps {
   title: string[];
@@ -73,7 +74,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
         }
       }
     );
-  }
+  };
 
   changeCompare = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
@@ -91,7 +92,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     }
     // todo array is not cloned properly !
     // console.log(titles, this.state.titles);
-  }
+  };
 
   componentWillReceiveProps(newProps: IChartCardProps) {
     if (newProps.period !== this.state.period) {
@@ -138,57 +139,16 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     const activeColors = this.props.color.filter((color, index) => this.state.titles[index].active);
     return (
       <Card className="chart-card">
-        <div className="card-head">
-          <h2>{titleDom}</h2>
-          <Tooltip title="Compare with previous period ?!">
-            <Switch
-              checked={this.state.comparePreviousPeriod}
-              onChange={this.changeCompare}
-              value={this.state.comparePreviousPeriod}
-              inputProps={{ 'aria-label': 'secondary checkbox' }}
-            />
-          </Tooltip>
-          &nbsp; &nbsp;
-          <Tooltip placement="top" title={this.state.reloadLoop ? 'Auto Reloading' : 'Reload'}>
-            <a
-              rel="noopener noreferrer"
-              className={[this.state.reloadLoop ? 'reloading' : ''].join(' ')}
-              onClick={this.reload}
-            >
-              <RefreshIcon />
-            </a>
-          </Tooltip>
-          &nbsp; &nbsp;
-          <a rel="noopener noreferrer" onClick={this.handleOpenMenu}>
-            <SettingsIcon />
-          </a>
-          <Menu
-            open={!!this.state.openMenu}
-            anchorEl={this.state.openMenu}
-            onClose={this.handleOpenMenu}
-          >
-            <MenuItem onClick={this.handleOpenMenu}>
-              <a rel="noopener noreferrer" onClick={this.updatePeriod(TimePeriod.Hour)}>
-                Last 1 hour
-              </a>
-            </MenuItem>
-            <MenuItem onClick={this.handleOpenMenu}>
-              <a rel="noopener noreferrer" onClick={this.updatePeriod(TimePeriod.Day)}>
-                Last 24 hours
-              </a>
-            </MenuItem>
-            <MenuItem onClick={this.handleOpenMenu}>
-              <a rel="noopener noreferrer" onClick={this.updatePeriod(TimePeriod.Week)}>
-                Last 7 days
-              </a>
-            </MenuItem>
-            <MenuItem onClick={this.handleOpenMenu}>
-              <a rel="noopener noreferrer" onClick={this.updatePeriod(TimePeriod.Month)}>
-                Last 30 days
-              </a>
-            </MenuItem>
-          </Menu>
-        </div>
+        <ChartCardHead
+          titles={this.state.titles}
+          period={this.state.period}
+          reload={this.reload}
+          toggleItem={this.toggleItem}
+          updatePeriod={this.updatePeriod}
+          comparePreviousPeriod={this.state.comparePreviousPeriod}
+          changeCompare={this.changeCompare}
+          reloadLoop={this.state.reloadLoop}
+        />
         <div className="card-body">
           <ActivityArea
             measure={this.props.measure}
