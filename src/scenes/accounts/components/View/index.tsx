@@ -744,13 +744,14 @@ class View extends React.Component<IViewProps, IViewState> {
           account_id: this.state.account._id,
         })
         .then(data => {
-          if (_.isArray(this.state.places[index].access)) {
-            this.state.places[index].access.push('C');
+          const { places } = this.state;
+          if (_.isArray(places[index].access)) {
+            places[index].access.push('C');
           } else {
-            this.state.places[index].access = ['C'];
+            places[index].access = ['C'];
           }
           this.setState({
-            places: this.state.places,
+            places,
           });
         });
     }
@@ -929,7 +930,12 @@ class View extends React.Component<IViewProps, IViewState> {
             </div>
           )}
           {editMode && (
-            <Button className="button-margin" onClick={this.clearForm} variant="outlined" color="secondary">
+            <Button
+              className="button-margin"
+              onClick={this.clearForm}
+              variant="outlined"
+              color="secondary"
+            >
               Discard
             </Button>
           )}
@@ -1248,22 +1254,22 @@ class View extends React.Component<IViewProps, IViewState> {
                       <div key={place._id + '1'} className="user-in-place-item">
                         <PlaceItem onClick={this.showPlaceModal} place={place} />
                         {this.state.account._id !== place._id && (
-                          <a
-                            className="remove"
+                          <div
+                            className="_cp remove"
                             title={'Remove From Place'}
                             onClick={this.toggleRemoveMemberModal(place._id)}
                           >
                             <IcoN size={16} name={'bin16'} />
-                          </a>
+                          </div>
                         )}
                         {this.state.account._id !== place._id && (
-                          <a
-                            className="promote"
+                          <div
+                            className="_cp promote"
                             title={'Demote Member'}
                             onClick={this.demoteInPlace(place._id)}
                           >
                             <IcoN size={24} name={'crown24'} />
-                          </a>
+                          </div>
                         )}
                       </div>
                     ))}
@@ -1280,20 +1286,20 @@ class View extends React.Component<IViewProps, IViewState> {
                               place={place}
                               key={place._id}
                             />
-                            <a
-                              className="remove"
+                            <div
+                              className="_cp remove"
                               title={'Remove From Place'}
                               onClick={this.toggleRemoveMemberModal(place._id)}
                             >
                               <IcoN size={16} name={'bin16'} />
-                            </a>
-                            <a
-                              className="promote"
+                            </div>
+                            <div
+                              className="_cp promote"
                               title={'Promote Member'}
                               onClick={this.promoteInPlace(place._id)}
                             >
                               <IcoN size={24} name={'crownWire24'} />
-                            </a>
+                            </div>
                           </div>
                         );
                       })}

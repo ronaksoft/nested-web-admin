@@ -3,14 +3,8 @@ import _ from 'lodash';
 import ActivityArea from './ActivityArea';
 import { Card } from '@material-ui/core';
 import MeasureType from './MeasureType';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import ReportType from '../../consts/ReportType';
-import SettingsIcon from '@material-ui/icons/Settings';
-import Switch from '@material-ui/core/Switch';
 import TimePeriod from './TimePeriod';
-import Tooltip from '@material-ui/core/Tooltip';
 import ChartCardHead from './ChartCardHead';
 
 interface IChartCardProps {
@@ -108,7 +102,7 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
     }
   }
 
-  updatePeriod = (period: TimePeriod) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  updatePeriod = (period: TimePeriod) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     this.setState({ period });
     if (_.isFunction(this.props.syncPeriod)) {
       this.props.syncPeriod(period);
@@ -122,17 +116,6 @@ class ChartCard extends React.Component<IChartCardProps, IChartCardState> {
   };
 
   render() {
-    const titleDom = this.state.titles.map((title, index) => {
-      return (
-        <span
-          key={index}
-          className={title.active ? 'multi-chart-title' : 'multi-chart-title deactive'}
-          onClick={this.toggleItem(index)}
-        >
-          {title.title}
-        </span>
-      );
-    });
     const activePropTypes = this.state.dataType.filter(
       (dataType, index) => this.state.titles[index].active
     );

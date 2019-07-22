@@ -1,5 +1,4 @@
 import * as React from 'react';
-import _ from 'lodash';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -15,7 +14,7 @@ interface IChartCardProps {
   changeCompare: (e: React.ChangeEvent<HTMLInputElement>) => void;
   updatePeriod: (
     period: TimePeriod
-  ) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+  ) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   reload: () => void;
   reloadLoop: boolean;
   comparePreviousPeriod: boolean;
@@ -82,42 +81,41 @@ class ChartCardHead extends React.Component<IChartCardProps, IChartCardState> {
         </Tooltip>
         &nbsp; &nbsp;
         <Tooltip placement="top" title={this.state.reloadLoop ? 'Auto Reloading' : 'Reload'}>
-          <a
-            rel="noopener noreferrer"
-            className={[this.state.reloadLoop ? 'reloading' : ''].join(' ')}
+          <div
+            className={['_cp', this.state.reloadLoop ? 'reloading' : ''].join(' ')}
             onClick={this.props.reload}
           >
             <RefreshIcon />
-          </a>
+          </div>
         </Tooltip>
         &nbsp; &nbsp;
-        <a rel="noopener noreferrer" onClick={this.handleOpenMenu}>
+        <div className="_cp" onClick={this.handleOpenMenu}>
           <SettingsIcon />
-        </a>
+        </div>
         <Menu
           open={!!this.state.openMenu}
           anchorEl={this.state.openMenu}
           onClose={this.handleOpenMenu}
         >
           <MenuItem onClick={this.handleOpenMenu}>
-            <a rel="noopener noreferrer" onClick={this.props.updatePeriod(TimePeriod.Hour)}>
+            <div className="_cp" onClick={this.props.updatePeriod(TimePeriod.Hour)}>
               Last 1 hour
-            </a>
+            </div>
           </MenuItem>
           <MenuItem onClick={this.handleOpenMenu}>
-            <a rel="noopener noreferrer" onClick={this.props.updatePeriod(TimePeriod.Day)}>
+            <div className="_cp" onClick={this.props.updatePeriod(TimePeriod.Day)}>
               Last 24 hours
-            </a>
+            </div>
           </MenuItem>
           <MenuItem onClick={this.handleOpenMenu}>
-            <a rel="noopener noreferrer" onClick={this.props.updatePeriod(TimePeriod.Week)}>
+            <div className="_cp" onClick={this.props.updatePeriod(TimePeriod.Week)}>
               Last 7 days
-            </a>
+            </div>
           </MenuItem>
           <MenuItem onClick={this.handleOpenMenu}>
-            <a rel="noopener noreferrer" onClick={this.props.updatePeriod(TimePeriod.Month)}>
+            <div className="_cp" onClick={this.props.updatePeriod(TimePeriod.Month)}>
               Last 30 days
-            </a>
+            </div>
           </MenuItem>
         </Menu>
       </div>

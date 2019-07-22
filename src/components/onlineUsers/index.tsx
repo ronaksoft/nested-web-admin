@@ -89,14 +89,12 @@ class OnlineUsers extends React.Component<IOnlineUsersProps, IOnlineUsersState> 
         <div className="card-head">
           <h2>Online Users</h2>
           <Tooltip placement="top" title={this.state.reloadLoop ? 'Auto Reloading' : 'Reload'}>
-            <a
-              href="#"
-              rel="noopener noreferrer"
-              className={[this.state.reloadLoop ? 'reloading' : ''].join(' ')}
+            <div
+              className={['_cp', this.state.reloadLoop ? 'reloading' : ''].join(' ')}
               onClick={this.reload}
             >
               <ReloadIcon />
-            </a>
+            </div>
           </Tooltip>
         </div>
         <div className="card-body">{onlineUsers.length > 0 && onlineUsersDom}</div>

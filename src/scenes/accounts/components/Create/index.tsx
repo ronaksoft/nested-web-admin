@@ -112,7 +112,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     });
   };
 
-  handleUpload(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+  handleUpload(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
     const uploader: HTMLInputElement | null = document.querySelector('#upload');
     if (uploader) {
@@ -209,10 +209,10 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             />
           ))}
           <Paper className={classes.addCard}>
-            <a onClick={this.addNewRow} className={classes.addRow}>
+            <div onClick={this.addNewRow} className={"link " + classes.addRow}>
               <PlusIcon />
               <b>Add more fields...</b>
-            </a>
+            </div>
             <div className="filler" />
             <input
               id="upload"
@@ -227,14 +227,14 @@ class Create extends React.Component<ICreateProps, ICreateState> {
               }}
               className="hidden"
             />
-            <a type="primary" onClick={this.handleUpload}>
+            <div className="link" onClick={this.handleUpload}>
               <b>Import from a file</b>
-            </a>
+            </div>
             <span className={classes.example}>
               for download template &nbsp;
-              <a onClick={this.downloadListCSV.bind(this)} type="warning">
+              <div className="link" onClick={this.downloadListCSV.bind(this)}>
                 click here.
-              </a>
+              </div>
             </span>
           </Paper>
         </DialogContent>

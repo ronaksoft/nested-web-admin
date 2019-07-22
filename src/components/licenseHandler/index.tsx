@@ -109,9 +109,9 @@ class Licence extends React.Component<ILicenceProps, ILicenceState> {
         <div className="card-head">
           <h2>Nested Service License</h2>
           <Tooltip placement="top" title="Set License">
-            <a href="#" rel="noopener noreferrer" target="_blank" onClick={this.toggleSetLicenseModal}>
+            <div className="_cp" onClick={this.toggleSetLicenseModal}>
               <IcoN size={16} name="cross16" />
-            </a>
+            </div>
           </Tooltip>
         </div>
         <div className="card-body">

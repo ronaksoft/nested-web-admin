@@ -88,6 +88,13 @@ a {
 ._df {
   display: flex
 }
+._cp {
+  cursor: pointer;
+}
+.link {
+  @extend a;
+  @extend ._cp;
+}
 .filler {
     flex: 1;
     display: flex;

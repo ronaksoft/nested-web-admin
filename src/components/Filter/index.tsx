@@ -86,10 +86,10 @@ class Filter extends React.Component<IFilterProps, IFilterState> {
 
     return (
       <h2>
-        <a className="ant-dropdown-link" href="#" onClick={this.toggleDrawer}>
+        <div className="link ant-dropdown-link" onClick={this.toggleDrawer}>
           {this.state.selectedItem && <span>{this.state.selectedItem.name}</span>}
           <IcoN size={16} name="sort16" />
-        </a>
+        </div>
         <Drawer open={isOpen} onClose={this.toggleDrawer}>
           <Menu open={isOpen} keepMounted={true} onClose={this.toggleDrawer}>
             {menus}

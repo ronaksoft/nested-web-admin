@@ -29,7 +29,7 @@ export interface IFilterState {
   isOpen: boolean;
 }
 class MoreOption extends React.Component<IFilterProps, IFilterState> {
-  private button: React.RefObject<HTMLAnchorElement> = React.createRef();
+  private button: React.RefObject<HTMLDivElement> = React.createRef();
 
   constructor(props: IFilterProps) {
     super(props);
@@ -92,9 +92,9 @@ class MoreOption extends React.Component<IFilterProps, IFilterState> {
 
     return (
       <div>
-        <a className="ant-dropdown-link" href="#" onClick={this.toggleDrawer} ref={this.button}>
+        <div className="_cp ant-dropdown-link" onClick={this.toggleDrawer} ref={this.button}>
           <IcoN size={24} name="more24" />
-        </a>
+        </div>
         <Menu
           open={isOpen}
           keepMounted={true}
