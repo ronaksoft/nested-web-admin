@@ -10,18 +10,11 @@ import PlaceModal from '../../components/PlaceModal/index';
 import UserModal from '../../scenes/accounts/components/View/index';
 import IUser from '../../interfaces/IUser';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
-import {
-  Avatar,
-  Chip,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Paper,
-  TextField,
-} from '@material-ui/core';
+import { Avatar, Chip, Grid, InputAdornment, MenuItem, Paper, TextField } from '@material-ui/core';
 import { IcoN } from '../icon/index';
 import { withSnackbar } from 'notistack';
 import SearchIcon from '@material-ui/icons/Search';
+import PlaceView from '../placeview/';
 
 interface IHeaderProps {
   classes: any;
@@ -82,7 +75,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         const result: any[] = [];
         result[0] = {
           key: 'accounts',
-          title: 'Aaccounts',
+          title: 'Accounts',
           items: resultSet[0].accounts,
         };
         result[1] = {
@@ -197,15 +190,26 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
         return (
           <div key={group.key}>
             <h3>{group.title}</h3>
-            {group.items.map((item: any) => (
-              <MenuItem
-                key={group.key + '_' + item._id}
-                value={group.key + '___' + item._id}
-                onClick={this.handleSelect(group, item)}
-              >
-                {item._id}
-              </MenuItem>
-            ))}
+            {group.key === 'places' &&
+              group.items.map((item: any) => (
+                <MenuItem
+                  key={group.key + '_' + item._id}
+                  value={group.key + '___' + item._id}
+                  onClick={this.handleSelect(group, item)}
+                >
+                  <PlaceView borderRadius="4px" place={item} size={32} avatar={true} name={true} id={true} />
+                </MenuItem>
+              ))}
+            {group.key === 'accounts' &&
+              group.items.map((item: any) => (
+                <MenuItem
+                  key={group.key + '_' + item._id}
+                  value={group.key + '___' + item._id}
+                  onClick={this.handleSelect(group, item)}
+                >
+                  <UserAvatar size={24} user={item} avatar={true} name={true} id={false} />
+                </MenuItem>
+              ))}
           </div>
         );
       });
