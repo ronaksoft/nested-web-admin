@@ -77,14 +77,14 @@ class HealthCheck extends React.Component<IHealthCheckProps, IHealthCheckState> 
         <Grid item={true} xs={6}>
           <p>Health check is designed to fix any possible errors.</p>
           <Grid container={true}>
-            <Grid item={true} xs={6}>
+            <Grid item={true} xs={12}>
               <Loading active={this.state.isRunning} position="absolute" />
               <Button onClick={this.run.bind(this)} variant="contained" color="primary">
                 Run
                 <PlayIcon />
               </Button>
             </Grid>
-            <Grid item={true} xs={6}>
+            <Grid item={true} xs={12}>
               {this.state.last && (
                 <p>
                   Last Run: <b>{this.state.last.format('dddd, MMMM Do YYYY, h:mm:ss a')}</b>

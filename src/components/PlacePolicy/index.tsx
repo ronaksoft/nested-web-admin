@@ -12,7 +12,6 @@ import { IcoN } from '../icon/index';
 import IPlace from './../../interfaces/IPlace';
 import C_PLACE_RECEPTIVE from '../../consts/CPlaceReceptive';
 import C_PLACE_POLICY from '../../consts/CPlacePolicy';
-import SearchIcon from '@material-ui/icons/Search';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 interface IPlacePolicyProps {
@@ -59,7 +58,7 @@ class PlacePolicy extends React.Component<IPlacePolicyProps, any> {
       icon = <IcoN size={16} name={'search16'} />;
       text = 'This place shows in search results.';
     } else {
-      icon = <SearchIcon />;
+      icon = <IcoN size={16} name={'search16'} />;
       text = 'This place is not shown in search results.';
     }
     if (this.props.search) {
@@ -70,7 +69,7 @@ class PlacePolicy extends React.Component<IPlacePolicyProps, any> {
         </div>
       );
     } else {
-      return <div></div>;
+      return <div />;
     }
   }
 
@@ -109,7 +108,7 @@ class PlacePolicy extends React.Component<IPlacePolicyProps, any> {
         </div>
       );
     } else {
-      return <div></div>;
+      return <div />;
     }
   }
 
@@ -131,7 +130,7 @@ class PlacePolicy extends React.Component<IPlacePolicyProps, any> {
         </div>
       );
     } else {
-      return <div></div>;
+      return <div />;
     }
   }
 
@@ -166,7 +165,7 @@ class PlacePolicy extends React.Component<IPlacePolicyProps, any> {
    * @memberof PlacePolicy
    */
   public render() {
-    const {place, classes} = this.props;
+    const { place, classes } = this.props;
     return (
       <div className={classes.policies}>
         {this.receptive(place)}
@@ -183,6 +182,6 @@ export default withStyles((theme: Theme) =>
   createStyles({
     policies: {
       display: 'flex',
-    }
+    },
   })
 )(PlacePolicy);

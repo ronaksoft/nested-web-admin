@@ -5,6 +5,7 @@ interface IPlaceListRequest {
   filter?: string;
   grand_parent_id?: string;
   sort?: string;
+  only_grand: boolean;
 }
 
 export default IPlaceListRequest;

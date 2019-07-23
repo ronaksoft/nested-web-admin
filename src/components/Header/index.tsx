@@ -68,6 +68,7 @@ class Header extends React.Component<IHeaderProps, IHeaderState> {
     const getPlacePromise = this.placeApi.placeList({
       limit: 5,
       keyword: keyword,
+      only_grand: false,
     });
 
     Promise.all([getAccountPromise, getPlacePromise]).then(
