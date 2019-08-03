@@ -79,6 +79,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
       }
     );
   }
+
   GetData() {
     this.SystemApi.getConstants()
       .then((result: any) => {
@@ -183,37 +184,20 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         variant: 'warning',
       });
     }
-    // const model = this.props.form.getFieldsValue();
-    //     console.log(model);
-    //     let intModel: any = {};
-    //     let strModel: any = {};
-    //     for (let k in this.state.data) {
-    //       if (model[k] !== null) {
-    //         intModel[k] = model[k];
-    //       }
-    //     }
-    //     for (const k in this.state.stringConstants) {
-    //       strModel[k] = model[k];
-    //     }
-    //     if (typeof strModel.company_logo === 'object') {
-    //       strModel.company_logo = this.state.company_logo_universal_id;
-    //     } else {
-    //       strModel.company_logo = this.state.stringConstants.company_logo;
-    //     }
-    //     this.SetData(intModel);
-    //     this.SetStringConstants(strModel);
+    const { stringConstants } = this.state;
+    if (typeof stringConstants.company_logo === 'object') {
+      stringConstants.company_logo = this.state.company_logo_universal_id;
+    } else {
+      stringConstants.company_logo = this.state.stringConstants.company_logo;
+    }
+    this.SetData(this.state.data);
+    this.SetStringConstants(stringConstants);
   };
 
   handleReset = () => {
     this.setState({
       disableBtn: true,
       formData: {} as FormData,
-    });
-  };
-
-  handleChange = () => {
-    this.setState({
-      disableBtn: false,
     });
   };
 
@@ -255,7 +239,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     >
   ) => {
     const mainKey = key || 'data';
-    const state: any = {};
+    const state: any = { disableBtn: false };
     state[mainKey] = this.state[mainKey];
     state[mainKey][field] = event.target.value;
     this.setState(state);
