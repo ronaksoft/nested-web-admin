@@ -2,7 +2,7 @@ export default class {
   // this will parse a delimited string into an array of
   // arrays. the default delimiter is the comma, but this
   // can be overriden in the second argument.
-  static parse(strData: string, strDelimiter: string) {
+  public static parse(strData: string, strDelimiter: string) {
     // check to see if the delimiter is defined. if not,
     // then default to comma.
     strDelimiter = strDelimiter || ',';

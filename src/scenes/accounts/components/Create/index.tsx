@@ -209,7 +209,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             />
           ))}
           <Paper className={classes.addCard}>
-            <div onClick={this.addNewRow} className={"link " + classes.addRow}>
+            <div onClick={this.addNewRow} className={'link ' + classes.addRow}>
               <PlusIcon />
               <b>Add more fields...</b>
             </div>
@@ -218,7 +218,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
               id="upload"
               type="file"
               hidden={true}
-              accept="*.csv"
+              accept=".csv"
               onChange={this.readFile}
               onClick={(event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
                 if (event.target) {
@@ -232,7 +232,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
             </div>
             <span className={classes.example}>
               for download template &nbsp;
-              <div className="link" onClick={this.downloadListCSV.bind(this)}>
+              <div className="link" onClick={this.downloadListCSV}>
                 click here.
               </div>
             </span>
@@ -363,7 +363,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     link.click();
   }
 
-  private downloadListCSV() {
+  private downloadListCSV = () => {
     const data: any[] = [
       {
         model: {
@@ -402,7 +402,7 @@ class Create extends React.Component<ICreateProps, ICreateState> {
     link.setAttribute('download', 'create-account-example.csv');
     document.body.appendChild(link);
     link.click();
-  }
+  };
 
   private handleClose = () => {
     this.props.handleClose();

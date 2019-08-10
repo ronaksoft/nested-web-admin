@@ -469,7 +469,10 @@ class Places extends React.Component<IListProps, IListState> {
                 disabled: this.filter === CPlaceFilterTypes.PERSONAL_PLACES,
                 // disabled: record.grand_parent_id !== record._id || record.type !== C_PLACE_TYPE['0']
                 onClick: (event, rowData: IPlace[]) => {
-                  const ids: string = rowData.filter(p => p.type !== C_PLACE_TYPE['0']).map(p => p._id).join(',');
+                  const ids: string = rowData
+                    .filter(p => p.type !== C_PLACE_TYPE['0'])
+                    .map(p => p._id)
+                    .join(',');
                   if (ids.length > 0) {
                     this.toggleDeletePlaceModal(ids);
                   }
@@ -539,9 +542,16 @@ class Places extends React.Component<IListProps, IListState> {
               if (!this.state.isAbsoluteView) {
                 const grand = await this.getData(page, pageSize, this.filter, sort, true);
                 const child =
-                  grand.length > 0 ? await this.getAllChild(grand.map(p => p._id).join(',')) : [];
+                  grand.length > 0
+                    ? await this.getAllChild(
+                        grand
+                          .filter(p => p.counters.childs)
+                          .map(p => p._id)
+                          .join(',')
+                      )
+                    : [];
                 return {
-                  data: [...grand, ..._.flatMap(child)],
+                  data: _.unionBy([...grand, ..._.flatMap(child)], '_id'),
                   page,
                   totalCount: this.query ? grand.length : this.totalCount,
                 };

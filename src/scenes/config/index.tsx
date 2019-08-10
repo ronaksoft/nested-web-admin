@@ -156,16 +156,6 @@ class Config extends React.Component<IConfigProps, IConfigState> {
     this.submitForms = 0;
   }
 
-  beforeUpload = () => {
-    this.setState({
-      uploadPercent: 0,
-      imageIsUploading: true,
-    });
-    if (!this.state.token) {
-      return false;
-    }
-  };
-
   removeLogo = () => {
     const stringConstants = _.clone(this.state.stringConstants);
     stringConstants.company_logo = '';
@@ -246,6 +236,13 @@ class Config extends React.Component<IConfigProps, IConfigState> {
   };
 
   pickFile = (e: any) => {
+    this.setState({
+      uploadPercent: 0,
+      imageIsUploading: true,
+    });
+    if (!this.state.token) {
+      return false;
+    }
     const that = this;
     const file = e.target.files.item(0);
     const imageType = /^image\//;
