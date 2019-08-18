@@ -80,23 +80,22 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
         .accountGet({
           account_id: this.props.user,
         })
-        .then((user: IUser) => {
-          this.setState({ user });
-        });
+        .then((user: IUser) => this.setState({ user }));
     } else {
       this.setState({ user: this.props.user });
     }
   }
 
   componentWillReceiveProps(nProps) {
+    if (this.state.user) {
+      return;
+    }
     if (typeof nProps.user === 'string') {
       this.accountApi
         .accountGet({
           account_id: nProps.user,
         })
-        .then((user: IUser) => {
-          this.setState({ user });
-        });
+        .then((user: IUser) => this.setState({ user }));
     } else {
       this.setState({ user: nProps.user });
     }
@@ -106,7 +105,6 @@ class UserAvatar extends React.Component<IAvatarProps, IAvatarStates> {
     let { size } = this.props;
     const { borderRadius = '100%', style, className, avatar, name, id } = this.props;
     const { user } = this.state;
-
     if (!user) {
       return <div />;
     }

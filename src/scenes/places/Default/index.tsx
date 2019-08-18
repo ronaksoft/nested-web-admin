@@ -11,7 +11,7 @@ import PlaceView from '../../../components/placeview/index';
 import AddPlaceModal from '../../../components/AddPlace/index';
 import appLoader from '../../../components/Loading/app-loading';
 import { Typography } from '@material-ui/core';
-import MaterialTable from 'material-table';
+import MaterialTable, { Column } from 'material-table';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { withSnackbar } from 'notistack';
 
@@ -71,9 +71,9 @@ class DefaultPlaces extends React.Component<IProps, IState> {
     });
   };
 
-  showPlaceModal = (event, record: IPlace) => {
+  showPlaceModal = (event, record: IPlace | undefined) => {
     this.setState({
-      selectedPlace: record,
+      selectedPlace: record as IPlace,
       visiblePlaceModal: true,
     });
   };
@@ -203,11 +203,10 @@ class DefaultPlaces extends React.Component<IProps, IState> {
   };
 
   render() {
-    const columns = [
+    const columns: Column<any>[] = [
       {
         title: 'Place Name',
         field: 'name',
-        index: 0,
         render: this.renderPlaceCell,
       },
       {

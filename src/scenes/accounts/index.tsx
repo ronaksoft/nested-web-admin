@@ -155,7 +155,7 @@ class Accounts extends React.Component<IListProps, IListState> {
   // columns Render Handlers
   nameRender = (user: IPerson, type) => {
     return (
-      <div>
+      <div key={user._id}>
         <UserAvatar avatar={true} name={true} size="24" user={user as IUser} />
       </div>
     );
@@ -383,7 +383,7 @@ class Accounts extends React.Component<IListProps, IListState> {
     const canCreate =
       this.state.counters.enabled_accounts < this.state.licenseMaxUsers ||
       this.state.licenseMaxUsers === 0;
-    const columns: Column[] = [
+    const columns: Column<any>[] = [
       {
         title: 'Name',
         filtering: false,

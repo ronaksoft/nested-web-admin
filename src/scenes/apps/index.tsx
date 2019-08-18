@@ -5,7 +5,7 @@ import { IcoN } from '../../components/icon/index';
 import { Typography } from '@material-ui/core';
 import appLoader from '../../components/Loading/app-loading';
 import Loading from '../../components/Loading';
-import MaterialTable from 'material-table';
+import MaterialTable, { Column } from 'material-table';
 import tableIcons from '../../components/table-icons/index';
 
 export interface IApp {
@@ -78,30 +78,25 @@ class Apps extends React.Component<IAppsProps, IAppsState> {
   );
 
   render() {
-    var columns = [
+    var columns: Column<any>[] = [
       {
         field: '_id',
-        index: 0,
         title: 'App ID',
       },
       {
         field: 'name',
-        index: 1,
         title: 'App Name',
       },
       {
         field: 'developer',
-        index: 2,
         title: 'Developer',
       },
       {
         field: 'homepage',
-        index: 3,
         title: 'Homepage',
       },
       {
         field: 'logo',
-        index: 3,
         render: this.logoRenderer,
         title: 'Logo',
       },

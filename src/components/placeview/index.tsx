@@ -107,14 +107,14 @@ class PlaceView extends React.Component<IPlaceViewProps, IPlaceViewStates> {
           ? `${CONFIG().STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${
               place.picture.x64
             }`
-          : '/images/absents_place.svg';
+          : 'images/absents_place.svg';
         imgDOM = <img className="PlaceView--img" style={imageStyle} src={src} alt={place.name} />;
       } else {
         let src = place.picture.x32
           ? `${CONFIG().STORE.URL}/view/${AAA.getInstance().getCredentials().sk}/${
               place.picture.x32
             }`
-          : '/images/absents_place.svg';
+          : 'images/absents_place.svg';
         imgDOM = <img className="PlaceView--img" style={imageStyle} src={src} alt={place.name} />;
       }
     }

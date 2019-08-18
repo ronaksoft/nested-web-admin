@@ -121,7 +121,7 @@ export default withStyles((theme: Theme) =>
     logo: {
       height: '88px',
       position: 'absolute',
-      backgroundImage: 'url(/images/nested-logo-256.png)',
+      backgroundImage: 'url(images/nested-logo-256.png)',
       backgroundPosition: '50%',
       backgroundRepeat: 'no-repeat',
       width: '100%',

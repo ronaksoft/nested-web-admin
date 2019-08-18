@@ -54,6 +54,8 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
       .isFormValid()
       .then(v => (this.isValid = v))
       .catch(console.log);
+
+    this.submit();
   }
   componentWillMount() {
     ValidatorForm.addValidationRule('checkPhoneAvailable', this.checkPhoneAvailable);
@@ -84,8 +86,7 @@ class InputRow extends React.Component<IInputRowProps, IInputRowState> {
     const { formData } = this.state;
     const { value } = event.target;
     formData[prop] = value;
-    this.setState({ formData });
-    this.checkValidation();
+    this.setState({ formData }, () => this.checkValidation());
   };
 
   extractNumber(text: any) {

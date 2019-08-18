@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import * as React from 'react';
-import MaterialTable from 'material-table';
+import MaterialTable, { Column } from 'material-table';
 import PlaceApi from '../../api/place/index';
 import IPlace from '../../interfaces/IPlace';
 import IUser from '../../interfaces/IUser';
@@ -141,14 +141,13 @@ class Places extends React.Component<IListProps, IListState> {
     });
   };
 
-  onItemClick = (event, record: IPlace) => {
-    this.showPlaceModal(record);
-  };
+  onItemClick = (event, record: IPlace | undefined) => record && this.showPlaceModal(record);
 
   closePlaceModal = () => {
     this.setState({
       visibelPlaceModal: false,
     });
+    this.reload();
   };
 
   tabChangeHandler = (e: React.ChangeEvent<{}>, selectedTab: any) => {
@@ -286,7 +285,7 @@ class Places extends React.Component<IListProps, IListState> {
       textOverflow: 'ellipsis',
     };
 
-    const columns = [
+    const columns: Column<any>[] = [
       {
         field: 'name',
         title: 'Place Name',
@@ -409,16 +408,24 @@ class Places extends React.Component<IListProps, IListState> {
             icons={tableIcons}
             tableRef={this.tableRef}
             parentChildData={
-              (row: IPlace, rows: IPlace[]) =>
-                !this.state.isAbsoluteView &&
-                rows.find(
-                  a =>
-                    a._id ===
-                      row._id
-                        .split('.')
-                        .slice(0, -1)
-                        .join('.') && a._id !== row._id
-                )
+              (row: IPlace, rows: IPlace[]) => {
+                let returnVal: any = false;
+                if (!this.state.isAbsoluteView) {
+                  returnVal =  rows.find(
+                    a =>
+                      a._id !== row._id &&
+                      a._id ===
+                        row._id
+                          .split('.')
+                          .slice(0, -1)
+                          .join('.')
+                  );
+                } else {
+                  returnVal = false;
+                }
+                // @ts-ignore
+                return returnVal as IPlace[];
+              }
               // rows.find(a => (a._id === row._id.split('.').splice(0, -1).join('.') || a._id === row.grand_parent_id) && a._id !== row._id)
             }
             onRowClick={this.onItemClick}
@@ -435,31 +442,47 @@ class Places extends React.Component<IListProps, IListState> {
                 icon: () => <IcoN size={24} name={'cross24'} />,
                 tooltip: 'Create Grand place',
                 isFreeAction: true,
-                onClick: event => this.toggleCreatePlaceModal(),
+                onClick: (event, rowData: IPlace[] | IPlace) => this.toggleCreatePlaceModal(),
               },
               {
                 icon: () => <IcoN size={16} name={'brickWall16'} />,
                 tooltip: 'Create a Private Place',
-                onClick: (event, rowData: IPlace[]) =>
-                  rowData.forEach(record => this.toggleCreatePlaceModal(record._id)),
+                onClick: (event, rowData: IPlace[] | IPlace) => {
+                  if (Array.isArray(rowData)) {
+                    rowData.forEach(record => this.toggleCreatePlaceModal(record._id));
+                  } else {
+                    this.toggleCreatePlaceModal(rowData._id);
+                  }
+                },
               },
               {
                 icon: () => <IcoN size={16} name={'message16'} />,
                 tooltip: 'Post a Message',
-                onClick: (event, rowData: IPlace[]) =>
-                  this.sendMessageToggle(rowData.map(record => record._id).join(',')),
+                onClick: (event, rowData: IPlace[] | IPlace) => {
+                  if (Array.isArray(rowData)) {
+                    this.sendMessageToggle(rowData.map(record => record._id).join(','));
+                  } else {
+                    this.sendMessageToggle(rowData._id);
+                  }
+                },
               },
               {
                 icon: () => <IcoN size={16} name={'person16'} />,
                 tooltip: 'Add Member',
                 disabled: this.filter === CPlaceFilterTypes.PERSONAL_PLACES,
-                onClick: (event, rowData: IPlace[]) => {
-                  if (rowData.length === 1 && rowData[0].type !== C_PLACE_TYPE['0']) {
-                    this.toggleAddMemberModal(rowData[0]._id);
-                  } else {
+                onClick: (event, rowData: IPlace[] | IPlace) => {
+                  if (Array.isArray(rowData)) {
                     this.props.enqueueSnackbar(`Select only one place which is not Personal`, {
                       variant: 'warning',
                     });
+                  } else {
+                    if (rowData.type !== C_PLACE_TYPE['0']) {
+                      this.toggleAddMemberModal(rowData._id);
+                    } else {
+                      this.props.enqueueSnackbar(`Select only one place which is not Personal`, {
+                        variant: 'warning',
+                      });
+                    }
                   }
                 },
               },
@@ -468,21 +491,40 @@ class Places extends React.Component<IListProps, IListState> {
                 tooltip: 'Delete',
                 disabled: this.filter === CPlaceFilterTypes.PERSONAL_PLACES,
                 // disabled: record.grand_parent_id !== record._id || record.type !== C_PLACE_TYPE['0']
-                onClick: (event, rowData: IPlace[]) => {
-                  const ids: string = rowData
-                    .filter(p => p.type !== C_PLACE_TYPE['0'])
-                    .map(p => p._id)
-                    .join(',');
-                  if (ids.length > 0) {
-                    this.toggleDeletePlaceModal(ids);
-                  }
-                  rowData.forEach(record => {
-                    if (record.type === C_PLACE_TYPE['0']) {
-                      this.props.enqueueSnackbar(`${record._id} is personal`, {
-                        variant: 'warning',
+                onClick: (event, rowData: IPlace[] | IPlace) => {
+                  if (Array.isArray(rowData)) {
+                    if (rowData[0].type !== C_PLACE_TYPE['0']) {
+                      const ids: string = rowData
+                        .filter(p => p.type !== C_PLACE_TYPE['0'])
+                        .map(p => p._id)
+                        .join(',');
+                      if (ids.length > 0) {
+                        this.toggleDeletePlaceModal(ids);
+                      }
+                      rowData.forEach(record => {
+                        if (record.type === C_PLACE_TYPE['0']) {
+                          this.props.enqueueSnackbar(`${record._id} is personal`, {
+                            variant: 'warning',
+                          });
+                        }
                       });
                     }
-                  });
+                  } else {
+                    const ids: string = [rowData]
+                      .filter(p => p.type !== C_PLACE_TYPE['0'])
+                      .map(p => p._id)
+                      .join(',');
+                    if (ids.length > 0) {
+                      this.toggleDeletePlaceModal(ids);
+                    }
+                    [rowData].forEach(record => {
+                      if (record.type === C_PLACE_TYPE['0']) {
+                        this.props.enqueueSnackbar(`${record._id} is personal`, {
+                          variant: 'warning',
+                        });
+                      }
+                    });
+                  }
                 },
               },
               {
@@ -497,7 +539,7 @@ class Places extends React.Component<IListProps, IListState> {
                   this.filter === CPlaceFilterTypes.UNLOCKED_PLACES,
                 tooltip: !this.state.isAbsoluteView ? 'Relation view' : 'Absolute view',
                 isFreeAction: true,
-                onClick: (event, rowData: IPlace[]) =>
+                onClick: (event, rowData: IPlace[] | IPlace) =>
                   this.setState({ isAbsoluteView: !this.state.isAbsoluteView }, this.reload),
               },
             ]}
@@ -557,6 +599,7 @@ class Places extends React.Component<IListProps, IListState> {
                 };
               } else {
                 const grand = await this.getData(page, pageSize, this.filter, sort, false);
+                console.log(grand);
                 return {
                   data: grand,
                   page,

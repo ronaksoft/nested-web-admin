@@ -9,6 +9,7 @@ interface IPlace {
   _id: string;
   created_on: number;
   creators: string[];
+  key_holders: string[];
   description: string;
   grand_parent_id: string;
   groups: any;
@@ -19,6 +20,7 @@ interface IPlace {
   policy: IPlacePolicy;
   privacy: IPlacePrivacy;
   type: any;
+  place_type: string;
   unlocked_childs: any[];
   access: any[];
   children?: IPlace[];

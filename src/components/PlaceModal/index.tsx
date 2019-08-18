@@ -377,7 +377,7 @@ class PlaceModal extends React.Component<IProps, IStates> {
           .then(() => {
             this.updated = true;
             this.updateModel({
-              members: members,
+              members,
             });
           });
       } else {
@@ -397,15 +397,16 @@ class PlaceModal extends React.Component<IProps, IStates> {
     }
   };
 
-  removeMember = (user: any) => {
+  removeMember = (e: any) => {
+    const user = this.state.removeMemberUserRef;
     const index = _.findIndex(this.state.model.members, {
       _id: user._id,
     });
-    let members = this.state.model.members;
+    const { members } = this.state.model;
     if (!_.some(this.state.members, { _id: user._id })) {
       members.splice(index, 1);
       this.updateModel({
-        members: members,
+        members,
       });
     } else {
       this.placeApi
@@ -417,7 +418,7 @@ class PlaceModal extends React.Component<IProps, IStates> {
           this.updated = true;
           members.splice(index, 1);
           this.updateModel({
-            members: members,
+            members,
           });
         });
     }
@@ -571,8 +572,9 @@ class PlaceModal extends React.Component<IProps, IStates> {
   }
 
   getMembersItems() {
-    const isPersonal = this.state.place.type === C_PLACE_TYPE[C_PLACE_TYPE.personal];
-    const list = this.state.model.members.map((u: any) => {
+    const { model, place } = this.state;
+    const isPersonal = place.type === C_PLACE_TYPE[C_PLACE_TYPE.personal];
+    const list = model.members.map((u: any) => {
       return (
         <li key={u._id} className="nst-opacity-hover-parent">
           <UserAvatar user={u} borderRadius={'16px'} size={24} avatar={true} />
@@ -599,12 +601,15 @@ class PlaceModal extends React.Component<IProps, IStates> {
     return (
       <ul>
         {list}
-        {this.state.editMode && (
-          <li className={this.props.classes.addMember} onClick={this.toggleAddMemberModal}>
-            <IcoN size={16} name={'cross16'} />
-            Add member...
-          </li>
-        )}
+        {this.state.editMode &&
+          !isPersonal &&
+          model.managerLimit + model.memberLimit >
+            place.counters.creators + place.counters.key_holders && (
+            <li className={this.props.classes.addMember} onClick={this.toggleAddMemberModal}>
+              <IcoN size={16} name={'cross16'} />
+              Add member...
+            </li>
+          )}
       </ul>
     );
   }
@@ -838,7 +843,6 @@ class PlaceModal extends React.Component<IProps, IStates> {
   };
 
   updatePlacePostPolicy = (index: any) => {
-    console.log(index);
     this.updateModel({ addPostPolicy: index });
   };
 

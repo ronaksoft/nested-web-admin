@@ -349,22 +349,6 @@ class SendMessageModal extends React.Component<IProps, IStates> {
   };
 
   /**
-   * @func selectFile
-   * @desc Opens a file browser to select a file
-   * @private
-   * @memberof Compose
-   * @param {boolean} isMedia
-   */
-  private selectFile = (isMedia: boolean) => {
-    return () => {
-      if (this.file) {
-        this.file.click();
-      }
-      this.mediaMode = isMedia;
-    };
-  };
-
-  /**
    * @func handleAttachmentsChange
    * @desc Updates the component state with a new list of attachments
    * @private
@@ -378,10 +362,10 @@ class SendMessageModal extends React.Component<IProps, IStates> {
   };
 
   private addAttachment = (isMedia: boolean) => {
+    this.mediaMode = isMedia;
     if (this.file) {
       this.file.click();
     }
-    this.mediaMode = isMedia;
   };
 }
 export default withSnackbar(SendMessageModal);
