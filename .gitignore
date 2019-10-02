@@ -1,6 +1,0 @@
-coverage/
-node_modules/
-jspm_packages/
-.idea/
-.tmp/
-package-lock.json
