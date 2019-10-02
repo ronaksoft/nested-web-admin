@@ -1,0 +1,26 @@
+enum ReportType {
+  AddPost,
+  AddEmail,
+  AttachmentSize,
+  AttachmentCount,
+  AddComment,
+  Login,
+  SessionRecall,
+  AllRequests,
+  dataIn,
+  dataOut,
+  AccountPost,
+  PlacePost,
+  AccountComment,
+  PlaceComment,
+  processTime,
+  taskAdd,
+  taskComment,
+  taskCompleted,
+  AccountTaskAdd,
+  AccountTaskComment,
+  AccountTaskCommpleted,
+  AccountTaskAssigned,
+}
+
+export default ReportType;
