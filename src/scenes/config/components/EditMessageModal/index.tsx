@@ -45,18 +45,22 @@ export default class EditMessageModal extends React.Component<IProps, IStates> {
     });
   }
   componentWillReceiveProps(props: any) {
+    let initialEditorState = this.state.initialEditorState;
+    try {
+      if (props.message.body) {
+        initialEditorState = EditorState.createWithContent(
+          ContentState.createFromBlockArray(
+            convertFromHTML(props.message.body).contentBlocks,
+            convertFromHTML(props.message.body).entityMap
+          )
+        );
+      }
+    } catch (error) {}
     this.setState({
       visible: props.visible,
       subject: props.message.subject,
       body: props.message.body,
-      initialEditorState: props.message.body
-        ? EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(props.message.body).contentBlocks,
-              convertFromHTML(props.message.body).entityMap
-            )
-          )
-        : this.state.initialEditorState,
+      initialEditorState,
     });
   }
 
