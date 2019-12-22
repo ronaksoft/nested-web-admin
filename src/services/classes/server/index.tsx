@@ -19,7 +19,7 @@ export default class Server {
   private cid: string;
 
   public constructor() {
-    console.log('Start Server instance');
+    console.log('Start Server instance', CONFIG().WEBSOCKET.URL);
     this.socket = new socket({
       server: CONFIG().WEBSOCKET.URL,
       pingPongTime: 10000,

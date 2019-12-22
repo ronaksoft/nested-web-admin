@@ -28,31 +28,18 @@ export default class AccountApi {
     this.api = Api.getInstance();
   }
 
-  sessionRecall(sessionRecallParams: ISessionRecallRequest): Promise<any> {
+  async sessionRecall(sessionRecallParams: ISessionRecallRequest): Promise<any> {
     const localDomain = localStorage.getItem('nested.server.domain');
+    console.log('sessionRecall', CONFIG().DOMAIN, localDomain);
     if (localDomain && CONFIG().DOMAIN !== localDomain) {
-      return this.api.reconfigEndPoints(localDomain).then(() => {
-        return this.api.server
-          .request({
-            cmd: 'session/recall',
-            data: sessionRecallParams,
-            withoutQueue: true,
-          })
-          .then((res: ISessionRecallResponse) => {
-            return res.account;
-          });
-      });
-    } else {
-      return this.api.server
-        .request({
-          cmd: 'session/recall',
-          data: sessionRecallParams,
-          withoutQueue: true,
-        })
-        .then((res: ISessionRecallResponse) => {
-          return res.account;
-        });
+      await this.api.reconfigEndPoints(localDomain);
     }
+    const res: ISessionRecallResponse = await this.api.server.request({
+      cmd: 'session/recall',
+      data: sessionRecallParams,
+      withoutQueue: true,
+    });
+    return res.account;
   }
 
   /**
