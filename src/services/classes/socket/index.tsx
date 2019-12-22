@@ -22,9 +22,9 @@ export default class Socket {
   private currentState: SocketState | null = null;
 
   constructor(config: ISocketConfig = defaultConfig) {
-    if (config.server === '') {
-      throw Object.assign(new Error("WebSocket Server isn't declared!"), { code: 404 });
-    }
+    // if (config.server === '') {
+    //   throw Object.assign(new Error("WebSocket Server isn't declared!"), { code: 404 });
+    // }
     this.config = config;
     // we have to define a new state because websocket is dummy
     // and cannot rely on socket.readyState!
@@ -53,6 +53,9 @@ export default class Socket {
 
   close() {
     log.debug(`SOCKET | Setting to close the socket connection`);
+    if (!this.socket) {
+      return;
+    }
     this.setStateClosed();
     if (this.socket.readyState === SocketState.CLOSING) {
       log.debug(`SOCKET | The socket connection is being closed`);

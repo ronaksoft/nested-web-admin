@@ -257,7 +257,6 @@ class View extends React.Component<IViewProps, IViewState> {
 
       return value;
     });
-
     if (_.has(changedProps, 'grand_places')) {
       changedProps = {
         'limits.grand_places': parseInt(values.grand_places, 0),
@@ -559,7 +558,7 @@ class View extends React.Component<IViewProps, IViewState> {
     _.forEach(params, (val, index) => {
       model[index] = val;
     });
-    this.setState({ model: model }, () => {
+    this.setState({ model }, () => {
       if (_.isFunction(callback)) {
         callback();
       }
@@ -603,8 +602,10 @@ class View extends React.Component<IViewProps, IViewState> {
   };
 
   updateGrandPlaceLimit = (event: any) => {
+    const { model } = this.state;
+    model.limits.grand_places = this.extractNumber(event.currentTarget.value || 0);
     this.updateModel({
-      grand_places_limit: this.extractNumber(event.currentTarget.value || 0),
+      limits: model.limits,
     });
   };
 

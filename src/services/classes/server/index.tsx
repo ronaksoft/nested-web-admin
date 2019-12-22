@@ -19,15 +19,17 @@ export default class Server {
   private cid: string;
 
   public constructor() {
-    console.log('Start Server instance', CONFIG().WEBSOCKET.URL);
+    const server = CONFIG().WEBSOCKET.URL;
     this.socket = new socket({
-      server: CONFIG().WEBSOCKET.URL,
+      server,
       pingPongTime: 10000,
       onReady: this.startQueue.bind(this),
       onMessage: this.response.bind(this),
     });
     this.queue = [];
-    this.socket.connect();
+    if (server) {
+      this.socket.connect();
+    }
     this.cid = Client.getCid();
   }
   request(req: IRequest): Promise<unknown> {

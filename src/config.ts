@@ -36,7 +36,7 @@ function generateConfig(): any {
       DOMAIN: '_DOMAIN_',
       SIGN_OUT_TARGET: '/',
       WEBSOCKET: {
-        URL: '_WS_CYRUS_CYRUS_URL_CONF_',
+        URL: '',
         TIMEOUT: 60000,
         REQUEST_MAX_RETRY_TIMES: 16,
       },
@@ -48,12 +48,12 @@ function generateConfig(): any {
         },
       },
       STORE: {
-        URL: '_XERXES_URL_CONF_',
+        URL: '',
         TOKEN_EXPMS: 3550000,
       },
       REGISTER: {
         AJAX: {
-          URL: '_HTTP_CYRUS_URL_CONF_',
+          URL: '',
         },
       },
       IFRAME_ENABLE: '_IFRAME_ENABLE_',
@@ -62,15 +62,15 @@ function generateConfig(): any {
       UPLOAD_SIZE_LIMIT: 209715200,
     };
   }
-  if (window.__NESTED_CONFIG__.WEBSOCKET.URL.indexOf('://') === -1) {
-    window.__NESTED_CONFIG__.WEBSOCKET.URL = 'wss://c-staging.nested.me';
-  }
-  if (window.__NESTED_CONFIG__.STORE.URL.indexOf('://') === -1) {
-    window.__NESTED_CONFIG__.STORE.URL = 'https://c-staging.nested.me/file';
-  }
-  if (window.__NESTED_CONFIG__.REGISTER.AJAX.URL.indexOf('://') === -1) {
-    window.__NESTED_CONFIG__.REGISTER.AJAX.URL = 'https://c-staging.nested.me';
-  }
+  // if (window.__NESTED_CONFIG__.WEBSOCKET.URL.indexOf('://') === -1) {
+  //   window.__NESTED_CONFIG__.WEBSOCKET.URL = 'wss://c-staging.nested.me';
+  // }
+  // if (window.__NESTED_CONFIG__.STORE.URL.indexOf('://') === -1) {
+  //   window.__NESTED_CONFIG__.STORE.URL = 'https://c-staging.nested.me/file';
+  // }
+  // if (window.__NESTED_CONFIG__.REGISTER.AJAX.URL.indexOf('://') === -1) {
+  //   window.__NESTED_CONFIG__.REGISTER.AJAX.URL = 'https://c-staging.nested.me';
+  // }
   return {
     ...window.__NESTED_CONFIG__,
     DEFAULT_PLACE_MAX_CHILDREN: 50,
