@@ -43,6 +43,7 @@ export default class Socket {
 
   connect() {
     log.debug(`SOCKET | Setting to connect`);
+    console.log(this.config.server);
     this.socket = new WebSocket(this.config.server);
     this.socket.onopen = this.onOpen.bind(this);
     this.socket.onclose = this.onClose.bind(this);
