@@ -140,8 +140,20 @@ class CreatePlaceModal extends React.Component<IProps, IStates> {
         .isIdAvailable(id)
         .then((data: any) => {
           if (data.err_code) {
+            this.setState({
+              idValidation: {
+                reason: 0,
+                valid: false,
+              },
+            })
             return false;
           } else {
+            this.setState({
+              idValidation: {
+                reason: 0,
+                valid: true,
+              },
+            })
             return true;
           }
         })
@@ -477,7 +489,7 @@ class CreatePlaceModal extends React.Component<IProps, IStates> {
         promises.push(
           this.placeApi.setPicture({
             place_id: placeId,
-            universal_id: model.pictureData,
+            universal_id: model.picture,
           })
         );
       }
