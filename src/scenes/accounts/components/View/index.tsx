@@ -502,7 +502,7 @@ class View extends React.Component<IViewProps, IViewState> {
     const editedAccount = _.clone(this.state.account);
     const { checked } = event.target;
     _.merge(editedAccount, { disabled: !checked });
-    const action = event.target.value
+    const action = checked
       ? this.accountApi.enable({ account_id: editedAccount._id })
       : this.accountApi.disable({ account_id: editedAccount._id });
 
