@@ -43,8 +43,9 @@ export default class Socket {
 
   connect() {
     log.debug(`SOCKET | Setting to connect`);
-    console.log(this.config.server);
-    this.socket = new WebSocket(this.config.server);
+    const url = this.config.server.replace('/api', '/ws');
+    console.log(url);
+    this.socket = new WebSocket(url);
     this.socket.onopen = this.onOpen.bind(this);
     this.socket.onclose = this.onClose.bind(this);
     this.socket.onmessage = this.onMessage.bind(this);
