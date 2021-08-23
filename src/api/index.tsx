@@ -40,6 +40,32 @@ export default class Api {
    */
   public reconfigEndPoints(domain: string): Promise<any> {
     const api: Api = this;
+    const setFn = (data: any) => {
+      const newConfigs = this.parseConfigFromRemote(data);
+
+      // replace configs with new configs
+      setNewConfig(domain, newConfigs.websocket, newConfigs.register, newConfigs.store);
+
+      // close server socket and remove current server
+      if (api.server) {
+        api.server.getSocket().close();
+        api.server = null;
+        api.server = new Server();
+      }
+
+      // store domain of new configs in local storage
+      localStorage.setItem('nested.server.domain', domain);
+    };
+    if (domain.indexOf('local:') === 0) {
+      // cyrus:https:443:20180800010.nested.me;cyrus:wss:443:20180800010.nested.me;
+      const npcRecord = domain.replace('local:', '');
+      try {
+        setFn(npcRecord);
+      } catch (e) {
+        return Promise.reject(e);
+      }
+      return Promise.resolve();
+    }
     return new Promise((resolve, reject) => {
       // create request path
       const getConfigUrl = `https://npc.nested.me/dns/discover/${domain}`;
@@ -50,28 +76,13 @@ export default class Api {
       xhr.onload = () => {
         if (xhr.status === 200) {
           const response: any = JSON.parse(xhr.response);
-          let newConfigs: any;
-          // try to parse response text
-          try {
-            newConfigs = this.parseConfigFromRemote(response.data);
-          } catch (e) {
-            reject();
-            return;
-          }
 
           if (response.status === 'ok') {
-            // replace configs with new configs
-            setNewConfig(domain, newConfigs.websocket, newConfigs.register, newConfigs.store);
-
-            // close server socket and remove current server
-            if (api.server) {
-              api.server.getSocket().close();
-              api.server = null;
-              api.server = new Server();
+            try {
+              setFn(response.data);
+            } catch (e) {
+              reject(e);
             }
-
-            // store domain of new configs in local storage
-            localStorage.setItem('nested.server.domain', domain);
             resolve();
           } else {
             reject();
